@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.target=Part1
+comment0.text=\n\ Write\ a\ description\ of\ Part1\ here.\n\ \n\ @author\ (your\ name)\ \n\ @version\ (a\ version\ number\ or\ a\ date)\n
+comment1.params=inImage
+comment1.target=edu.duke.ImageResource\ convertToGrey(edu.duke.ImageResource)
+comment2.params=
+comment2.target=void\ saveGrey()
+comment3.params=
+comment3.target=void\ testConvertToGrey()
+numComments=4
