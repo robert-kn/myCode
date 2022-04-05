@@ -26,7 +26,7 @@ int main () {
 
 	printf("digits = ");
 	for(i = 0; i < 10; i++)
-		printf("%d", digits[i]);
+		printf(" %d", digits[i]);
 	printf(", white space = %d, other = %d\n", nWhite, nOther);
 
 

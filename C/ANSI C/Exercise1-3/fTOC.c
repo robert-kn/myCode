@@ -2,7 +2,7 @@
 
 /* print fahrenheit-celcius table for fahr = 0, 20, ..., 300 */
 
-int main() {
+void main() {
 
 	float fahr, celsius;
 	float lower, upper, step;

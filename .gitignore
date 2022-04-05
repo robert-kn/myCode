@@ -2,3 +2,4 @@
 javaDocProject
 *.csv
 *.png
+node_modules
