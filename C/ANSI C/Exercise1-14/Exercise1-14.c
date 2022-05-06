@@ -3,28 +3,30 @@
 /* program prints a histogram of the frequencies of different chars in its input */
 
 int main(){
+	system("clear");
 
-	int alphabet[26];
+	int alphabetCount[26];
+	char alphabet[26] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
 
-	int i, character;
+	int i, j, character;
 
 	for(i = 0; i < 26; i++)
-		alphabet[i] = 0;
+		alphabetCount[i] = 0;
 
 	while((character = getchar()) != EOF){
 
-                if(character >= 'a' || character <= 'z')
-			//++alphabet[character - 'a'];
+		for(i = 0; i < 26; i++){
+			if(character == alphabet[i]){
+				++alphabetCount[i];
+			}
+		}
+	}
+	printf("\n\nHistogram of characters from input read from stdin:\n\n");
+	for(i = 0; i < 26; i++){
+		printf("\t%c: ", alphabet[i]);
+		for(j = 0; j < alphabetCount[i]; j++)
 			printf("*");
-		else if(character == ' ' || character == '\t' || character == '\n')
-			printf("\n");
-
-        }
-
-
-	//for(i = 0; i < 26; i++)
-	//	putchar('\n');
-	//	for(int j = 0; j < alphabet[i]; j++)
-	//		printf("*");	
+		printf("\n");
+	}
 
 }

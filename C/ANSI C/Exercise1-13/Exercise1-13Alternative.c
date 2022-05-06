@@ -9,7 +9,7 @@
 /*        print horizontal histogram          */
 
 int main(){
-
+	system("clear");
 	int c, i, nc, state;
 	int len;                  /* length of each bar */
 	int maxvalue;                /* maximum value for wl[] */

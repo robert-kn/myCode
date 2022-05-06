@@ -3,12 +3,16 @@
 int main(){
 	int c;
 
+	system("clear");
+
 	while((c = getchar()) != EOF){
 		if(c == '\t')
-			printf("\\t\n");
+			printf("\\t");
 		if(c == '\b')
-			printf("\\b\n");
+			printf("\\b");
 		if(c == '\\')
-			printf("\\\\ \n");
+			printf("\\\\");
+		else
+			putchar(c);
 	}
 }

@@ -7,6 +7,8 @@
 
 int main (){
 
+	system("clear");
+
 	int newlineCount, wordCount, charCount, character, STATE;
 
 	STATE = OUT; // start outside a word;
@@ -27,5 +29,6 @@ int main (){
 			++wordCount;
 		}
 	}
-	printf("word count = %d; new lines = %d; character count = %d\n",wordCount, newlineCount, charCount);	
+	printf("word count = %d; new lines = %d; character count = %d\n",wordCount, newlineCount, charCount);
+	return 0;	
 }
