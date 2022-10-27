@@ -10,7 +10,7 @@ int main()
 {
    int number = 123, result = 0;
 
-   result = computeSum(number, 0);
+   result = computeSum(number, result);
    printf("Sum of digits in %d = %d\n", number, result);
 
    return 0;
