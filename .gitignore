@@ -1,5 +1,4 @@
-
-javaDocProject
+*.dSYM
 *.csv
 *.png
 node_modules
