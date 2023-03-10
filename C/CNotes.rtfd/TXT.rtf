@@ -1,0 +1,156 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2707
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;\f1\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh17300\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs36 \cf0 Rules to follow when writing software:\
+1. Clarity is one of the most important qualities of well written code.\
+2. Write DRY (do not repeat yourself) code. The opposite of DRY code is WET (we enjoy typing) code. Not adhering to DRY code increases the probability of \
+   making mistakes.\
+3. Write code after you have written the steps of the solution.\
+4. Developing software != coding. Coding means typing statements in a text editor - it is a part of software development. Before typing a single line of \
+   code you first need to know why you are developing the software.\
+\
+	Before coding:\
+\
+		(a) read the specification and understand the requirements\
+		(b) consider possible inputs and expected outputs\
+		(c) identify valid but unexpected inputs and the correct outputs\
+		(d) identify invalid inputs and the ways to detect them\
+		(e) think a bout the solution and sketch an approach on paper\
+		(f) draw block diagrams showing how information is exchanged among different parts of the program\
+		(g) after you have a design, plan the implementation aspect of the program I.e. how many functions should be created? What does each function do?  \
+           How many files are needed? When designing functions try to keep the following suggestions in mind:\
+				(i) each function should only do one thing\
+				(ii)each function should not consist of more than 40 lines of code (the number is not rigid, 45 is alright. 120 are too many). A general \
+                  rule is that the entire function should fit in a computer screen using readable font size.\
+		(h) having a detailed design will save time on coding and debugging\
+\
+	During coding:\
+\
+		(a) always use a text editor that automatically indents amongst other things.\
+		(b) read your code line by line before running any test cases. This can help you find problems that are difficult to find by testing.\
+		(c) if you want to finish programs correctly and faster, write more code. Before integrating code into a larger program. Write a small program to \
+           test your solution. This is called a unit test. If you cannot make one function work, you will definitely be incapable of of making anything \
+           work after putting many functions together.\
+		(d) avoid copying and pasting code\
+		(e) resolve all compiler warnings. Many studies have shown that warnings are likely to be serious errors even though they are not syntax errors.\
+\
+\
+You should not create a directory or file whose name includes spaces because some programs may not work.\
+\
+Man cc will take you to the man pages of the clang compiler.\
+\
+The command file <file-name> will output information about a file.\
+\
+The meld program is used to output differences side by side (diff outputs the difference but they aren\'92t side by side).\
+\
+C does not initialise variables; uninitialised variables could store any values I.e. garbage.\
+\
+The keyword return can be used for two different purposes:\
+\
+	1. If void is in front of a function name, the function does not return any value. The word return stops the function and the program continues from \
+       the return location in the caller.\
+\
+	2. If the function is not void, the word return assigns a value to the variable given by the value address in the call stack.\
+\
+Executing a return statement stops a function, resulting in its frame being popped off the call stack. Anything after return is ignored. The program then continues from the return location.\
+	\
+\
+Storage in a computer can be divided into volatile and non volatile storage. Volatile storage requires electricity and therefore can only store data when a computer is turned on. Volatile storage is usually referred to as \'93memory\'94. Non volatile storage persists when a computer is turned off or rebooted. Examples include, flash memory or hard disks. Flash memory is also called a solid state disk or SSD.\
+\
+My current MacBook Pro has 32 GB of volatile storage. 1 GB is equal to 10^(9) which means that it has 32 billion bytes of volatile storage. Since 1 byte is made up of 8 bits (which can either have a value of 1 or 0), then it has 32 x 10^(9) x 8 = 256 billion bits of volatile storage.\
+\
+A computers memory is organised into address-values pairs. Operating systems guarantee that each piece of data has a unique and positive address. The address is never is never zero or negative. The symbol NULL is defined as the zero address and indicates an invalid address. As it is impossible to remember for example 32 billion volatile storage address in the case of my MacBook Pro, early computer science pioneers created symbols to associate to memory. If the value stored at an address corresponding to a particular symbol may change during program execution, the symbol is called a variable. These symbols have meaning to humans writing computer programs. Compilers such as clang convert these symbols into addresses. The final computer program manipulates the values - it does not see the symbols. Consequently, inside a computers memory there are only addresses and values.\
+\
+A programmer has no control over the addresses - that is the job of the OS and the compiler in use.\
+\
+Modern computers usually organise volatile memory into three types:\
+	1. Stack memory (call stack): store data and follow FILO\
+	2. Heap memory: store data\
+	3. Program memory: stores machine code of computer programs\
+\
+The rules for the call stack can be summarised as follows:\
+	1. When a function is called, the line number after this call is pushed onto the call stack. This line number is the RL. The program will continue \
+      From this location after the called function finishes (I.e. returns)\
+\
+	2. If a function returns a value, the value is written to a local variable in the caller\'92s frame. This variable\'92s address (called the value address) \
+       is stored in the call stack.\
+\
+	2. If a function has arguments then the arguments are stored above the return location\
+\
+	3. The arguments and the return location together form the frame of the called function. A frame occupies a contiguous chunk of memory.\
+\
+	4. If a function has local variables, then the local variables are stored above the arguments.\
+\
+	4. If the same function is called from multiple lines, then each call has a corresponding return location (the line after each function call)\
+\
+	5. When a function finishes, the program continues from the line number stored at the top of the call stack. The top of the call stack is then \
+      Popped.\
+\
+Every time a function is called, a new frame is pushed to the call stack. A function can see only its own frame/scope (a new scope is created every time a pair of \{ \} is encountered. Since computers only work with addresses and values, two functions can have the same symbols but they wouldn\'92t get mixed up when the program containing them runs.\
+\
+Although C allows global variables, well written software almost always avoids global variables. The main problem is that global variables can be changed anywhere in a program. As a program becomes larger and more complex, it becomes increasingly harder to track the places where global variables may change.\
+\
+You can retrieve an object\'92s address by adding & in front of it. This address can be printed using with the printf functions using the format specifier %p.\
+\
+The addresses of array elements are always contiguous.\
+\
+You don\'92t have to explicitly give a size when creating an array on the stack I.e. the compiler will automatically infer it:\
+\
+	1. Int arr[] = \{1,2,3,4\}.  \'97> compiler will infer that 4 objects are in the array\
+\
+ \
+If you want to initialise an array of ints to zero, do the following:\
+\
+	1. Int arr[10] = \{0\};\
+\
+If you would like to review what integer values are assigned to the characters according to the ascii standard use the following command on the cli:\
+\
+	1. Man ascii\
+\
+According to the integer values assigned to the latin alphabet (characters per the above command), if you want to calculate what distance a char is from another char, use the following syntax:\
+\
+	1. Char - \'91a\'92 or char - \'91A\'92\
+\
+Why create header files?\
+	\
+	1. Declare constants using the pre-processor directive #define \
+	2. Declare functions\
+	3. Define new data types\
+\
+What is the difference between data types?\
+\
+	1. The format of the data (the representation in computer memory differs).\
+	2. The range of possible values and the size required to store the data. A 4 byte integer stores valid values that are between the range of \
+      -2,147,483,648 (-2^31, approximately -10^9) and 2,147,483,647 (2^31 -1). In contrast, the absolute value of a double precision floating number (8 \
+      bytes) can be as small as 10^(-308) and as large as 10^308 (approximately).	3. The effect of operations on the data. Because two data types have different formats, when a program performs an operation between the two, the \
+      result depends on the types involved.\
+\
+C doesn\'92t have a type for strings, instead, it uses null terminated (\'91\\0\'92) arrays of char for strings.\
+\
+When multiple pieces of data are organised together, it is called a structure (a new type). After creating a structure, the type can be used to create an object (borrowing a term from C++ and java). An object is a specific instance of a type. Each piece of data in an object is called an attribute. The typedef struct keywords are used to create new types in C. The structures name is given at the end of the structure, after \} and before ;. The keywords typedef struct inform the C compiler that a new type is being defined. It is common to have only one structure in a header file and the file\'92s name is the same as the structure\'92s name (but in lower case). \
+\
+The attributes of an object can be accessed using period notation. An object can be copied to another object of the same type. if the types in an object are of type integer, double etc, all of the attributes can be initialised to 0 by assigning the whole object to 0. If you want to compare two user defined objects, you have to write a function that compares the attributes. When passing an object as an argument, all attributes are copied to the argument of the called function. Assuming you have an object whose symbol is P and it has an attribute x, you can access that attribute in a separate function (that consumes the object as a pointer) using the syntax P -> x (or (*P).x)\
+\
+Each structure should have a constructor to initialise all attributes. If a structure has pointers for dynamically allocated memory, then it also needs a destructor.\
+\
+A deep copy allocates memory so that objects do no share memory, a shallow copy allows several objects attributes to point to the same addresses.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic.tiff \width19540 \height2940 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs36 \cf0 \
+\
+To write binary data, fwrite is used. The return value is the number of objects written. This number can be different from the third argument. The data written by fwrite needs to be read by fread not fscanf.\
+\
+If data is stored in a text file, then it can be read by using the more command on the terminal.\
+\
+If data is stored in binary format, it cannot be edited and viewed directly. The data files are also specific to the platform the code is compiled on since the size and format of the binary data can vary between computers.\
+\
+\
+}
