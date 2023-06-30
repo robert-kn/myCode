@@ -1,7 +1,6 @@
 #include <stdio.h>
 
 int main(){
-	system("clear");
 	int c = 0;
 
 	//c = getchar(); 

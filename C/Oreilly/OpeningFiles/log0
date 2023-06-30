@@ -1,0 +1,97 @@
+==43077== Memcheck, a memory error detector
+==43077== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==43077== Using Valgrind-3.21.0.GIT-lbmacos-4233f2e8ac-20230112 and LibVEX; rerun with -h for copyright info
+==43077== Command: ./prog ../inputs/duplicates.txt
+==43077== Parent PID: 43076
+==43077== 
+--43077-- 
+--43077-- Valgrind options:
+--43077--    --tool=memcheck
+--43077--    --verbose
+--43077--    --log-file=log0
+--43077-- Output from sysctl({CTL_KERN,KERN_VERSION}):
+--43077--   Darwin Kernel Version 22.2.0: Fri Nov 11 02:08:47 PST 2022; root:xnu-8792.61.2~4/RELEASE_X86_64
+--43077-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand-rdseed
+--43077-- Page sizes: currently 4096, max supported 4096
+--43077-- Valgrind library directory: /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind
+==43077== 
+==43077== Support for macOS 11 and later is currently experimental
+==43077== Some reports (especially memory leaks) might be missing or incorrect
+==43077== 
+--43077-- ./prog (rx at 0x100000000, rw at 0x100004000)
+--43077--    reading syms   from primary file (3 0)
+--43077--    dSYM= ./prog.dSYM/Contents/Resources/DWARF/prog
+--43077-- /usr/lib/dyld (rx at 0x10000c000, rw at 0x1000a4000)
+--43077--    reading syms   from primary file (3 3290)
+--43077-- Scheduler: using generic scheduler lock implementation.
+--43077-- Reading suppressions file: /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp
+==43077== embedded gdbserver: reading from /var/folders/s7/bqnmjwld0rzc4yxvfshfss180000gn/T//vgdb-pipe-from-vgdb-to-43077-by-robertndungu-on-???
+==43077== embedded gdbserver: writing to   /var/folders/s7/bqnmjwld0rzc4yxvfshfss180000gn/T//vgdb-pipe-to-vgdb-from-43077-by-robertndungu-on-???
+==43077== embedded gdbserver: shared mem   /var/folders/s7/bqnmjwld0rzc4yxvfshfss180000gn/T//vgdb-pipe-shared-mem-vgdb-43077-by-robertndungu-on-???
+==43077== 
+==43077== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==43077== don't want to do, unless you know exactly what you're doing,
+==43077== or are doing some strange experiment):
+==43077==   /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/../../bin/vgdb --pid=43077 ...command...
+==43077== 
+==43077== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==43077==   /path/to/gdb ./prog
+==43077== and then give GDB the following command
+==43077==   target remote | /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/../../bin/vgdb --pid=43077
+==43077== --pid is optional if only one valgrind process is running
+==43077== 
+--43077-- REDIR: 0x10000ecc0 (dyld:strcmp) redirected to 0x2580587e0 (???)
+--43077-- REDIR: 0x10006d9ba (dyld:arc4random) redirected to 0x25805887e (???)
+--43077-- REDIR: 0x10000dd20 (dyld:strlen) redirected to 0x2580587af (???)
+--43077-- REDIR: 0x10000f1b8 (dyld:strlcat) redirected to 0x258058819 (???)
+--43077-- REDIR: 0x10000dd80 (dyld:strcpy) redirected to 0x2580587fc (???)
+==43077== Warning: set address range perms: large range [0x7ff810ba7000, 0x7ff9109a7000) (defined)
+==43077== Warning: set address range perms: large range [0x7ff810f30000, 0x7ff834c73000) (defined)
+==43077== Warning: set address range perms: large range [0x7ff834c73000, 0x7ff850ba7000) (noaccess)
+==43077== Warning: set address range perms: large range [0x7ff854a9f000, 0x7ff890ba7000) (noaccess)
+==43077== Warning: set address range perms: large range [0x7ff89c157000, 0x7ff9109a7000) (noaccess)
+--43077-- /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/vgpreload_core-amd64-darwin.so (rx at 0x10018d000, rw at 0x100191000)
+--43077--    reading syms   from primary file (3 4)
+--43077--    dSYM= /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/vgpreload_core-amd64-darwin.so.dSYM/Contents/Resources/DWARF/vgpreload_core-amd64-darwin.so
+--43077-- /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/vgpreload_memcheck-amd64-darwin.so (rx at 0x1001a4000, rw at 0x1001a8000)
+--43077--    reading syms   from primary file (75 13)
+--43077--    dSYM= /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/vgpreload_memcheck-amd64-darwin.so.dSYM/Contents/Resources/DWARF/vgpreload_memcheck-amd64-darwin.so
+--43077-- REDIR: 0x1000108c9 (dyld:strcat) redirected to 0x2580587c0 (???)
+==43077== 
+==43077== HEAP SUMMARY:
+==43077==     in use at exit: 0 bytes in 0 blocks
+==43077==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
+==43077== 
+==43077== All heap blocks were freed -- no leaks are possible
+==43077== 
+==43077== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 77390 from 502)
+--43077-- 
+--43077-- used_suppression:      5 OSX1300:chkstk /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:726
+--43077-- used_suppression:   5018 OSX1300:dyld-prepare-addr2 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:943
+--43077-- used_suppression:   5169 OSX1300:dyld-prepare-addr1 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:935
+--43077-- used_suppression:   2075 OSX1300:dyld-prepare-addr4 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:951
+--43077-- used_suppression:      5 OSX1300:dyld-sections-cond /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:1096
+--43077-- used_suppression:    682 OSX1300:dyld-sections-addr1 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:1112
+--43077-- used_suppression:    135 OSX1300:dyld-sections-addr8 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:1136
+--43077-- used_suppression:    310 OSX1300:dyld-sections-addr4 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:1128
+--43077-- used_suppression:    224 OSX1300:dyld-sections-addr2 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:1120
+--43077-- used_suppression:      1 OSX1300:dyld-prepare-maplink /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:910
+--43077-- used_suppression:  10914 OSX1300:dyld-vmlayout-addr2 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:999
+--43077-- used_suppression:  10241 OSX1300:dyld-vmlayout-addr1 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:991
+--43077-- used_suppression:  12293 OSX1300:dyld-vmlayout-addr4 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:1007
+--43077-- used_suppression:    277 OSX1300:dyld-vmlayout-addr8 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:1015
+--43077-- used_suppression:     17 OSX1300:dyld-prepare-addr8 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:959
+--43077-- used_suppression:   7084 OSX1300:dyld-makeloader-addr2 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:1064
+--43077-- used_suppression:   3152 OSX1300:dyld-makeloader-addr1 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:1056
+--43077-- used_suppression:   7371 OSX1300:dyld-makeloader-addr4 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:1072
+--43077-- used_suppression:     14 OSX1300:dyld-makeloader-addr16 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:1088
+--43077-- used_suppression:  12285 OSX1300:dyld-foreach-addr1 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:805
+--43077-- used_suppression:     74 OSX1300:dyld-makeloader-stat64 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:1031
+--43077-- used_suppression:     12 OSX1300:dyld-foreach-value8 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:797
+--43077-- used_suppression:      4 OSX1300:dyld-prepare-cond /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:919
+--43077-- used_suppression:     10 OSX1300:dyld-prepare-value8 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:927
+--43077-- used_suppression:      1 OSX1300:dyld-config-addr16 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:781
+--43077-- used_suppression:     16 OSX1300:dyld-config-addr1 /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:749
+--43077-- used_suppression:      1 OSX1300:dyld-config-cond /usr/local/Cellar/valgrind/HEAD-4233f2e/libexec/valgrind/default.supp:733
+==43077== 
+==43077== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 77390 from 502)
