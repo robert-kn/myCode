@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #define MAXLINE 1000
 
@@ -16,11 +17,11 @@ int main() {
 
     while(getLine(line, MAXLINE) > 0){
 
-        printf("Sentence has %d characters before characters are removed", countChars(line));
+        printf("Sentence has %d characters before characters are removed\n", countChars(line));
 
         if(removeChars(line) > 0){
             printf("%s\n", line);
-            printf("Sentence has %d characters after characters are removed\n", countChars(line));
+            printf("Sentence has %d characters after blank and nl characters are removed\n", countChars(line));
         }
     }
 

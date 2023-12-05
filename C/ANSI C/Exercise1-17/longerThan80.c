@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #define MAXCHARS 1000 /* max size of the array */
 
@@ -22,7 +23,7 @@ int main(){
 int getLine(char s[], int limit){
     int i, c;
 
-    for(i=0; i < limit && (c = getchar()) != EOF && c != '\n'; i++)
+    for(i=0; i < limit-1 && (c = getchar()) != EOF && c != '\n'; i++)
         s[i] = c;
 
     if(c == '\n'){

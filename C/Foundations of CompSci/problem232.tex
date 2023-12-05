@@ -1,0 +1,67 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\begin{document}
+\begin{title}
+    \centering
+    {\LARGE\bfseries Exercise 2.3.2}
+\end{title}\\
+
+\vspace{10mm} %10mm vertical space
+Numbers of the form $t_{n} = \frac{n(n + 1)}{2}$ are called triangular numbers, because\par marbles arranged 
+in an equilateral triangle, n on a side, will total $\sum_{i=1}^{n} i$\par marbles, which we saw in Exercise 
+2.3.1(a) is $t_{n}$ marbles. For example,\par bowling pins are arranged in a triangle 4 on a side and there are\par
+$t_{4} = \frac{4 \times 5}{2} = 10$ pins. Show by induction on n that $\sum_{j=1}^{n} t_{j} = \frac{n(n + 1)(n + 2)}{6}$.
+
+\vspace{5mm} %5mm vertical space
+
+Basis case: LHS when n = 1 yields 1.\par
+
+\vspace{5mm} %5mm vertical space
+
+RHS when n = 1 is 1\par
+
+LHS = RHS therefore s(n) is true when n is 1.\par
+
+Inductive step: Assume that n $\geq$ 1 and that s(n) is true as proved above.\par I must prove that s(n + 1) is true which is:\par
+
+\vspace{5mm} %5mm vertical space
+
+$\sum_{j=1}^{n + 1} t_{j} = \frac{(n + 1)(n + 2)(n + 3)}{6}$   \hfil\hfil\hfil (2)\par
+
+\vspace{5mm} %5mm vertical space
+
+Replacing the RHS of the above equation with the following:\par
+
+\vspace{5mm} %5mm vertical space
+
+$\sum_{j=1}^{n + 1} t_{j} = (\sum_{j=1}^{n} t_{j}) + \frac{n(n + 1)}{2}$\par
+
+\vspace{5mm} %5mm vertical space
+
+which can be rewritten as:\par
+
+\vspace{5mm} %5mm vertical space
+
+$\sum_{j=1}^{n + 1} t_{j} = \frac{n(n + 1)(n + 2)}{6} + \frac{n(n + 1)}{2}$\par
+
+\vspace{5mm} %5mm vertical space
+
+\hfil $=  \frac{2n(n + 1)(n + 2) + 6n(n + 1)}{12}$\par
+
+\vspace{5mm} %5mm vertical space
+
+\hfil $=  \frac{n(n + 1)(2(n + 2) + 6)}{12}$\par
+
+\vspace{5mm} %5mm vertical space
+
+\hfil $=  \frac{n(n + 1)(2n^2 + 2n + 6)}{6}$\par
+
+\vspace{5mm} %5mm vertical space
+
+\hfil $=  \frac{(n + 1)(n^2 + 2n + 6)}{6}$\par
+
+\vspace{5mm} %5mm vertical space
+
+The final equation the right is equal to (2) proving that s(n + 1) is also\par true.
+Therefore s(n) holds for all n $\geq$ 1
+\end{document}

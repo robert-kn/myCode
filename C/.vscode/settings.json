@@ -24,6 +24,8 @@
         "*.rex": "rexx",
         "*.rexx": "rexx",
         "stdlib.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "limits.h": "c",
+        "float.h": "c"
     }
 }

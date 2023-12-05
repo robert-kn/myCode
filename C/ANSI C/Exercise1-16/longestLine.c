@@ -5,15 +5,18 @@ void copy(char to[], char from[]);
 
 /* print longest input line; specialized version */
 int main() {
-    system("clear");
+    
     int maxChars;
     printf("Enter the total number of characters you would like the array to hold\n");
     scanf("%d", &maxChars);
     printf("\n\n");
+
     int len; /* current line length */
     int max; /* maximum length seen so far */
     char line[maxChars]; /* current input line */
     char longest[maxChars]; /* longest line saved here */
+
+    printf("Enter the desired input\n\n\n");
 
     max = 0;
     while ((len = getLine(line, maxChars)) > 0)

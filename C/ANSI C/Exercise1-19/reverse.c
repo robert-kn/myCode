@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #define MAXLINE 1000
 
@@ -24,7 +25,7 @@ int main(){
 int getLine(char s[], int limit){
     int i, c;
 
-    for(i = 0; i < limit && (c = getchar()) != EOF && c != '\n'; i++){ // add all chars from stdin apart from EOF and newline char
+    for(i = 0; i < limit-1 && (c = getchar()) != EOF && c != '\n'; i++){ // add all chars from stdin apart from EOF and newline char
         s[i] = c;
     }
 
@@ -45,7 +46,7 @@ void reverseLine(char s[], int limit){
 
     char reverseArray[limit];
 
-    for(i = (limit - 2); i > -1 && s[i] != '\n'; i--){
+    for(i = (limit - 2); i > -1; i--){
         reverseArray[j] = s[i];
         j++; 
     }

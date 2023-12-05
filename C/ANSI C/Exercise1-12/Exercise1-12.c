@@ -3,7 +3,6 @@
 /* program prints its input one word per line  */
 
 int main(){
-	system("clear");
 	int character;
 
 	while((character = getchar()) != EOF){

@@ -6,7 +6,7 @@ int main(){
 	//c = getchar(); 
 
 	while((c = getchar()) != EOF){
-		printf("%d\n",c);
+		printf("%d\n",c != EOF);
 	}
 	printf("%d at EOF\n",c);
 }

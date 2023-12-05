@@ -7,8 +7,6 @@
 
 int main (){
 
-	system("clear");
-
 	int newlineCount, wordCount, charCount, character, STATE;
 
 	STATE = OUT; // start outside a word;

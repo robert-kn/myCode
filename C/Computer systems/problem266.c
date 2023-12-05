@@ -1,7 +1,7 @@
 /**
  * write code to implement the following function
  * 
- * Generate mask indicating leftmost 1 in x.  Assume w=32.
+ * Generate mask indicating leftmost 1 in x. Assume w=32.
  * For example 0xFF00 -> 0x8000, and 0x6600 --> 0x4000.
  * If x = 0, then return 0.
  * 
@@ -13,5 +13,27 @@
  * Hint: First transform x into a bit vector of the form [0 . . . 011 . . . 1].
 */
 
-int leftmost_one(unsigned x);
+#include <stdio.h>
 
+
+int leftmost_one(unsigned x){
+    
+    x |= (x >> 1);
+    
+    x |= (x >> 2);
+    
+    x |= (x >> 4);
+    
+    x |= (x >> 8);
+    
+    x |= (x >> 16);
+    
+    x -= (x >> 1);
+
+    return x;
+}
+
+int main(){
+    int x = 0xff00;
+    printf("0x%.2x\n", leftmost_one(x));
+}
