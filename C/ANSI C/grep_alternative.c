@@ -1,5 +1,6 @@
 #include <stdio.h>
-#define MAXLINE 1000 /* maximum inut line length */
+
+#define MAXLINE 1000 /* maximum input line length */
 
 int getLine(char line[], int max);
 int str_index(char source[], char searchfor[]);
