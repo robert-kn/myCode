@@ -1,0 +1,2 @@
+Write a program that assigns two positive values into two float variables and dis- plays the integer part of their division and the fractional part. 
+For example, if they are assigned the values 7.2 and 5.4, the program should display 1 and 1.8, since 7.2 = (1 × 5.4)+1.8.

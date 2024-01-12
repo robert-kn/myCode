@@ -1,0 +1,1 @@
+Write a program similar to C.2.6 for a three-digit positive value.
