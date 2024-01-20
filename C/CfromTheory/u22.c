@@ -1,3 +1,6 @@
+/**
+ * Fix the errors in order to run the program and display the value of m.
+*/
 #include <stdio.h> 
 
 int main(void)

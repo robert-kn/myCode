@@ -1,3 +1,10 @@
+/**
+ * Write a program that uses one printf() to display the following pattern.
+ *    * * *  
+ *      *        
+ *    *   *
+*/
+
 #include <stdio.h>
 
 int main(void){

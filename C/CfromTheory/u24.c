@@ -1,3 +1,7 @@
+/**
+ * Fix the errors in order to run the program and display the sum of a and b.
+*/
+
 #include <stdio.h>
 
 #define NUM 30
