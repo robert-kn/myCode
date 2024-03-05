@@ -12,5 +12,5 @@
 // C. Little endian:	214365				big endian:		876543
 
 // Recall that show_bytes enumerates a series of bytes starting from the one with lowest address and working toward the 
-// one with highest address. On a little- endian machine, it will list the bytes from least significant to most. 
+// one with highest address. On a little-endian machine, it will list the bytes from least significant to most. 
 // On a big-endian machine, it will list bytes from the most significant byte to the least.

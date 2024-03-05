@@ -48,8 +48,8 @@ void show_double(double x){
 
 void test_show_bytes(int val){
     int ival = val;
-    short sval = (short) ival;
     char cval  = (char) ival;
+    short sval = (short) ival;
     long  lval = (long) ival;
     long  long llval = (long long) ival;
     float fval = (float) ival;
@@ -67,7 +67,8 @@ void test_show_bytes(int val){
 }
 
 int main(){
-    test_show_bytes(12345);
+    show_bytes("abcdef", 6);
+    // test_show_bytes(12345);
     //int a = 0x12345678;
     //byte_pointer ap = (byte_pointer) &a;
     //show_bytes(ap, 1);  /* A. */
