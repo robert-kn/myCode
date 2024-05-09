@@ -14,7 +14,9 @@ int read_text(char str[], int size, int flag);
 int main(void)
 {
     char ch, max_ch, str[100];
+
     int i, len, max_times, low_let[26] = {0}; /* The size of the array is equal to the number of the lowercase letters. This array holds the number of the appearances of each letter. For example, low_let[0] holds the appearances of 'a', and low_let[25] the appearances of 'z'. */
+    
     int dig[10] = {0}; /* Similarly, dig[0] holds the appearances of digit 0, and dig[9] the appearances of digit 9. */
 
     printf("Enter text: ");
