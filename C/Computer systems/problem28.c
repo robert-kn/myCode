@@ -1,8 +1,8 @@
 // Fill in the following table showing the results of evaluating Boolean operations on bit vectors. 
 
 // Operation        	Result
-//    a			 [01101001] 
-//    b  			 [01010101] 
+//    a			    [01101001] 
+//    b  			[01010101] 
 //   ~a             [10010110]
 //   ~b             [10101010]
 //   a&b            [01000001]
