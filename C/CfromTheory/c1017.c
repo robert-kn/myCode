@@ -43,7 +43,7 @@ int main(void)
 
             if(str[i] == '*')
             {
-                j++;    /* Increase j to store '*'.*/
+                j++;    /* Increase j to store '*'. */
                 new_str[j] = '*';
             }
             j++;
