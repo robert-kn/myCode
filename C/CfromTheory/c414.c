@@ -10,3 +10,8 @@ int main(void){
     printf("%d\n", ch);
     return 0; 
 }
+
+/***
+ * 
+ * In fact, the program reverses the bits of ch, without using a second variable. Therefore, ch (000000112) becomes 192 (110000002), and the program displays 192.
+ */

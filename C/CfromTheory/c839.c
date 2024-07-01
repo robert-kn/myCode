@@ -22,5 +22,5 @@ int main(void)
  * 
  * Comments: Since the elements of the array are initialized with 0, it is sufficient to make the elements of the main diagonal equal to 1. The if condition checks if the element belongs to the diagonal. The form of that condition is 
  * based on the observation that the number of elements between two successive diagonal’s elements is SIZE. For example, in the 5×5 array, the elements of the diagonal are in positions 0, 6, 12, 18, and 24. Also, with this example, we 
- * want to show you that it is perfectly legal to treat one two- dimensional as if it were one-dimensional. We exploit the fact that the elements are stored in successive positions in memory.
+ * want to show you that it is perfectly legal to treat two-dimensional array as if it were one-dimensional. We exploit the fact that the elements are stored in successive positions in memory.
 */

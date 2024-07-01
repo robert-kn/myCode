@@ -1,5 +1,5 @@
 /**
- * Write a program that reads two positive numbers, a float and an integer, and dis- plays the remainder of their division. 
+ * Write a program that reads two positive numbers, a float and an integer, and displays the remainder of their division. 
  * For example, if the user enters 7.24 and 4, the program should display 3.24.
 */
 

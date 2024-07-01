@@ -31,4 +31,7 @@ int main (void){
  * you can then populate the rightmost quad with the bits from the leftmost quad 
  * temp += (num >> 4);
  * 
+ * 
+ * 
+ * Comments: In case you wonder about the value of num, its value does not change. Also, we could omit tmp and write: printf("%d\n", ((num & 0xF) << 4) + (num >> 4)); or printf("%d\n", (unsigned char)(num << 4) + (num >> 4));
 */

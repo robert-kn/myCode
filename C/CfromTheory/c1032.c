@@ -43,3 +43,31 @@ int main(void)
     }
     return 0;
 }
+
+int read_text(char str[], int size, int flag) 
+{
+    int len;
+
+    if(fgets(str, size, stdin) == NULL)
+    {
+        printf("Error: fgets() failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    len = strlen(str);
+
+    if(len > 0)
+    {
+        if(flag && (str[len-1] == '\n'))
+        {
+            str[len-1] = '\0';
+            len--;
+        }
+    }
+    else
+    {
+        printf("Error: No input\n");
+        exit(EXIT_FAILURE);
+    }
+    return len;
+}

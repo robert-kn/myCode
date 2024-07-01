@@ -15,6 +15,7 @@ int main(void)
         printf("%c ", ch);
         if(ch == 'z')
         {
+            printf("\n");
             ch = 'A'-1;       /* Subtract 1, so that the ch++ statement in the next iteration makes it 'A'. */
             end_ch = 'Z';    /* Change the end character, so that the loop displays the uppercase letters. */  
         }
@@ -22,9 +23,10 @@ int main(void)
         {
             ch = '0'-1;
             end_ch = '9';
-            printf("\n");
+            printf("\n");   
         }
     }
+    printf("\n");
     return 0;
 }
 
