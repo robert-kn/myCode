@@ -1,0 +1,2 @@
+/* Defne the structure type student with members: name, code, and grade. Write a program that uses this type to read the data of 100 
+students and store them in an array sorted by grade in descending order. The sorting must be done during the data insertion. */

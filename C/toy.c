@@ -2,6 +2,10 @@
 
 int main(void)
 {
+    char str[10] = "something";
+    /* str = "hello"; --> wrong! why? because str is a constant pointer and can't be modified to point to another string literal */
+    str[0] = 'c';
+    printf("%s\n", str);
     int num, reversed;
     int * ptr;
     printf("Addr = %p\n", ptr);
