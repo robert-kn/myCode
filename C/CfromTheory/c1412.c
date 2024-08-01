@@ -129,4 +129,32 @@ void add_queue(const node *p)
     }
 }
 
+int read_text(char str[], int size, int flag) 
+{
+    int len;
+
+    if(fgets(str, size, stdin) == NULL)
+    {
+        printf("Error: fgets() failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    len = strlen(str);
+
+    if(len > 0)
+    {
+        if(flag && (str[len-1] == '\n'))
+        {
+            str[len-1] = '\0';
+            len--;
+        }
+    }
+    else
+    {
+        printf("Error: No input\n");
+        exit(EXIT_FAILURE);
+    }
+    return len;
+}
+
 /* We omit the code of the show_queue(), pop(), and free_queue() func- tions because it is the same as the code of show_stack(), pop(), and free_stack() functions in the stack program. */
