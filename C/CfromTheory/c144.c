@@ -43,5 +43,33 @@ int mem_cmp(const void *ptr1, const void *ptr2, size_t size)
     return 0;
 }
 
+int read_text(char str[], int size, int flag) 
+{
+    int len;
+
+    if(fgets(str, size, stdin) == NULL)
+    {
+        printf("Error: fgets() failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    len = strlen(str);
+
+    if(len > 0)
+    {
+        if(flag && (str[len-1] == '\n'))
+        {
+            str[len-1] = '\0';
+            len--;
+        }
+    }
+    else
+    {
+        printf("Error: No input\n");
+        exit(EXIT_FAILURE);
+    }
+    return len;
+}
+
 /* The loop compares the characters pointed to by p1 and p2. Since characters are compared, we cast the type void* to char*. If all characters are the same, mem_cmp() returns 0, otherwise 
 the difference of the frst two nonmatching characters. */
