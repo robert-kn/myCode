@@ -1,0 +1,2 @@
+/* Suppose that the grades.dat binary fle contains the grades of a number of students. The number of students is stored in the beginning of the fle. Write a program that reads the fle and writes the 
+grades sorted in ascending order in the grd_sort.dat binary fle.*/

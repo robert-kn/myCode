@@ -1,0 +1,2 @@
+/* Write a program that reads a name of a text fle and copies its content in reverse order, that is, from the last character up to the frst one, into a second user selected text fle. 
+Hint: Open the frst fle as binary.*/
