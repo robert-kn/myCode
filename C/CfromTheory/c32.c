@@ -1,5 +1,6 @@
 /**
- * Write a program that reads two integers and displays their sum, difference, product, and the result of their division.
+ * Write a program that reads two integers and displays their sum, difference, product, and the result of 
+ * their division.
  */
 
 #include <stdio.h>

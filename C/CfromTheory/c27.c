@@ -1,7 +1,9 @@
 #include <stdio.h>
 /**
- * Write a program that declares two floating-point variables (e.g., i, j), assigns to them two positive values 
- * (e.g., 3.45 and 6.78) and swaps their integer parts (that is, i becomes 6.45 and j becomes 3.78, respectively).
+ * Write a program that declares two floating-point variables (e.g., i, j), assigns to them two positive 
+ * values 
+ * (e.g., 3.45 and 6.78) and swaps their integer parts (that is, i becomes 6.45 and j becomes 3.78, 
+ * respectively).
 */
 int main(void){
     float f1 = 3.45, f2 = 6.78, temp = f1;
