@@ -1,0 +1,13 @@
+Y = f(X) + e  (2.1)
+
+What does the above equation represent? the relationship between the response y and the predictor(s). Where
+X = (X₁, X₂, X₃...Xₚ) represents different predictors that we assume have a relationship with Y. Y could be 
+sales and X could represent advertising budgets of different mediums.
+
+Predictors are also known as independent variables or featuress.
+Response is also known as the dependent variable.
+
+f is some fixed but unknown function of X₁...Xₚ and e is a random error term which is independent of X and 
+has mean zero (what does this mean?)
+
+
