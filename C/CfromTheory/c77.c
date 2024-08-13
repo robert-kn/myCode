@@ -1,5 +1,6 @@
 /**
- * Write a program that declares an array of 10 floats, assigns random values within [0, 1] to its elements, and displays their
+ * Write a program that declares an array of 10 floats, assigns random values within 
+ * [0, 1] to its elements, and displays their
  * average. To remember how to use srand() and rand()
 */
 

@@ -1,7 +1,8 @@
 /**
- * A test consists of 10 multiple choice questions, each of which has three possible answers. The first answer gets three 
- * points, the second one point, and the third two points. Write a program that uses the switch statement to read the test 
- * taker’s 10 answers and display the final score.
+ * A test consists of 10 multiple choice questions, each of which has three possible answers. 
+ * The first answer gets three points, the second one point, and the third two points. Write 
+ * a program that uses the switch statement to read the test taker’s 10 answers and display 
+ * the final score.
 */
 
 #include <stdio.h>

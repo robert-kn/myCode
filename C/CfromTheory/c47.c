@@ -1,8 +1,8 @@
 /**
- * The ^ operator is often used in data encryption. For example, write a program that reads an integer that 
- * corresponds to the cipher key and another integer that will be encrypted with that key. The encryption 
- * is performed by applying the ^ operator on them. Then, the program should use once more the ^ operator to 
- * decrypt the encrypted result.
+ * The ^ operator is often used in data encryption. For example, write a program that reads an 
+ * integer that corresponds to the cipher key and another integer that will be encrypted with 
+ * that key. The encryption is performed by applying the ^ operator on them. Then, the program 
+ * should use once more the ^ operator to decrypt the encrypted result.
 */
 
 #include <stdio.h>

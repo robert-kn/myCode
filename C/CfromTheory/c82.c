@@ -1,5 +1,6 @@
 /**
- * Write a program that reads two integers, stores them in two variables, declares two pointers to them, and displays the memory addresses of both 
+ * Write a program that reads two integers, stores them in two variables, declares two 
+ * pointers to them, and displays the memory addresses of both 
  * variables, the content of both pointers, as well as their memory addresses.
 */
 

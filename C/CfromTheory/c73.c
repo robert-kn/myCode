@@ -1,5 +1,6 @@
 /**
- * Write a program that declares an array of five elements and uses a for loop to assign the values 1.1, 1.2, 1.3, 1.4, and 1.5 to them. 
+ * Write a program that declares an array of five elements and uses a for loop to assign the v
+ * alues 1.1, 1.2, 1.3, 1.4, and 1.5 to them. 
  * Then, the program should display the array’s elements in reverse order.
 */
 
