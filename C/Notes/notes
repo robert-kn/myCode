@@ -1,0 +1,30 @@
+effective computability means each step can be carried out by a computer.
+
+finiteness means that a procedure terminates.
+
+definiteness means that each step is precisely stated.
+
+ISA specifies the interface between a computer program and the computer hardware that will be 
+responsible for executing the instructions. Opcode refers to instructions e.g mul and operand
+refers to a data value that is operated on.
+
+There are many ISA's in existence. Each specifies a different number of opcodes, operands and 
+addressing modes from the rest.
+
+The automobile ISA describes what a driver needs to know as he/she sits inside am automobile 
+in order for it to carry out the driver's wishes. All automobiles have the same ISA therefore
+drivers do not need to acquire different driving licenses for different automobiles.
+
+The microarchitecture (or implementation) of an automobile's ISA is about what goes on underneath the hood. Here all automobiles brands and models can be different depending on the
+cost/performance tradeoffs the designer made before the car was manufactured.
+
+Each microarchitecture is an opportunity for computer designers to make different tradeoffs
+between the cost of the microprocessor, the performance that it will provide, and the energy that it will consume.
+
+The following are the transformations that need to happen in order for computers to be used to 
+solve a problem when electron move across a voltage potential:
+
+Problem expressed in natural language -> algorithm -> program -> ISA -> microarchitecture ->
+logic circuits -> the devices  (cmos circuits, nmos circuits and gallium arsenide circuits)
+
+At each level of transformation there are choices on how to proceed which determine the resulting cost and performance of the computer.

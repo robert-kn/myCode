@@ -8,6 +8,27 @@ Predictors are also known as independent variables or featuress.
 Response is also known as the dependent variable.
 
 f is some fixed but unknown function of X₁...Xₚ and e is a random error term which is independent of X and 
-has mean zero (what does this mean?)
+has mean zero (what does this mean? read description in figure22.png to understand)
+
+It is all about finding the function that connects the predictors such that a response can be
+determined. This function is usually estimated. Once it is estimated the vertical lines from the 
+observed values to the estimated function represent the error associated with each observation.
+If an observation lies above the curve, the error is positive; if it lies below, the error is 
+negative. Overall the errors have a mean of zero.
+
+In general a function f may involve more than one input variable see figure23.png Here, income
+is plotted as a function of years of education and seniority. f is 2d surface that must be estimated
+based on the observed data.
+
+In essence statistical learning refers to a set of approaches for estimating f.
+
+Why estimate f?
+
+
+
+
+
+
+
 
 
