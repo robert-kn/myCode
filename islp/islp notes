@@ -24,9 +24,51 @@ In essence statistical learning refers to a set of approaches for estimating f.
 
 Why estimate f?
 
+For two main reasons: prediction and inference.
 
+Prediction: in many situations a set of inputs X are readily available, but the output Y cannot
+be easily obtained. Since the error term averages to zero, we can predict Y using:
 
+ŷ = fˆ(X)   2.2
 
+where f hat represents the estimate of f and y hat represents the resulting prediction for y.
+In this setting, f hat is often treated as a black box in the sense that one is not typically
+concerned with the exact form of f hat provided that it yields accurate predictions of y.
+
+The accuracy of ŷ as a prediction to for y depends on two quantities; the reducible error and
+the irreducible error. In general, fˆ will not be a perfect estimate for f and this inaccuracy 
+will introduce some error. This error is reducible because we can potentially improve the 
+accuracy of fˆ by using the most appropriate statistical learning technique to estimate f.
+
+Even if it were possible to form a perfect estimate of f, so that our estimated response took
+the form of ŷ = f(x), our prediction would still have some error in it. Why? because Y is also
+a function of e which by definition cannot be predicted using x (i don't understand this last
+bit??).
+
+Variability associated with e also affects the accuracy of our predictions. This is known as
+the irreducible error, because no matter how well we estimate f, we cannot reduce the error 
+introduced by e.
+
+Why is the irreducible error larger than zero? The quantity e may contain unmeasured variables
+that are useful in predicting y. Since they are not measured, f cannot use them for its 
+prediction. The quantity e may also contain unmeasured variation.
+
+Consider a given estimate fˆ and a set of predictors X, which yields the prediction 
+Ŷ = fˆ(X). Assume for a moment that both fˆ and X are fixed,
+so that the only variability comes from ". Then, it is easy to show that
+
+E(Y - Ŷ )² = E[f(X) + e - fˆ(X)]² 
+           = [f(X) - fˆ(X)]² + Var(e)     2.3
+              reducible        irreducible
+
+where the term on the left represents the average, or expected value, of the squared difference
+between the predicted and actual value of Y, and var(e) represents the variance associated 
+with the error term e.
+
+The focus of this book is on techniques for estimating f with the aim of minimizing the 
+reducible error. It is important to keep in mind that the irreducible error will always 
+provide an upper bound on the accuracy of our prediction for Y . This bound is almost always 
+unknown in practice.
 
 
 

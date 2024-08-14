@@ -27,3 +27,4 @@ Problem expressed in natural language -> algorithm -> program -> ISA -> microarc
 logic circuits -> the devices  (cmos circuits, nmos circuits and gallium arsenide circuits)
 
 At each level of transformation there are choices on how to proceed which determine the resulting cost and performance of the computer.
+
