@@ -1,8 +1,7 @@
-effective computability means each step can be carried out by a computer.
-
-finiteness means that a procedure terminates.
-
-definiteness means that each step is precisely stated.
+Algorithms have 3 charcateristics:
+1. effective computability means each step can be carried out by a computer.
+2. finiteness means that a procedure terminates.
+3. definiteness means that each step is precisely stated.
 
 ISA specifies the interface between a computer program and the computer hardware that will be 
 responsible for executing the instructions. Opcode refers to instructions e.g mul and operand
