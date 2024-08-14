@@ -1,6 +1,9 @@
 /**
- * Write a program that reads a character continuously, and if it is a lowercase letter, it should display the respective uppercase, otherwise the input character. If the last two input characters are 
- * ':' and 'q', the program should display how many 'w' and 'x' were entered and then terminate.
+ * Write a program that reads a character continuously, and if it is a lowercase letter, it 
+ * should display the respective uppercase, otherwise the input character. If the last two 
+ * input characters are 
+ * ':' and 'q', the program should display how many 'w' and 'x' were entered and then 
+ * terminate.
 */
 
 #include <stdio.h>

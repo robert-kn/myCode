@@ -1,5 +1,7 @@
 /**
- * Write a program that reads the digits of a number as characters and displays its value. If the user enters a sign, it should be taken into account. Space characters are allowed only before the number, not between digits. 
+ * Write a program that reads the digits of a number as characters and displays its value. If 
+ * the user enters a sign, it should be taken into account. Space characters are allowed only 
+ * before the number, not between digits. 
  * Also, the program should check that the number of digits is up to 10.
 */
 
@@ -10,7 +12,8 @@ int main(void){
 
     sign = '+';
     dig = 0;
-    val = 0; /* val remains 0 until the user enters the first digit. Then, if the user enters a non-digit character the program terminates. */
+    val = 0; /* val remains 0 until the user enters the first digit. Then, if the user enters 
+    a non-digit character the program terminates. */
     printf("Enter number: ");
 
     while((ch = getchar()) != '\n' && ch != EOF)
@@ -54,5 +57,7 @@ int main(void){
 }
 
 /**
- * Comments: To find the numeric value of a digit character, we subtract the ASCII value of '0'. For example, if the user enters 4, ch becomes equal to its ASCII value, that is, 52. To get the input digit, we write ch-'0' = 52-48 = 4.
+ * Comments: To find the numeric value of a digit character, we subtract the ASCII value of 
+ * '0'. For example, if the user enters 4, ch becomes equal to its ASCII value, that is, 52. 
+ * To get the input digit, we write ch-'0' = 52-48 = 4.
 */

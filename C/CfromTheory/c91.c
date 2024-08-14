@@ -14,7 +14,8 @@ int main(void)
 }
 
 /**
- * Comments: In ASCII set, the difference between any uppercase letter and the respective lowercase is 32. Therefore, we could write:
+ * Comments: In ASCII set, the difference between any uppercase letter and the respective 
+ * lowercase is 32. Therefore, we could write:
  * 
  * printf("%c(%d)-%c(%d)\n", 'a'+i, 'a'+i, 'a'+i-32, 'a'+i-32);
 */

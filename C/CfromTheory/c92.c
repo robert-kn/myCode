@@ -1,5 +1,6 @@
 /**
- * Write a program that reads three characters and checks if they are consecutive in the ASCII character set.
+ * Write a program that reads three characters and checks if they are consecutive in the 
+ * ASCII character set.
 */
 
 #include <stdio.h>
@@ -18,4 +19,6 @@ int main(void)
     return 0;
 }
 
-/* Comments: If you run the program, don’t type a space between the input characters because the space is a character as well (unless the space character is among the characters you want to check). */
+/* Comments: If you run the program, don’t type a space between the input characters because 
+the space is a character as well (unless the space character is among the characters you want 
+to check). */

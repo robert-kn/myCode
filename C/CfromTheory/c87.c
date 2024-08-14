@@ -1,5 +1,6 @@
 /**
- * Write a program that uses two pointers to read two float numbers first and then to swap the values they point to. Then, use 
+ * Write a program that uses two pointers to read two float numbers first and then to swap 
+ * the values they point to. Then, use 
  * the same pointers to output the greater value.
 */
 

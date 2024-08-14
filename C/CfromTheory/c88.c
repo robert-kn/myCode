@@ -17,4 +17,4 @@ int main(void){
 /* Answer: Since ptr1 points to the address of i and ptr2 points to the address of j, the
 statement *ptr1 = *ptr2 is equivalent to i = j. Since i is declared as int, it becomes 1. As
 said, the pointer variables allocate the same size (typically, it is 4 bytes), no matter where
-they point to. Since ptr2 is a pointer to double, the program displays: 1 4 4 8 */
+they point to. Since ptr2 is a pointer to double, the program displays: 1 8 8 8 */

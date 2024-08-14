@@ -1,5 +1,7 @@
 /**
- * Write a program that reads an Internet Protocol (IP) version 4 address (IPv4) and checks if it is valid. The form of a valid IPv4 address is x.x.x.x, where each x must be an integer within [0, 255].
+ * Write a program that reads an Internet Protocol (IP) version 4 address (IPv4) and checks 
+ * if it is valid. The form of a valid IPv4 address is x.x.x.x, where each x must be an 
+ * integer within [0, 255].
 */
 
 #include <stdio.h>

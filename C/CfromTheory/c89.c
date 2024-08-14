@@ -1,5 +1,6 @@
 /**
- * Use the p pointer and a while loop, and complete the following program to display the integers from 1 to 10.
+ * Use the p pointer and a while loop, and complete the following program to display the 
+ * integers from 1 to 10.
 */
 
 #include <stdio.h>

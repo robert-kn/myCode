@@ -1,5 +1,6 @@
 /**
- * Write a program that reads two characters and displays the characters between them. For example, if the user enters af or fa, the program should display bcde.
+ * Write a program that reads two characters and displays the characters between them. For 
+ * example, if the user enters af or fa, the program should display bcde.
  * 
 */
 
