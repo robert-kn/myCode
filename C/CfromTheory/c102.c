@@ -1,5 +1,6 @@
 /**
- * Write a program that creates a string with all lowercase and uppercase letters of the English alphabet.
+ * Write a program that creates a string with all lowercase and uppercase letters of the 
+ * English alphabet.
 */
 
 #include <stdio.h>
