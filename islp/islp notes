@@ -70,6 +70,13 @@ reducible error. It is important to keep in mind that the irreducible error will
 provide an upper bound on the accuracy of our prediction for Y . This bound is almost always 
 unknown in practice.
 
+inference: we are often interested in understanding the relationship between Y and X₁...Xₚ. In
+this situation we wish to estimate f, bu our goal is not to necessarily make predictions for Y.
+Now fˆ cannot be treated as a black box because we need to know its exact form.
+
+Depending on whether my ultimate goal is inference or prediction, or a combination of the two,
+different methods for estimating f may be appropriate.
+
 
 
 
