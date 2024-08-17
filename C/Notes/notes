@@ -10,7 +10,7 @@ refers to a data value that is operated on.
 There are many ISA's in existence. Each specifies a different number of opcodes, operands and 
 addressing modes from the rest.
 
-The automobile ISA describes what a driver needs to know as he/she sits inside am automobile 
+The automobile ISA describes what a driver needs to know as he/she sits inside an automobile 
 in order for it to carry out the driver's wishes. All automobiles have the same ISA therefore
 drivers do not need to acquire different driving licenses for different automobiles.
 
