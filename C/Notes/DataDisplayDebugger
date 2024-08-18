@@ -1,0 +1,20 @@
+apt search ddd
+
+you must have compiled the source code with the -g flag to enable debugging
+
+open the graphical user interface of the graphical debugger and select the executable file desired
+
+The debugger will automatically find the .c file based on information that gcc leaves in the executable. This is useful when debugging a program that uses multiple source files.
+
+Set breakpoints at the desired function(s) after the (gdb) prompt in the bottom window by typing `b func_name`
+
+Execute the program by typing the following command at the (gdb) prompt: run
+
+The program will start, and then pause at the breakpoint of function chosen
+
+To continue the program, type the following command: continue
+
+To view the call stack ask for the backtrace by inputting the following command: bt. The output
+will be lines which will correspond to function frames of the call stack.
+
+to select a frame enter `f frame_number`

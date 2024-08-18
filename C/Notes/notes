@@ -28,3 +28,20 @@ logic circuits -> the devices  (cmos circuits, nmos circuits and gallium arsenid
 
 At each level of transformation there are choices on how to proceed which determine the resulting cost and performance of the computer.
 
+Data type: a particular representation of information is termed as a data type if there are operations inside of a computer that can operate on the information that is encoded in that representation.
+
+signed magnitude and 1'complement data types require unnecessarily cumbersome hardware to do addition. on the other hand, the circuitry required to add 2 integers using 2's complement data type is much simpler
+
+manual conversion of decimal fraction (e.g. 0.421) to binary requires the following steps:
+see decimalFractionToBinary1.png and decimalFractionToBinary2.png
+
+manual conversion of binary fraction to decimal requires the following steps: see binaryFractionToDecimal.png
+
+manual conversion of decimal to 2's complement can be achieved by following these steps see decimalTo2scomplement.png
+
+I don't understand how they arrived at this result see 2sComplementSubtraction.png!!
+
+The value of a positive number does not change if we extend the sign bit 0 as many bit positions to the left as desired. Similarly, the value of a negative number does not change by extending the sign bit 1 as many bit positions to the left as desired. Since in both cases it is the sign bit that is extended, we refer to the operation as Sign-EXTension, often abbreviated SEXT. Sign-extension is performed in order to be able to operate on representations of diﬀerent lengths. It does not aﬀect the values of the numbers being represented.
+
+overflow in unsigned arithmetic is relatively straightforward.
+
