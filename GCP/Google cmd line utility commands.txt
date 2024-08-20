@@ -249,7 +249,7 @@ gcloud iam roles describe [ROLE-NAME] --project $DEVSHELL_PROJECT_ID
 
 gcloud iam roles update [ROLE-NAME] --project $DEVSHELL_PROJECT_ID --file [CHANGED-FILE-NAME]
 
-gcloud iam roles update [ROLE-NAME] --project $DEVSHELL_PROJECT_ID --stage DISABLED
+gcloud iam roles update [ROLE-NAME] --project $DEVSHELL_PROJECT_ID --stage DISABLED --> Disable a role
 
 gcloud iam roles delete [ROLE-NAME] --project $DEVSHELL_PROJECT_ID
 

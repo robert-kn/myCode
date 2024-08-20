@@ -6,5 +6,8 @@ int main(void)
     scanf("%d", &i);
     i = 10*(i%10) + i/10;
     printf("%d\n", i);
+    _Bool valid = 0;
+    _Bool invalid = 1;
+    printf("valid %d and invalid %d\n", valid, invalid);
     return 0; 
 }
