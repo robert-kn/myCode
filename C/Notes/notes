@@ -45,4 +45,25 @@ The value of a positive number does not change if we extend the sign bit 0 as ma
 
 overflow in unsigned arithmetic is relatively straightforward because it results in overflow of the msb meaning that the result is less than the value of one of the numbers that was added.
 
-overflow in 
+overflow in signed numbers during arithmetic is easy to test for because the msb overflows and becomes 0 which means that the number becomes positive. In contrast, when adding two positive signed numbers, overflow occurs when the msb is turned on meaning that the result becomes negative.
+
+Suppose we wish to know if two patterns are identical. Since the XOR function pro-
+duces a 0 only if the corresponding pair of bits is identical, two patterns are identical
+if the output of the XOR is all 0s.
+
+Floating Point Data Type (Greater Range, Less Precision): Most ISAs today specify more than one ﬂoating point data type. One of them, usually called ﬂoat, consists of 32 bits, allocated as follows:
+
+1 bit for the sign (positive or negative)
+8 bits for the range (the exponent ﬁeld)
+23 bits for precision (the fraction ﬁeld)
+
+Normalized Form; the ﬂoating point data type represents numbers expressed in scientiﬁc notation, and mostly in normalized form:
+
+N = (−1)^S × 1. fraction × 2^(exponent−127), 1 ≤ exponent ≤ 254
+
+where S, fraction, and exponent are binary numbers.
+
+We say mostly in normalized form because (as noted in the equation) the data type represents a ﬂoating point number in normalized form only if the eight-bit exponent is restricted to the 254 unsigned integer values, 1 (00000001) through 254 (11111110).
+
+As you know, with eight bits, one can represent 256 values uniquely. For the other two integer values 0 (00000000) and 255 (11111111), the ﬂoating point data type does not represent normalized numbers.
+
