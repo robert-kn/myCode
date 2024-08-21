@@ -43,5 +43,6 @@ I don't understand how they arrived at this result see 2sComplementSubtraction.p
 
 The value of a positive number does not change if we extend the sign bit 0 as many bit positions to the left as desired. Similarly, the value of a negative number does not change by extending the sign bit 1 as many bit positions to the left as desired. Since in both cases it is the sign bit that is extended, we refer to the operation as Sign-EXTension, often abbreviated SEXT. Sign-extension is performed in order to be able to operate on representations of diﬀerent lengths. It does not aﬀect the values of the numbers being represented.
 
-overflow in unsigned arithmetic is relatively straightforward.
+overflow in unsigned arithmetic is relatively straightforward because it results in overflow of the msb meaning that the result is less than the value of one of the numbers that was added.
 
+overflow in 
