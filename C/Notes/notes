@@ -1,4 +1,4 @@
-Algorithms have 3 charcateristics:
+Algorithms have 3 characteristics:
 1. effective computability means each step can be carried out by a computer.
 2. finiteness means that a procedure terminates.
 3. definiteness means that each step is precisely stated.
@@ -57,9 +57,9 @@ Floating Point Data Type (Greater Range, Less Precision): Most ISAs today specif
 8 bits for the range (the exponent ﬁeld)
 23 bits for precision (the fraction ﬁeld)
 
-Normalized Form; the ﬂoating point data type represents numbers expressed in scientiﬁc notation, and mostly in normalized form:
+Normalized Form; the ﬂoating point data type represents numbers expressed in scientiﬁc notation, and mostly in normalized form see 32bitFloating.png:
 
-N = (−1)^S × 1. fraction × 2^(exponent−127), 1 ≤ exponent ≤ 254
+N = (−1)^S × 1.fraction × 2^(exponent−127), 1 ≤ exponent ≤ 254
 
 where S, fraction, and exponent are binary numbers.
 
