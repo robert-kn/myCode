@@ -14,11 +14,12 @@ The automobile ISA describes what a driver needs to know as he/she sits inside a
 in order for it to carry out the driver's wishes. All automobiles have the same ISA therefore
 drivers do not need to acquire different driving licenses for different automobiles.
 
-The microarchitecture (or implementation) of an automobile's ISA is about what goes on underneath the hood. Here all automobiles brands and models can be different depending on the
-cost/performance tradeoffs the designer made before the car was manufactured.
+The microarchitecture (or implementation) of an automobile's ISA is about what goes on underneath the hood. 
+Here all automobiles brands and models can be different depending on the cost/performance tradeoffs the 
+designer made before the car was manufactured.
 
-Each microarchitecture is an opportunity for computer designers to make different tradeoffs
-between the cost of the microprocessor, the performance that it will provide, and the energy that it will consume.
+Each microarchitecture is an opportunity for computer designers to make different tradeoffs between the cost 
+of the microprocessor, the performance that it will provide, and the energy that it will  consume.
 
 The following are the transformations that need to happen in order for computers to be used to 
 solve a problem when electron move across a voltage potential:
@@ -26,44 +27,174 @@ solve a problem when electron move across a voltage potential:
 Problem expressed in natural language -> algorithm -> program -> ISA -> microarchitecture ->
 logic circuits -> the devices  (cmos circuits, nmos circuits and gallium arsenide circuits)
 
-At each level of transformation there are choices on how to proceed which determine the resulting cost and performance of the computer.
+At each level of transformation there are choices on how to proceed which determine the resulting cost and 
+performance of the computer.
 
-Data type: a particular representation of information is termed as a data type if there are operations inside of a computer that can operate on the information that is encoded in that representation.
+Data type: a particular representation of information is termed as a data type if there are operations inside 
+of a computer that can operate on the information that is encoded in that representation.
 
-signed magnitude and 1'complement data types require unnecessarily cumbersome hardware to do addition. on the other hand, the circuitry required to add 2 integers using 2's complement data type is much simpler
+signed magnitude and 1'complement data types require unnecessarily cumbersome hardware to do addition. on the 
+other hand, the circuitry required to add 2 integers using 2's complement data type is much simpler
 
 manual conversion of decimal fraction (e.g. 0.421) to binary requires the following steps:
 see decimalFractionToBinary1.png and decimalFractionToBinary2.png
 
 manual conversion of binary fraction to decimal requires the following steps: see binaryFractionToDecimal.png
 
-manual conversion of decimal to 2's complement can be achieved by following these steps see decimalTo2scomplement.png
+manual conversion of decimal to 2's complement can be achieved by following these steps see 
+decimalTo2scomplement.png
 
 I don't understand how they arrived at this result see 2sComplementSubtraction.png!!
 
-The value of a positive number does not change if we extend the sign bit 0 as many bit positions to the left as desired. Similarly, the value of a negative number does not change by extending the sign bit 1 as many bit positions to the left as desired. Since in both cases it is the sign bit that is extended, we refer to the operation as Sign-EXTension, often abbreviated SEXT. Sign-extension is performed in order to be able to operate on representations of diﬀerent lengths. It does not aﬀect the values of the numbers being represented.
+The value of a positive number does not change if we extend the sign bit 0 as many bit positions to the left 
+as desired. Similarly, the value of a negative number does not change by extending the sign bit 1 as many bit 
+positions to the left as desired. Since in both cases it is the sign bit that is extended, we refer to the 
+operation as Sign-EXTension, often abbreviated SEXT. Sign-extension is performed in order to be able to 
+operate on representations of diﬀerent lengths. It does not aﬀect the values of the numbers being represented.
 
-overflow in unsigned arithmetic is relatively straightforward because it results in overflow of the msb meaning that the result is less than the value of one of the numbers that was added.
+overflow in unsigned arithmetic is relatively straightforward because it results in overflow of the msb 
+meaning that the result is less than the value of one of the numbers that was added.
 
-overflow in signed numbers during arithmetic is easy to test for because the msb overflows and becomes 0 which means that the number becomes positive. In contrast, when adding two positive signed numbers, overflow occurs when the msb is turned on meaning that the result becomes negative.
+overflow in signed numbers during arithmetic is easy to test for because the msb overflows and becomes 0 which 
+means that the number becomes positive. In contrast, when adding two positive signed numbers, overflow occurs 
+when the msb is turned on meaning that the result becomes negative.
 
 Suppose we wish to know if two patterns are identical. Since the XOR function pro-
 duces a 0 only if the corresponding pair of bits is identical, two patterns are identical
 if the output of the XOR is all 0s.
 
-Floating Point Data Type (Greater Range, Less Precision): Most ISAs today specify more than one ﬂoating point data type. One of them, usually called ﬂoat, consists of 32 bits, allocated as follows:
+Floating Point Data Type (Greater Range, Less Precision): Most ISAs today specify more than one ﬂoating point 
+data type. One of them, usually called ﬂoat, consists of 32 bits, allocated as follows:
 
 1 bit for the sign (positive or negative)
 8 bits for the range (the exponent ﬁeld)
 23 bits for precision (the fraction ﬁeld)
 
-Normalized Form; the ﬂoating point data type represents numbers expressed in scientiﬁc notation, and mostly in normalized form see 32bitFloating.png:
+Normalized Form; the ﬂoating point data type represents numbers expressed in scientiﬁc notation, and mostly in 
+normalized form see 32bitFloating.png:
 
 N = (−1)^S × 1.fraction × 2^(exponent−127), 1 ≤ exponent ≤ 254
 
 where S, fraction, and exponent are binary numbers.
 
-We say mostly in normalized form because (as noted in the equation) the data type represents a ﬂoating point number in normalized form only if the eight-bit exponent is restricted to the 254 unsigned integer values, 1 (00000001) through 254 (11111110).
+The computer’s 32-bit ﬂoating point data type consists of (a) a sign bit (positive or negative), (b) 24 binary
+digits in normalized form (one non-zero binary digit to the left of the binary point) times (c) the radix 2 
+raised to an exponent expressed in eight bits.
 
-As you know, with eight bits, one can represent 256 values uniquely. For the other two integer values 0 (00000000) and 255 (11111111), the ﬂoating point data type does not represent normalized numbers.
+The sign bit S is just a single binary digit, 0 for positive numbers, 1 for negative numbers. The 23 fraction 
+bits form the 24-bit quantity 1.fraction, where normalized form demands exactly one non-zero binary digit to 
+the left of the binary point. Since there exists only one non-zero binary digit (i.e., the value 1), it is 
+unneces- sary to explicitly store that bit in our 32-bit ﬂoating point format. In fact that is how we get 24 
+bits of precision, the 1 to the left of the binary point that is always present in normalized numbers and so 
+is unnecessary to store, and the 23 bits of fraction that are actually part of the 32-bit data type.
 
+We say mostly in normalized form because (as noted in the equation) the data type represents a ﬂoating point 
+number in normalized form only if the eight-bit exponent is restricted to the 254 unsigned integer values, 
+1 (00000001) through 254 (11111110).
+
+As you know, with eight bits, one can represent 256 values uniquely. For the other two integer values 0 
+(00000000) and 255 (11111111), the ﬂoating point data type does not represent normalized numbers.
+
+A normalised number is a representation of a real number in scientific notation where:
+1. One non-zero digit precedes the decimal point (mantissa).
+2. The exponent is adjusted to ensure the mantissa has a specific range
+
+The eight exponent bits are encoded in what we call an excess code, named for the notion that one can get the 
+*real* exponent by treating the code as an unsigned integer and subtracting the excess (sometimes called the 
+bias). In the case of the IEEE Floating Point that almost everyone uses, that excess (or bias) is 127 for 
+32-bit ﬂoating point numbers.
+
+Encoding is the process of converting data into a format required for various information processing needs, 
+including transmission, storage, and retrieval. It involves the use of a code to change original data into a 
+form that can be used by an external process. 
+
+The exponent ﬁeld gives us numbers as large as 2^(+127) for an 
+exponent ﬁeld containing 254 (11111110) and as small as 2^(−126)  for an exponent ﬁeld containing 1 (00000001).
+
+What does the ﬂoating point data type 00111101100000000000000000000000 represent? see floatingPoint1.png
+
+How is the number −6 5/8  represented in the ﬂoating point data type? First, we express the number as a binary
+number: −110.101. Then we normalise the value, yielding −1.10101 ⋅ 2^2. The sign bit is 1, reﬂecting the fact 
+that the number is a negative number. The exponent ﬁeld contains 10000001, the unsigned number 129, reﬂecting 
+the fact that the real exponent is +2 (129 − 127 =+2). The fraction is the 23 bits of precision, after removing
+the leading 1. That is, the fraction is 10101000000000000000000. The result is 1  10000001  10101000000000000000000
+
+The following three examples provide further illustrations of the interpretation of the 32-bit ﬂoating point 
+data type according to the rules of the IEEE standard.
+
+0  10000011  00101000000000000000000 is 1.00101 ⋅ 2^4  = 18.5
+
+The exponent ﬁeld contains the unsigned number 131. Since 131 − 127 is 4, the exponent is +4. Combining a 1 to
+the left of the binary point with the fraction ﬁeld to the right of the binary point yields 1.00101. If we 
+move the binary point four positions to the right, we get 10010.1, which is 18.5.
+
+1  10000010  00101000000000000000000 is −1 ⋅ 1.00101 ⋅ 2^3  =−9.25
+
+The sign bit is 1, signifying a negative number. The exponent is 130, signifying an exponent of 130 − 127, or 
++3. Combining a 1 to the left of the binary point with the fraction ﬁeld to the right of the binary point 
+yields 1.00101. Moving the binary point three positions to the right, we get 1001.01, which is −9.25.
+
+The sign is +. The exponent is 254 − 127, or +127. Combining a 1 to the left of the binary point with the 
+fraction ﬁeld to the right of the binary point yields 1.11111111 … 1, which is approximately 2. Therefore, 
+the result is approximately 2^128.
+
+We noted before that the ﬂoating point data type represented numbers expressed in scientiﬁc notation in 
+normalised form provided the exponent ﬁeld does not contain 00000000 or 11111111. If the exponent ﬁeld 
+contains 11111111, we use the ﬂoating point data type to represent various things, among them the notion of 
+inﬁnity. Inﬁnity is represented by the exponent ﬁeld containing all 1s and the fraction ﬁeld containing all 0s.
+We represent positive inﬁnity if the sign bit is 0 and negative inﬁnity if the sign bit is 1.
+
+Subnormal Numbers
+
+The smallest number that can be represented in normalised form is:
+
+N = 1.00000000000000000000000 × 2^(−126)
+
+What about numbers smaller than 2^(−126) but larger than 0? We call such numbers subnormal numbers because 
+they cannot be represented in normalised form. The largest subnormal number is
+
+N = 0.11111111111111111111111 × 2^(−126)
+
+The smallest subnormal number is
+
+N = 0.00000000000000000000001 × 2^(−126) i.e., 2^−23 × 2^−126 which is 2^−149 
+
+Note that the largest subnormal number is 2^−126 minus 2^−149 . Do you see why that is the case? nope
+
+Subnormal numbers are numbers of the form
+
+N = (−1) × 0.fraction × 2^−126
+
+We represent them with an exponent ﬁeld of 00000000. The fraction ﬁeld is represented in the same way as with 
+normalized numbers. That is, if the exponent ﬁeld contains 00000000, the exponent is −126, and the signiﬁcant 
+digits are obtained by starting with a leading 0, followed by a binary point, followed by the 23 bits of the 
+fraction ﬁeld.
+
+What number corresponds to the following ﬂoating point representation?
+
+0  00000000  00001000000000000000000
+
+Answer: The leading 0 means the number is positive. The next eight bits, a zero exponent, means the exponent 
+is −126, and the bit to the left of the binary point is 0. The last 23 bits form the number 
+0.00001000000000000000000, which equals 2^−5 . Thus, the number represented is 2^−5 ⋅ 2^−126 ,which is 2^−131.
+
+Including subnormal numbers allows very, very tiny numbers to be represented.
+
+ASCII Codes: Another representation of information is the standard code that almost all computer equipment 
+manufacturers have agreed to use for transferring characters between the main computer processing unit and the
+input and output devices. It (ASCII) greatly simpliﬁes the interface between a keyboard manufactured by one 
+company, a computer made by another company, and a monitor made by a third company.
+
+Each key on the keyboard is identiﬁed by its unique ASCII code. So, for example, the digit 3 is represented as
+00110011, the digit 2 is 00110010, the lowercase e is 01100101, and the ENTER key is 00001101. When you type a
+key on the keyboard, the corresponding eight-bit code is stored and made available to the computer.
+
+Most keys are associated with more than one code. For example, the ASCII code for the letter E is 01000101, 
+and the ASCII code for the letter e is 01100101. Both are associated with the same key, although in one case 
+the Shift key is also depressed while in the other case, it is not.
+
+In order to display a particular character on the monitor, the computer must transfer the ASCII code for that 
+character to the electronics associated with the monitor. 
+
+Most processors these days are manufactured out of MOS transistors (metal oxide semiconductors). There are two
+types: p type and n type
