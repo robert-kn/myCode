@@ -111,13 +111,11 @@ form that can be used by an external process.
 The exponent ﬁeld gives us numbers as large as 2^(+127) for an 
 exponent ﬁeld containing 254 (11111110) and as small as 2^(−126)  for an exponent ﬁeld containing 1 (00000001).
 
-What does the ﬂoating point data type 00111101100000000000000000000000 represent? see floatingPoint1.png
+What does the ﬂoating point data type 00111101100000000000000000000000 represent? see floatingPoint1.png 
 
-How is the number −6 5/8  represented in the ﬂoating point data type? First, we express the number as a binary
-number: −110.101. Then we normalise the value, yielding −1.10101 ⋅ 2^2. The sign bit is 1, reﬂecting the fact 
-that the number is a negative number. The exponent ﬁeld contains 10000001, the unsigned number 129, reﬂecting 
-the fact that the real exponent is +2 (129 − 127 =+2). The fraction is the 23 bits of precision, after removing
-the leading 1. That is, the fraction is 10101000000000000000000. The result is 1  10000001  10101000000000000000000
+How is the number −6 5/8  represented in the ﬂoating point data type? 
+floatingPoint2.png 
+
 
 The following three examples provide further illustrations of the interpretation of the 32-bit ﬂoating point 
 data type according to the rules of the IEEE standard.
@@ -163,7 +161,7 @@ Note that the largest subnormal number is 2^−126 minus 2^−149 . Do you see w
 
 Subnormal numbers are numbers of the form
 
-N = (−1) × 0.fraction × 2^−126
+N = (−1)^s × 0.fraction × 2^−126
 
 We represent them with an exponent ﬁeld of 00000000. The fraction ﬁeld is represented in the same way as with 
 normalized numbers. That is, if the exponent ﬁeld contains 00000000, the exponent is −126, and the signiﬁcant 
@@ -198,3 +196,31 @@ character to the electronics associated with the monitor.
 
 Most processors these days are manufactured out of MOS transistors (metal oxide semiconductors). There are two
 types: p type and n type
+
+When the N-type transistor is
+supplied with 1.2 volts, the connection from source to drain acts like a piece of
+wire. We say (in the language of electricity) that we have a short circuit between
+the source and drain. If the gate of the N-type transistor is supplied with 0 volts,
+the connection between the source and drain is broken. We say that between the
+source and drain we have an open circuit.
+
+The P-type transistor works in exactly the opposite fashion from the N-type
+transistor. When the gate is supplied with 0 volts, the P-type transistor acts (more or less)
+like a piece of wire, closing the circuit. When the gate is supplied with 1.2 volts,
+the P-type transistor acts like an open circuit. Because the P-type and N-type
+transistors act in this complementary way, we refer to circuits that contain both
+P-type and N-type transistors as CMOS circuits, for complementary metal-oxide
+semiconductor.
+
+One step up from the transistor is the logic gate. That is, we construct basic logic
+structures out of individual MOS transistors.
+
+The NOT Gate (Inverter): It is constructed from two MOS transistors, one P-type and one N-type.
+See Notgate.png shows the behavior of the
+circuit if the input is supplied with 0 volts. Note that the P-type transistor acts
+like a short circuit and the N-type transistor acts like an open circuit. The output
+is, therefore, connected to 1.2 volts. On the other hand, if the input is supplied
+with 1.2 volts, the P-type transistor acts like an open circuit, but the N-type tran-
+sistor acts like a short circuit. The output in this case is connected to ground (i.e.,
+0 volts). The complete behavior of the circuit can be described by means of a
+table, as shown in Figure 3.4c. If we replace 0 volts with the symbol 0 and 1.2 volts with the symbol 1, we have the truth table
