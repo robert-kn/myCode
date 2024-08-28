@@ -71,7 +71,7 @@ data type. One of them, usually called ﬂoat, consists of 32 bits, allocated as
 23 bits for precision (the fraction ﬁeld)
 
 Normalized Form; the ﬂoating point data type represents numbers expressed in scientiﬁc notation, and mostly in 
-normalized form see 32bitFloating.png:
+normalized form see 32bitFloatingPoint.png: 
 
 N = (−1)^S × 1.fraction × 2^(exponent−127), 1 ≤ exponent ≤ 254
 
@@ -218,3 +218,4 @@ like a short circuit and the N-type transistor acts like an open circuit. The ou
 circuit, but the N-type transistor acts like a short circuit. The output in this case is connected to ground (i.e.,
 0 volts). The complete behavior of the circuit can be described by means of a table, as shown in Figure 3.4c. If we 
 replace 0 volts with the symbol 0 and 1.2 volts with the symbol 1, we have the truth table
+

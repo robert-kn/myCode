@@ -4,7 +4,7 @@ What does the above equation represent? the relationship between the response y 
 X = (X₁, X₂, X₃...Xₚ) represents different predictors that we assume have a relationship with Y. Y could be 
 sales and X could represent advertising budgets of different mediums.
 
-Predictors are also known as independent variables or featuress.
+Predictors are also known as independent variables or features.
 Response is also known as the dependent variable.
 
 f is some fixed but unknown function of X₁...Xₚ and e is a random error term which is independent of X and 
@@ -35,7 +35,7 @@ where f hat represents the estimate of f and y hat represents the resulting pred
 In this setting, f hat is often treated as a black box in the sense that one is not typically
 concerned with the exact form of f hat provided that it yields accurate predictions of y.
 
-The accuracy of ŷ as a prediction to for y depends on two quantities; the reducible error and
+The accuracy of ŷ as a prediction for y depends on two quantities; the reducible error and
 the irreducible error. In general, fˆ will not be a perfect estimate for f and this inaccuracy 
 will introduce some error. This error is reducible because we can potentially improve the 
 accuracy of fˆ by using the most appropriate statistical learning technique to estimate f.
@@ -55,7 +55,7 @@ prediction. The quantity e may also contain unmeasured variation.
 
 Consider a given estimate fˆ and a set of predictors X, which yields the prediction 
 Ŷ = fˆ(X). Assume for a moment that both fˆ and X are fixed,
-so that the only variability comes from ". Then, it is easy to show that
+so that the only variability comes from e. Then, it is easy to show that
 
 E(Y - Ŷ )² = E[f(X) + e - fˆ(X)]² 
            = [f(X) - fˆ(X)]² + Var(e)     2.3
@@ -71,13 +71,22 @@ provide an upper bound on the accuracy of our prediction for Y . This bound is a
 unknown in practice.
 
 inference: we are often interested in understanding the relationship between Y and X₁...Xₚ. In
-this situation we wish to estimate f, bu our goal is not to necessarily make predictions for Y.
+this situation we wish to estimate f, but our goal is not to necessarily make predictions for Y.
 Now fˆ cannot be treated as a black box because we need to know its exact form.
 
 Depending on whether my ultimate goal is inference or prediction, or a combination of the two,
 different methods for estimating f may be appropriate.
 
+Broadly speaking, most statistical learning methods (linear and non linear) can be characterised as either
+parametric or non parametric.
 
+Parametric methods: involve a two step model based approach:
+1. first make an assumption about the functional form or shape of f. For example, one very simple assumption 
+is that f is linear in X
+
+f(X)=β₀ + β₁X₁ + β₂X₂ + ···+ βₚXₚ.     (2.4)
+
+This is a linear model. Once we have assumed that f is linear, the problem of estimating f is greatly simplifed. 
 
 
 

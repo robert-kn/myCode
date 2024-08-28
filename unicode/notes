@@ -221,4 +221,14 @@ This number does not depend on the language used in the text, the font used to d
 software, the operating system, or the device. It is universal and kept unchanged. The range of possible 
 numbers is set sufficiently high to cover all the current and future needs of all languages.
 
-The solution is called Unicode
+The solution is called Unicode and it gives the opportunity to say, I want this character displayed and the number
+is... and have yourself understood by all systems that support unicode. This doesn't always guarantee success in
+displaying the character, due to lack of a suitable font. The display or printing of characters often fails since
+fonts (software for drawing characters) are still incomplete in covering the set of unicode characters. This is 
+changing as more complete fonts become available and as programs become more clever in their ability to use
+characters from different fonts.
+
+A character is a  basic (or “atomic”) unit of written text. A piece of text is a sequence of characters, also called
+a string. This does not necessarily mean that text is always displayed so that its characters appear linearly one 
+after another, although this is what happens for English text. In other writing systems, consecutive characters may 
+be combined into one glyph in complex ways. However, the text is still logically a sequence of characters.
