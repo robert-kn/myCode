@@ -197,30 +197,24 @@ character to the electronics associated with the monitor.
 Most processors these days are manufactured out of MOS transistors (metal oxide semiconductors). There are two
 types: p type and n type
 
-When the N-type transistor is
-supplied with 1.2 volts, the connection from source to drain acts like a piece of
-wire. We say (in the language of electricity) that we have a short circuit between
-the source and drain. If the gate of the N-type transistor is supplied with 0 volts,
-the connection between the source and drain is broken. We say that between the
-source and drain we have an open circuit.
+When the N-type transistor is supplied with 1.2 volts, the connection from source to drain acts like a piece of
+wire. We say (in the language of electricity) that we have a short circuit between the source and drain. If the 
+gate of the N-type transistor is supplied with 0 volts, the connection between the source and drain is broken. We 
+say that between the source and drain we have an open circuit.
 
-The P-type transistor works in exactly the opposite fashion from the N-type
-transistor. When the gate is supplied with 0 volts, the P-type transistor acts (more or less)
-like a piece of wire, closing the circuit. When the gate is supplied with 1.2 volts,
-the P-type transistor acts like an open circuit. Because the P-type and N-type
-transistors act in this complementary way, we refer to circuits that contain both
-P-type and N-type transistors as CMOS circuits, for complementary metal-oxide
-semiconductor.
+The P-type transistor works in exactly the opposite fashion from the N-type transistor. When the gate is supplied 
+with 0 volts, the P-type transistor acts (more or less) like a piece of wire, closing the circuit. When the gate 
+is supplied with 1.2 volts, the P-type transistor acts like an open circuit. Because the P-type and N-type
+transistors act in this complementary way, we refer to circuits that contain both P-type and N-type transistors as 
+CMOS circuits, for complementary metal-oxide semiconductor.
 
 One step up from the transistor is the logic gate. That is, we construct basic logic
 structures out of individual MOS transistors.
 
-The NOT Gate (Inverter): It is constructed from two MOS transistors, one P-type and one N-type.
-See Notgate.png shows the behavior of the
-circuit if the input is supplied with 0 volts. Note that the P-type transistor acts
-like a short circuit and the N-type transistor acts like an open circuit. The output
-is, therefore, connected to 1.2 volts. On the other hand, if the input is supplied
-with 1.2 volts, the P-type transistor acts like an open circuit, but the N-type tran-
-sistor acts like a short circuit. The output in this case is connected to ground (i.e.,
-0 volts). The complete behavior of the circuit can be described by means of a
-table, as shown in Figure 3.4c. If we replace 0 volts with the symbol 0 and 1.2 volts with the symbol 1, we have the truth table
+The NOT Gate (Inverter): It is constructed from two MOS transistors, one P-type and one N-type. See Notgate.png 
+shows the behavior of the circuit if the input is supplied with 0 volts. Note that the P-type transistor acts
+like a short circuit and the N-type transistor acts like an open circuit. The output is, therefore, connected to 
+1.2 volts. On the other hand, if the input is supplied with 1.2 volts, the P-type transistor acts like an open 
+circuit, but the N-type transistor acts like a short circuit. The output in this case is connected to ground (i.e.,
+0 volts). The complete behavior of the circuit can be described by means of a table, as shown in Figure 3.4c. If we 
+replace 0 volts with the symbol 0 and 1.2 volts with the symbol 1, we have the truth table
