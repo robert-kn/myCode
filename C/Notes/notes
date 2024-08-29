@@ -217,5 +217,62 @@ like a short circuit and the N-type transistor acts like an open circuit. The ou
 1.2 volts. On the other hand, if the input is supplied with 1.2 volts, the P-type transistor acts like an open 
 circuit, but the N-type transistor acts like a short circuit. The output in this case is connected to ground (i.e.,
 0 volts). The complete behavior of the circuit can be described by means of a table, as shown in Figure 3.4c. If we 
-replace 0 volts with the symbol 0 and 1.2 volts with the symbol 1, we have the truth table
+replace 0 volts with the symbol 0 and 1.2 volts with the symbol 1, we have the truth table see notgate.png
 
+NOR Gates: a NOR gate contains two P-type and two N-type transistors see NORGate.png
+Figure 3.5b shows the behavior of the circuit if A is supplied with 0 volts and B is supplied 
+with 1.2 volts. In this case, the lower of the two P-type transistors produces an open circuit, 
+and the output C is disconnected from the 1.2-volt power supply. However, the leftmost N-type 
+transistor acts like a piece of wire, connecting the output C to 0 volts.
+
+Note that if both A and B are supplied with 0 volts, the two P-type transistors
+conduct, and the output C is connected to 1.2 volts. Note further that there is no
+ambiguity here, since both N-type transistors act as open circuits, and so C is
+disconnected from ground.
+
+If either A or B is supplied with 1.2 volts, the corresponding P-type transistor
+results in an open circuit. That is suﬃcient to break the connection from C to
+the 1.2-volt source. However, 1.2 volts supplied to the gate of one of the N-type 
+transistors is suﬃcient to cause that transistor to conduct, resulting in C being
+connected to ground (i.e., 0 volts).
+
+If we replace the voltages with their logical equivalents, we have the truth
+table of Figure 3.5d. 
+
+OR Gate: If we augment the circuit of Figure 3.5a by adding an inverter at 
+its output, as shown in Figure 3.6a see OR gate, we have at the output D the logical 
+function OR. Figure 3.6a is the circuit for an OR gate. Figure 3.6b describes the behavior 
+of this circuit if the input variable A is set to 0 and the input variable B is set to 1. 
+Figure 3.6c shows the circuit’s truth table.
+
+AND and NAND Gates: see AND.png if either A or B is supplied with 0 volts,
+there is a direct connection from C to the 1.2-volt power supply. The fact that C
+is at 1.2 volts means the N-type transistor whose gate is connected to C provides
+a path from D to ground. Therefore, if either A or B is supplied with 0 volts, the
+output D of the circuit of Figure 3.8 is 0 volts.
+
+Again, we note that there is no ambiguity. The fact that at least one of the two
+inputs A or B is supplied with 0 volts means that at least one of the two N-type
+transistors whose gates are connected to A or B is open, and that consequently, C
+is disconnected from ground. Furthermore, the fact that C is at 1.2 volts means
+the P-type transistor whose gate is connected to C is open-circuited. Therefore,
+D is not connected to 1.2 volts.
+
+On the other hand, if both A and B are supplied with 1.2 volts, then both
+of their corresponding P-type transistors are open. However, their corresponding
+N-type transistors act like pieces of wire, providing a direct connection from C
+to ground. Because C is at ground, the rightmost P-type transistor acts like a
+closed circuit, forcing D to 1.2 volts.
+
+Figure 3.8b is a truth table that summarizes the behavior of the circuit of
+Figure 3.8a. Note that the circuit is an AND gate. The circuit shown within the
+dashed lines (i.e., having output C) is a NOT-AND gate, which we generally
+abbreviate as NAND.
+
+The gates just discussed are very common in digital logic circuits and in
+digital computers. There are billions of inverters (NOT gates) in Intel’s Skylake
+microprocessor. As a convenience, we can represent each of these gates by stan-
+dard symbols see symbols.png
+
+The bubble shown in the inverter, NAND, and NOR gates signiﬁes the complement (i.e., NOT) 
+function.
