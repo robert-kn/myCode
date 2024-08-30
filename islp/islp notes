@@ -84,9 +84,41 @@ Parametric methods: involve a two step model based approach:
 1. first make an assumption about the functional form or shape of f. For example, one very simple assumption 
 is that f is linear in X
 
-f(X)=β₀ + β₁X₁ + β₂X₂ + ···+ βₚXₚ.     (2.4)
+f(X) = β₀ + β₁X₁ + β₂X₂ + ···+ βₚXₚ.     (2.4)
 
 This is a linear model. Once we have assumed that f is linear, the problem of estimating f is greatly simplifed. 
 
+2. After a model has been selected, we need a procedure that uses training data to fit or train the model. In the 
+case of the linear model (2.4), we need to estimate the parameters β₀, β₁... βₚ. That is, we want to find values
+of these parameters such that 
+
+Y  ≈ β₀ + β₁X₁ + β₂X₂ + ···+ βₚXₚ.
+
+The most common approach to fitting the model (2.4 see figure24.png) is referred to as (ordinary) least squares. 
+However, least squares is one of the many possible ways to fit the linear model.
+
+The model based approach described above is referred to as parametric; it reduces the problem of estimating f
+down to one of estimating a set of parameters. The potential disadvantage of a parametric approach is that the 
+model we choose will usually not match the true unknown form of f.
+
+If the chosen model is too far from the true f, then our estimate will be poor. We can try to address this problem
+by choosing flexible models that can fit many different possible functional forms for f. But in general, fitting a
+more flexible model requires estimating a greater number of parameters. These more complex models can lead to a 
+phenomenon known as overfitting the data which essentially means that they follow the errors or noise too closely.
+
+Figure 2.4 (see figure24.png) shows an example of the parametric approach applied to the income data from figure23.png
+we have fit a linear model of the form:
+
+income ≈ β₀ + β₁ × education + β₂ × seniority.
+
+since we have assumed a linear relationship between the response and the two predictors, the entire fitting problem
+reduces to estimating  β₀, β₁ and β₂ which we do using least squares linear regression.
+
+Comparing Figure 2.3 to Figure 2.4, we can see that the linear ft given in Figure 2.4 is not quite right: the true 
+f has some curvature that is not captured in the linear ft. However, the linear ft still appears to do a reasonable 
+job of capturing the positive relationship between years of education and income, as well as the slightly less 
+positive relationship between seniority and income.
+
+Non parametric methods: 
 
 
