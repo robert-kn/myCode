@@ -1,9 +1,11 @@
+/* This program generates a segmentation fault when run */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 
-void sorting(bool sorted, int str_count, char **pS, char * pTemp);
+void sorting(int str_count, char ** pS);
 
 #define BUF_LEN 100
 #define COUNT    5
@@ -15,13 +17,11 @@ int main(void)
     char buf[BUF_LEN];
     size_t str_count = 0;
     size_t capacity = COUNT;
-    char **pS = calloc(capacity, sizeof(char*));
-    char** psTemp = NULL;
-    char* pTemp = NULL;
+    char ** pS = calloc(capacity, sizeof(char*));
+    char ** psTemp = NULL;
     size_t str_len = 0;
-    bool sorted = false;
 
-    printf("Enter strings to be sorted, one per line. Press Enter to end:\n");
+    printf("Enter strings to be sorted, one per line. Press Enter to end:\n\n");
     char *ptr = NULL;
 
     while(true)
@@ -44,42 +44,45 @@ int main(void)
 
         if(str_count == capacity)
         {
-            capacity += COUNT;
+            capacity += capacity/4;
 
-            if(!(psTemp = realloc(pS, capacity))) return 1;
+            if(!(psTemp = (char **) realloc(pS, capacity))) 
+                return 2;
 
             pS = psTemp;
         }
         str_len = strnlen(buf, BUF_LEN) + 1;
-        if(!(pS[str_count] = malloc(str_len))) 
-            return 2;
-        strcpy(pS[str_count++], buf);
+        if(!(pS[str_count] = (char *) malloc(str_len))) 
+            return 3;
+        strlcpy(pS[str_count++], buf, str_len);
     }
-    
-    sorting(!sorted, str_count, pS, pTemp);
+
+    if(str_count > 0)
+        sorting(str_count, pS);
 
     free(pS);
     pS = NULL;
     return 0;
 }
 
-void sorting(bool sorted, int str_count, char ** pS, char * pTemp)
+void sorting(int str_count, char ** pS)
 {
-    sorted = true;
-    for(size_t i = 0 ; i < str_count - 1 ; ++i)
+    char * pTemp = NULL;
+    size_t i;
+
+    for(i = 0 ; i < str_count - 1 ; i++)
     {
         if(strcmp(pS[i], pS[i + 1]) > 0)
         {
-            sorted = false;
             pTemp = pS[i];
             pS[i] = pS[i + 1];
             pS[i + 1] = pTemp;
         }
     }
-    printf("Your input sorted in ascending sequence is:\n\n");
-    for(size_t i = 0 ; i < str_count ; ++i)
+    printf("\nYour input sorted in ascending sequence is:\n\n");
+    for(i = 0 ; i < str_count ; i++)
     {
-        printf("%s", pS[i]);
+        printf("%s\n", pS[i]);
         free(pS[i]);
         pS[i] = NULL;
     }

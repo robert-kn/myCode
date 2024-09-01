@@ -1,25 +1,30 @@
-#define __STDC_WANT_LIB_EXT1__ 1
+/**
+ * Finds the number of occurrences of each unique word in some arbitrary prose. this version allocates memory on the
+ * heap to store the prose, the words, and the word counts. 
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define BUF_LEN      100                     /* Input buffer size */
-#define INIT_STR_EXT  50                     /* Initial space for prose */
-#define WORDS_INCR     5                     /* Words capacity increment */
+#define BUF_LEN      100                     
+#define INIT_STR_SPACE  50                     
+#define WORDS_INCR     5          
 
-void output();
+
+int output(char * pStr, size_t str_size, char delimiters[]);
+void print_words(int word_count, char ** pWords, int * pnWord);
 
 int main(void)
 {
     char delimiters[] = " \n\".,;:!?)(";
     char buf[BUF_LEN];
-    size_t str_size = INIT_STR_EXT;
-    char* pStr = malloc(str_size);              /* Pointer to prose to be tokenized */
+    size_t str_size = INIT_STR_SPACE;
+    char * pStr = malloc(str_size);              /* Pointer to prose to be tokenized */
     *pStr = '\0'; 
 
-    printf("Enter some prose with up to %d characters per line.\nTerminate \
-    input by entering an empty line:\n", BUF_LEN);
+    printf("Enter some prose with up to %d characters per line.\nTerminate input by entering an empty line:\n\n", BUF_LEN);
 
     while(true)
     {
@@ -28,42 +33,39 @@ int main(void)
         if(buf[0] == '\n')
             break;
         
-        if(strnlen_s(pStr, str_size) + strnlen_s(buf, BUF_LEN) + 1 > str_size)
+        if(strnlen(pStr, str_size) + strnlen(buf, BUF_LEN) + 1 > str_size)
         {
-            str_size = strnlen_s(pStr, str_size) + strnlen_s(buf, BUF_LEN) + 1;
+            str_size = strnlen(pStr, str_size) + strnlen(buf, BUF_LEN) + 1;
             pStr = realloc(pStr, str_size);
         }
 
-        if(strcat_s(pStr, str_size, buf))
+        if(strlcat(pStr, buf, str_size) >= (strlen(pStr) + strlen(buf)))
         {
             printf("Something's wrong. String concatenation failed.\n");
+            free(pStr);
             return 1;
         }
-
-        output();
     }
 
-    
-    
-
+    output(pStr, str_size, delimiters);
 }
 
-void output()
+int output(char * pStr, size_t str_size, char delimiters[])
 {
-    size_t maxWords = 10;                                               /* Current maximum word count */
-    int word_count = 0;                                                 /* Current word count */
-    size_t word_length = 0;                                             /* Current word length */
-    char** pWords = calloc(maxWords, sizeof(char*));                    /* Stores pointers to the words */
-    int* pnWord = calloc(maxWords, sizeof(int));                        /* Stores count for each word */
+    size_t maxWords = 10;   
+    int word_count = 0;                                                                                             
+    size_t word_length = 0;                                             
+    char ** pWords = calloc(maxWords, sizeof(char*));                    
+    int * pnWord = calloc(maxWords, sizeof(int));                        
 
-    size_t str_len = strnlen_s(pStr, str_size);                         /* Length used by strtok_s() */
-    char* ptr = NULL;                                                   /* Pointer used by strtok_s() */
-    char* pWord = strtok_s(pStr, &str_len, delimiters, &ptr);           /* find 1st word */
+    size_t str_len = strnlen(pStr, str_size);                         
+    char * ptr = NULL;                                                   
+    char * pWord = strtok_r(pStr, delimiters, &ptr);           
 
     if(!pWord)
     {
         printf("No words found. Ending program.\n");
-        return 1;
+        return 2;
     }
 
     bool new_word = true;
@@ -91,23 +93,19 @@ void output()
                 pnWord = realloc(pnWord, maxWords*sizeof(int));
             }
             word_length = ptr - pWord; 
-            *(pWords + word_count) = malloc(word_length);
-            strcpy_s(*(pWords + word_count), word_length, pWord);
+            *(pWords + word_count) = malloc(word_length);   /* pWords[word_count] = malloc(word_length)*/
+            strlcpy(*(pWords + word_count), pWord, word_length);
             *(pnWord + word_count++) = 1;
         }
         else
             new_word = true;
     
-        pWord = strtok_s(NULL, &str_len, delimiters, &ptr);
+        pWord = strtok_r(NULL, delimiters, &ptr);
     }
 
-    for(int i = 0; i < word_count ; ++i)
-    {
-        printf("  %-13s  %3d", *(pWords + i), *(pnWord + i));
-        if((i + 1) % 4 == 0)
-            printf("\n");
-    }
-    printf("\n");
+    print_words(word_count, pWords, pnWord);
+
+    
 
     for(int i = 0; i < word_count ; ++i)
     {
@@ -122,4 +120,16 @@ void output()
     free(pStr);     
     pStr = NULL;                                          
     return 0;
+}
+
+void print_words(int word_count, char ** pWords, int * pnWord)
+{
+    for(int i = 0; i < word_count ; ++i)
+    {
+        printf("  %-13s  %3d", *(pWords + i), *(pnWord + i));
+        if((i + 1) % 4 == 0)
+            printf("\n");
+    }
+    printf("\n");
+
 }
