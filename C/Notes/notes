@@ -276,3 +276,25 @@ dard symbols see symbols.png
 
 The bubble shown in the inverter, NAND, and NOR gates signiﬁes the complement (i.e., NOT) 
 function.
+
+Now that we understand the workings of the basic logic gates, the next step
+is to build some of the logic structures that are important components of the
+microarchitecture of a computer.
+
+There are fundamentally two kinds of logic structures, those that include the
+storage of information and those that do not.
+
+Decoder: Figure 3.11 shows a logic gate implementation of a two-input decoder. A decoder
+has the property that exactly one of its outputs is 1 and all the rest are 0s. The one
+output that is logically 1 is the output corresponding to the input pattern that it is
+expected to detect. In general, decoders have n inputs and 2^n outputs. We say the
+output line that detects the input pattern is asserted. That is, that output line has
+the value 1, rather than 0 as is the case for all the other output lines. In Figure 3.11,
+note that for each of the four possible combinations of inputs A and B, exactly one
+output has the value 1 at any one time. In Figure 3.11b, the input to the decoder
+is 10, resulting in the third output line being asserted.
+
+Mux: The function of a mux is to select one of the inputs (A or B) and connect it to the 
+output. The select signal (S in Figure 3.12) determines which input is connected to the output.
+Figure 3.12a shows a logic gate implementation of a two-input multiplexer, morevcommonly 
+referred to as a mux.
