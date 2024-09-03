@@ -18,7 +18,7 @@ int main (void)
     /* Read multiple lines of prose from the keyboard */ 
     while(true)
     {
-        if(!fgets(buf, buf_len, stdin))         /* read a line of input */
+        if(fgets(buf, buf_len, stdin))         /* read a line of input */
         {
             printf("Error reading string.\n");
             return 1;
