@@ -296,5 +296,47 @@ is 10, resulting in the third output line being asserted.
 
 Mux: The function of a mux is to select one of the inputs (A or B) and connect it to the 
 output. The select signal (S in Figure 3.12) determines which input is connected to the output.
-Figure 3.12a shows a logic gate implementation of a two-input multiplexer, morevcommonly 
+Figure 3.12a shows a logic gate implementation of a two-input multiplexer, more commonly 
 referred to as a mux.
+
+The mux of Figure 3.12 works as follows: Suppose S = 0, as shown in
+Figure 3.12b. Since the output of an AND gate is 0 unless all inputs are 1, the out-
+put of the rightmost AND gate is 0. Also, the output of the leftmost AND gate is
+whatever the input A is. That is, if A = 0, then the output of the leftmost AND gate
+is 0, and if A = 1, then the output of the leftmost AND gate is 1. Since the output
+of the rightmost AND gate is 0, it has no eﬀect on the OR gate. Consequently,
+the output at C is exactly the same as the output of the leftmost AND gate. The
+net result of all this is that if S = 0, the output C is identical to the input A.
+On the other hand, if S = 1, it is B that is ANDed with 1, resulting in the
+output of the OR gate having the value of B.
+
+In summary, the output C is always connected to either the input A or the
+input B—which one depends on the value of the select line S. We say S selects the
+source of the mux (either A or B) to be routed through to the output C. Figure 3.12c
+shows the standard representation for a mux.
+
+In general, a mux consists of 2^n inputs and n select lines. Figure 3.13a
+shows a gate-level description of a four-input mux. It requires two select lines.
+Figure 3.13b shows the standard representation for a four-input mux.
+Question: Can you construct the gate-level representation for an eight-input
+mux? yes. How many select lines must you have? 3
+
+A One-Bit Adder (a.k.a. a Full Adder):
+
+A simple algorithm for binary addition is to proceed as you have always done in the case of 
+decimal addition, from right to left, one column at a time, adding the two digits from the two 
+values plus the carry in, and generating a sum digit and a carry to the next column. The
+only diﬀerence here (with binary addition) is you get a carry after 1, rather than
+after 9.
+
+Figure 3.14 is a truth table that describes the result of binary addition on one
+column of bits within two n-bit operands. At each column, there are three values
+that must be added: one bit from each of the two operands A and B and the carry
+from the previous column. We designate these three bits as Ai , Bi , and Ci . There
+are two results, the sum bit (Si ) and the carry over to the next column, Ci+1 . Note
+that if only one of the three bits equals 1, we get a sum of 1, and no carry (i.e.,
+Ci+1 = 0). If two of the three bits equal 1, we get a sum of 0, and a carry of 1. If
+all three bits equal 1, the sum is 3, which in binary corresponds to a sum of 1 and
+a carry of 1.
+
+

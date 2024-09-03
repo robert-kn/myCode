@@ -173,3 +173,8 @@ that it is difficult to understand how any individual predictor is associated wi
 
 Figure 2.7 provides an illustration of the trade-off between flexibility and interpretability 
 for some of the methods that we cover in this book.
+
+Supervised Versus Unsupervised Learning:
+
+Most statistical learning problems fall into one of two categories: supervised or unsupervised.
+
