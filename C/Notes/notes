@@ -44,8 +44,6 @@ manual conversion of binary fraction to decimal requires the following steps: se
 manual conversion of decimal to 2's complement can be achieved by following these steps see 
 decimalTo2scomplement.png
 
-I don't understand how they arrived at this result see 2sComplementSubtraction.png!!
-
 The value of a positive number does not change if we extend the sign bit 0 as many bit positions to the left 
 as desired. Similarly, the value of a negative number does not change by extending the sign bit 1 as many bit 
 positions to the left as desired. Since in both cases it is the sign bit that is extended, we refer to the 
@@ -70,7 +68,7 @@ data type. One of them, usually called ﬂoat, consists of 32 bits, allocated as
 8 bits for the range (the exponent ﬁeld)
 23 bits for precision (the fraction ﬁeld)
 
-Normalized Form; the ﬂoating point data type represents numbers expressed in scientiﬁc notation, and mostly in 
+Normalised Form; the ﬂoating point data type represents numbers expressed in scientiﬁc notation, and mostly in 
 normalized form see 32bitFloatingPoint.png: 
 
 N = (−1)^S × 1.fraction × 2^(exponent−127), 1 ≤ exponent ≤ 254
@@ -78,18 +76,18 @@ N = (−1)^S × 1.fraction × 2^(exponent−127), 1 ≤ exponent ≤ 254
 where S, fraction, and exponent are binary numbers.
 
 The computer’s 32-bit ﬂoating point data type consists of (a) a sign bit (positive or negative), (b) 24 binary
-digits in normalized form (one non-zero binary digit to the left of the binary point) times (c) the radix 2 
+digits in normalised form (one non-zero binary digit to the left of the binary point) times (c) the radix 2 
 raised to an exponent expressed in eight bits.
 
 The sign bit S is just a single binary digit, 0 for positive numbers, 1 for negative numbers. The 23 fraction 
 bits form the 24-bit quantity 1.fraction, where normalized form demands exactly one non-zero binary digit to 
 the left of the binary point. Since there exists only one non-zero binary digit (i.e., the value 1), it is 
-unneces- sary to explicitly store that bit in our 32-bit ﬂoating point format. In fact that is how we get 24 
-bits of precision, the 1 to the left of the binary point that is always present in normalized numbers and so 
+unnecessary to explicitly store that bit in our 32-bit ﬂoating point format. In fact that is how we get 24 
+bits of precision, the 1 to the left of the binary point that is always present in normalised numbers and so 
 is unnecessary to store, and the 23 bits of fraction that are actually part of the 32-bit data type.
 
-We say mostly in normalized form because (as noted in the equation) the data type represents a ﬂoating point 
-number in normalized form only if the eight-bit exponent is restricted to the 254 unsigned integer values, 
+We say mostly in normalised form because (as noted in the equation) the data type represents a ﬂoating point 
+number in normalised form only if the eight-bit exponent is restricted to the 254 unsigned integer values, 
 1 (00000001) through 254 (11111110).
 
 As you know, with eight bits, one can represent 256 values uniquely. For the other two integer values 0 
@@ -271,8 +269,7 @@ abbreviate as NAND.
 
 The gates just discussed are very common in digital logic circuits and in
 digital computers. There are billions of inverters (NOT gates) in Intel’s Skylake
-microprocessor. As a convenience, we can represent each of these gates by stan-
-dard symbols see symbols.png
+microprocessor. As a convenience, we can represent each of these gates by standard symbols see symbols.png
 
 The bubble shown in the inverter, NAND, and NOR gates signiﬁes the complement (i.e., NOT) 
 function.
@@ -333,10 +330,32 @@ Figure 3.14 is a truth table that describes the result of binary addition on one
 column of bits within two n-bit operands. At each column, there are three values
 that must be added: one bit from each of the two operands A and B and the carry
 from the previous column. We designate these three bits as Ai , Bi , and Ci . There
-are two results, the sum bit (Si ) and the carry over to the next column, Ci+1 . Note
+are two results, the sum bit (Si) and the carry over to the next column, Ci+1 . Note
 that if only one of the three bits equals 1, we get a sum of 1, and no carry (i.e.,
 Ci+1 = 0). If two of the three bits equal 1, we get a sum of 0, and a carry of 1. If
 all three bits equal 1, the sum is 3, which in binary corresponds to a sum of 1 and
 a carry of 1.
 
+Figure 3.15 shows a logic gate implementation of a one-bit adder. Note that each AND gate in Figure 3.15 produces 
+an output 1 for exactly one of the eight input combinations of Ai, Bi, and Ci. The output of the OR gate for Ci+1 
+must be 1 in exactly those cases where the corresponding input combinations in Figure 3.14 produce an output 1. 
+Therefore, the inputs to the OR gate that generates Ci+1 are the outputs of the AND gates corresponding to those 
+input combinations. Similarly, the inputs to the OR gate that generates Si are the outputs of the AND gates 
+corresponding to the input combinations that require an output 1 for Si in the truth table of Figure 3.14.
 
+Note that since the input combination 000 does not result in an output 1 for either Ci+1 or S , its corresponding 
+AND gate is not an input to either of the two OR gates.
+
+Figure 3.16 shows a circuit for adding two 4-bit binary numbers, using four of the one-bit adder circuits of Figure 
+3.15. Note that the carry out of column i is an input to the addition performed in column i + 1.
+
+If we wish to implement a logic circuit that adds two 16-bit numbers, we can do so with a circuit of 16 one-bit 
+adders.
+
+We should point out that historically the logic circuit of Figure 3.15 that provides three inputs (Ai, Bi, and Ci) 
+and two outputs (the sum bit Si and the carry over to the next column Ci+1) has generally been referred to as a 
+full adder to diﬀerentiate it from another structure, which is called a half adder. The distinction between the two 
+is the carry bit. Note that the carry into the rightmost column in Figure 3.16 is 0. That is, in the rightmost 
+circuit, S0 and C1 depend only on two inputs, A0 and B0. Since that circuit depends on only two inputs, it has been
+referred to as a half adder. Since the other circuits depend on all three inputs, they are referred to as full 
+adders. We prefer the term one-bit adder as a simpler term for describing what is happening in each column.

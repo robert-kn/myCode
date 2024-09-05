@@ -17,3 +17,66 @@ dataMart6.png dataMart7.png dataMart8.png
 
 what are data lakes? see dataLakes1.png dataLakes2.png dataLakes3.png dataLakes4.png dataLakes5.png dataLakes6.png
 dataLakes7.png dataLakes8.png
+
+what does a data warehouse architecture depend on? see dataWarehouseArchitecture1.png dataWarehouseArchitecture2.png
+dataWarehouseArchitecture3.png dataWarehouseArchitecture4.png dataWarehouseArchitecture.5png
+
+what are data cubes, rollups, materialised views and tables? see cubesRollups1.png cubesRollups2 cubesRollups3
+cubesRollups4 cubesRollups5 cubesRollups6 cubesRollups7 cubesRollups8 cubesRollups9 cubesRollups10 cubesRollups11
+cubesRollups12 cubesRollups13
+
+The GROUPING SETS clause is used in conjunction with the GROUP BY clause to allow you to easily summarize data by 
+aggregating a fact over as many dimensions as you like. 
+
+SQL GROUP BY clause 
+Recall that the SQL GROUP BY clause allows you to summarize an aggregation such as SUM or AVG over the distinct 
+members, or groups, of a categorical variable or dimension. 
+
+You can extend the functionality of the GROUP BY clause using SQL clauses such as CUBE and ROLLUP to select 
+multiple dimensions and create multi-dimensional summaries. These two clauses also generate grand totals, like a 
+report you might see in a spreadsheet application or an accounting style sheet. Just like CUBE and ROLLUP, the SQL 
+GROUPING SETS clause allows you to aggregate data over multiple dimensions but does not generate grand totals. 
+
+Examples 
+Let’s start with an example of a regular GROUP BY aggregation and then compare the result to that of using the 
+GROUPING SETS clause. We’ll use data from a fictional company called Shiny Auto Sales. The schema for the company’s 
+warehouse is displayed in the entity-relationship diagram in Figure 1 see figure1.png.
+
+We’ll work with a convenient materialized view of a completely denormalized fact table from the sales star schema, 
+called DNsales, which looks like the following: 
+
+see materialisedView.png
+
+This DNsales table was created by joining all the dimension tables to the central fact table and selecting only the 
+columns which are displayed. Each record in DNsales contains details for an individual sales transaction. 
+
+Example 1 
+Consider the following SQL code which invokes GROUP BY on the auto class dimension to summarize total sales of new 
+autos by auto class. 
+
+see figure2.png
+
+The result looks like this: 
+
+see figure3.png
+
+Example 2 
+Now suppose you want to generate a similar view, but you also want to include the total sales by salesperson. You 
+can use the GROUPING SETS clause to access both the auto class and salesperson dimensions in the same query. Here 
+is the SQL code you can use to summarize total sales of new autos, both by auto class and by salesperson, all in 
+one expression: 
+
+see figure4.png
+
+Here is the query result. Notice that the first four rows are identical to the result of Example 1, while the next 
+5 rows are what you would get by substituting salespersonname for autoclassname in Example 1. 
+
+see figure5.png
+
+Essentially, applying GROUPING SETS to the two dimensions, salespersonname and autoclassname, provides the same 
+result that you would get by appending the two individual results of applying GROUP BY to each dimension separately 
+as in Example 1. 
+
+what are facts and dimensional modelling? see factsAndDimensions1.png factsAndDimensions2.png factsAndDimensions3.png
+factsAndDimensions4.png factsAndDimensions5.png factsAndDimensions6.png
+
