@@ -142,6 +142,34 @@ void decipher(FILE *fp_in, FILE *fp_out, int key)
     }
 }
 
+int read_text(char str[], int size, int flag) 
+{
+    int len;
+
+    if(fgets(str, size, stdin) == NULL)
+    {
+        printf("Error: fgets() failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    len = strlen(str);
+
+    if(len > 0)
+    {
+        if(flag && (str[len-1] == '\n'))
+        {
+            str[len-1] = '\0';
+            len--;
+        }
+    }
+    else
+    {
+        printf("Error: No input\n");
+        exit(EXIT_FAILURE);
+    }
+    return len;
+}
+
 /* In cipher(), the key is added to each character. If the new value exceeds the last character of the 
 alphabet ('Z' or 'z'), we subtract 26 to go back to the beginning of the alphabet. In decipher(), the 
 reverse actions take place. */

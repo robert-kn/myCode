@@ -25,6 +25,7 @@ The program has one restriction; if the destination IP address starts from 130.1
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef unsigned char BYTE;
 
@@ -114,6 +115,41 @@ void Save_Pkt(BYTE pkt[], int len)
     fclose(fp);
 }
 
-/* Do you have any idea about what this program really does? This program is an oversimplifed version of a popular application, almost certainly installed in your computer, the frewall. Like this program, a frewall may prevent communication to specifc IP addresses and specifc applications (e.g., web servers listen to TCP port 80). In fact, the main part of a frewall is nothing more than a sequence of if-else statements.
+int read_text(char str[], int size, int flag) 
+{
+    int len;
 
-In a real networking application, this IP packet is encapsulated in a MAC frame (see C.11.38), the hardware of the network card encodes the bits of the frame in digital signals (e.g., two different voltage levels to represent 0 and 1) and forwards the frame to the con- nected router. The router checks the IP destination address, fnds the best path to that destination, and forwards the frame to the next router. Yes, we understand, it is all Greek to you, we just tried to introduce you to the fascinating world of computer networking.*/
+    if(fgets(str, size, stdin) == NULL)
+    {
+        printf("Error: fgets() failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    len = strlen(str);
+
+    if(len > 0)
+    {
+        if(flag && (str[len-1] == '\n'))
+        {
+            str[len-1] = '\0';
+            len--;
+        }
+    }
+    else
+    {
+        printf("Error: No input\n");
+        exit(EXIT_FAILURE);
+    }
+    return len;
+}
+
+/* Do you have any idea about what this program really does? This program is an oversimplifed version of a popular 
+application, almost certainly installed in your computer, the firewall. Like this program, a firewall may prevent 
+communication to specifc IP addresses and specifc applications (e.g., web servers listen to TCP port 80). In fact, 
+the main part of a frewall is nothing more than a sequence of if-else statements.
+
+In a real networking application, this IP packet is encapsulated in a MAC frame (see C.11.38), the hardware of the 
+network card encodes the bits of the frame in digital signals (e.g., two different voltage levels to represent 0 
+and 1) and forwards the frame to the con- nected router. The router checks the IP destination address, fnds the 
+best path to that destination, and forwards the frame to the next router. Yes, we understand, it is all Greek to 
+you, we just tried to introduce you to the fascinating world of computer networking.*/

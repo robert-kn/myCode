@@ -1,5 +1,6 @@
 /* Write a program that reads 20 names (less than 100 characters each), stores them
-in an array, and uses an array of pointers to display them in alphabetical order. */
+in an array, and uses an array of pointers to display them in alphabetical order. As noted below this algorithm
+wastes space because of using a 2 dimensional array which does utilise of of all space per row.*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,7 +30,7 @@ int main(void)
             {
                 temp = ptr[j];
                 ptr[j] = ptr[i];
-                ptr[i] = ptr[j];
+                ptr[i] = temp;
             }
         }
     }
