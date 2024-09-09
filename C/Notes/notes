@@ -343,7 +343,7 @@ Therefore, the inputs to the OR gate that generates Ci+1 are the outputs of the 
 input combinations. Similarly, the inputs to the OR gate that generates Si are the outputs of the AND gates 
 corresponding to the input combinations that require an output 1 for Si in the truth table of Figure 3.14.
 
-Note that since the input combination 000 does not result in an output 1 for either Ci+1 or S , its corresponding 
+Note that since the input combination 000 does not result in an output 1 for either Ci+1 or S, its corresponding 
 AND gate is not an input to either of the two OR gates.
 
 Figure 3.16 shows a circuit for adding two 4-bit binary numbers, using four of the one-bit adder circuits of Figure 
@@ -359,3 +359,4 @@ is the carry bit. Note that the carry into the rightmost column in Figure 3.16 i
 circuit, S0 and C1 depend only on two inputs, A0 and B0. Since that circuit depends on only two inputs, it has been
 referred to as a half adder. Since the other circuits depend on all three inputs, they are referred to as full 
 adders. We prefer the term one-bit adder as a simpler term for describing what is happening in each column.
+
