@@ -1,2 +1,0 @@
-/* Write a program that reads the names of two text fles from the command line and appends the content of the second fle into the frst one. Then, the program should display the content of the frst fle. 
-Assume that each line contains less than 100 characters.*/

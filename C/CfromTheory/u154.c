@@ -1,1 +1,0 @@
-/* Write a program that checks if two user selected text fles have the same content. */

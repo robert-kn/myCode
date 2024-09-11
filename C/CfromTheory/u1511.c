@@ -1,3 +1,0 @@
-/* Defne the structure type book with members: title, author, and price. Suppose  that the book.dat binary fle contains 100 of those structures. Write a program that reads 
-the sequence number of a book entry (e.g., 25), the new data, and replace the existing data with the new data. Then, the program should read from the fle the data of that entry 
-and display them, in order to verify that it was written correctly. */

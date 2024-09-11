@@ -1,2 +1,0 @@
-/* Write a program that fnds the sequential doubled words (e.g., “In this this chapter we we present…”) in a user selected text fle and writes them into another text fle. Assume that each word 
-has less than 100 characters.*/

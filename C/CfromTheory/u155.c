@@ -1,2 +1,0 @@
-/* Write a program that converts the uppercase letters of a user selected text fle to lowercase letters and vice versa. Note: Don’t forget to use fseek() between successive read and 
-write operations. */
