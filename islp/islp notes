@@ -223,3 +223,47 @@ We tend to select statistical learning methods on the basis of whether the respo
 i.e. we might use linear regression when quantitative and logistic regression when qualitative. However, whether 
 the predictors are qualitative or quantitative is generally considered less important. 
 
+Measuring the Quality of Fit
+
+In order to evaluate the performance of a statistical learning method on a given data set, we need some way to 
+measure how well its predictions actually match the observed data. That is, we need to quantify the extent to which 
+the predicted response value for a given observation is close to the true response value for that observation. In 
+the regression setting, the most commonly-used measure is the mean squared error (MSE), given by equation25.png
+
+where fˆ(xᵢ) is the prediction that f gives for the ith observation. The MSE will be small if the predicted responses
+are very close to the true responses, and will be large if for some of the observations, the predicted and true 
+responses difer substantially.
+
+The MSE in (equation 2.5) is computed using the training data that was used to fit the model, and so should more 
+accurately be referred to as the training MSE. But in general, we do not really care how well the method works on 
+the training data. Rather, we are interested in the accuracy of the predictions that we obtain when we apply our 
+method to previously unseen test data. Why is this what we care about? Suppose that we are interested in developing 
+an algorithm to predict a stock’s price based on previous stock returns. We can train the method using stock returns
+from the past 6 months. But we don’t really care how well our method predicts last week’s stock price. We instead 
+care about how well it will predict tomorrow’s price or next month’s price. 
+
+To state it more mathematically, suppose that we fit our statistical learning method on our training observations 
+{(x₁,y₁), (x₂,y₂),...,(xₙ,yₙ)}, and we obtain the estimate fˆ. We can then compute fˆ(x₁), f(x₂),...,f (xₙ).
+
+If these are approximately equal to y₁,y₂ ,...,yₙ, then the training MSE given by (equation 2.5) is small. However, 
+we are really not interested in whether fˆ(xᵢ) ≈ yᵢ; instead, we want to know whether fˆ(x₀) is approximately equal
+to y₀, where (x₀,y₀) is a previously unseen test observation not used to train the statistical learning method. We 
+want to choose the method that gives the lowest test MSE, as opposed to the lowest training MSE. In other words,
+if we had a large number of test observations, we could compute see equation26.png
+
+the average squared prediction error for these test observations (x₀,y₀). We’d like to select the model for which 
+this quantity is as small as possible.
+
+How can we go about trying to select a method that minimizes the test MSE? In some settings, we may have a test data
+set available that is, we may have access to a set of observations that were not used to train the statistical 
+learning method. We can then simply evaluate (equation 2.6) on the test observations, and select the learning method 
+for which the test MSE is smallest. But what if no test observations are available? In that case, one might imagine 
+simply selecting a statistical learning method that minimizes the training MSE (2.5). This seems like it might be a 
+sensible approach, since the training MSE and the test MSE appear to be closely related. Unfortunately, there is a 
+fundamental problem with this strategy: there is no guarantee that the method with the lowest training MSE will also
+have the lowest test MSE. Roughly speaking, the problem is that many statistical methods specifically estimate 
+coefficients so as to minimize the training set MSE. For these methods, the training set MSE can be quite small, but 
+the test MSE is often much larger.
+
+
+

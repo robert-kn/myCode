@@ -360,3 +360,116 @@ circuit, S0 and C1 depend only on two inputs, A0 and B0. Since that circuit depe
 referred to as a half adder. Since the other circuits depend on all three inputs, they are referred to as full 
 adders. We prefer the term one-bit adder as a simpler term for describing what is happening in each column.
 
+The Programmable Logic Array (PLA)
+
+Figure 3.17 illustrates a very common building block for implementing any collection of logic functions one wishes 
+to implement. The building block is called a programmable logic array (PLA). It consists of an array of AND gates 
+(called an AND array) followed by an array of OR gates (called an OR array). The number of AND gates corresponds 
+to the number of input combinations (rows) in the truth table. For n-input logic functions, we need a PLA with 2^n
+n-input AND gates. In Figure 3.17, we have 2^3 three-input AND gates, corresponding to three logical input variables.
+The number of OR gates corresponds to the number of logic functions we wish to implement, that is, the number of 
+output columns in the truth table. The implementation algorithm is simply to connect the output of an AND gate to 
+the input of an OR gate if the corresponding row of the truth table produces an output 1 for that output column. 
+Hence the notion of programmable. That is, we say we program the connections from AND gate outputs to OR gate 
+inputs to implement our desired logic functions
+
+Figure 3.15 shows seven AND gates connected to two OR gates since our requirement was to implement two functions 
+(sum and carry) of three input variables. Figure 3.17 shows a PLA that can implement any four functions of three 
+variables by appropriately connecting AND gate outputs to OR gate inputs. That is, any function of three variables 
+can be implemented by connecting the outputs of all AND gates corresponding to input combinations for which the 
+output is 1 to inputs of one of the OR gates. Thus, we could implement the one-bit adder by programming the two OR 
+gates in Figure 3.17 whose outputs are W and X by connecting or not connecting the outputs of the AND gates to the 
+inputs of those two OR gates as speciﬁed by the two output columns of Figure 3.14.
+
+Logical Completeness
+
+We saw that any logic function we wished to implement could be accomplished with a PLA. We saw that the PLA 
+consists of only AND gates, OR gates, and inverters. That means that any logic function can be implemented, 
+provided that enough AND, OR, and NOT gates are available. We say that the set of gates {AND, OR, NOT} is logically 
+complete because we can build a circuit to carry out the speciﬁcation of any truth table we wish without using any 
+other kind of gate. That is, the set of gates {AND, OR, and NOT} is logically complete because a barrel of AND 
+gates, a barrel of OR gates, and a barrel of NOT gates are suﬃcient to build a logic circuit that carries out the 
+speciﬁcation of any desired truth table. The barrels may have to be big, but the point is, we do not need any other 
+kind of gate to do the job.
+
+Question: Is there any single two-input logic gate that is logically complete? For example, is the NAND gate 
+logically complete? Hint: Can I implement a NOT gate with a NAND gate? If yes, can I then implement an AND gate 
+using a NAND gate followed by a NOT gate? If yes, can I implement an OR gate using just AND gates and NOT gates?
+
+If all of the above is true, then the NAND gate is logically complete, and I can implement any desired logic 
+function as described by its truth table with a barrel of NAND gates.
+
+Now we are ready to discuss logic structures that do include the storage of information.
+
+
+The R-S Latch
+
+A simple example of a storage element is the R-S latch. It can store one bit of information, a 0 or a 1. The R-S 
+latch can be implemented in many ways, the simplest being the one shown in Figure 3.18. Two 2-input NAND gates are 
+connected such that the output of each is connected to one of the inputs of the other. The remaining inputs S and R 
+are normally held at a logic level 1. 
+
+The R-S latch gets its name from the old designations for setting the latch to store a 1 and setting the latch to 
+store a 0. Setting the latch to store a 1 was referred to as setting the latch, and setting the latch to store a 0 
+was referred to as resetting the latch. Ergo, R-S.
+
+The Quiescent State We describe the quiescent (or quiet) state of a latch as the state when the latch is storing a 
+value, either 0 or 1, and nothing is trying to change that value. This is the case when inputs S and R both have the
+logic value 1. In Figure 3.18 the letter a designates the value that is currently stored in the latch, which we also
+refer to as the output of the latch.
+
+Consider ﬁrst the case where the value stored and therefore the output a is 1. Since that means the value A is 1 
+(and since we know the input R is 1 because we are in the quiescent state), the NAND gate’s output b must be 0. 
+That, in turn, means B must be 0, which results in the output a equal to 1. As long as the inputs S and R remain 1, 
+the state of the circuit will not change. That is, the R-S latch will continue to store the value 1 (the value of 
+the output a).
+
+If, on the other hand, we assume the output a is 0, then A must be 0, and the output b must be 1. That, in turn, 
+results in B equal to 1, and combined with the input S equal to 1 (again due to quiescence), results in the output 
+a equal to 0. Again, as long as the inputs S and R remain 1, the state of the circuit will not change. In this 
+case, we say the R-S latch stores the value 0.
+
+Setting the Latch to a 1 or a 0 The latch can be set to 1 by momentarily setting S to 0, provided we keep the value 
+of R at 1. Similarly, the latch can be set to 0 by momentarily setting R to 0, provided we keep the value of S at 1. 
+In order for the R-S latch to work properly, both S and R must never be allowed to be set to 0 at the same time.
+
+We use the term set to denote setting a variable to 0 or 1, as in “set to 0” or “set to 1.” In addition, we often 
+use the term clear  to denote the act of setting a variable to 0.
+
+If we set S to 0 for a very brief period of time, this causes a to equal 1, which in turn causes A to equal 1. Since
+R is also 1, the output at b must be 0. This causes B to be 0, which in turn makes a equal to 1. If, after that very
+brief period of time, we now return S to 1, it does not aﬀect a. Why? Answer: Since B is also 0, and since only one 
+input 0 to a NAND gate is enough to guarantee that the output of the NAND gate is 1, the latch will continue to 
+store a 1 long after S returns to 1.
+
+In the same way, we can clear the latch (set the latch to 0) by setting R to 0 for a very short period of time. 
+
+We should point out that if both S and R were allowed to be set to 0 at the same time, the outputs a and b would 
+both be 1, and the ﬁnal state of the latch would depend on the electrical properties of the transistors making up 
+the gates and not on the logic being performed. How the electrical properties of the transistors would determine the
+ﬁnal state in this case is a subject we will have to leave for a later semester. :-(
+
+Finally, we should note that when a digital circuit is powered on, the latch can be in either of its two states, 0 
+or 1. It does not matter which state since we never use that information until after we have set it to 1 or 0.
+
+You have three integer types that store Unicode characters. Type wchar_t has been available in the C standard 
+library for some time, but it has been augmented by types char16_t and char32_t. The problem with wchar_t is that 
+its size is implementation defined, and this uncertainty and variability reduces its usability when code needs to 
+be ported between different systems. Types char16_t and char32_t have fixed sizes of 2 and 4 bytes, respectively, 
+which removes this uncertainty. 
+
+A locale identifies a country or territory. Selecting a locale for a program selects a national language, and 
+consequently a character set, and determines how formatted data will be presented. You set the locale for an 
+application by calling the setlocale() function that is declared in locale.h. The function has the prototype:
+
+char *setlocale(int category, const char *locale);
+
+The locale is specified by the string you pass as the second argument. This is usually a name from the ISO 3166 
+standard for identifying countries. This standard includes codes of two letters, three letters, and three digits, 
+but the two-letter codes are used most often. For example, the codes "US", "USA", and "840" all identify the United 
+States, the codes "GB", "GBR", and "826" all identify the United Kingdom, and the codes "FR", "FRA", and "250" all 
+identify France. The string "C" represents the minimum environment for compiling C code, and an empty string, "", 
+specifies the native environment. The locale that is set can determine the representation of many things, including 
+the character set, numerical values, and monetary symbols. The first argument to setlocale() enables you to control 
+which value representations are affected by the call. You can use any of the following as the first argument to 
+select what should be affected by the locale string value:

@@ -1,0 +1,175 @@
+what is a data warehouse? see datawarehouse.png
+
+what do data warehouse systems support? see support.png 
+
+where are/were data warehouses hosted? see hosted1.png hosted2.png hosted3.png
+
+what are the benefits of a data warehouse? see benefits.png
+
+what are the categories of data warehouse systems? see categories1.png categories2.png categories3.png categories4.png 
+categories5.png categories6.png categories7.png categories8.png categories9.png categories10.png categories11.png
+
+How to select data warehouse systems? see selecting1.png selecting2.png selecting3.png selecting4.png selecting5.png
+selecting6.png selecting7.png
+
+structure of a data mart and types? see dataMart1.png dataMart2.png dataMart3.png dataMart4.png dataMart5.png
+dataMart6.png dataMart7.png dataMart8.png
+
+what are data lakes? see dataLakes1.png dataLakes2.png dataLakes3.png dataLakes4.png dataLakes5.png dataLakes6.png
+dataLakes7.png dataLakes8.png
+
+what does a data warehouse architecture depend on? see dataWarehouseArchitecture1.png dataWarehouseArchitecture2.png
+dataWarehouseArchitecture3.png dataWarehouseArchitecture4.png dataWarehouseArchitecture.5png
+
+what are data cubes, rollups, materialised views and tables? see cubesRollups1.png cubesRollups2 cubesRollups3
+cubesRollups4 cubesRollups5 cubesRollups6 cubesRollups7 cubesRollups8 cubesRollups9 cubesRollups10 cubesRollups11
+cubesRollups12 cubesRollups13
+
+The GROUPING SETS clause is used in conjunction with the GROUP BY clause to allow you to easily summarize data by 
+aggregating a fact over as many dimensions as you like. 
+
+SQL GROUP BY clause 
+Recall that the SQL GROUP BY clause allows you to summarize an aggregation such as SUM or AVG over the distinct 
+members, or groups, of a categorical variable or dimension. 
+
+You can extend the functionality of the GROUP BY clause using SQL clauses such as CUBE and ROLLUP to select 
+multiple dimensions and create multi-dimensional summaries. These two clauses also generate grand totals, like a 
+report you might see in a spreadsheet application or an accounting style sheet. Just like CUBE and ROLLUP, the SQL 
+GROUPING SETS clause allows you to aggregate data over multiple dimensions but does not generate grand totals. 
+
+Examples 
+Let’s start with an example of a regular GROUP BY aggregation and then compare the result to that of using the 
+GROUPING SETS clause. We’ll use data from a fictional company called Shiny Auto Sales. The schema for the company’s 
+warehouse is displayed in the entity-relationship diagram in Figure 1 see figure1.png.
+
+We’ll work with a convenient materialized view of a completely denormalized fact table from the sales star schema, 
+called DNsales, which looks like the following: 
+
+see materialisedView.png
+
+This DNsales table was created by joining all the dimension tables to the central fact table and selecting only the 
+columns which are displayed. Each record in DNsales contains details for an individual sales transaction. 
+
+Example 1 
+Consider the following SQL code which invokes GROUP BY on the auto class dimension to summarize total sales of new 
+autos by auto class. 
+
+see figure2.png
+
+The result looks like this: 
+
+see figure3.png
+
+Example 2 
+Now suppose you want to generate a similar view, but you also want to include the total sales by salesperson. You 
+can use the GROUPING SETS clause to access both the auto class and salesperson dimensions in the same query. Here 
+is the SQL code you can use to summarize total sales of new autos, both by auto class and by salesperson, all in 
+one expression: 
+
+see figure4.png
+
+Here is the query result. Notice that the first four rows are identical to the result of Example 1, while the next 
+5 rows are what you would get by substituting salespersonname for autoclassname in Example 1. 
+
+see figure5.png
+
+Essentially, applying GROUPING SETS to the two dimensions, salespersonname and autoclassname, provides the same 
+result that you would get by appending the two individual results of applying GROUP BY to each dimension separately 
+as in Example 1. 
+
+what are facts and dimensional modelling? see factsAndDimensions1.png factsAndDimensions2.png factsAndDimensions3.png factsAndDimensions4.png factsAndDimensions5.png factsAndDimensions6.png
+
+Recall that a fact table contains foreign keys that refer to the primary keys of dimension tables see star-schema.png
+
+Star schemas are usually to develop specialised data warehouses called data marts.
+
+what are snowflake schemas? see snowflake-schemas.png
+
+Normalisation means separating the levels of hierarchies of a dimension table into separate child tables.
+
+considerations when designing a data model for a star schema? considerations-star-schema.png
+
+------------------------------------------------------
+Why do we use these schemas, and how do they differ?
+------------------------------------------------------
+
+Star schemas are optimized for reads and are widely used for designing data marts, whereas snowflake schemas are optimized for writes and are widely used for transactional data warehousing. A star schema is a special case of a snowflake schema in which all hierarchical dimensions have been denormalized, or flattened.
+
+
+Attribute                           Star schema                     Snowflake schema 
+
+Read speed                          Fast                            Moderate 
+
+Write speed                         Moderate                        Fast 
+
+Storage space                       Moderate to high                Low to moderate 
+
+Data integrity risk                 Low to moderate                 Low  
+
+Query complexity                    Simple to moderate              Moderate to complex 
+
+Schema complexity                   Simple to moderate              Moderate to complex 
+
+Dimension hierarchies               Denormalized single tables      Normalized over multiple tables 
+
+Joins per dimension hierarchy       One                             One per level  
+
+Ideal use                           OLAP systems, Data Marts        OLTP systems
+
+
+Normalization reduces redundancy
+
+Both star and snowflake schemas benefit from the application of normalization. “Normalization reduces redundancy” is an idiom that points to a key advantage leveraged by both schemas.
+
+Normalizing a table means to create, for each dimension:
+
+1. A surrogate key to replace the natural key, that is, the unique values of the given column, and 
+
+2. A lookup table to store the surrogate and natural key pairs.
+
+Each surrogate key’s values are repeated exactly as many times within the normalized table as the natural key was before moving the natural key to its new lookup table. Thus, you did nothing to reduce the redundancy of the original table. 
+
+However, dimensions typically contain groups of items that appear frequently, such as a “city name” or “product category”. Since you only need one instance from each group to build your lookup table, your lookup table will have many fewer rows than your fact table. If there are child dimensions involved, then the lookup table may still have some redundancy in the child dimension columns. In other words, if you have a hierarchical dimension, such as “Country”, “State”, and “City”, you can repeat the process on each level to further reduce the redundancy.
+
+Notice that further normalizing your hierarchical dimensions has no effect on the size or content of your fact table - star and snowflake schema data models share identical fact tables.
+
+Normalization reduces data size
+
+When you normalize a table, you typically reduce its data size, because in the process you likely replace expensive data types, such as strings, with much smaller integer types. But to preserve the information content, you also need to create a new lookup table that contains the original objects.
+ 
+The question is, does this new table use less storage than the savings you just gained in the normalized table?
+
+For small data, this question is probably not worth considering, but for big data, or just data that is growing rapidly, the answer is yes, it is inevitable. Indeed, your fact table will grow much more quickly than your dimension tables, so normalizing your fact table, at least to the minimum degree of a star schema is likely warranted. Now the question is about which is better – star or snowflake?
+
+Comparing benefits: snowflake vs. star data warehouses
+
+The snowflake, being completely normalized, offers the least redundancy and the smallest storage footprint. If the data ever changes, this minimal redundancy means the snowflaked data needs to be changed in fewer places than would be required for a star schema. In other words, writes are faster, and changes are easier to implement.
+ 
+However, due to the additional joins required in querying the data, the snowflake design can have an adverse impact on read speeds. By denormalizing to a star schema, you can boost your query efficiency.
+
+You can also choose a middle path in designing your data warehouse. You could opt for a partially normalized schema. You could deploy a snowflake schema as your basis and create views or even materialized views of denormalized data. You could for example simulate a star schema on top of a snowflake schema. At the cost of some additional complexity, you can select from the best of both worlds to craft an optimal solution to meet your requirements.
+
+
+Practical differences
+
+Most queries you apply to the dataset, regardless of your schema choice, go through the fact table. Your fact table serves as a portal to your dimension tables.
+
+The main practical difference between star and snowflake schema from the perspective of an analyst has to do with querying the data. You need more joins for a snowflake schema to gain access to the deeper levels of the hierarchical dimensions, which can reduce query performance over a star schema. Thus, data analysts and data scientists tend to prefer the simpler star schema.
+ 
+Snowflake schemas are generally good for designing data warehouses and in particular, transaction processing systems, while star schemas are better for serving data marts, or data warehouses that have simple fact-dimension relationships. For example, suppose you have point-of-sale records accumulating in an Online Transaction Processing System (OLTP) which are copied as a daily batch ETL process to one or more Online Analytics Processing (OLAP) systems where subsequent analysis of large volumes of historical data is carried out. The OLTP source might use a snowflake schema to optimize performance for frequent writes, while the OLAP system uses a star schema to optimize for frequent reads. The ETL pipeline that moves the data between systems includes a denormalization step which collapses each hierarchy of dimension tables into a unified parent dimension table.
+
+Too much of a good thing?
+
+There is always a tradeoff between storage and compute that should factor into your data warehouse design choices. For example, do your end-users or applications need to have precomputed, stored dimensions such as ‘day of week’, ‘month of year’, or ‘quarter’ of the year? Columns or tables which are rarely required are occupying otherwise usable disk space. It might be better to compute such dimensions within your SQL statements only when they are needed. For example, given a star schema with a date dimension table, you could apply the SQL ‘MONTH’ function as MONTH(dim_date.date_column) on demand instead of joining the precomputed month column from the MONTH table in a snowflake schema.
+
+Scenario
+
+Suppose you are handed a small sample of data from a very large dataset in the form of a table by your client who would like you to take a look at the data and consider potential schemas for a data warehouse based on the sample. Putting aside gathering specific requirements for the moment, you start by exploring the table and find that there are exactly two types of columns in the dataset - facts and dimensions. There are no foreign keys although there is an index. You think of this table as being a completely denormalized, or flattened dataset.
+ 
+You also notice that amongst the dimensions are columns with relatively expensive data types in terms of storage size, such as strings for names of people and places.
+
+At this stage you already know you could equally well apply either a star or snowflake schema to the dataset, thereby normalizing to the degree you wish. Whether you choose star or snowflake, the total data size of the central fact table will be dramatically reduced. This is because instead of using dimensions directly in the main fact table, you use surrogate keys, which are typically integers; and you move the natural dimensions to their own tables or hierarchy of tables which are referenced by the surrogate keys. Even a 32-bit integer is small compared to say a 10-character string (8 X 10 = 80 bits).
+ 
+Now it’s a matter of gathering requirements and finding some optimal normalization scheme for your schema.
+
+what is a staging area? see staging-area1.png and staging-area2.png staging-area3.png
