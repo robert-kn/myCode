@@ -67,7 +67,7 @@ with the error term e.
 
 The focus of this book is on techniques for estimating f with the aim of minimizing the 
 reducible error. It is important to keep in mind that the irreducible error will always 
-provide an upper bound on the accuracy of our prediction for Y . This bound is almost always 
+provide an upper bound on the accuracy of our prediction for Y. This bound is almost always 
 unknown in practice.
 
 inference: we are often interested in understanding the relationship between Y and X₁...Xₚ. In
@@ -94,7 +94,7 @@ of these parameters such that
 
 Y  ≈ β₀ + β₁X₁ + β₂X₂ + ···+ βₚXₚ.
 
-The most common approach to fitting the model (2.4 see figure24.png) is referred to as (ordinary) least squares. 
+The most common approach to fitting the model (see figure24.png) is referred to as (ordinary) least squares. 
 However, least squares is one of the many possible ways to fit the linear model.
 
 The model based approach described above is referred to as parametric; it reduces the problem of estimating f
@@ -112,10 +112,10 @@ we have fit a linear model of the form:
 income ≈ β₀ + β₁ × education + β₂ × seniority.
 
 since we have assumed a linear relationship between the response and the two predictors, the entire fitting problem
-reduces to estimating  β₀, β₁ and β₂ which we do using least squares linear regression.
+reduces to estimating β₀, β₁ and β₂ which we do using least squares linear regression.
 
 Comparing Figure 2.3 to Figure 2.4, we can see that the linear fit given in Figure 2.4 is not quite right: the true 
-f has some curvature that is not captured in the linear ft. However, the linear ft still appears to do a reasonable 
+f has some curvature that is not captured in the linear fit. However, the linear fit still appears to do a reasonable 
 job of capturing the positive relationship between years of education and income, as well as the slightly less 
 positive relationship between seniority and income.
 
@@ -138,7 +138,7 @@ observations (far more than is typically needed for a parametric approach) is re
 order to obtain an accurate estimate for f.
 
 An example of a non-parametric approach to fitting the Income data is shown in Figure 2.5. A 
-thin-plate spline is used to estimate f . This approach does not impose any pre-specified 
+thin-plate spline is used to estimate f. This approach does not impose any pre-specified 
 model on f. It instead attempts to produce an estimate for f that is as close as possible to 
 the observed data, subject to the fit—that is, the yellow surface in Figure 2.5—being smooth. 
 In this case, the non-parametric fit has produced a remarkably accurate estimate of the true f 
@@ -147,7 +147,7 @@ of smoothness.
 
 Figure 2.6 shows the same thin-plate spline fit using a lower level of smoothness, allowing
 for a rougher fit. The resulting estimate fits the observed data perfectly! However, the 
-spline fit shown in Figure 2.6 is far more variable than the true function f , from Figure 
+spline fit shown in Figure 2.6 is far more variable than the true function f, from Figure 
 2.3. This is an example of overfitting the data, which we discussed previously. It is an 
 undesirable situation because the fit obtained will not yield accurate estimates of the 
 response on new observations that were not part of the original training data set.
@@ -180,7 +180,7 @@ Most statistical learning problems fall into one of two categories: supervised o
 learning, for each observation of the predictor measurement(s) Xᵢ where i = 1,..., n there is an associated 
 response yᵢ.
 
-The wish is to ft a model that relates the response to the predictors, with the aim of accurately predicting the 
+The wish is to fit a model that relates the response to the predictors, with the aim of accurately predicting the 
 response for future observations (prediction) or better understanding the relationship between the response and the 
 predictors (inference). Many classical statistical learning methods such as linear regression and logistic regression
 well as more modern approaches such as GAM, boosting, and support vector machines, operate in the supervised 
@@ -197,7 +197,7 @@ regression in this setting is cluster analysis, or clustering. The goal of clust
 the basis of X₁, X₂, X₃...Xₙ , whether the observations fall into relatively distinct groups.
 
 semi-supervised learning problem arises when for instance we have a set of n observations. For m of the observations,
-where m<n, we have both predictor measurements and a response. measurement. For the remaining n − m observations, 
+where m<n, we have both predictor measurements and a response measurement. For the remaining n − m observations, 
 we have predictor measurements but no response measurement. Such a scenario can arise if the predictors can be 
 measured relatively cheaply but the corresponding responses are much more expensive to collect.
 
@@ -216,7 +216,7 @@ We tend to refer to problems with a quantitative response as regression problems
 qualitative response are often referred to as classification problems. However, the distinction is not always that 
 crisp. 
 
-Least squares linear regression is used with a quantitative response, whereas logistic regression is  typically used
+Least squares linear regression is used with a quantitative response, whereas logistic regression is typically used
 with a qualitative (two-class, or binary) binary response.
 
 We tend to select statistical learning methods on the basis of whether the response is quantitative or qualitative; 
@@ -243,7 +243,7 @@ from the past 6 months. But we don’t really care how well our method predicts 
 care about how well it will predict tomorrow’s price or next month’s price. 
 
 To state it more mathematically, suppose that we fit our statistical learning method on our training observations 
-{(x₁,y₁), (x₂,y₂),...,(xₙ,yₙ)}, and we obtain the estimate fˆ. We can then compute fˆ(x₁), f(x₂),...,f (xₙ).
+{(x₁,y₁), (x₂,y₂),...,(xₙ,yₙ)}, and we obtain the estimate fˆ. We can then compute fˆ(x₁), fˆ(x₂),...,fˆ(xₙ).
 
 If these are approximately equal to y₁,y₂ ,...,yₙ, then the training MSE given by (equation 2.5) is small. However, 
 we are really not interested in whether fˆ(xᵢ) ≈ yᵢ; instead, we want to know whether fˆ(x₀) is approximately equal
