@@ -81,7 +81,7 @@ what are facts and dimensional modelling? see factsAndDimensions1.png factsAndDi
 
 Recall that a fact table contains foreign keys that refer to the primary keys of dimension tables see star-schema.png
 
-Star schemas are usually to develop specialised data warehouses called data marts.
+Star schemas are usually used to develop specialised data warehouses called data marts.
 
 what are snowflake schemas? see snowflake-schemas.png
 
