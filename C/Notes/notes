@@ -19,7 +19,7 @@ Here all automobiles brands and models can be different depending on the cost/pe
 designer made before the car was manufactured.
 
 Each microarchitecture is an opportunity for computer designers to make different tradeoffs between the cost 
-of the microprocessor, the performance that it will provide, and the energy that it will  consume.
+of the microprocessor, the performance that it will provide, and the energy that it will consume.
 
 The following are the transformations that need to happen in order for computers to be used to 
 solve a problem when electron move across a voltage potential:
@@ -53,8 +53,8 @@ operate on representations of diﬀerent lengths. It does not aﬀect the values
 overflow in unsigned arithmetic is relatively straightforward because it results in overflow of the msb 
 meaning that the result is less than the value of one of the numbers that was added.
 
-overflow in signed numbers during arithmetic is easy to test for because the msb overflows and becomes 0 which 
-means that the number becomes positive. In contrast, when adding two positive signed numbers, overflow occurs 
+overflow in signed negative numbers during arithmetic is easy to test for because the msb overflows and becomes 0  
+which means that the number becomes positive. In contrast, when adding two positive signed numbers, overflow occurs 
 when the msb is turned on meaning that the result becomes negative.
 
 Suppose we wish to know if two patterns are identical. Since the XOR function pro-
@@ -129,6 +129,8 @@ move the binary point four positions to the right, we get 10010.1, which is 18.5
 The sign bit is 1, signifying a negative number. The exponent is 130, signifying an exponent of 130 − 127, or 
 +3. Combining a 1 to the left of the binary point with the fraction ﬁeld to the right of the binary point 
 yields 1.00101. Moving the binary point three positions to the right, we get 1001.01, which is −9.25.
+
+0  11111110  11111111111111111111111
 
 The sign is +. The exponent is 254 − 127, or +127. Combining a 1 to the left of the binary point with the 
 fraction ﬁeld to the right of the binary point yields 1.11111111 … 1, which is approximately 2. Therefore, 
@@ -308,7 +310,7 @@ On the other hand, if S = 1, it is B that is ANDed with 1, resulting in the
 output of the OR gate having the value of B.
 
 In summary, the output C is always connected to either the input A or the
-input B—which one depends on the value of the select line S. We say S selects the
+input B — which one depends on the value of the select line S. We say S selects the
 source of the mux (either A or B) to be routed through to the output C. Figure 3.12c
 shows the standard representation for a mux.
 
@@ -452,24 +454,3 @@ the gates and not on the logic being performed. How the electrical properties of
 Finally, we should note that when a digital circuit is powered on, the latch can be in either of its two states, 0 
 or 1. It does not matter which state since we never use that information until after we have set it to 1 or 0.
 
-You have three integer types that store Unicode characters. Type wchar_t has been available in the C standard 
-library for some time, but it has been augmented by types char16_t and char32_t. The problem with wchar_t is that 
-its size is implementation defined, and this uncertainty and variability reduces its usability when code needs to 
-be ported between different systems. Types char16_t and char32_t have fixed sizes of 2 and 4 bytes, respectively, 
-which removes this uncertainty. 
-
-A locale identifies a country or territory. Selecting a locale for a program selects a national language, and 
-consequently a character set, and determines how formatted data will be presented. You set the locale for an 
-application by calling the setlocale() function that is declared in locale.h. The function has the prototype:
-
-char *setlocale(int category, const char *locale);
-
-The locale is specified by the string you pass as the second argument. This is usually a name from the ISO 3166 
-standard for identifying countries. This standard includes codes of two letters, three letters, and three digits, 
-but the two-letter codes are used most often. For example, the codes "US", "USA", and "840" all identify the United 
-States, the codes "GB", "GBR", and "826" all identify the United Kingdom, and the codes "FR", "FRA", and "250" all 
-identify France. The string "C" represents the minimum environment for compiling C code, and an empty string, "", 
-specifies the native environment. The locale that is set can determine the representation of many things, including 
-the character set, numerical values, and monetary symbols. The first argument to setlocale() enables you to control 
-which value representations are affected by the call. You can use any of the following as the first argument to 
-select what should be affected by the locale string value:

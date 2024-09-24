@@ -1,0 +1,125 @@
+what does the value we derive from data depend on? see value.png
+
+what topics does a data engineer need to be familiar with? see familiar-concepts.png
+
+what does a modern data ecosystem consist of? see constituent-parts.png type-of-data.png first-step1.png first-step2.png challenges1.png
+
+the next steps? see next-steps.png
+
+challenges that need to be met when storing data in enterprise data repositories (EDR)? see challenges2.png
+
+challenges faced when determining how to get data to end users from EDR? see challenges3.png
+
+business stakeholders may need dashboards, data analysts may need access to the raw data, applications may need custom api's to pull the data
+
+what are the emerging technologies that are shaping the modern data ecosystem? see emerging-tech.png
+
+thanks to cloud technologies every enterprise has access to what? see cloud-tech.png
+
+what do data engineers do? see data-engineer-role1.png data-engineer-role2.png data-engineer-role3.png
+
+what does a data analyst do? data-analyst-role1.png data-analyst-role2.png data-analyst-role3.png
+
+what do data scientists do? see data-scientist-role1.png data-scientist-role2.png data-scientist-role3.png
+
+what do business analysts do? business-analyst-role1.png business-analyst-role2.png 
+
+summary of the differences between business analysts, data analysts and data scientists see summary-difference.png
+
+what does data engineering concern itself with? see data-engineering-concern1.png data-engineering-concern2.png data-engineering-concern3.png data-engineering-concern4.png data-engineering-concern5.png data-engineering-concern6.png data-engineering-concern7.png data-engineering-concern8.png data-engineering-concern9.png 
+
+responsibilities of a data engineer? responsibilities-data-engineer1.png responsibilities-data-engineer2.png responsibilities-data-engineer3.png
+
+what knowledge do data engineers need to have? knowledge1.png knowledge2.png knowledge3.png knowledge4.png knowledge5.png knowledge6.png knowledge7.png
+
+functional skills? see functional-skills1.png functional-skills2.png
+
+Data engineers ecosystem includes: see ecosystem1.png ecosystem2.png
+
+categories of data: see catgories1.png
+
+the type of data drives the kind of data repositories that can be chosen to store the data and also the queries that 
+can be used to store the data 
+
+what are the different file-formats? see file-formats.png
+
+what are the different types of data repositories? see repository-type1.png repository-type2.png
+
+what is the data integration process? see data-integration-process.png
+
+see data-pipeline-process.png
+
+for languages used in data analyst ecosystem see languages1.png languages2.png languages3.png languages4.png
+langauges5.png languages6.png languages7.png languages8.png languages9.png languages10.png languages11.png
+languages12.png languages13.png languages14.png languages15.png languages16.png
+ 
+see BI-reporting-tools.png
+
+what is data comprised of? see data-comprised-of.png
+
+what do you need to understand when working with files as a data engineer? see formats1.png formats2.png formats3.png
+formats4.png formats5.png formats6.png formats7.png
+
+what is metadata? metadata is data that provides information about other data
+
+Here we will consider the concept of metadata within the context of databases, data warehousing, business intelligence
+systems, and all kinds of data repositories and platforms.
+
+we'll consider the following three main types of metadata:
+
+(a) technical metadata: is metadata which defines the data structures in data repositories or platforms, primarily 
+from a technical perspective. For example, technical metadata in a data warehouse includes assets such as:
+
+Tables that record information about the tables stored in a database, like: each table's name, the number of columns
+and rows each table has
+
+A data catalog, which is an inventory of tables that contain information, like: the name of each database in the 
+enteprise data warehouse, the name of each column present in each database, the names of every table that each 
+column is contained in, the type of data that each column contains
+
+The technical metadata for relational databases is typically stored in specialized tables in the database called 
+the System Catalog.
+
+(b) process metadata: Process metadata describes the processes that operate behind business systems such as data 
+warehouses, accounting systems, or customer relationship management tools.
+
+Many important enterprise systems are responsible for collecting and processing data from various sources. Such 
+critical systems need to be monitored for failures and any performance anomalies that arise. Process metadata for 
+such sytems includes tracking things like: process start and end times, disk usage, where data was moved from and to,
+and how many users access the system at any given time
+
+This sort of data is invaluable for troubleshooting and optimizing workflows and ad hoc queries.
+
+(c) Business metadata: 
+
+Users who want to explore and analyze data within and outside the enterprise are typically interested in data 
+discovery. They need to be able to find data which is meaningful and valuable to them and know where that data can 
+be accessed from. These business-minded users are thus interested in business metadata, which is information about 
+the data described in readily interpretable ways, such as: how the data is acquired, what the data is measuring or 
+describing, the connection between the data and other data sources 
+
+Business metadata also serves as documentation for the entire data warehouse system.
+
+Managing metadata: includes developing and administering policies and processes to ensure information can be 
+accessed and integrated from various sources and appropriately shared across the entire enterprise. Creation of a 
+reliable, user-friendly data catalog is a primary objective of a metadata management model. The data catalog is a 
+core component of a modern metadata management system, serving as the main asset around which metadata management is
+administered. It serves as the basis by which companies can inventory and efficiently organize their data systems. 
+A modern metadata managment model will include a web-based user interface that enables engineers and business users 
+to easily search for and find information on key attributes such as CustomerName or ProductType. This kind of model 
+is central to any Data Governance initiative.
+
+Why is metadata management important? Having access to a well implemented data catalog greatly enhances data 
+discovery, repeatability, governance, and can also facilitate access to data. Well managed metadata helps you to 
+understand both the business context associated with the enterprise data and the data lineage, which helps to 
+improve data governance. Data lineage provides information about the origin of the data and how it gets transformed 
+and moved, and thus it facilitates tracing of data errors back to their root cause. Data governance is a data 
+management concept concerning the capability that enables an organization to ensure that high data quality exists 
+throughout the complete lifecycle of the data, and data controls are implemented that support business objectives.
+
+The key focus areas of data governance include availability, usability, consistency, data integrity and data security
+and includes establishing processes to ensure effective data management throughout the enterprise such as 
+accountability for the adverse effects of poor data quality and ensuring that the data which an enterprise has can 
+be used by the entire organization.
+
+

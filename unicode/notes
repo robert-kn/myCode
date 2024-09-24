@@ -233,13 +233,3 @@ a string. This does not necessarily mean that text is always displayed so that i
 after another, although this is what happens for English text. In other writing systems, consecutive characters may 
 be combined into one glyph in complex ways. However, the text is still logically a sequence of characters.
 
-What is the difference between UTF-8 and UTF-16? both are encoding schemes used to represent unicode characters. They
-can both be used to encode all the characters in unicode (a universal character set). Their difference lies in how the
-characters are represented (the numerical code value is the same in either representation).
-
-UTF-8 is an encoding scheme that represents a character as a variable length sequence of between 1 and 4 bytes. The
-ascii character set appears in utf-8 as single byte codes that have the same code values as ascii. Code plane 0 is 
-accommodated by 1-byte and 2-byte codes in UTF-8.
-
-UTF-16 represents unicode characters as one or two 16 bit values. utf-16 includes utf-8. Because a single 16-bit 
-value accommodates all of code plane 0, UTF-16 covers most situations in programming for a multilingual context.
