@@ -283,6 +283,12 @@ microarchitecture of a computer.
 There are fundamentally two kinds of logic structures, those that include the
 storage of information and those that do not.
 
+Here we will deal with structures that do not store information. These structures are sometimes referred to as 
+decision elements. Usually, they are referred to as combinational logic structures because their outputs are strictly
+dependent on the combination of input values that are being applied to the structure right now. Their outputs are not
+at all dependent on any past history of information that is stored internally, since no information can be stored 
+internally in a combinational logic circuit.
+
 Decoder: Figure 3.11 shows a logic gate implementation of a two-input decoder. A decoder
 has the property that exactly one of its outputs is 1 and all the rest are 0s. The one
 output that is logically 1 is the output corresponding to the input pattern that it is
@@ -415,7 +421,7 @@ The R-S latch gets its name from the old designations for setting the latch to s
 store a 0. Setting the latch to store a 1 was referred to as setting the latch, and setting the latch to store a 0 
 was referred to as resetting the latch. Ergo, R-S.
 
-The Quiescent State We describe the quiescent (or quiet) state of a latch as the state when the latch is storing a 
+The Quiescent State: We describe the quiescent (or quiet) state of a latch as the state when the latch is storing a 
 value, either 0 or 1, and nothing is trying to change that value. This is the case when inputs S and R both have the
 logic value 1. In Figure 3.18 the letter a designates the value that is currently stored in the latch, which we also
 refer to as the output of the latch.
