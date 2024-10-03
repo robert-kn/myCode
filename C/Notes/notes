@@ -516,3 +516,37 @@ quantities.
 Since scientiﬁc calculations are likely to use numbers that require 64 bits to represent them, it is reasonable to 
 design a memory for such a computer that stores one such number in each uniquely identiﬁable memory location.
 
+A 2^2-by-3-Bit Memory
+
+Figure 3.20 illustrates a memory of size 2^2 by 3 bits. That is, the memory has an address space of four locations 
+and an addressability of three bits. A memory of size 2^2 requires two bits to specify the address. We describe the 
+two-bit address as A[1:0]. A memory of addressability three stores three bits of information in each memory location. 
+We describe the three bits of data as D[2:0]. In both cases, our notation A[high:low] and D[high:low] reﬂects the 
+fact that we have numbered the bits of address and data from right to left, in order, starting with the rightmost 
+bit, which is numbered 0. The notation [high:low] means a sequence of high − low + 1 bits such that “high” is the 
+bit number of the leftmost (or high) bit number in the sequence and “low” is the bit number of the rightmost (or low) 
+bit number in the sequence.
+
+Accesses of memory require decoding the address bits. Note that the address decoder takes as input the address bits 
+A[1:0] and asserts exactly one of its four outputs, corresponding to the word line being addressed. In Figure 3.20, 
+each row of the memory corresponds to a unique three-bit word, thus the term word line. Memory can be read by 
+applying the address A[1:0], which asserts the word line to be read. Note that each bit of the memory is ANDed with 
+its word line and then ORed with the corresponding bits of the other words. Since only one word line can be asserted
+at a time, this is eﬀectively a mux with the output of the decoder providing the select function to each bit line. 
+Thus, the appropriate word is read at D[2:0].
+
+Figure 3.21 shows the process of reading location 3. The code for 3 is 11. The address A[1:0]=11 is decoded, and the
+bottom word line is asserted. Note that the three other decoder outputs are not asserted. That is, they have the 
+value 0. The value stored in location 3 is 101. These three bits are each ANDed with their word line producing the 
+bits 101, which are supplied to the three output OR gates. Note that all other inputs to the OR gates are 0, since 
+they have been produced by ANDing with their unasserted word lines. The result is that D[2:0] = 101. That is, the 
+value stored in location 3 is output by the OR gates. Memory can be written in a similar fashion. The address 
+speciﬁed by A[1:0] is presented to the address decoder, resulting in the correct word line being asserted. With 
+write enable (WE) also asserted, the three bits D[2:0] can be written into the three gated latches corresponding to 
+that word line.
+
+In this section, we discuss digital logic structures that can both process information (i.e., make decisions) and 
+store information. That is, these structures base their decisions not only on the input values now present, but also
+(and this is very important) on what has happened before. These structures are usually called sequential logic 
+circuits. They are distinguishable from combinational logic circuits because, unlike combinational logic circuits,
+they contain storage elements that allow them to keep track of prior history information.
