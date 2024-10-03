@@ -137,3 +137,130 @@ The difference also lies in how data is extracted from the source systems, the t
 what is ETL? see etl1.png etl2.png etl3.png etl4.png etl5.png etl6.png etl7.png etl8.png
 
 what is ELT? see elt1.png elt2.png elt3.png elt4.png elt5.png
+
+what is data integration? see data-integration1.png data-integration2.png data-integration3.png 
+
+While data integration combines disparate data into a unified view of the data, a data pipeline covers the entire 
+data movement journey from source to destination systems. In that sense, you use a data pipeline to perform data 
+integration, while ETL is a process within data integration. There is no one approach to data integration.
+
+data-integration4.png data-integration5.png data-integration6.png data-integration7.png data-integration8.png 
+
+elements that are common in big data definitions see big-data1.png big-data2.png big-data3.png big-data4.png
+big-data5.png big-data6.png big-data7.png
+
+what big data processing tools currently exist? see big-data-tools1.png big-data-tools2.png big-data-tools3.png 
+big-data-tools4.png big-data-tools5.png big-data-tools6.png big-data-tools7.png big-data-tools8.png big-data-tools9.png
+big-data-tools10.png big-data-tools11.png big-data-tools12.png big-data-tools13.png big-data-tools14.png 
+big-data-tools15.png
+
+what are the layers of a data platform architecture? see architecture1.png architecture2.png architecture3.png
+architecture4.png architecture5.png architecture6.png architecture7.png architecture8.png architecture9.png 
+architecture10.png architecture11.png architecture12.png architecture13.png architecture14.png architecture15.png
+architecture16.png architecture17.png architecture18.png architecture19.png architecture20.png architecture21.png
+
+what are the factors considered when selecting and designing data stores? see data-stores1.png data-stores2.png
+data-stores3.png data-stores4.png data-stores5.png data-stores6.png data-stores7.png data-stores8.png data-stores9.png
+data-stores10.png data-stores11.png data-stores12.png data-stores13.png data-stores14.png data-stores15.png 
+data-stores16.png 
+
+data platforms and security see security1.png security2.png security3.png security4.png security5.png security6.png
+security7.png security8.png security9.png security10.png
+
+how to gather and import data? see gather1.png gather2.png gather3.png gather4.png gather5.png gather6.png
+gather7.png gather8.png gather9.png gather10.png gather11.png gather12.png gather13.png
+
+data wrangling see wrangling1.png wrangling2.png wrangling3.png wrangling4.png wrangling5.png wrangling6.png 
+wrangling7.png wrangling8.png wrangling9.png wrangling10.png wrangling11.png wrangling12.png wrangling13.png 
+wrangling14.png wrangling15.png wrangling16.png wrangling17.png 
+
+data wrangling tools see tools1.png tools2.png tools3.png tools4.png tools5.png tools6.png tools7.png tools8.png
+tools9.png tools10.png tools11.png tools12.png 
+
+performance, tuning and troubleshooting see tuning1.png tuning2.png tuning3.png tuning4.png tuning5.png tuning6.png
+tuning7.png tuning8.png tuning9.png tuning10.png tuning11.png tuning12.png tuning13.png tuning14.png tuning15.png
+tuning16.png tuning17.png
+
+Governance and compliance see governance1.png governance2.png governance3.png governance4.png governance5.png
+governance6.png governance7.png governance8.png governance9.png governance10.png governance11.png governance12.png
+governance13.png governance14.png governance15.png governance16.png governance17.png governance18.png governance19.png
+
+Overview of the DataOps Methodology
+
+Gartner defines DataOps as a collaborative data management practice focused on improving the communication, 
+integration, and automation of data flows between data managers and consumers across an organization. DataOps aims 
+to create predictable delivery and change management of data, data models, and related artifacts. DataOps uses 
+technology to automate data delivery with the appropriate levels of security, quality, and metadata to improve the 
+use and value of data in a dynamic environment.”
+
+A small team working on a simpler or limited number of use cases can meet business requirements efficiently. As data
+pipelines and data infrastructures get more complex, and data teams and consumers grow in size, you need 
+development processes and efficient collaboration between teams to govern the data and analytics lifecycle. From 
+data ingestion and data processing to analytics and reporting, you need to reduce data defects, ensure shorter 
+cycle times, and ensure 360-degree access to quality data for all stakeholders.
+
+DataOps helps you achieve this through metadata management, workflow and test automation, code repositories, 
+collaboration tools, and orchestration to help manage complex tasks and workflows. Using the DataOps methodology 
+ensures all activities occur in the right order the right security permissions. It helps set in a continual process 
+that allows you to cut wastages, streamline steps, automate processes, increase throughput, and improve continually.
+
+Several DataOps Platforms are available in the market, some of the popular ones being IBM DataOps, Nexla, 
+Switchboard, Streamsets, and Infoworks.
+
+DataOps Methodology:
+The purpose of the DataOps Methodology is to enable an organization to utilize a repeatable process to build and 
+deploy analytics and data pipelines. Successful implementation of this methodology allows an organization to know, 
+trust, and use data to drive value.
+
+It ensures that the data used in problem-solving and decision making is relevant, reliable, and traceable and 
+improves the probability of achieving desired business outcomes. And it does so by tackling the challenges 
+associated with inefficiencies in accessing, preparing, integrating, and making data available.
+
+In a nutshell, the DataOps Methodology consists of three main phases:
+
+The Establish DataOps Phase provides guidance on how to set up the organization for success in managing data.
+
+The Iterate DataOps Phase delivers the data for one defined sprint.
+
+The Improve DataOps Phase ensures learnings from each sprint is channeled back to continually improve the DataOps
+process.
+
+The figure below presents a high-level overview of these phases and the key activities within each of these phases.
+
+see dataops.png
+
+Benefits of using the DataOps methodology:
+
+Adopting the DataOps methodology helps organizations to organize their data and make it more trusted and secure. 
+Using the DataOps methodology, organizations can:
+
+Automate metadata management and catalog data assets, making them easy to access.
+
+Trace data lineage to establish its credibility and for compliance and audit purposes.
+
+Automate workflows and jobs in the data lifecycle to ensure data integrity, relevancy, and security.
+
+Streamline the workflow and processes to ensure data access and delivery needs can be met at optimal speed.
+
+Ensure a business-ready data pipeline that is always available for all data consumers and business stakeholders.
+
+Build a data-driven culture in the organization through automation, data quality, and governance.
+
+As a data practitioner, using the methodology can help you reduce development time, cut wastages and duplication of 
+effort, increase your productivity and throughput, and ensure that your actions produce the best possible quality 
+of data. 
+
+With DataOps, data professionals, consumers, and stakeholders can collaborate more effectively towards the shared 
+goal of creating valuable insights for business. While implementing the methodology will require systemic change, 
+time, and resources, but in the end, it makes data and analytics more efficient and reliable.
+
+Interestingly, it also opens up additional career opportunities for you as a data engineer. DataOps Engineers are 
+technical professionals that focus on the development and deployment lifecycle rather than the product itself. And 
+as you grow in experience, you can move into more specialist roles within DataOps, contributing to defining the 
+data strategy, developing and deploying business processes, establishing performance metrics, and measuring 
+performance.
+
+career opportunities see opportunities1.png opportunities2.png opportunities3.png opportunities4.png opportunities5.png
+opportunities6.png
+
+Data engineering learning path see path1.png path2.png path3.png path4.png path5.png 

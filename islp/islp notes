@@ -228,7 +228,7 @@ Measuring the Quality of Fit
 In order to evaluate the performance of a statistical learning method on a given data set, we need some way to 
 measure how well its predictions actually match the observed data. That is, we need to quantify the extent to which 
 the predicted response value for a given observation is close to the true response value for that observation. In 
-the regression setting, the most commonly-used measure is the mean squared error (MSE), given by equation25.png
+the regression setting, the most commonly used measure is the mean squared error (MSE), given by equation25.png
 
 where fˆ(xᵢ) is the prediction that f gives for the ith observation. The MSE will be small if the predicted responses
 are very close to the true responses, and will be large if for some of the observations, the predicted and true 
@@ -269,7 +269,7 @@ Figure 2.9 illustrates this phenomenon on a simple example. In the left-hand pan
 observations from (equation 2.1) with the true f given by the black curve. The orange, blue and green curves illus-
 trate three possible estimates for f obtained using methods with increasing levels of fexibility. The orange line 
 is the linear regression fit, which is relatively infexible. The blue and green curves were produced using smoothing
-splines with diferent levels of smoothness. It is clear that as the level of fexibility increases, the curves fit the
+splines with diferent levels of smoothness. It is clear that as the level of flexibility increases, the curves fit the
 observed data more closely. The green curve is the most fexible and matches the data very well; however, we observe 
 that it fits the true f (shown in black) poorly because it is too wiggly. By adjusting the level of flexibility of 
 the smoothing spline fit, we can produce many diferent fits to this data.
@@ -318,3 +318,81 @@ In practice, one can usually compute the training MSE with relative ease, but es
 more difficult because usually no test data are available. As the previous three examples illustrate, the flexibility
 level corresponding to the model with the minimal test MSE can vary considerably among data sets.
 
+The Bias-Variance Trade-Of
+
+The U-shape observed in the test MSE curves (Figures 2.9–2.11) turns out to be the result of two competing properties
+of statistical learning methods.
+
+Though the mathematical proof is beyond the scope of this book, it is possible to show that the expected test MSE, 
+for a given value x₀, can always be decomposed into the sum of three fundamental quantities: the variance of fˆ(x₀),
+the squared bias of fˆ(x₀) and the variance of the error e. That is, see equation27.png
+
+where the term on the left side in equation27 defines the expected test MSE at x₀, and refers to the average test MSE
+that we would obtain if we repeatedly estimated f using a large number of training sets, and tested each at x₀. The
+overall expected test MSE can be computed by averaging the quantity on the left side of equation27 over all possible
+values of x₀ in the test set.
+
+
+Equation 2.7 tells us that in order to minimize the expected test error, we need to select a statistical learning 
+method that simultaneously achieves low variance and low bias. Note that variance is inherently a nonnegative 
+quantity, and squared bias is also nonnegative. Hence, we see that the expected test MSE can never lie below Var(e),
+the irreducible error from (2.3).
+
+What do we mean by the variance and bias of a statistical learning method? Variance refers to the amount by which fˆ 
+would change if we estimated it using a diferent training data set. Since the training data are used to fit the 
+statistical learning method, diferent training data sets will result in a different f. But ideally the estimate for 
+f should not vary too much between training sets. However, if a method has high variance then small changes in the 
+training data can result in large changes in fˆ. In general, more fexible statistical methods have higher variance. 
+Consider the green and orange curves in Figure 2.9. The fexible green curve is following the observations very 
+closely. It has high variance because changing any one of these data points may cause the estimate f to change 
+considerably.
+
+In contrast, the orange least squares line is relatively infexible and has low variance, because moving any single 
+observation will likely cause only a small shift in the position of the line.
+
+On the other hand, bias refers to the error that is introduced by approximating a real-life problem, which may be 
+extremely complicated, by a much simpler model. For example, linear regression assumes that there is a linear 
+relationship between Y and X₁,X₂,...,Xₚ. It is unlikely that any real-life problem truly has such a simple linear 
+relationship, and so performing linear regression will undoubtedly result in some bias in the estimate of f.
+
+In Figure 2.11, the true f is substantially non-linear, so no matter how many training observations we are given, it
+will not be possible to produce an accurate estimate using linear regression. In other words, linear regression 
+results in high bias in this example. However, in Figure 2.10 the true f is very close to linear, and so given 
+enough data, it should be possible for linear regression to produce an accurate estimate. Generally, more flexible 
+methods result in less bias.
+
+As a general rule, as we use more flexible methods, the variance will increase and the bias will decrease. The 
+relative rate of change of these two quantities determines whether the test MSE increases or decreases. As we 
+increase the flexibility of a class of methods, the bias tends to initially decrease faster than the variance 
+increases. Consequently, the expected test MSE declines. However, at some point increasing flexibility has little 
+impact on the bias but starts to significantly increase the variance. When this happens the test MSE increases. 
+Note that we observed this pattern of decreasing test MSE followed by increasing test MSE in the right-hand panels 
+of Figures 2.9–2.11.
+
+The three plots in Figure 2.12 illustrate Equation 2.7 for the examples in Figures 2.9–2.11. In each case the blue 
+solid curve represents the squared bias, for diferent levels of flexibility, while the orange curve corresponds to 
+the variance. The horizontal dashed line represents Var(e), the irreducible error. Finally, the red curve, 
+corresponding to the test set MSE, is the sum of these three quantities. In all three cases, the variance increases 
+and the bias decreases as the method’s flexibility increases. However, the flexibility level corresponding to the 
+optimal test MSE difers considerably among the three data sets, because the squared bias and variance change at 
+different rates in each of the data sets.
+
+In the left-hand panel of Figure 2.12, the bias initially decreases rapidly, resulting in an initial sharp decrease 
+in the expected test MSE. On the other hand, in the center panel of Figure 2.12 the true f is close to linear, so 
+there is only a small decrease in bias as flexibility increases, and the test MSE only declines slightly before 
+increasing rapidly as the variance increases. Finally, in the right-hand panel of Figure 2.12, as flexibility 
+increases, there is a dramatic decline in bias because the true f is very non-linear. There is also very little 
+increase in variance as flexibility increases. Consequently, the test MSE declines substantially before experiencing 
+a small increase as model flexibility increases.
+
+The relationship between bias, variance, and test set MSE given in Equation 2.7 and displayed in Figure 2.12 is 
+referred to as the bias-variance trade-off. Good test set performance of a statistical learning method requires low 
+variance as well as low squared bias. This is referred to as a trade-off because it is easy to obtain a method with 
+extremely low bias but high variance (for instance, by drawing a curve that passes through every single training 
+observation) or a method with very low variance but high bias (by fitting a horizontal line to the data). The 
+challenge lies in finding a method for which both the variance and the squared bias are low. This trade-off is one of 
+the most important recurring themes in this book.
+
+In a real-life situation in which f is unobserved, it is generally not possible to explicitly compute the test MSE, 
+bias, or variance for a statistical learning method. Nevertheless, one should always keep the bias-variance trade-off
+in mind. 

@@ -437,12 +437,12 @@ results in B equal to 1, and combined with the input S equal to 1 (again due to 
 a equal to 0. Again, as long as the inputs S and R remain 1, the state of the circuit will not change. In this 
 case, we say the R-S latch stores the value 0.
 
-Setting the Latch to a 1 or a 0 The latch can be set to 1 by momentarily setting S to 0, provided we keep the value 
+Setting the Latch to a 1 or a 0: The latch can be set to 1 by momentarily setting S to 0, provided we keep the value 
 of R at 1. Similarly, the latch can be set to 0 by momentarily setting R to 0, provided we keep the value of S at 1. 
 In order for the R-S latch to work properly, both S and R must never be allowed to be set to 0 at the same time.
 
 We use the term set to denote setting a variable to 0 or 1, as in “set to 0” or “set to 1.” In addition, we often 
-use the term clear  to denote the act of setting a variable to 0.
+use the term clear to denote the act of setting a variable to 0.
 
 If we set S to 0 for a very brief period of time, this causes a to equal 1, which in turn causes A to equal 1. Since
 R is also 1, the output at b must be 0. This causes B to be 0, which in turn makes a equal to 1. If, after that very
@@ -459,4 +459,60 @@ the gates and not on the logic being performed. How the electrical properties of
 
 Finally, we should note that when a digital circuit is powered on, the latch can be in either of its two states, 0 
 or 1. It does not matter which state since we never use that information until after we have set it to 1 or 0.
+
+The Gated D Latch
+
+To be useful, it is necessary to control when a latch is set and when it is cleared. A simple way to accomplish this
+is with the gated latch.
+
+Figure 3.19 shows a logic circuit that implements a gated D latch. It consists of the R-S latch of Figure 3.18, plus
+two additional NAND gates that allow the latch to be set to the value of D, but only when WE is asserted (i.e., when
+WE equals 1). WE stands for write enable. When WE is not asserted (i.e., when WE equals 0), the outputs S and R are 
+both equal to 1. Since S and R are inputs to the R-S latch, if they are kept at 1, the value stored in the latch 
+remains unchanged, as explained earlier When WE is momentarily set to 1, exactly one of the outputs S or R is set to
+0, depending on the value of D. If D equals 1, then S is set to 0. If D equals 0, then both inputs to the lower NAND 
+gate are 1, resulting in R being set to 0. As we saw earlier, if S is set to 0, the R-S latch is set to 1. If R is 
+set to 0, the R-S latch is set to 0. Thus, the R-S latch is set to 1 or 0 according to whether D is 1 or 0. When WE 
+returns to 0, S and R return to 1, and the value stored in the R-S latch persists.
+
+The Concept of Memory
+
+We now have all the tools we need to describe one of the most important structures in the electronic digital computer,
+its memory.
+
+Memory is made up of a (usually large) number of locations, each uniquely identiﬁable and each having the ability to
+store a value. We refer to the unique identiﬁer associated with each memory location as its address. We refer to the
+number of bits of information stored in each location as its addressability.
+
+Address Space: We refer to the total number of uniquely identiﬁable locations as the memory’s address space. A 2 GB 
+memory, for example, refers to a memory that consists of two billion uniquely identiﬁable memory locations.
+
+Actually, the number two billion is only an approximation, due to the way we specify memory locations. Since 
+everything else in the computer is represented by sequences of 0s and 1s, it should not be surprising that memory 
+locations are identiﬁed by binary addresses as well. With n bits of address, we can uniquely identify 2^n locations.
+Ten bits provide 1024 locations, which is approximately 1000. If we have 20 bits to represent each address, we have 
+2^20 uniquely identiﬁable locations, which is approximately one million. With 30 bits, we have 2^30 locations, which
+is approximately one billion. In the same way we use the preﬁxes “kilo” to represent 2^10 (approximately 1000) and 
+“mega” to represent 2^20 (approximately one million), we use the preﬁx “giga” to represent 2^30  (approximately one 
+billion). Thus, 2 giga really corresponds to the number of uniquely identiﬁable locations that can be speciﬁed with 
+31 address bits. We say the address space is 2^31, which is exactly 2,147,483,648 locations, rather than 
+2,000,000,000, although we colloquially refer to it as two billion.
+
+Addressability
+
+The number of bits stored in each memory location is the memory’s addressability. A 2-gigabyte memory (written 2GB)
+is a memory consisting of 2,147,483,648 memory locations, each containing one byte (i.e., eight bits) of storage. 
+Most memories are byte-addressable.
+
+The reason is historical; most computers got their start processing data, and one character stroke on the keyboard 
+corresponds to one 8-bit ASCII code. If the memory is byte-addressable, then each ASCII character occupies one 
+location in memory. Uniquely identifying each byte of memory allows individual bytes of stored information to be 
+changed easily.
+
+Many computers that have been designed speciﬁcally to perform large scientiﬁc calculations are 64-bit addressable. 
+This is due to the fact that numbers used in scientiﬁc calculations are often represented as 64-bit ﬂoating-point 
+quantities.
+
+Since scientiﬁc calculations are likely to use numbers that require 64 bits to represent them, it is reasonable to 
+design a memory for such a computer that stores one such number in each uniquely identiﬁable memory location.
 
