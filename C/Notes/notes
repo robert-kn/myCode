@@ -550,3 +550,14 @@ store information. That is, these structures base their decisions not only on th
 (and this is very important) on what has happened before. These structures are usually called sequential logic 
 circuits. They are distinguishable from combinational logic circuits because, unlike combinational logic circuits,
 they contain storage elements that allow them to keep track of prior history information.
+
+Figure 3.22 shows a block diagram of a sequential logic circuit. Note the storage elements. Note also that the 
+output can be dependent on both the inputs now and the values stored in the storage elements. The values stored in 
+the storage elements reﬂect the history of what has happened before.
+
+Sequential logic circuits are used to implement a very important class of mechanisms called ﬁnite state machines. We
+use ﬁnite state machines in essentially all branches of engineering. For example, they are used as controllers of 
+electrical systems, mechanical systems, and aeronautical systems. A traﬃc light controller that sets the traﬃc light
+to red, yellow, or green depends on the light that is currently on (history information) and input information from 
+sensors such as trip wires on the road, a timer keeping track of how long the current light has been on, and perhaps
+optical devices that are monitoring traﬃc.

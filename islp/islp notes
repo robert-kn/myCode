@@ -396,3 +396,65 @@ the most important recurring themes in this book.
 In a real-life situation in which f is unobserved, it is generally not possible to explicitly compute the test MSE, 
 bias, or variance for a statistical learning method. Nevertheless, one should always keep the bias-variance trade-off
 in mind. 
+
+The Classification Setting:
+
+Thus far, our discussion of model accuracy has been focused on the regression setting. But many of the concepts 
+that we have encountered, such as the bias-variance trade-off, transfer over to the classification setting with only 
+some modifications due to the fact that yᵢ is no longer quantitative. Suppose that we seek to estimate f on the 
+basis of training observations {(x₁,y₁),...,(xₙ,yₙ)}, where now y₁,...,yₙ are qualitative. The most common approach 
+for quantifying the accuracy of our estimate f^ is the training error rate, the proportion of mistakes that are made 
+if we apply our estimate f^ to the training observations: see equation28.png 
+
+Here yˆᵢ is the predicted class label for the ith observation using f^. And I(yᵢ != yᵢˆ) is an indicator variable 
+that equals 1 if yᵢ != yᵢˆ and zero if yᵢ =yᵢˆ. If I(yᵢ != yᵢˆ) == 0 then the ith observation was classifed correctly
+by our classifcation method; otherwise it was misclassifed. Hence Equation 2.8 computes the fraction of incorrect 
+classifcations.
+
+Equation 2.8 is referred to as the training error rate because it is computed based on the data that was used to 
+train our classifer. As in the regression setting, we are most interested in the error rates that result from 
+applying our classifer to test observations that were not used in training. The test error rate associated with a 
+set of test observations of the form (x₀,y₀) is given by see equation29 where y₀ˆ is the predicted class label that 
+results from applying the classifer to the test observation with predictor x₀. A good classifer is one for which the
+test error (2.9) is smallest.
+
+The Bayes Classifer
+
+It is possible to show that the test error rate given in (2.9) is minimized, on average, by a very simple classifer 
+that assigns each observation to the most likely class, given its predictor values. In other words, we should simply
+assign a test observation with predictor vector x₀ to the class j for which see equation210.png is largest. Note that
+(2.10) is a conditional probability: it is the probability that Y = j, given the observed predictor vector x0 . This
+very simple classifer is called the Bayes classifer. In a two-class problem where there are only two possible 
+response values, say class 1 or class 2, the Bayes classifer corresponds to predicting class one if Pr(Y = 1|X = x₀) 
+> 0.5, and class two otherwise.
+
+Figure 2.13 provides an example using a simulated data set in a two-dimensional space consisting of predictors X1 and
+X2. The orange and blue circles correspond to training observations that belong to two diferent classes. For each 
+value of X1 and X2, there is a diferent probability of the response being orange or blue. Since this is simulated 
+data, we know how the data were generated and we can calculate the conditional probabilities for each value of X1 and
+X2. The orange shaded region refects the set of points for which Pr(Y = orange|X) is greater than 50 %, while the 
+blue shaded region indicates the set of points for which the probability is below 50 %. The purple dashed line 
+represents the points where the probability is exactly 50 %. This is called the Bayes  decision  boundary. The Bayes
+classifer’s prediction is determined by the Bayes decision boundary; an observation that falls on the orange side of
+the boundary will be assigned to the orange class, and similarly an observation on the blue side of the boundary will
+be assigned to the blue class.
+
+The Bayes classifer produces the lowest possible test error rate, called the Bayes error rate. Since the Bayes 
+classifer will always choose the class for which (2.10) is largest, the error rate will be 1 − maxⱼ Pr(Y = j|X = x₀)
+at X = x₀. In general, the overall Bayes error rate is given by see equation211.png where the expectation averages 
+the probability over all possible values of X. For our simulated data, the Bayes error rate is 0.133. It is greater 
+than zero, because the classes overlap in the true population, which implies that maxⱼ Pr(Y = j|X = x₀) < 1 for some
+values of x₀. The Bayes error rate is analogous to the irreducible error, discussed earlier.
+
+K -Nearest Neighbors
+
+In theory we would always like to predict qualitative responses using the Bayes classifer. But for real data, we do 
+not know the conditional distribution of Y  given X , and so computing the Bayes classifer is impossible. Therefore,
+the Bayes classifer serves as an unattainable gold standard against which to compare other methods. Many approaches 
+attempt to estimate the conditional distribution of Y given X, and then classify a given observation to the class 
+with highest estimated probability. One such method is the K-nearest neighbors (KNN) classifer. Given a positive 
+integer K and a test observation x₀, the KNN classifer frst identifes the K points in the training data that are 
+closest to x₀, represented by N₀. It then estimates the conditional probability for class j as the fraction of points
+in N₀ whose response values equal j see equation212
+
+Finally, KNN classifes the test observation x₀ to the class with the largest probability from (2.12).
