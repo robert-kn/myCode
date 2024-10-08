@@ -1,3 +1,0 @@
-/* Write a function that accepts a variable number of pointers to integer arguments
-and returns the pointer to the largest number. Write a program that reads three integers
-and uses the function to display the largest value. */

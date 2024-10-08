@@ -561,3 +561,63 @@ electrical systems, mechanical systems, and aeronautical systems. A traﬃc ligh
 to red, yellow, or green depends on the light that is currently on (history information) and input information from 
 sensors such as trip wires on the road, a timer keeping track of how long the current light has been on, and perhaps
 optical devices that are monitoring traﬃc.
+
+A Simple Example: The Combination Lock
+
+A simple example shows the diﬀerence between combinational logic structures and sequential logic structures. Suppose
+one wishes to secure a bicycle with a lock, but does not want to carry a key. A common solution is the combination 
+lock. The person memorizes a “combination” and uses it to open the lock. Two common types of locks are shown in 
+Figure 3.23.
+
+In Figure 3.23a, the lock consists of a dial, with the numbers from 0 to 30 equally spaced around its circumference.
+To open the lock, one needs to know the “combination.” One such combination could be: R13-L22-R3. If this were the 
+case, one would open the lock by turning the dial two complete turns to the right (clockwise), and then continuing 
+until the dial points to 13, followed by one complete turn to the left (counter clockwise), and then continuing until
+the dial points to 22, followed by turning the dial again to the right (clockwise) until it points to 3. At that 
+point, the lock opens. What is important here is the sequence of the turns. The lock will not open, for example if 
+one performed two turns to the right, and then stopped on 22 (instead of 13), followed by one complete turn to the 
+left, ending on 13, followed by one turn to the right, ending on 3. That is, even though the ﬁnal position of the 
+dial is 3, and even though R22-L13-R3 uses the same three numbers as the combination R13-L22-R3, the lock would not 
+open. Why? Because the lock stores the previous rotations and makes its decision (open or don’t open) on the basis of
+the the history of the past operations, that is, on the correct sequence being performed.
+
+Another type of lock is shown in Figure 3.23b. The mechanism consists of (usually) four wheels, each containing the 
+digits 0 through 9. When the digits are lined up properly, the lock will open. In this case, the combination is the 
+set of four digits. Whether or not this lock opens is totally independent of the past rotations of the four wheels. 
+The lock does not care at all about past rotations. The only thing important is the current value of each of the 
+four wheels. This is a simple example of a combinational structure.
+
+It is curious that in our everyday speech, both mechanisms are referred to as “combination locks.” In fact, only the
+lock of Figure 3.23b is a combinational lock. The lock of Figure 3.23a would be better called a sequential lock!
+
+The Concept of State
+
+For the mechanism of Figure 3.23a to work properly, it has to keep track of the sequence of rotations leading up to 
+the opening of the lock. In particular, it has to diﬀerentiate the correct sequence R13-L22-R3 from all other 
+sequences. For example, R22-L13-R3 must not be allowed to open the lock. Likewise, R10-L22- R3 must also not be 
+allowed to open the lock.
+
+For the lock of Figure 3.23a to work, it must identify several relevant situations, as follows:
+
+A.  The  lock  is  not  open,  and  NO  relevant  operations  have  been performed.
+B.  The  lock  is  not  open,  but  the  user  has  just  completed  the R13  operation.
+C.   The  lock  is  not  open,  but  the  user  has  just  completed  R13, followed  by  L22.
+D.  The  lock  is  open,  since  the  user  has  just  completed  R13, followed  by  L22,  followed  by  R3.
+
+We have labeled these four situations A, B, C, and D. We refer to each of these situations as the state of the lock.
+The notion of state is a very important concept in computer engineering, and actually, in just about all branches of
+engineering. The state of a mechanism— more generally, the state of a system—is a snapshot of that system in which 
+all relevant items are explicitly expressed.
+
+That is: The state of a system is a snapshot of all the relevant elements of the system at the moment the snapshot 
+is taken.
+
+In the case of the lock of Figure 3.23a, there are four states A, B, C, and D. Either the lock is open (State D), or
+if it is not open, we have already performed either zero (State A), one (State B), or two (State C) correct 
+operations. This is the sum total of all possible states that can exist.
+
+Question: Why are there exactly four states needed to describe the combination lock of Figure 3.23a? Can you think 
+of a snapshot of the combination lock after an operation (Rn or Ln) that requires a ﬁfth state because it is not 
+covered by one of the four states A, B, C, or D?
+
+There are many examples of systems that you are familiar with that can be easily described by means of states.

@@ -1,1 +1,0 @@
-/* Modify the previous exercise to use qsort() to sort the names. */
