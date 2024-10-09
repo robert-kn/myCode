@@ -52,3 +52,31 @@ int main(void)
 
 /* If you rerun the program and give as an input the encrypted fle and the same key, the output fle would be the same as the original fle, because according to the Boole algebra we have: 
 (a ^ b) ^ b = a.*/
+
+int read_text(char str[], int size, int flag) 
+{
+    int len;
+
+    if(fgets(str, size, stdin) == NULL)
+    {
+        printf("Error: fgets() failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    len = strlen(str);
+
+    if(len > 0)
+    {
+        if(flag && (str[len-1] == '\n'))
+        {
+            str[len-1] = '\0';
+            len--;
+        }
+    }
+    else
+    {
+        printf("Error: No input\n");
+        exit(EXIT_FAILURE);
+    }
+    return len;
+}
