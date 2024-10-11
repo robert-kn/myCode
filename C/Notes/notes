@@ -22,7 +22,7 @@ Each microarchitecture is an opportunity for computer designers to make differen
 of the microprocessor, the performance that it will provide, and the energy that it will consume.
 
 The following are the transformations that need to happen in order for computers to be used to 
-solve a problem when electron move across a voltage potential:
+solve a problem when an electron move across a voltage potential:
 
 Problem expressed in natural language -> algorithm -> program -> ISA -> microarchitecture ->
 logic circuits -> the devices  (cmos circuits, nmos circuits and gallium arsenide circuits)
@@ -57,9 +57,8 @@ overflow in signed negative numbers during arithmetic is easy to test for becaus
 which means that the number becomes positive. In contrast, when adding two positive signed numbers, overflow occurs 
 when the msb is turned on meaning that the result becomes negative.
 
-Suppose we wish to know if two patterns are identical. Since the XOR function pro-
-duces a 0 only if the corresponding pair of bits is identical, two patterns are identical
-if the output of the XOR is all 0s.
+Suppose we wish to know if two patterns are identical. Since the XOR function produces a 0 only if the corresponding
+pair of bits is identical, two patterns are identical if the output of the XOR is all 0s.
 
 Floating Point Data Type (Greater Range, Less Precision): Most ISAs today specify more than one ﬂoating point 
 data type. One of them, usually called ﬂoat, consists of 32 bits, allocated as follows:
@@ -91,7 +90,7 @@ number in normalised form only if the eight-bit exponent is restricted to the 25
 1 (00000001) through 254 (11111110).
 
 As you know, with eight bits, one can represent 256 values uniquely. For the other two integer values 0 
-(00000000) and 255 (11111111), the ﬂoating point data type does not represent normalized numbers.
+(00000000) and 255 (11111111), the ﬂoating point data type does not represent normalised numbers.
 
 A normalised number is a representation of a real number in scientific notation where:
 1. One non-zero digit precedes the decimal point (mantissa).
