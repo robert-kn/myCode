@@ -399,9 +399,9 @@ gates, a barrel of OR gates, and a barrel of NOT gates are suﬃcient to build a
 speciﬁcation of any desired truth table. The barrels may have to be big, but the point is, we do not need any other 
 kind of gate to do the job.
 
-Question: Is there any single two-input logic gate that is logically complete? For example, is the NAND gate 
-logically complete? Hint: Can I implement a NOT gate with a NAND gate? If yes, can I then implement an AND gate 
-using a NAND gate followed by a NOT gate? If yes, can I implement an OR gate using just AND gates and NOT gates?
+Question: Is there any single two-input logic gate that is logically complete? no. For example, is the NAND gate 
+logically complete? no. Hint: Can I implement a NOT gate with a NAND gate? no. If yes, can I then implement an AND gate 
+using a NAND gate followed by a NOT gate? no. If yes, can I implement an OR gate using just AND gates and NOT gates? no
 
 If all of the above is true, then the NAND gate is logically complete, and I can implement any desired logic 
 function as described by its truth table with a barrel of NAND gates.
