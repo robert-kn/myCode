@@ -605,7 +605,7 @@ D.  The  lock  is  open,  since  the  user  has  just  completed  R13, followed 
 
 We have labeled these four situations A, B, C, and D. We refer to each of these situations as the state of the lock.
 The notion of state is a very important concept in computer engineering, and actually, in just about all branches of
-engineering. The state of a mechanism— more generally, the state of a system—is a snapshot of that system in which 
+engineering. The state of a mechanism — more generally, the state of a system —is a snapshot of that system in which 
 all relevant items are explicitly expressed.
 
 That is: The state of a system is a snapshot of all the relevant elements of the system at the moment the snapshot 
@@ -620,3 +620,4 @@ of a snapshot of the combination lock after an operation (Rn or Ln) that require
 covered by one of the four states A, B, C, or D?
 
 There are many examples of systems that you are familiar with that can be easily described by means of states.
+
