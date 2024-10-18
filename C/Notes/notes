@@ -589,7 +589,7 @@ four wheels. This is a simple example of a combinational structure.
 It is curious that in our everyday speech, both mechanisms are referred to as “combination locks.” In fact, only the
 lock of Figure 3.23b is a combinational lock. The lock of Figure 3.23a would be better called a sequential lock!
 
-The Concept of State
+3.6.2 The Concept of State
 
 For the mechanism of Figure 3.23a to work properly, it has to keep track of the sequence of rotations leading up to 
 the opening of the lock. In particular, it has to diﬀerentiate the correct sequence R13-L22-R3 from all other 
@@ -621,3 +621,118 @@ covered by one of the four states A, B, C, or D?
 
 There are many examples of systems that you are familiar with that can be easily described by means of states.
 
+3.6.3 The Finite State Machine and Its State Diagram
+
+The behavior of each of the combinational lock can be described by a finite state machine and represented as a state
+diagram.
+
+A ﬁnite state machine consists of ﬁve elements:
+
+1. a ﬁnite number of states
+2. a ﬁnite number of external inputs
+3. a ﬁnite number of external outputs
+4. an explicit speciﬁcation of all state transitions
+5. an explicit speciﬁcation of what determines each external output value.
+
+The set of states represents all possible situations (or snapshots) that the system can be in. Each state transition
+describes what it takes to get from one state to another.
+
+Let’s examine the ﬁnite state machines for the combination lock:
+
+A state diagram is a convenient representation of a ﬁnite state machine. Figure 3.26 is a state diagram for the 
+combination lock. Recall, we identiﬁed four states A, B, C, and D. Which state we are in depends on the progress we 
+have made in getting from a random initial state to the lock being open. In the state diagram of Figure 3.26, each 
+circle corresponds to one of the four states, A, B, C, or D.
+
+The external inputs are R13, L22, R3, and R-other-than-13, L-other-than-22, and R-other-than-3.
+
+The external output is either the lock is open or the lock is not open. (One logical variable will suﬃce to 
+describe that!) As shown in the state diagram, in states A, B, and C, the combination lock is locked. In state D, 
+the combination lock is open.
+
+The explicit speciﬁcations of all state transitions are shown by the arrows in the state diagram. The more 
+sophisticated term for “arrow” is arc. The arrowhead on each arc speciﬁes which state the system is coming from and 
+which state it is going to. We refer to the state the system is coming from as the current state, and the state it 
+is going to as the next state. The combination lock has eight state transitions. Associated with each transition is 
+the input that causes the transition from the current state to the next state. For example, R13 causes the 
+transition from state A to state B.
+
+A couple of things are worth noting. First, it is usually the case that from a current state there are multiple 
+transitions to next states. The state transition that occurs depends on both the current state and the value of the 
+external input. For example, if the combination lock is in state B, and the input is L22, the next state is state C.
+If the current state is state B and the input is anything other than L22, the next state is state A. In short, the 
+next state is determined by the combination of the current state and the current external input.
+
+The output values of a system can also be determined by the combination of the current state and the value of the 
+current external input. However, as is the case for the combination lock, where states A, B, and C specify the lock 
+is “locked,” and state D speciﬁes the lock is “unlocked,” the output can also be determined solely by the current 
+state of the system. In all the systems we will study in this book, the output values will be speciﬁed solely by the
+current state of the system.
+
+3.6.4 The Synchronous Finite State Machine
+
+Up to now a transition from a current state to a next state in our ﬁnite state machine happened when it happened. For
+example, a person could insert a nickel into the soft drink machine and then wait 10 seconds or 10 minutes before 
+inserting the next coin into the machine. And the soft drink machine would not complain. It would not dispense the 
+soft drink until 15 cents was inserted, but it would wait patiently as long as necessary for the 15 cents to be 
+inserted. That is, there is no ﬁxed amount of time between successive inputs to the ﬁnite state machine. This is 
+true in the case of all four systems we have discussed. We say these systems are asynchronous because there is 
+nothing synchronizing when each state transition must occur.
+
+However, almost no computers work that way. On the contrary, we say that computers are synchronous because the state
+transitions take place, one after the other, at identical ﬁxed units of time. They are controlled by a synchronous 
+ﬁnite state machine.
+
+It is worth pointing out that both the four asynchronous ﬁnite state machines discussed above and the synchronous 
+ﬁnite state machine that controls a digital computer share an important characteristic: They carry out work, one 
+state transition at a time, moving closer to a goal. In the case of the combination lock, as long as you make the 
+correct moves, each state transition takes us closer to the lock opening. In the case of the soft drink machine, 
+each state transition takes us closer to enjoying the taste of the soft drink. In the case of a computer, each 
+state transition takes us closer to solving a problem by processing a computer program that someone has written.
+
+3.6.5 The Clock
+
+A synchronous ﬁnite state machine transitions from its current state to its next state after an identical ﬁxed 
+interval of time. Control of that synchronous behavior is in part the responsibility of the clock circuit.
+
+A clock circuit produces a signal, commonly referred to as THE clock, whose value alternates between 0 volts and 
+some speciﬁed ﬁxed voltage. In digital logic terms, the clock is a signal whose value alternates between 0 and 1. 
+Figure 3.28 shows the value of the clock signal as a function of time. Each of the repeated sequence of identical 
+intervals is referred to as a clock cycle. A clock cycle starts when the clock signal transitions from 0 to 1 and 
+ends the next time the clock signal transitions from 0 to 1.
+
+In each clock cycle, a computer can perform a piece of useful work. When people say their laptop computers run at a 
+frequency of 2 gigahertz, they are saying their laptop computers perform two billion pieces of work each second 
+since 2 gigahertz means two billion clock cycles each second, each clock cycle lasting for just one-half of a 
+nanosecond. The synchronous ﬁnite state machine makes one state transition each clock cycle.
+
+We will show by means of a traﬃc signal controller how the clock signal controls the transition, ﬁxed clock cycle 
+after ﬁxed clock cycle, from one state to the next.
+In electronic circuit implementations of a synchronous ﬁnite state machine, the transition from one state to the 
+next occurs at the start of each clock cycle.
+
+3.6.6 Example: A Danger Sign
+
+Many electrical, mechanical, and aeronautical systems are controlled by a synchronous ﬁnite state machine. Figure 
+3.29 shows the danger sign as it will be placed on the highway. Note the sign says, “Danger, Move Right.” The sign 
+contains ﬁve lights (labeled 1 through 5 in the ﬁgure).
+
+The purpose of our synchronous ﬁnite state machine (a.k.a. a controller) is to direct the behavior of our system. In
+our case, the system is the set of lights on the traﬃc danger sign. The controller’s job is to have the ﬁve lights 
+ﬂash on and oﬀ to warn automobile drivers to move to the right. The controller is equipped with a switch. When the 
+switch is in the ON position, the controller directs the lights as follows: During one unit of time, all lights will
+be oﬀ. In the next unit of time, lights 1 and 2 will be on. The next unit of time, lights 1, 2, 3, and 4 will be on.
+Then all ﬁve lights will be on. Then the sequence repeats: no lights on, followed by 1 and 2 on, followed by 1, 2, 3,
+and 4 on, and so forth. Each unit of time lasts one second. To an automobile driver approaching the sign, the ﬁve 
+lights clearly direct the driver to move to the right. The lights continue to sequence through these four states as 
+long as the switch is on. If the switch is turned oﬀ, all the lights are turned oﬀ and remain oﬀ.
+
+The State Diagram for the Danger Sign Controller 
+
+Figure 3.30 is a state diagram for the synchronous ﬁnite state machine that controls the lights. There are four 
+states, one for each of the four conditions corresponding to which lights are on. Note that the outputs (whether each
+light is on or oﬀ) are determined by the current state of the system.
+
+If the switch is on (input = 1), the transition from each state to the next state happens at one-second intervals, 
+causing the lights to ﬂash in the sequence described. If the switch is turned oﬀ (input = 0), the state always 
+transitions to state A, the “all oﬀ” state.
