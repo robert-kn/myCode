@@ -736,3 +736,146 @@ light is on or oﬀ) are determined by the current state of the system.
 If the switch is on (input = 1), the transition from each state to the next state happens at one-second intervals, 
 causing the lights to ﬂash in the sequence described. If the switch is turned oﬀ (input = 0), the state always 
 transitions to state A, the “all oﬀ” state.
+
+The Sequential Logic Circuit for the Danger Sign Controller
+
+Recall that Figure 3.22 shows a generic block diagram for a sequential logic circuit.Figure 3.31 is a block diagram 
+of the speciﬁc sequential logic circuit we need to control the lights. Several things are important to note in this 
+ﬁgure.
+
+First, the two external inputs: the switch and the clock. The switch determines whether the ﬁnite state machine will
+transition through the four states or whether it will transition to state A, where all lights are oﬀ. The other 
+input (the clock) controls the transition from state A to B, B to C, C to D, and D to A by controlling the state of 
+the storage elements. 
+
+Second, there are two storage elements for storing state information. Since there are four states, and since each 
+storage element can store one bit of information, the four states are identiﬁed by the contents of the two storage 
+elements: A (00), B (01), C (10), and D (11). Storage element 2 contains the high bit; storage element 1 contains 
+the low bit. For example, the danger sign controller is in state B when storage element 2 is 0 and storage element 
+1 is 1.
+
+Third, combinational logic circuit 1 shows that the on/oﬀ behavior of the lights is controlled by the storage 
+elements. That is, the input to the combinational logic circuit is from the two storage elements, that is, the
+current state of the ﬁnite state machine.
+
+Finally, combinational logic circuit 2 shows that the transition from the current state to the next state depends on
+the two storage elements and the switch. If the switch is on, the output of combinational logic circuit 2 depends on
+the state of the two storage elements.
+
+The Combinational Logic: Figure 3.32 shows the logic that implements combinational logic circuits 1 and 2.
+
+Two sets of outputs are required for the controller to work properly: a set of external outputs for the lights and a
+set of internal outputs for the inputs to the two storage elements that keep track of the state.
+
+First, let us look at the outputs that control the lights. As we have said, there are only three outputs necessary 
+to control the lights. Light 5 is controlled by the output of the AND gate labeled V, since the only time light 5 
+is on is when the controller is in state 11. Lights 3 and 4 are controlled by the output of the OR gate labeled X, 
+since there are two states in which those lights are on, those labeled 10 and 11. Why are lights 1 and 2 controlled 
+by the output of the OR gate labeled W?
+
+Next, let us look at the internal outputs that control the storage elements, which specify the next state of the 
+controller. Storage element 2 should be set to 1 for the next clock cycle if the next state is 10 or 11. This is 
+true only if the switch is on and the current state is either 01 or 10. Therefore, the output signal that will make 
+storage element 2 be 1 in the next clock cycle is the output of the OR gate labeled Y. Why is the next state of 
+storage element 1 controlled by the output of the OR gate labeled Z?
+
+The Two Storage Elements: In order for the danger sign controller to work, the state transitions must occur once 
+per second when the switch is on.
+
+A Problem with Gated Latches as Storage Elements: What would happen if the storage elements were gated D latches? If 
+the two storage elements were gated D latches, when the write enable signal (the clock) is 1, the output of OR gates
+Y and Z would immediately change the bits stored in the two gated D latches. This would produce new input values to 
+the three AND gates that are input to OR gates Y and Z, producing new outputs that would be applied to the inputs of
+the gated latches, which would in turn change the bits stored in the gated latches, which would in turn mean new 
+inputs to the three AND gates and new outputs of OR gates Y and Z. This would happen again and again, continually 
+changing the bits stored in the two storage elements as long as the Write Enable signal to the gated D latches was 
+asserted. The result: We have no idea what the state of the ﬁnite state machine would be for the next clock cycle. 
+And, even in the current clock cycle, the state of the storage elements would change so fast that the ﬁve lights 
+would behave erratically.
+
+The problem is the gated D latch. We want the output of OR gates Y and Z to transition to the next state at the end 
+of the current clock cycle and allow the current state to remain unchanged until then. That is, we do not want the 
+input to the storage elements to take eﬀect until the end of the current clock cycle. Since the output of a gated D 
+latch changes immediately in response to its input if the Write Enable signal is asserted, it cannot be the storage 
+element for our synchronous ﬁnite state machine. We need storage elements that allow us to read the current state 
+throughout the current clock cycle, and not write the next state values into the storage elements until the 
+beginning of the next clock cycle.
+
+The Flip-Flop to the Rescue: It is worth repeating; To prevent the above from happening, we need storage elements 
+that allow us to read the current state throughout the current clock cycle, and not write the next state values into
+the storage elements until the beginning of the next clock cycle. That is, the function to be performed during a 
+single clock cycle involves reading and writing a particular variable. Reading must be allowed throughout the 
+clock cycle, and writing must occur at the end of the clock cycle.
+
+A ﬂip-ﬂop can accomplish that. One example of a ﬂip-ﬂop is the master/slave ﬂip-ﬂop shown in Figure 3.33. The 
+master/slave ﬂip-ﬂop can be constructed out of two gated D latches, one referred to as the master, the other referred
+to as the slave. Note that the write enable signal of the master is 1 when the clock is 0, and the write enable 
+signal of the slave is 1 when the clock is 1.
+
+Figure 3.34 is a timing diagram for the master/slave ﬂip-ﬂop, which shows how and why the master/slave ﬂip-ﬂop solves
+the problem. A timing diagram shows time passing from left to right. Note that clock cycle n starts at the time 
+labeled 1 and ends at the time labeled 4. Clock cycle n+1 starts at the time labeled 4.
+
+Consider clock cycle n, which we will discuss in terms of its ﬁrst half A, its second half B, and the four time 
+points labeled 1, 2, 3, and 4.
+
+At the start of each clock cycle, the outputs of the storage elements are the outputs of the two slave latches. 
+These outputs (starting at time 1) are input to the AND gates, resulting in OR gates Y and Z producing the next 
+state values for the storage elements (at time 2). The timing diagram shows the propagation delay of the 
+combinational logic, that is, the time it takes for the combinational logic to produce outputs of OR gates Y and Z. 
+Although OR gates Y and Z produce the Next State value sometime during half-cycle A, the write enable signal to the 
+master latches is 0, so the next state cannot be written into the master latches.
+
+At the start of half-cycle B (at time 3), the clock signal is 0, which means the write enable signal to the master 
+latches is 1, and the master latches can be written. However, during the half-cycle B, the write enable to the slave
+latches is 0, so the slave latches cannot write the new information now stored in the master latches.
+
+At the start of clock cycle n+1 (at time 4), the write enable signal to the slave latches is 1, so the slave latches
+can store the next state value that was created by the combinational logic during clock cycle n. This becomes the 
+current state for clock cycle n+1.
+
+Since the write enable signal to the master latches is now 0, the state of the master latches cannot change. Thus, 
+although the write enable signal to the slave latches is 1, those latches do not change because the master latches 
+cannot change.
+
+In short, the output of the slave latches contains the current state of the system for the duration of the clock 
+cycle and produces the inputs to the six AND gates in the combinational logic circuits. Their state changes at the 
+start of the clock cycle by storing the next state information created by the combinational logic during the 
+previous cycle but does not change again during the clock cycle. The reason they do not change again during the 
+clock cycle is as follows: During half-cycle A, the master latches cannot change, so the slave latches continue to 
+see the state information that is the current state for the new clock cycle. During half-cycle B, the slave latches 
+cannot change because the clock signal is 0.
+
+Meanwhile, during half-cycle B, the master latches can store the next state information produced by the combinational
+logic, but they cannot write it into the slave latches until the start of the next clock cycle, when it becomes the 
+state information for the next clock cycle.
+
+3.7 Preview of Coming Attractions: The Data Path of the LC-3
+
+We close out Chapter 3 with a discussion of Figure 3.35, the data path of the LC-3 computer. The data path consists 
+of all the logic structures that combine to process information in the core of the computer. Right now, Figure 3.35 
+is undoubtedly more than a little intimidating, but you should not be concerned by that. You are not ready to 
+analyze it yet. That will come in Chapter 5. We have included it here, however, to show you that you are already 
+familiar with many of the basic structures that make up a computer.
+
+For example, you see ﬁve MUXes in the data path, and you already know how they work. Also, an adder (shown as the 
+ALU symbol with a + sign inside) and an ALU. You know how those elements are constructed from gates.
+
+One element that we have not identified explicitly yet is a register. A register is simply a set of n flip-flops that
+collectively are used to store one n-bit value. In Figure 3.35, PC, IR, MAR, and MDR are all 16-bit registers that 
+store 16 bits of information each. The block labeled REG FILE consists of eight registers that each store 16 bits of
+information. As you know, one bit of information can be stored in one flip-flop. Therefore, each of these registers 
+consists of 16 flip-flops. The data path also shows three 1-bit registers, N, Z, and P. Those registers require only
+one flip-flop each. In fact, a register can be any size that we need. The size depends only on the number of bits we
+need to represent the value we wish to store.
+
+One way to implement registers is with master/slave ﬂip-ﬂops. Figure 3.36 shows a four-bit register made up of four 
+master/slave ﬂip-ﬂops. We usually need ﬂip-ﬂops, rather than latches, because it is usually important to be able to 
+both read the contents of a register throughout a clock cycle and also store a new value in the register at the end 
+of that same clock cycle. As shown in Figure 3.36, the four-bit value stored in the register during a clock cycle is
+Q₃, Q₂, Q₁, Q₀. At the end of that clock cycle, the value D₃, D₂, D₁, D₀ is written into the register.
+
+The arrows in Figure 3.35 represent wires that transmit values from one struc- ture to another. Most of the arrows 
+include a cross-hatch with a number next to it. The number represents the number of wires, corresponding to the 
+number of bits being transmitted. Thus, for example, the arrow from the register labeled PC to one of the inputs of 
+the MUX labeled ADDR1MUX indicates that 16 bits are transmitted from PC to an input of ADDR1MUX.

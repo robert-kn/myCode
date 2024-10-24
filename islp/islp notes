@@ -374,7 +374,7 @@ solid curve represents the squared bias, for diferent levels of flexibility, whi
 the variance. The horizontal dashed line represents Var(e), the irreducible error. Finally, the red curve, 
 corresponding to the test set MSE, is the sum of these three quantities. In all three cases, the variance increases 
 and the bias decreases as the method’s flexibility increases. However, the flexibility level corresponding to the 
-optimal test MSE difers considerably among the three data sets, because the squared bias and variance change at 
+optimal test MSE differs considerably among the three data sets, because the squared bias and variance change at 
 different rates in each of the data sets.
 
 In the left-hand panel of Figure 2.12, the bias initially decreases rapidly, resulting in an initial sharp decrease 
@@ -407,24 +407,24 @@ for quantifying the accuracy of our estimate f^ is the training error rate, the 
 if we apply our estimate f^ to the training observations: see equation28.png 
 
 Here yˆᵢ is the predicted class label for the ith observation using f^. And I(yᵢ != yᵢˆ) is an indicator variable 
-that equals 1 if yᵢ != yᵢˆ and zero if yᵢ =yᵢˆ. If I(yᵢ != yᵢˆ) == 0 then the ith observation was classifed correctly
+that equals 1 if yᵢ != yᵢˆ and zero if yᵢ = yᵢˆ. If I(yᵢ != yᵢˆ) == 0 then the ith observation was classifed correctly
 by our classifcation method; otherwise it was misclassifed. Hence Equation 2.8 computes the fraction of incorrect 
-classifcations.
+classifications.
 
 Equation 2.8 is referred to as the training error rate because it is computed based on the data that was used to 
 train our classifer. As in the regression setting, we are most interested in the error rates that result from 
 applying our classifer to test observations that were not used in training. The test error rate associated with a 
 set of test observations of the form (x₀,y₀) is given by see equation29 where y₀ˆ is the predicted class label that 
-results from applying the classifer to the test observation with predictor x₀. A good classifer is one for which the
+results from applying the classifer to the test observation with predictor x₀. A good classifier is one for which the
 test error (2.9) is smallest.
 
 The Bayes Classifer
 
-It is possible to show that the test error rate given in (2.9) is minimized, on average, by a very simple classifer 
+It is possible to show that the test error rate given in (2.9) is minimized, on average, by a very simple classifier 
 that assigns each observation to the most likely class, given its predictor values. In other words, we should simply
 assign a test observation with predictor vector x₀ to the class j for which see equation210.png is largest. Note that
-(2.10) is a conditional probability: it is the probability that Y = j, given the observed predictor vector x0 . This
-very simple classifer is called the Bayes classifer. In a two-class problem where there are only two possible 
+(2.10) is a conditional probability: it is the probability that Y = j, given the observed predictor vector x₀. This
+very simple classifier is called the Bayes classifer. In a two-class problem where there are only two possible 
 response values, say class 1 or class 2, the Bayes classifer corresponds to predicting class one if Pr(Y = 1|X = x₀) 
 > 0.5, and class two otherwise.
 
@@ -432,15 +432,15 @@ Figure 2.13 provides an example using a simulated data set in a two-dimensional 
 X2. The orange and blue circles correspond to training observations that belong to two diferent classes. For each 
 value of X1 and X2, there is a diferent probability of the response being orange or blue. Since this is simulated 
 data, we know how the data were generated and we can calculate the conditional probabilities for each value of X1 and
-X2. The orange shaded region refects the set of points for which Pr(Y = orange|X) is greater than 50 %, while the 
-blue shaded region indicates the set of points for which the probability is below 50 %. The purple dashed line 
-represents the points where the probability is exactly 50 %. This is called the Bayes  decision  boundary. The Bayes
+X2. The orange shaded region reflects the set of points for which Pr(Y = orange|X) is greater than 50%, while the 
+blue shaded region indicates the set of points for which the probability is below 50%. The purple dashed line 
+represents the points where the probability is exactly 50%. This is called the Bayes  decision  boundary. The Bayes
 classifer’s prediction is determined by the Bayes decision boundary; an observation that falls on the orange side of
 the boundary will be assigned to the orange class, and similarly an observation on the blue side of the boundary will
 be assigned to the blue class.
 
-The Bayes classifer produces the lowest possible test error rate, called the Bayes error rate. Since the Bayes 
-classifer will always choose the class for which (2.10) is largest, the error rate will be 1 − maxⱼ Pr(Y = j|X = x₀)
+The Bayes classifier produces the lowest possible test error rate, called the Bayes error rate. Since the Bayes 
+classifier will always choose the class for which (2.10) is largest, the error rate will be 1 − maxⱼ Pr(Y = j|X = x₀)
 at X = x₀. In general, the overall Bayes error rate is given by see equation211.png where the expectation averages 
 the probability over all possible values of X. For our simulated data, the Bayes error rate is 0.133. It is greater 
 than zero, because the classes overlap in the true population, which implies that maxⱼ Pr(Y = j|X = x₀) < 1 for some
@@ -449,46 +449,69 @@ values of x₀. The Bayes error rate is analogous to the irreducible error, disc
 K -Nearest Neighbors
 
 In theory we would always like to predict qualitative responses using the Bayes classifer. But for real data, we do 
-not know the conditional distribution of Y  given X , and so computing the Bayes classifer is impossible. Therefore,
-the Bayes classifer serves as an unattainable gold standard against which to compare other methods. Many approaches 
+not know the conditional distribution of Y given X , and so computing the Bayes classifer is impossible. Therefore,
+the Bayes classifier serves as an unattainable gold standard against which to compare other methods. Many approaches 
 attempt to estimate the conditional distribution of Y given X, and then classify a given observation to the class 
 with highest estimated probability. One such method is the K-nearest neighbors (KNN) classifer. Given a positive 
-integer K and a test observation x₀, the KNN classifer frst identifes the K points in the training data that are 
+integer K and a test observation x₀, the KNN classifer first identifes the K points in the training data that are 
 closest to x₀, represented by N₀. It then estimates the conditional probability for class j as the fraction of points
 in N₀ whose response values equal j see equation212
 
-Finally, KNN classifes the test observation x₀ to the class with the largest probability from (2.12).
+Finally, KNN classifies the test observation x₀ to the class with the largest probability from (2.12).
 
 Figure 2.14 provides an illustrative example of the KNN approach. In the left-hand panel, we have plotted a small 
 training data set consisting of six blue and six orange observations. Our goal is to make a prediction for the point
-labeled by the black cross. Suppose that we choose K =3. Then KNN will frst identify the three observations that are
+labeled by the black cross. Suppose that we choose K=3. Then KNN will first identify the three observations that are
 closest to the cross. This neighborhood is shown as a circle. It consists of two blue points and one orange point, 
 resulting in estimated probabilities of 2/3 for the blue class and 1/3 for the orange class. Hence KNN will predict 
 that the black cross belongs to the blue class. In the right-hand panel of Figure 2.14 we have applied the KNN 
-approach with K =3at all of the possible values for X₁ and X₂ , and have drawn in the corresponding KNN decision 
+approach with K =3 at all of the possible values for X₁ and X₂, and have drawn in the corresponding KNN decision 
 boundary.
 
-Despite the fact that it is a very simple approach, KNN can often pro- duce classifers that are surprisingly close 
-to the optimal Bayes classifer. Figure 2.15 displays the KNN decision boundary, using K = 10, when ap- plied to the 
+Despite the fact that it is a very simple approach, KNN can often produce classifers that are surprisingly close 
+to the optimal Bayes classifer. Figure 2.15 displays the KNN decision boundary, using K = 10, when applied to the 
 larger simulated data set from Figure 2.13. Notice that even though the true distribution is not known by the KNN 
 classifer, the KNN decision boundary is very close to that of the Bayes classifer. The test error rate using KNN is 
 0.1363, which is close to the Bayes error rate of 0.1304.
 
 The choice of K has a drastic efect on the KNN classifer obtained. Figure 2.16 displays two KNN fits to the simulated
-data from Figure 2.13, using K = 1 and K = 100. When K = 1, the decision boundary is overly fexible and fnds patterns
+data from Figure 2.13, using K = 1 and K = 100. When K = 1, the decision boundary is overly flexible and finds patterns
 in the data that don’t correspond to the Bayes decision boundary. This corresponds to a classifer that has low bias 
-but very high variance. As K grows, the method becomes less fexible and produces a decision boundary that is close 
+but very high variance. As K grows, the method becomes less flexible and produces a decision boundary that is close 
 to linear. This corresponds to a low-variance but high-bias classifer. On this simulated data set, neither K = 1 nor
 K = 100 give good predictions: they have test error rates of 0.1695 and 0.1925, respectively.
 
 Just as in the regression setting, there is not a strong relationship between the training error rate and the test 
 error rate. With K = 1, the KNN training error rate is 0, but the test error rate may be quite high. In general, as 
-we use more fexible classifcation methods, the training error rate will decline but the test error rate may not. In 
-Figure 2.17, we have plotted the KNN test and training errors as a function of 1/K . As 1/K increases, the method 
-becomes more fexible. As in the regression setting, the training error rate consistently declines as the fexibility 
-increases. However, the test error exhibits a characteristic U-shape, declining at frst (with a minimum at 
-approximately K = 10) before increasing again when the method becomes excessively fexible and overfts.
+we use more flexible classification methods, the training error rate will decline but the test error rate may not. In 
+Figure 2.17, we have plotted the KNN test and training errors as a function of 1/K. As 1/K increases, the method 
+becomes more flexible. As in the regression setting, the training error rate consistently declines as the flexibility 
+increases. However, the test error exhibits a characteristic U-shape, declining at first (with a minimum at 
+approximately K = 10) before increasing again when the method becomes excessively flexible and overfits.
 
-In both the regression and classifcation settings, choosing the correct level of fexibility is critical to the 
-success of any statistical learning method. The bias-variance tradeof, and the resulting U-shape in the test error, 
-can make this a difcult task.
+In both the regression and classification settings, choosing the correct level of flexibility is critical to the 
+success of any statistical learning method. The bias-variance tradeoff, and the resulting U-shape in the test error, 
+can make this a difficult task.
+
+In order to run the code in the book visit https://www.statlearning.com/resources-python and follow instructions.
+Essentially, you will need to do the following:
+- install conda which is a command line tool for package and environment management that runs on linux, windows and
+macos 
+
+- once conda is installed, create a conda environment to isolate code from other dependencies i.e. conda create
+--name islp python=3.11
+
+- conda activate islp
+
+- Once in the env, install the ISLP package using the command pip install ISLP
+
+- The ISLP package will include datasets and custom built functions provide to you by the teaching staff. It also
+downloads all other packages needed by the labs you will tackle.
+
+- to run a lab run the command jupyter lab <*.ipynb>
+
+- the islp labs use torch and various related packages for the lab on deep learning. You can find the name of all the
+packages installed in the requirements.txt file in this repo https://github.com/intro-stat-learning/ISLP_labs/blob/v2.2/requirements.txt
+
+- for more information on the datasets used in the book, where they were sourced from etc see https://intro-stat-learning.github.io/ISLP/data.html
+
