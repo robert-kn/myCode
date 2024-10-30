@@ -1,9 +1,171 @@
+chapter 1
+
 Today's Internet is arguably the largest engineered system ever created by mankind, with hundreds of millions of 
 connected computers, communication links, and switches.
 
-Given that the Internet is so large and has so many diverse components and uses, is there any hope of understanding how it works? 
+The Internet is a computer network that interconnects billions of computing devices throughout the world. Not too 
+long ago, these computing devices were primarily traditional desktop PCs, Linux workstations, and so-called servers 
+that store and transmit information such as Web pages and e-mail messages. Increasingly, however, nontraditional 
+Internet "things" such as laptops, smartphones, tablets, TVs, gaming consoles, thermostats etc are being connected 
+to the Internet. 
 
-Are there guiding principles and structure that can provide a foundation for understanding such an amazingly large and complex system? 
+Indeed, the term computer network is beginning to sound a bit dated, given the many nontraditional devices that are 
+being hooked up to the Internet. In Internet jargon, all of these devices are called hosts or end systems.
 
-And if so, is it possible that it actually could be both interesting and fun to learn about computer networks?
+End systems are connected together by a network of communication links and packet switches. 
+
+There are many types of communication links, which are made up of different types of physical media, including 
+coaxial cable, copper wire, optical fiber, and radio spectrum. Different links can transmit data at different rates,
+with the transmission rate of a link measured in bits/second. 
+
+When one end system has data to send to another end system, the sending end system segments the data and adds header
+bytes to each segment. The resulting packages of information, known as packets in the jargon of computer networks, 
+are then sent through the network to the destination end system, where they are reassembled into the original data. 
+
+A packet switch takes a packet arriving on one of its incoming communication links and forwards that packet on one 
+of its outgoing communication links. Packet switches come in many shapes and flavors, but the two most prominent types
+in today's Internet are routers and link-layer switches. Both types of switches forward packets toward their ultimate
+destinations. 
+
+The sequence of communication links and packet switches traversed by a packet from the sending end system to the 
+receiving end system is known as a route or path through the network. 
+
+End systems access the Internet through Internet Service Providers (ISPs), including residential ISPs such as local
+cable or telephone companies; corporate ISPs; university ISPs; ISPs that provide WiFi access in airports, hotels, 
+coffee shops, and other public places; and cellular data ISPs, providing mobile access to our smartphones and other 
+devices.
+
+The Internet is all about connecting end systems to each other, so the ISPs that provide access to end systems must
+also be interconnected. These lower-tier ISPs are interconnected through national and international upper-tier ISPs 
+such as Level 3 Communications, AT&T, Sprint, and NTT. An upper-tier ISP consists of high-speed routers 
+interconnected with high-speed fiber-optic links. Each ISP network, whether upper-tier or lower-tier, is managed 
+independently, runs the IP protocol, and conforms to certain naming and address conventions.
+
+End systems, packet switches, and other pieces of the Internet run protocols that control the sending and receiving 
+of infonnation within the Internet. The Transmission Control Protocol (TCP) and the Internet Protocol (IP) are two 
+of the most important protocols in the Internet.
+
+Given the importance of protocols to the Internet, it's important that everyone agree on what each and every protocol
+does, so that people can create systems and products that interoperate. This is where standards come into play. 
+Internet standards are developed by the Internet Engineering Task Force (IETF).
+
+The IETF standards documents are called requests for comments (RFCs). RFCs started out as general requests for 
+comments (hence the name) to resolve network and protocol design problems that faced the precursor to the Internet.
+
+RFCs tend to be quite technical and detailed. They define protocols such as TCP, IP, HTTP (for the Web), and SMTP 
+(for e-mail). There are currently more than 7,000 RFCs. Other bodies also specify standards for network components, 
+most notably for network links. The IEEE 802 LAN/MAN Standards Committee [IEEE 802 2016] , for example, specifies the
+Ethernet and wireless WiFi standards. 
+
+A Services Description: Our discussion above has identified many of the pieces that make up the Internet. But we can
+also describe the Internet from an entirely different angle-namely, as an infrastructure that pro vides services to
+applications. 
+
+The applications are said to be distributed applications, since they involve multiple end systems that exchange data
+with each other. Importantly, Internet applications run on end systems-they do not run in the packet switches in the
+network core. Although packet switches facilitate the exchange of data among end systems, they are not concerned with
+the application that is the source or sink of data. 
+
+Let's explore a little more what we mean by an infrastructure that provides services to applications. To this end, 
+suppose you have an exciting new idea for a distributed Internet application, one that may greatly benefit humanity 
+or one that may simply make you rich and famous. How might you go about transforming this idea into an actual 
+Internet application? Because applications run on end systems, you are going to need to write programs that run on 
+the end systems. You might, for example, write your programs in Java, C, or Python. Now, because you are developing 
+a distributed Internet application, the programs running on the different end systems will need to send data to each
+other. And here we get to a central issue- one that leads to the alternative way of describing the Internet as a 
+platform for applications. How does one program running on one end system instruct the Internet to deliver data to 
+another program running on another end system? 
+
+End systems attached to the Internet provide a socket interface that specifies how a program running on one end 
+system asks the Internet infrastructure to deliver data to a specific destination program running on another end 
+system. This Internet socket interface is a set of rules that the sending program must follow so that the Internet 
+can deliver the data to the destination program. 
+
+For now, let's draw upon a simple analogy, one that we will frequently use in this book. Suppose Alice wants to send
+a letter to Bob using the postal service. Alice, of course, can't just write the letter (the data) and drop the 
+letter out her window. Instead, the postal service requires that Alice put the letter in an envelope; write Bob's 
+full name, address, and zip code in the center of the envelope; seal the envelope; put a stamp in the 
+upper-right-hand corner of the envelope; and finally, drop the envelope into an official postal service mailbox. 
+Thus, the postal service has its own "postal service interface," or set of rules, that Alice must follow to have the
+postal service deliver her letter to Bob.
+
+In a similar manner, the Internet has a socket interface that the program sending data must follow to have the 
+Internet deliver the data to the program that will receive the data. 
+
+The postal service, of course, provides more than one service to its customers. It provides express delivery, 
+reception confirmation, ordinary use, and many more services. In a similar manner, the Internet provides multiple 
+services to its applications. When you develop an Internet application, you too must choose one of the Internet's 
+services for your application.
+
+We have just given two descriptions of the Internet; one in terms of its hardware and software components, the other
+in terms of an infrastructure for providing services to distributed applications.
+
+What Is a Protocol? It is probably easiest to understand the notion of a computer network protocol by first 
+considering some human analogies, since we humans execute protocols all of the time. Consider what you do when you 
+want to ask someone for the time of day . A typical exchange is shown in Figure 1.2 . Human protocol (or good manners,
+at least) dictates that one first offer a greeting (the first "Hi" in Figure 1.2) to initiate communication with 
+someone else. The typical response to a "Hi" is a returned "Hi" message. Implicitly, one then takes a cordial "Hi" 
+response as an indication that one can proceed and ask for the time of day. A different response to the initial "Hi"
+(such as "Don't bother me! " or "I don't speak English," or some unprintable reply) might indicate an unwillingness 
+or inability to communicate. 
+
+In this case, the human protocol would be not to ask for the time of day. Sometimes one gets no response at all to a
+question, in which case one typically gives up asking that person for the time. Note that in our human protocol, 
+there are specific messages we send, and specific actions we take in response to the received reply messages or other
+events (such as no reply within some given amount of time). 
+
+If people run different protocols (for example, if one person has manners but the other does not, or if one 
+understands the concept of time and the other does not) the protocols do not interoperate and no useful work can be 
+accomplished. The same is true in networking- it takes two (or more) communicating entities running the same protocol
+in order to accomplish a task. 
+
+Network Protocols
+
+A network protocol is similar to a human protocol, except that the entities exchanging messages and taking actions are
+hardware or software components of some device (for example, computer, smartphone, tablet, router, or other network-
+capable device). All activity in the Internet that involves two or more communicating remote entities is governed by
+a protocol. For example, hardware-implemented protocols in two physically connected computers control the flow of 
+bits on the "wire" between the two network interface cards; congestion-control protocols in end systems control the 
+rate at which packets are transmitted between sender and receiver; protocols in routers determine a packet's path 
+from source to destination. Protocols are running everywhere in the Internet, and consequently much of this book is 
+about computer network protocols.
+
+As an example of a computer network protocol with which you are probably familiar, consider what happens when you 
+make a request to a Web server, that is, when you type the URL of a Web page into your Web browser. The scenario is 
+illustrated in the right half of Figure 1.2. First, your computer will send a connection request message to the Web 
+server and wait for a reply. The Web server wi ll eventuall y receive your connection request message and return a 
+connection reply message. Knowing that it is now OK to request the Web document, your computer then sends the name of
+the Web page it wants to fetch from that Web server in a GET message. Finally, the Web server returns the Web page 
+(file) to your computer.
+
+Given the human and networking examples above, the exchange of messages and the actions taken when these messages are
+sent and received are the key defining elements of a protocol: 
+
+A protocol defines the format and the order of messages exchanged between two or more communicating entities, as 
+well as the actions taken on the transmission and/or receipt of a message or other event. 
+
+The Internet, and computer networks in general, make extensive use of protocols. Different protocols are used to 
+accomplish different communication tasks.
+
+The Network Edge
+
+Recall from the previous section that in computer networking jargon, the computers and other devices connected to the
+Internet are often referred to as end systems. They are referred to as end systems because they sit at the edge of 
+the Internet, as shown in Figure 1.3. The Internet's end systems include desktop computers (e.g., desktop PCs, Macs,
+and Linux boxes), servers (e.g., Web and e-mail servers), and mobile devices (e.g., laptops, smartphones, and tablets).
+Furthermore, an increasing number of non-traditional "things" are being attached to the Internet as end systems (see
+the Case History feature). 
+
+End systems are also referred to as hosts because they host (that is, run) application programs such as a Web browser
+program, a Web server program, an e-mail client program, or an e-mail server program. 
+
+Hosts are sometimes further divided into two categories: clients and servers. Informally, clients tend to be desktop
+and mobile PCs, smartphones, and so on, whereas servers tend to be more powerful machines that store and distribute 
+Web pages, stream video, relay e-mail, and so on. Today, most of the servers from which we receive search results, 
+e-mail, Web pages, and videos reside in large data centers. For example, Google has 50-100 data centers, including 
+about 15 large centers, each with more than 100,000 servers. 
+
+Access Networks
+
+
 

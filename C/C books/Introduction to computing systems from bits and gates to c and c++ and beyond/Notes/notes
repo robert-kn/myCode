@@ -1,40 +1,342 @@
-Algorithms have 3 characteristics:
+Why read the book?
+1. to understand fundamentals as they do not change very often
+2. if fundamentals are mastered clearly, there is no limit to how high I will soar provided I continue to put in the
+   work
+3. a lot of problems arise from memorising technical details without understanding basic underpinnings
+4. when it comes to learning, information hiding approach is prevalent. It is a useful productivity enhancer once 
+   fundamentals are clearly understood. But until one gets to that point, information hiding gets in the way of
+   understanding.
+5. understanding not memorising
+6. cutting through the layers: Professionals who use computers in systems today but remain ignorant of what is going
+   on underneath are likely to discover the hard way that the eﬀectiveness of their solutions is impacted adversely 
+   by things other than the actual programs they write. Serious programmers will write more eﬃcient code if they 
+   understand what is going on beyond the statements in their high-level language. Consequently, the high-level 
+   programming language course, where the compiler protects the student from everything “ugly” underneath, does not 
+   serve most engineering students well, and it certainly does not prepare them for the future.
+
+CHAPTER 1
+
+There is no magic to computing. A computer is a determinisstic system. Everytime we hit it over the head in the same
+way and in the same place (provided of course we give it the same starting conditions), we get the same response. A 
+computer is not an electronic genius, infact it is an electronic idiot doing exactly what we tell it to do.
+
+What appears to be a very complex organism is really just a very large, systematically interconnected collections of
+very simple parts. This book will introduce those simple parts in a step by step manner and build the interconnected
+structure that is known by the name computer.
+
+Two themes permeate this book:
+
+(a) the notion of abstraction: it is a technique of establishing a simpler way for a person to interact with a system
+    removing details that are unnecessary for interaction with the system. To be successful with the notion of abstraction
+    I must combine it with the ability to un-abstract (or deconstruct i.e. the ability to go from system to its 
+    individual component parts). If we never have to combine a component with others in order to form a larger system
+    and if nothing can go wrong with the component, then it is perfectly fine to understand this component at the level
+    of its abstraction.
+(b) the importance of not separating your mind the notions of hardware and software. Many computer scientists and 
+    engineers refer to themselves as hardware people or software people. The implication is that the person knows a 
+    whole lot about one of these two things and precious little about the other. Usually, there is the further 
+    implication that it is OK to be an expert at one of these (hardware OR software) and clueless about the other.
+    The power of abstraction allows us to “usually” operate at a level where we do not have to think about the 
+    underlying layers all the time. This is a good thing. It enables us to be more productive. But if we are clueless
+    about the underlying layers, then we are not able to take advantage of the nuances of those underlying layers 
+    when it is very important to be able to.
+
+    Always aim to work at a higher level of abstraction, but, if you are able to, at the same time, keep in mind the
+    underlying levels, you will ﬁnd yourself able to do a much better job. 
+
+    As you approach your study and practice of computing, we urge you to take the approach that hardware and software
+    are names for components of two parts of a computing system that work best when they are designed by people who 
+    take into account the capabilities and limitations of both.
+
+    The Bottom Line We believe that whether your inclinations are in the direction of a computer hardware career or 
+    a computer software career, you will be much more capable if you master both. 
+
+Re-read the below points upon completion of the book and confirm that you understand all the points:
+
+1. When you study data types, a software concept, in C (Chapter 12), you will understand how the ﬁnite word length 
+   of the computer, a hardware concept, aﬀects our notion of data types.
+2. When you study functions in C (Chapter 14), you will be able to tie the rules of calling a function with the 
+   hardware implementation that makes those rules necessary.
+3. When you study recursion, a powerful algorithmic device (initially in Chapter 8 and more extensively in Chapter 
+   17), you will be able to tie it to the hardware. If you take the time to do that, you will better understand when
+   the additional time to execute a procedure recursively is worth it.
+4. When you study pointer variables in C (in Chapter 16), your knowledge of computer memory will provide a deeper 
+   understanding of what pointers provide, and very importantly, when they should be used and when they should be 
+   avoided.
+5. When you study data structures in C (in Chapter 19), your knowledge of computer memory will help you better 
+   understand what must be done to manipulate the actual structures in memory eﬃciently.
+
+Computers have seen enormous and unparalleled leaps of performance in a relatively short time they have been around. 
+After all, it wasn’t until the 1940s that the first computers showed their faces. One of the first computers was the
+ENIAC (the Electronic Numerical Integrator and Calculator), a general purpose electronic computer that could be 
+reprogrammed for different tasks. It was designed and built in 1943–1945 at the University of Pennsylvania by 
+Presper Eckert and his colleagues.
+
+It contained more than 17,000 vacuum tubes. It was approximately 8 feet high, more than 100 feet wide, and about 3 
+feet deep (about 300 square feet of floor space). It weighed 30 tons and required 140 kW to operate. Figure 1.1 shows
+three operators programming the ENIAC by plugging and unplugging cables and switches.
+
+About 40 years and many computer companies and computers later, in the early 1980s, the Burroughs A series was born.
+One of the dozen or so 18-inch boards that comprise that machine is shown in Figure 1.2. Each board contained 50 or 
+more integrated circuit packages. Instead of 300 square feet, it took up around 50 to 60 square feet; instead of 30 
+tons, it weighed about 1 ton, and instead of 140 kW, it required approximately 25 kW to operate.
+
+Fast forward another 30 or so years and we ﬁnd many of today’s computers on desktops (Figure 1.3), in laptops 
+(Figure 1.4), and most recently in smartphones (Figure 1.5). Their relative weights and energy requirements have 
+decreased enormously, and the speed at which they process information has also increased enormously. We estimate 
+that the computing power in a smartphone today (i.e., how fast we can compute with a smartphone) is more than four 
+million times the computing power of the ENIAC!
+
+The integrated circuit packages that comprise modern digital computers have also seen phenomenal improvement. An 
+example of one of today’s microprocessors is shown in Figure 1.6. The ﬁrst microprocessor, the Intel 4004 in 1971, 
+contained 2300 transistors and operated at 106 KHz. By 1992, those numbers had jumped to 3.1 million transistors at
+a frequency of 66 MHz on the Intel Pentium microprocessor, an increase in both parameters of a factor of about 1000. Today’s microprocessors contain upwards of ﬁve billion transistors and can oper- ate at upwards of 4 GHz, another increase in both parameters of about a factor of 1000.
+
+This factor of one million since 1971 in both the number of transistors and the frequency that the microprocessor 
+operates at has had very important implications. The fact that each operation can be performed in one millionth of 
+the time it took in 1971 means the microprocessor can do one million things today in the time it took to do one 
+thing in 1971. The fact that there are more than a million times as many transistors on a chip means we can do a 
+lot more things at the same time today than we could in 1971.
+
+The result of all this is we have today computers that seem able to understand the languages people speak – English,
+Spanish, Chinese, for example. We have computers that seem able to recognize faces. Many see this as the magic of 
+artiﬁcial intelligence. We will see as we get into the details of how a computer works that much of what appears to 
+be magic is really due to how blazingly fast very simple mindless operations (many at the same time) can be carried 
+out.
+
+Before we leave this ﬁrst chapter, there are two very important ideas that we would like you to understand, ideas 
+that are at the core of what computing is all about.
+
+Idea 1: All computers (the biggest and the smallest, the fastest and the slowest, the most expensive and the 
+cheapest) are capable of computing exactly the same things if they are given enough time and enough memory. That is,
+anything a fast computer can do, a slow computer can do also. The slow computer just does it more slowly. A more 
+expensive computer cannot ﬁgure out something that a cheaper computer is unable to ﬁgure out as long as the cheaper 
+computer can access enough memory. (You may have to go to the store to buy more memory whenever it runs out of memory
+in order to keep increasing memory.) All computers can do exactly the same things. Some computers can do things 
+faster, but none can do more than any other.
+
+Idea 2: We describe our problems in English or some other language spoken by people. Yet the problems are solved by
+electrons running around inside the computer. It is necessary to transform our problem from the language of humans 
+to the voltages that inﬂuence the ﬂow of electrons. This transformation is really a sequence of systematic 
+transformations, developed and improved over the last 70 years, which combine to give the computer the ability to 
+carry out what appear to be some very complicated tasks. In reality, these tasks are simple and straightforward.
+
+Before modern computers, there were many kinds of calculating machines. Some were analog machines—machines that 
+produced an answer by measuring some physical quantity such as distance or voltage. For example, a slide rule is an
+analog machine that multiplies numbers by sliding one logarithmically graded ruler next to another. The user can 
+read a logarithmic “distance” on the second ruler. Some early analog adding machines worked by dropping weights on 
+a scale. The diﬃculty with analog machines is that it is very hard to increase their accuracy.
+
+This is why digital machines—machines that perform computations by manipulating a ﬁxed ﬁnite set of digits or 
+letters— came to dominate computing. You are familiar with the distinction between analog and digital watches. An 
+analog watch has hour and minute hands, and perhaps a second hand. It gives the time by the positions of its hands,
+which are really angular measures. Digital watches give the time in digits. You can increase accuracy just by adding
+more digits. For example, if it is important for you to measure time in hundredths of a second, you can buy a watch
+that gives a reading like 10:35.16 rather than just 10:35. How would you get an analog watch that would give you an
+accurate reading to one one-hundredth of a second? You could do it, but it would take a mighty long second hand! 
+When we talk about computers in this book, we will always mean digital machines.
+
+Before modern digital computers, the most common digital machines in the West were adding machines. In other parts 
+of the world another digital machine, the abacus, was common. Digital adding machines were mechanical or 
+electromechanical devices that could perform a speciﬁc kind of computation: adding integers. There were also digital
+machines that could multiply integers. There were digital machines that could put a stack of cards with punched 
+names in alphabetical order. The main limitation of all these machines is that they could do only one speciﬁc kind 
+of computation. If you owned only an adding machine and wanted to multiply two integers, you had some 
+pencil-and-paper work to do.
+
+This is why computers are diﬀerent. You can tell a computer how to add numbers. You can tell it how to multiply. 
+You can tell it how to alphabetize a list or perform any computation you like. When you think of a new kind of 
+computation, you do not have to buy or design a new computer. You just give the old computer a new set of 
+instructions (a program) to carry out the new computation. This is why we say the computer is a universal 
+computational device.
+
+Computer scientists believe that anything that can be computed, can be computed by a computer provided it has 
+enough time and enough memory. When we study computers, we study the fundamentals of all computing.
+
+The idea of a universal computational device is due to Alan Turing. Turing proposed in 1937 that all computations 
+could be carried out by a particular kind of machine, which is now called a Turing machine. He gave a mathematical 
+description of this kind of machine, but did not actually build one. Digital computers were not operating until 
+several years later. Turing was more interested in solving a philosophical problem: deﬁning computation. 
+
+How Do We Get the Electrons to Do the Work?
+
+Figure 1.9 shows the process we must go through to get the electrons (which actually do the work) to do our bidding. 
+We call the steps of this process the “Levels of Transformation.” As we will see, at each level we have choices. If
+we ignore any of the levels, our ability to make the best use of our computing system can be very adversely aﬀected.
+
+We describe the problems we wish to solve in a “natural language.” Natural lan- guages are languages that people 
+speak, like English, French, Japanese, Italian, and so on. They have evolved over centuries in accordance with their
+usage. They are fraught with a lot of things unacceptable for providing instructions to a computer. Most important 
+of these unacceptable attributes is ambiguity. Natural language is ﬁlled with ambiguity. 
+
+The ﬁrst step in the sequence of transformations is to transform the natural lan- guage description of the problem 
+to an algorithm, and in so doing, get rid of the objectionable characteristics of the natural language. An 
+algorithm is a step-by- step procedure that is guaranteed to terminate, such that each step is precisely stated and
+can be carried out by the computer. There are terms to describe each of these properties.
+
 1. effective computability means each step can be carried out by a computer.
 2. finiteness means that a procedure terminates.
 3. definiteness means that each step is precisely stated.
 
-ISA specifies the interface between a computer program and the computer hardware that will be 
-responsible for executing the instructions. Opcode refers to instructions e.g mul and operand
+For every problem there are usually many diﬀerent algorithms for solving that problem. One algorithm may require 
+the fewest steps. Another algorithm may allow some steps to be performed concurrently.
+
+The next step is to transform the algorithm into a computer program in one of the programming languages that are 
+available. Programming languages are “mechanical languages.” That is, unlike natural languages, mechanical languages
+did not evolve through human discourse. Rather, they were invented for use in specifying a sequence of instructions
+to a computer. 
+
+There are two kinds of programming languages, high-level languages and low-level languages. High-level languages are
+at a distance (a high level) from the underlying computer. At their best, they are independent of the computer on 
+which the programs will execute. We say the language is “machine independent.”
+
+Low-level languages are tied to the computer on which the programs will execute. There is generally one such 
+low-level language for each computer. That language is called the assembly language for that computer.
+
+The next step is to translate the program into the instruction set of the particular computer that will be used to 
+carry out the work of the program. ISA specifies the interface between a computer program and the computer hardware
+that will be responsible for executing the instructions. Opcode refers to instructions e.g mul and operand
 refers to a data value that is operated on.
+
+An analogy that may be helpful in understanding the concept of an ISA is provided by the automobile. Corresponding 
+to a computer program, represented as a sequence of 0s and 1s in the case of the computer, is the human sitting in 
+the driver’s seat of a car. Corresponding to the microprocessor hardware is the car itself. The “ISA” of the 
+automobile is the speciﬁcation of everything the human needs to know to tell the automobile what to do, and 
+everything the automobile needs to know to carry out the tasks speciﬁed by the human driver.
+
+The ISA of a computer serves the same purpose as the “ISA” of an automobile, except instead of the driver and the
+car, the ISA of a computer speciﬁes the interface between the computer program directing the computer hardware and 
+the hardware carrying out those directions.
+
+For example, consider the set of instructions that the computer can carry out—that is, what operations the computer
+can perform and where to get the data needed to perform those operations. The term opcode is used to describe the 
+operation. The term operand is used to describe individual data values. 
+
+The ISA speciﬁes the acceptable representations for operands. They are called data types. A data type is a 
+representation of an operand such that the computer can perform operations on that representation.
+
+The ISA speciﬁes the mechanisms that the computer can use to ﬁgure out where the operands are located. These 
+mechanisms are called addressing modes.
 
 There are many ISA's in existence. Each specifies a different number of opcodes, operands and 
 addressing modes from the rest.
 
-The automobile ISA describes what a driver needs to know as he/she sits inside an automobile 
-in order for it to carry out the driver's wishes. All automobiles have the same ISA therefore
-drivers do not need to acquire different driving licenses for different automobiles.
+The ISA also speciﬁes the number of unique locations that comprise the computer’s memory and the number of 
+individual 0s and 1s that are contained in each location.
 
-The microarchitecture (or implementation) of an automobile's ISA is about what goes on underneath the hood. 
+Many ISAs are in use today. The most widely known example is the x86, introduced by Intel Corporation in 1979 and 
+currently also manufactured by AMD and other companies. Other ISAs and the companies responsible for them include 
+ARM and THUMB (ARM), POWER and z/Architecture (IBM), and SPARC (Oracle).
+
+The translation from a high-level language (such as C) to the ISA of the computer on which the program will execute
+(such as x86) is usually done by a translating program called a compiler. To translate from a program written in C 
+to the x86 ISA, one would need a C to x86 compiler. For each high-level language and each desired target ISA, one 
+must provide a corresponding compiler.
+
+The translation from the unique assembly language of a computer to its ISA is done by an assembler.
+
+The next step is the implementation of the ISA, referred to as its microarchitecture. The microarchitecture (or 
+implementation) of an automobile's ISA is about what goes on underneath the hood. 
 Here all automobiles brands and models can be different depending on the cost/performance tradeoffs the 
 designer made before the car was manufactured.
+
+Previously, we identiﬁed ISAs of several computer manufactur- ers, including the x86 (Intel), the PowerPC (IBM and 
+Motorola), and THUMB (ARM). Each has been implemented by many diﬀerent microarchitectures.
 
 Each microarchitecture is an opportunity for computer designers to make different tradeoffs between the cost 
 of the microprocessor, the performance that it will provide, and the energy that it will consume.
 
-The following are the transformations that need to happen in order for computers to be used to 
-solve a problem when an electron move across a voltage potential:
+The next step is to implement each element of the microarchitecture out of simple logic circuits. Here also there 
+are choices, as the logic designer decides how to best make the tradeoﬀs between cost and performance. So, for 
+example, even for an operation as simple as addition, there are several choices of logic circuits to perform the 
+operation at diﬀering speeds and corresponding costs.
 
-Problem expressed in natural language -> algorithm -> program -> ISA -> microarchitecture ->
-logic circuits -> the devices  (cmos circuits, nmos circuits and gallium arsenide circuits)
+Finally, each basic logic circuit is implemented in accordance with the requirements of the particular device 
+technology used. So, CMOS circuits are diﬀerent from NMOS circuits, which are diﬀerent, in turn, from gallium 
+arsenide circuits.
 
 At each level of transformation there are choices on how to proceed which determine the resulting cost and 
 performance of the computer.
 
-Data type: a particular representation of information is termed as a data type if there are operations inside 
-of a computer that can operate on the information that is encoded in that representation.
+----------------
+end of chapter 1
+----------------
 
-signed magnitude and 1'complement data types require unnecessarily cumbersome hardware to do addition. on the 
-other hand, the circuitry required to add 2 integers using 2's complement data type is much simpler
+chapter 2
+
+We noted in Chapter 1 that the computer was organized as a system with several levels of transformation. A problem 
+stated in a natural language such as English is actually solved by the electrons moving around inside the components
+of the computer.
+
+Inside the computer, millions of very tiny, very fast devices control the movement of those electrons. These 
+devices react to the presence or absence of voltages in electronic circuits. They could react to the actual values 
+of the voltages, rather than simply to the presence or absence of voltages. However, this would make the control and
+detection circuits more complex than they need to be. It is much easier to detect simply whether or not a voltage 
+exists at a point in a circuit than it is to measure exactly what that voltage is.
+
+To be perfectly precise, it is not really the case that the computer diﬀerentiates the absolute absence of a voltage
+(i.e., 0) from the absolute presence of a voltage (i.e., 1). Actually, the electronic circuits in the computer 
+diﬀerentiate voltages close to 0 from voltages far from 0.
+
+With one wire, one can differentiate only two things. One of them can be assigned the value 0, the other can be 
+assigned the value 1. But to get useful work done by the computer, it is necessary to be able to differentiate a 
+large number of distinct values, and to assign each of them a unique representation. 
+
+We can accomplish this by combining many wires, that is, many bits. For example, if we use eight bits
+(corresponding to the voltage present on each of eight wires), we can represent one particular value as 01001110, 
+and another value as 11100111. In fact, if we are limited to eight bits we can differentiate at most only 256 values
+(2^8) different things.
+
+In general, with k bits, we can distinguish at most 2k distinct items. Each pattern of these k bits is a code; that
+is, it corresponds to a particular item (or value).
+
+We symbolically represent the presence of a voltage as “1” and the absence of a voltage as “0.” We refer to each 0 
+and each 1 as a “bit,” which is a shortened form of binary digit.
+
+It is not enough simply to represent values; we must be able to operate on those values. We say a particular 
+representation is a data type if there are oper- ations in the computer that can operate on information that is 
+encoded in that representation. Each instruction set architecture (ISA) has its own set of data types and its own 
+set of instructions that can operate on those data types. 
+
+In this book, we will mainly use two data types: 2’s complement integers for representing positive and negative 
+integers that we wish to perform arithmetic on, and ASCII codes for representing characters that we wish to input 
+to a computer via the keyboard or output from the computer via a monitor.
+
+An unsigned integer has no sign (plus or minus) associated with it. An unsigned integer just has a magnitude. 
+Unsigned.
+
+a computer designer could assign any bit pattern to represent any integer he or she wants. Unfortunately, that 
+could complicate matters when we try to build an electronic circuit to add two integers. Infct, signed magnitude and
+1'complement data types require unnecessarily cumbersome hardware to do addition. On the other hand, the circuitry 
+required to add 2 integers using 2's complement data type is much simpler. Because com- puter designers knew what it
+would take to design a circuit to add two integers, they chose representations that simpliﬁed the circuit. The 
+result is the 2’s complement data type, also shown in Figure 2.1. It is used on just about every computer 
+manufactured today.
+
+The choice of representations for the negative integers was based, as we said previously, on the wish to keep the 
+logic circuits as simple as possible. Almost all computers use the same basic mechanism to perform addition. It is 
+called an arithmetic and logic unit, usually known by its acronym ALU. An ALU has two inputs and one output. It 
+performs addition by adding the binary bit patterns at its inputs, producing a bit pattern at its output that is 
+the sum of the two input bit patterns.
+
+What is particularly relevant is that the binary ALU does not know (and does not care) what the two patterns it is 
+adding represent. It simply adds the two binary patterns. Since the binary ALU only ADDs and does not CARE, it would
+be nice if our assignment of codes to the integers resulted in the ALU producing correct results when it added two 
+integers.
+
+For starters, it would be nice if, when the ALU adds the representation for an arbitrary integer to the 
+representation of the integer having the same magnitude but opposite sign, the sum would be 0.
+
+To accomplish that, the 2’s complement data type speciﬁes the representation for each negative integer so that when
+the ALU adds it to the representation of the positive integer of the same magnitude, the result will be the 
+representation for 0. Moreover, and actually more importantly, as we sequence through representations of −15 to +15,
+the ALU is adding 00001 to each successive representation.
+
+Note in particular the representations for −1 and 0, that is, 11111 and 00000. When we add 00001 to the 
+representation for −1, we do get 00000, but we also generate a carry. That carry, however, does not inﬂuence the 
+result. That is, the correct result of adding 00001 to the representation for −1 is 0, not 100000. Therefore, the 
+carry is ignored. In fact, because the carry obtained by adding 00001 to 11111 is ignored, the carry can always be
+ignored when dealing with 2’s complement arithmetic.
 
 manual conversion of decimal fraction (e.g. 0.421) to binary requires the following steps:
 see decimalFractionToBinary1.png and decimalFractionToBinary2.png
@@ -59,6 +361,11 @@ when the msb is turned on meaning that the result becomes negative.
 
 Suppose we wish to know if two patterns are identical. Since the XOR function produces a 0 only if the corresponding
 pair of bits is identical, two patterns are identical if the output of the XOR is all 0s.
+
+An m-bit pattern where each bit has a logical value (0 or 1) independent of the other bits is called a bit vector. 
+
+There are many other representations of information that are used in computers. Two that are among the most useful 
+are the ﬂoating point data type and ASCII codes. 
 
 Floating Point Data Type (Greater Range, Less Precision): Most ISAs today specify more than one ﬂoating point 
 data type. One of them, usually called ﬂoat, consists of 32 bits, allocated as follows:
@@ -135,7 +442,7 @@ The sign is +. The exponent is 254 − 127, or +127. Combining a 1 to the left o
 fraction ﬁeld to the right of the binary point yields 1.11111111 … 1, which is approximately 2. Therefore, 
 the result is approximately 2^128.
 
-We noted before that the ﬂoating point data type represented numbers expressed in scientiﬁc notation in 
+Infinities: We noted before that the ﬂoating point data type represented numbers expressed in scientiﬁc notation in 
 normalised form provided the exponent ﬁeld does not contain 00000000 or 11111111. If the exponent ﬁeld 
 contains 11111111, we use the ﬂoating point data type to represent various things, among them the notion of 
 inﬁnity. Inﬁnity is represented by the exponent ﬁeld containing all 1s and the fraction ﬁeld containing all 0s.
@@ -193,22 +500,51 @@ the Shift key is also depressed while in the other case, it is not.
 In order to display a particular character on the monitor, the computer must transfer the ASCII code for that 
 character to the electronics associated with the monitor. 
 
+Describe what conditions indicate overﬂow has occurred when two unsigned numbers are added? Overflow has occurred in
+an unsigned addition when you get a carry out of the leftmost bits.
+
+Why does the sum of a negative 2’s complement number and a positive 2’s complement number never generate an overﬂow?
+Because their sum will be a number which if positive, will have a lower magnitude (less positive) than the original
+positive number (because a negative number is being added to it), and vice versa.
+
+what are the masks used for? The masks are used to set bits (by ORing a 1) and to clear bits (by ANDing a 0).
+
+If n and m are both four-bit 2’s complement numbers, and s is the four-bit result of adding them together, how can 
+we determine, using only the logical operations described in Section 2.6, if an overﬂow occurred during the addition?
+Develop a “procedure” for doing so. The inputs to the procedure are n, m, and s, and the output will be a bit 
+pattern of all 0s (0000) if no overﬂow occurred and 1000 if an overﬂow did occur.
+
+[(n AND m AND (NOT s)) OR ((NOT n) AND (NOT m) AND s)] AND 1000
+
+Write IEEE ﬂoating point representation of the following decimal numbers.
+a.  3.75             0 10000000 11100000000000000000000
+b.  −55 23/64        1 10000100 10111010111000000000000
+c.  3.1415927        0 10000000 10010010000111111011011
+d.  64,000           0 10001110 11110100000000000000000
+
+----------------------
+end chapter 2
+----------------------
+
+
+chapter 3
+
 Most processors these days are manufactured out of MOS transistors (metal oxide semiconductors). There are two
 types: p type and n type
 
 When the N-type transistor is supplied with 1.2 volts, the connection from source to drain acts like a piece of
 wire. We say (in the language of electricity) that we have a short circuit between the source and drain. If the 
 gate of the N-type transistor is supplied with 0 volts, the connection between the source and drain is broken. We 
-say that between the source and drain we have an open circuit.
+say that between the source and drain we have an open circuit. see figure32
 
 The P-type transistor works in exactly the opposite fashion from the N-type transistor. When the gate is supplied 
 with 0 volts, the P-type transistor acts (more or less) like a piece of wire, closing the circuit. When the gate 
 is supplied with 1.2 volts, the P-type transistor acts like an open circuit. Because the P-type and N-type
 transistors act in this complementary way, we refer to circuits that contain both P-type and N-type transistors as 
-CMOS circuits, for complementary metal-oxide semiconductor.
+CMOS circuits, for complementary metal-oxide semiconductor. see figure33
 
-One step up from the transistor is the logic gate. That is, we construct basic logic
-structures out of individual MOS transistors.
+One step up from the transistor is the logic gate. That is, we construct basic logic structures out of individual 
+MOS transistors.
 
 The NOT Gate (Inverter): It is constructed from two MOS transistors, one P-type and one N-type. See Notgate.png 
 shows the behavior of the circuit if the input is supplied with 0 volts. Note that the P-type transistor acts
@@ -275,12 +611,17 @@ microprocessor. As a convenience, we can represent each of these gates by standa
 The bubble shown in the inverter, NAND, and NOR gates signiﬁes the complement (i.e., NOT) 
 function.
 
-Now that we understand the workings of the basic logic gates, the next step
-is to build some of the logic structures that are important components of the
-microarchitecture of a computer.
+Gates with More Than Two Inputs: he notion of AND, OR, NAND, and NOR gates extends to larger numbers of inputs. One
+could build a three-input AND gate or a four-input OR gate, for example. An n-input AND gate has an output value of
+1 only if ALL n input variables have values of 1. If anyofthen inputs has a value of 0, the output of the n-input 
+AND gate is 0. An n-input OR gate has an output value of 1 if ANY of the n input variables has a value of 1. That 
+is, an n-input OR gate has an output value of 0 only if ALL n input variables have values of 0. see figure310
 
-There are fundamentally two kinds of logic structures, those that include the
-storage of information and those that do not.
+Now that we understand the workings of the basic logic gates, the next step is to build some of the logic 
+structures that are important components of the microarchitecture of a computer.
+
+There are fundamentally two kinds of logic structures, those that include the storage of information and those that
+do not.
 
 Here we will deal with structures that do not store information. These structures are sometimes referred to as 
 decision elements. Usually, they are referred to as combinational logic structures because their outputs are strictly

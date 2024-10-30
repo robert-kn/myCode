@@ -1,0 +1,141 @@
+Network programming is a fun topic, but it's also a very deep one; a lot is going on at many levels. Some programming languages hide these abstractions. In the Python programming language, for example, you can download an entire web page using only one line of code. This isn't the case in C! In C, if you want to download a web page, you have to know how everything works. You need to know sockets, you need to know Transfer Control Protocol (TCP), and you need to know HTTP. In C network programming, nothing is hidden.
+
+C is a great language to learn network programming in. This is not only because we get to see all the details, but also because the popular operating systems all use kernels written in C. No other language gives you the same first-class access as C does. In C, everything is under your control – you can lay out your data structures exactly how you want, manage memory precisely as you please, and even shoot yourself in the foot just the way you want.
+
+There is a lot of C networking code that is done wrong. Internet tutorials about C sockets often use deprecated functions and ignore memory safety completely. When it comes to network programming, you can't take the it works so it's good enough programming-by-coincidence approach. You have to use reasoning.
+
+chapter 1
+
+The use of the C programming language is ubiquitous. Almost every network stack is programmed in C. This is true for Windows, Linux, and macOS. If your mobile phone uses Android or iOS, then even though the apps for these were programmed in a different language (Java and Objective C), the kernel and networking code was written in C. It is very likely that the network routers that your internet data goes through are programmed in C. Even if the user interface and higher-level functions of your modem or router are programmed in another language, the networking drivers are still probably implemented in C.
+
+Networking encompasses concerns at many different abstraction levels. The concerns your web browser has with formatting a web page are much different than the concerns your router has with forwarding network packets. For this reason, it is useful to have a theoretical model that helps us to understand communications at these different levels of abstraction. Let's look at these models now.
+
+OSI layer model
+
+One common method of breaking down the problem is to place levels of concern into layers. Each layer then provides services for the layer on top of it, and each upper layer can rely on the layers underneath it without concern for how they work.
+
+The most popular layer system for networking is called the Open Systems Interconnection model (OSI model). It was standardized in 1977 and is published as ISO 7498. It has seven layers:
+
+Let's understand these layers one by one:
+
+Physical (1): This is the level of physical communication in the real world.  At this level, we have specifications for things such as the voltage levels on an Ethernet cable, the radio frequency of Wi-Fi etc
+Data Link (2): This level builds on the physical layer. It deals with protocols for directly communicating between two nodes.
+Network layer (3): The network layer provides the methods to transmit data sequences (called packets) between nodes in different networks.
+Transport layer (4): At this layer, we have methods to reliably deliver variable length data between hosts. These methods deal with splitting up data, recombining it, ensuring data arrives in order, and so on.
+Session layer (5): This layer builds on the transport layer by adding methods to establish, checkpoint, suspend, resume, and terminate dialogs.
+Presentation layer (6): This is the lowest layer at which data structure and presentation for an application are defined. Concerns such as data encoding, serialization, and encryption are handled here.
+Application layer (7): The applications that the user interfaces with (for example, web browsers and email clients) exist here. These applications make use of the services provided by the six lower layers.
+
+In the OSI model, an application, such as a web browser, exists in the application layer (layer 7). A protocol from this layer, such as HTTP used to transmit web pages, doesn't have to concern itself with how the data is being transmitted. It can rely on services provided by the layer underneath it to effectively transmit data. see diagram
+
+It should be noted that chunks of data are often referred to by different names depending on the OSI layer they're on. A data unit on layer 2 is called a frame, since layer 2 is responsible for framing messages. A data unit on layer 3 is referred to as a packet, while a data unit on layer 4 is a segment if it is part of a TCP connection or a datagram if it is a UDP message.
+
+TCP/IP layer model
+
+The TCP/IP protocol suite is the most common network communication model in use today. The TCP/IP reference model differs a bit from the OSI model, as it has only four layers instead of seven.
+
+The following diagram illustrates how the four layers of the TCP/IP model line up to the seven layers of the OSI model: see diagram
+
+Notably, the TCP/IP model doesn't match up exactly with the layers in the OSI model. That's OK. In both models, the same functions are performed; they are just divided differently.
+
+The four layers of the TCP/IP model are as follows:
+
+Network Access layer (1): On this layer, physical connections and data framing happen. Sending an Ethernet or Wi-Fi packet are examples of layer 1 concerns.
+
+Internet layer (2): This layer deals with the concerns of addressing packets and routing them over multiple interconnection networks. It's at this layer that an IP address is defined.
+
+Host-to-Host layer (3): The host-to-host layer provides two protocols, TCP and UDP, which we will discuss in the next few chapters. These protocols address concerns such as data order, data segmentation, network congestion, and error correction.
+
+Process/Application layer (4): The process/application layer is where protocols such as HTTP, SMTP, and FTP are implemented. Most of the programs that feature in this book could be considered to take place on this layer while consuming functionality provided by our operating system's implementation of the lower layers.
+
+Regardless of your chosen abstraction model, real-world protocols do work at many levels. Lower levels are responsible for handling data for the higher levels. These lower-level data structures must, therefore, encapsulate data from the higher levels.
+
+Data encapsulation
+
+The advantage of these abstractions is that, when programming an application, we only need to consider the highest-level protocol. For example, a web browser needs only to implement the protocols dealing specifically with websites—HTTP, HTML, CSS, and so on. It does not need to bother with implementing TCP/IP, and it certainly doesn't have to understand how an Ethernet or Wi-Fi packet is encoded. It can rely on ready-made implementations of the lower layers for these tasks. These implementations are provided by the operating system (for example, Windows, Linux, and macOS).
+
+When communicating over a network, data must be processed down through the layers at the sender and up again through the layers at the receiver. For example, if we have a web server, Host A, which is transmitting a web page to the receiver, Host B, it may look like this: see diagram
+
+The web page contains a few paragraphs of text, but the web server doesn't only send the text by itself. For the text to be rendered correctly, it must be encoded in an HTML structure: see diagram
+
+In some cases, the text is already preformatted into HTML and saved that way but, in this example, we are considering a web application that dynamically generates the HTML, which is the most common paradigm for dynamic web pages. As the text cannot be transmitted directly, neither can the HTML. It instead must be transmitted as part of an HTTP response. The web server does this by applying the appropriate HTTP response header to the HTML: see diagram
+
+The HTTP is transmitted as part of a TCP session. This isn't done explicitly by the web server, but is taken care of by the operating system's TCP/IP stack: see diagram
+
+The TCP packet is routed by an IP packet: see diagram
+
+This is transmitted over the wire in an Ethernet packet (or another protocol): see diagram
+
+Luckily for us, the lower-level concerns are handled automatically when we use the socket APIs for network programming. It is still useful to know what happens behind the scenes. Without this knowledge, dealing with failures or optimizing for performance is difficult if not impossible.
+
+With some of the theory out of the way, let's dive into the actual protocols powering modern networking.
+
+Internet Protocol
+
+Twenty years ago, there were many competing networking protocols. Today, one protocol is overwhelmingly common—the Internet Protocol. It comes in two versions—IPv4 and IPv6. IPv4 is completely ubiquitous and deployed everywhere. If you're deploying network code today, you must support IPv4 or risk that a significant portion of your users won't be able to connect.
+
+IPv4 uses 32-bit addresses, which limits it to addressing no more than 2^(32) or 4,294,967,296 systems. However, these 4.3 billion addresses were not initially assigned efficiently, and now many Internet Service Providers (ISPs) are forced to ration IPv4 addresses.
+
+IPv6 was designed to replace IPv4 and has been standardized by the Internet Engineering Task Force (IETF) since 1998. It uses a 128-bit address, which allows it to address a theoretical 2^(128) = 340,282,366,920,938,463,463,374,607,431,768,211,456, or about a 3.4 x 10^(38) addresses.
+
+Today, every major desktop and smartphone operating system supports both IPv4 and IPv6 in what is called a dual-stack configuration. However, many applications, servers, and networks are still only configured to use IPv4. From a practical standpoint, this means that you need to support IPv4 in order to access much of the internet. However, you should also support IPv6 to be future-proof and to help the world to transition away from IPv4.
+
+IPv4 addresses are 32 bits long. They are commonly divided into four 8-bit sections. Each section is displayed as a decimal number between 0 and 255 inclusive and is delineated by a period.
+
+Here are some examples of IPv4 addresses:
+
+0.0.0.0, 127.0.0.1, 10.0.0.0, 172.16.0.5, 192.168.0.1, 192.168.50.1, 255.255.255.255
+
+A special address, called the loopback address, is reserved at 127.0.0.1. This address essentially means establish a connection to myself. Operating systems short-circuit this address so that packets to it never enter the network but instead stay local on the originating system.
+
+IPv4 reserves some address ranges for private use. If you're using IPv4 through a
+router/NAT, then you are likely using an IP address in one of these ranges. These reserved private ranges are as follows:
+
+10.0.0.0 to 10.255.255.255
+172.16.0.0 to 172.31.255.255
+192.168.0.0 to 192.168.255.255
+
+The concept of IP address ranges is a useful one that comes up many times in networking. It's probably not surprising then that there is a shorthand notation for writing them. Using Classless Inter-Domain Routing (CIDR) notation, we can write the three previous address ranges as follows:
+
+10.0.0.0/8
+172.16.0.0/12
+192.168.0.0/16
+
+CIDR notation works by specifying the number of bits that are fixed. For example, 10.0.0.0/8 specifies that the first eight bits of the 10.0.0.0 address are fixed, the first eight bits being just the first 10. part; the remaining 0.0.0 part of the address can be anything and still be on the 10.0.0.0/8 block. Therefore, 10.0.0.0/8 encompasses 10.0.0.0 through 10.255.255.255.
+
+IPv6 addresses are 128 bits long. They are written as eight groups of four hexadecimal characters delineated by colons. A hexadecimal character can be from 0-9 or from a-f. Here are some examples of IPv6 addresses:
+
+0000:0000:0000:0000:0000:0000:0000:0001
+2001:0db8:0000:0000:0000:ff00:0042:8329
+fe80:0000:0000:0000:75f4:ac69:5fa7:67f9
+ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+
+Note that the standard is to use lowercase letters in IPv6 addresses. This is in contrast to many other uses of hexadecimal in computers.
+
+There are a couple of rules for shortening IPv6 addresses to make them easier. Rule 1 allows for the leading zeros in each section to be omitted (for example, 0db8 = db8). Rule 2 allows for consecutive sections of zeros to be replaced with a double colon (::). Rule 2 may only be used once in each address; otherwise, the address would be ambiguous.
+
+Applying both rules, the preceding addresses can be shortened as follows:
+
+::1
+2001:db8::ff00:42:8329
+fe80::75f4:ac69:5fa7:67f9
+ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+
+Like IPv4, IPv6 also has a loopback address. It is ::1.
+
+Dual-stack implementations also recognize a special class of IPv6 address that map directly to an IPv4 address. These reserved addresses start with 80 zero bits, and then by 16 one bits, followed by the 32-bit IPv4 address. Using CIDR notation, this block of address is ::ffff:0:0/96.
+
+These mapped addresses are commonly written with the first 96 bits in IPv6 format followed by the remaining 32 bits in IPv4 format. Here are some examples:
+
+IPv6 Address                     Mapped IPv4 Address
+::ffff:10.0.0.0                  10.0.0.0
+::ffff:172.16.0.5                172.16.0.5
+::ffff:192.168.0.1               192.168.0.1
+::ffff:192.168.50.1              192.168.50.1
+
+You may also run into IPv6 site-local addresses. These site-local addresses are in the fec0::/10 range and are for use on private local networks. Site-local addresses have now been deprecated and should not be used for new networks, but many existing implementations still use them.
+
+Another address type that you should be familiar with are link-local addresses. Link-local addresses are usable only on the local link. Routers never forward packets from these addresses. They are useful for a system to accesses auto-configuration functions before having an assigned IP address. Link-local addresses are in the IPv4 169.254.0.0/16 address block or the IPv6 fe80::/10 address block.
+
+It should be noted the IPv6 introduces many additional features over IPv4 besides just a greatly expanded address range. IPv6 addresses have new attributes, such as scope and lifetime, and it is normal for IPv6 network interfaces to have multiple IPv6 addresses. IPv6 addresses are used and managed differently than IPv4 addresses.
+

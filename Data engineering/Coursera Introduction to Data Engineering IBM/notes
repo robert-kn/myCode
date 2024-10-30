@@ -135,9 +135,16 @@ relational6.png relational7.png relationa8.png relational9.png relational10.png 
 what is a nosql database? see nosql1.png nosql2.png nosql3.png nosql4.png nosql5.png nosql6.png nosql7.png nosql8.png nosql9.png nosql10.png nosql11.png nosql12.png nosql13.png nosql14.png nosql15.png nosql16.png nosql17.png
 nosql18.png nosql19.png nosql20.png nosql21.png nosql22.png
 
-characteristics of data warehouses, data marts and data lakes see characteristics1.png characteristics2.png characteristics3.png characteristics4.png characteristics5.png characteristics6.png characteristics7.png characteristics8.png characteristics9.png characteristics10.png characteristics11.png characteristics12.png characteristics13.png characteristics14.png characteristics15.png characteristics16.png 
+characteristics of data warehouses, data marts and data lakes see characteristics1.png characteristics2.png 
+characteristics3.png characteristics4.png characteristics5.png characteristics6.png characteristics7.png 
+characteristics8.png characteristics9.png characteristics10.png characteristics11.png characteristics12.png 
+characteristics13.png characteristics14.png characteristics15.png characteristics16.png 
 
-The difference also lies in how data is extracted from the source systems, the transformations that need to be applied, and how the data is transported into the mart. Dependent data marts, for example, pull data from an enterprise data warehouse, where data has already been cleaned and transformed. Independent data marts need to carry out the transformation process on the source data since it is coming directly from operational systems and external sources. 
+The difference also lies in how data is extracted from the source systems, the transformations that need to be 
+applied, and how the data is transported into the mart. Dependent data marts, for example, pull data from an 
+enterprise data warehouse, where data has already been cleaned and transformed. Independent data marts need to carry
+out the transformation process on the source data since it is coming directly from operational systems and external 
+sources. 
 
 what is ETL? see etl1.png etl2.png etl3.png etl4.png etl5.png etl6.png etl7.png etl8.png
 
