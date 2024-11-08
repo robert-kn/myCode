@@ -1,0 +1,253 @@
+The if conditional statement syntax:
+
+    if [ condition ]
+    then
+        statement_block_1 
+    else
+        statement_block_2
+    fi
+
+    NB:
+
+    You must always put spaces around your condition within the square brackets [ ].
+    Every if condition block must be paired with a fi to tell Bash where the condition block ends.
+
+    Examples:
+
+    In the following example, the condition is checking whether the number of command-line arguments read by some Bash script, $#, is equal to 2.
+
+    if [[ $# == 2 ]]
+    then 
+        echo "number of arguments is equal to 2"
+    else
+        echo "number of arguments is not equal to 2"
+    fi
+
+    NB:
+
+    Notice the use of the double square brackets, which is the syntax required for making integer comparisons in the condition [[ $# == 2 ]].
+
+    You can also make string comparisons. For example, assume you have a variable called string_var that has the value "Yes" assigned to it. Then the following statement evaluates to true:
+
+    `[ $string_var == "Yes" ]`
+
+    Notice you only need single square brackets when making string comparisons.
+
+    -----
+
+    You can also include multiple conditions to be satified by using the "and" operator && or the "or" operator ||. For example:
+
+    if [ condition1 ] && [ condition2 ]
+    then
+        echo "conditions 1 and 2 are both true"
+    else
+        echo "both conditions are false"
+    fi
+
+    ----
+    Logical operators:
+
+    The following logical operators can be used to compare integers within a condition in an if condition block.
+
+    If a variable a has a value of 2, the following condition evaluates to true; otherwise it evalutes to false.
+
+    $a == 2
+
+    If a variable a has a value different from 2, the following statement evaluates to true. If its value is 2, then it evalutes to false.
+
+    a != 2
+
+    If a variable a has a value of 2, then the following statement evaluates to true:
+
+    a <= 3
+
+    Alternatively, you can use the equivalent notation -le in place of <=:
+
+    a=1
+    b=2
+    if [ $a -le $b ]
+    then
+        echo "a is less than or equal to b"
+    else
+        echo "a is not less than or equal to b"
+    fi
+
+----
+
+Arithmetic calculations: You can perform integer addition, subtraction, multiplication, and division using the notation $(()). For example, the following two sets of commands both display the result of adding 3 and 2.
+
+echo $((3+2))
+
+or 
+
+a=3
+b=2
+c=$(($a+$b))
+echo $c
+
+Bash natively handles integer arithmetic but does not handle floating-point arithmetic. As a result, it will always truncate the decimal portion of a calculation result.
+
+For example:
+
+echo $((3/2))
+
+prints the truncated integer result, 1, not the floating-point number, 1.5.
+
+----
+
+Arrays: The array is a Bash built-in data structure. An array is a space-delimited list contained in parentheses. To create an array, declare its name and contents:
+
+my_array=(1 2 "three" "four" 5)
+
+You can also create an empty array by using:
+
+declare -a empty_array
+
+If you want to add items to your array after creating it, you can add to your array by appending one element at a time:
+
+my_array+=("six")
+my_array+=(7)
+
+This adds elements "six" and 7 to the array my_array.
+
+By using indexing, you can access individual or multiple elements of an array:
+
+# print the first item of the array:
+echo ${my_array[0]}
+# print the third item of the array:
+echo ${my_array[2]}
+# print all array elements:
+echo ${my_array[@]}
+
+---
+
+for loops
+
+You can use a construct called a for loop along with indexing to iterate over all elements of an array.
+
+For example, the following for loops will continue to run over and over again until every element is printed:
+
+for item in ${my_array[@]}; do
+  echo $item
+done
+
+or 
+
+for i in ${my_array[@]}; do
+  echo ${my_array[$i]}
+done
+
+
+for i in {0..5}; do
+    echo "this is iteration number $i"
+done
+
+The for loop requires a ; do component in order to cycle through the loop. Additionally, you need to terminate the for loop block with a done statement.
+
+Another way to implement a for loop when you know how many iterations you want is as follows. For example, the following code prints the number 0 through 6.
+
+N=6
+for (( i=0; i<=$N; i++ )) ; do
+  echo $i
+done
+
+You can use for loops to accomplish all sorts of things. For example, you could count the number of items in an array or sum up its elements, as the following Bash script does:
+
+#!/usr/bin/env bash
+# initialize array, count, and sum
+my_array=(1 2 3)
+count=0
+sum=0
+for i in ${!my_array[@]}; do
+  # print the ith array element
+  echo ${my_array[$i]}
+  # increment the count by one
+  count=$(($count+1))
+  # add the current value of the array to the sum
+  sum=$(($sum+${my_array[$i]}))
+done
+echo $count
+echo $sum
+
+---
+
+In a bash script you can store a user's response in a var by using the following command:
+
+read response (where response is the var used to store a user's response)
+
+---
+
+Scheduling jobs using cron:
+
+Cron is a system daemon used to execute desired tasks in the background at designated times.
+
+A crontab file is a simple text file containing a list of commands meant to be run at specified times. It is edited using the crontab command.
+
+crond service interprets crontab files every minute and submits the jobs to cron at scheduled times.
+
+Typing cronab -e on the command line opens an editor where you can enter
+
+m h dom mon dow command
+
+All five positions for m, h, dom, mon, and dow must have either a numeric entry or an asterisk.
+
+Field	    Allowed values
+minute	    0-59
+hour	    0-23, 0 = midnight
+day	        1-31
+month	    1-12
+weekday	    0-6, 0 = Sunday
+
+crontab -l returns a list of all cronjobs and their schedule.
+
+crontab -r causes the current crontab to be removed
+
+---
+
+The filter command cut can extract selected characters or fields from a line of text.
+
+echo "database" | cut -c1-4 --> data
+
+echo "database" | cut -c5-8 --> base
+
+echo "database" | cut -c1,5 --> db
+
+Extracting fields/columns. We can extract a specific column/field from a delimited text file, by mentioning
+1. the delimiter using the -d option, or
+2. the field number using the -f option.
+
+cut -d":" -f1 /etc/passwd --> The command extracts usernames (the first field) from /etc/passwd.
+
+cut -d":" -f1,3,6 /etc/passwd --> The command extracts multiple fields 1st, 3rd, and 6th (username, userid, and home directory) from /etc/passwd.
+
+cut -d":" -f3-6 /etc/passwd  --> The command extracts a range of fields 3rd to 6th (userid, groupid, user description and home directory) from /etc/passwd.
+
+---
+
+list all shell variables using the set command
+
+---
+
+list all environment variables using the env command
+
+---
+
+tr is a filter command used to translate, squeeze, and/or delete characters.
+
+Translate from one character set to another
+
+echo "Shell Scripting" | tr "[a-z]" "[A-Z]"  --> The command translates all lower case alphabets to upper case.
+
+echo "Shell Scripting" | tr "[:lower:]" "[:upper:]" --> You could also use the pre-defined character sets also for this purpose:
+
+echo "Shell Scripting" | tr  "[A-Z]" "[a-z]"  --> The command translates all upper case alphabets to lower case.
+
+Squeeze repeating occurrences of characters. The -s option replaces a sequence of a repeated characters with a single occurrence of that character.
+
+ps | tr -s " "  --> The command replaces repeat occurrences of ‘space’ in the output of ps command with one ‘space’.
+
+In the above example, the space character within quotes can be replaced with the following : "[\:space\:]".
+
+Delete characters. We can delete specified characters using the -d  option.
+
+echo "My login pin is 5634" | tr -d "[:digit:]" --> The command deletes all digits.

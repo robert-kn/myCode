@@ -1,16 +1,30 @@
 What will you learn about? see learning1.png 
 
-What is ETL? see ETL1.png ETL2.png 
+Are you an aspiring Big Data Engineer or Developer interested in creating Data Pipelines for serving Data Warehouses and Data Analytics platforms? Would you like to learn all about ETL and ELT data pipelines and how to build them using Bash scripting and open-source tools such as Apache Airflow and Apache Kafka? This course may be just right for you. 
 
-What is ELT? see ELT.png
+ETL stands for Extract, Transform, and Load. It refers to the process of curating data from multiple sources and preparing the data for integration and loading into a destination platform such as a data warehouse or analytics environment. ELT is similar but loads the data in its raw format, reserving the transformations for people to apply themselves in a ‘self-serve analytics’ destination environment. Both methods are typical examples of data pipeline deployments. 
 
-Comparing ETL and ELT? see comparingETLandELT.png
+In this course, you will explore the fundamental principles and techniques behind ETL and ELT processes. You will learn how to construct a basic ETL data pipeline from scratch using Bash shell-scripting. You will also learn about the tools, technologies, and use cases for the two main paradigms within data pipeline engineering: batch and streaming data pipelines.  You will further cement this knowledge by exploring and applying two popular open-source data pipeline tools: Apache Airflow and Apache Kafka.
 
-What are the data extraction techniques? see dataExtractionTechniques.png
+You will learn all about Apache Airflow and use it to build, put into production, and monitor a basic batch ETL workflow. You will implement this data pipeline using Airflow’s central construct of a directed acyclic graph (DAG), consisting of simple Bash tasks, Python function and their dependencies.
 
-What are some data transformation techniques? see dataTransformationTechniques.png
+You will also learn about Apache Kafka and use it to get hands-on experience with streaming data pipelines, implementing Kafka’s message producers and consumers, and creating a Kafka weather topic.
 
-Examples of data loading techniques? see dataLoadingTechniques.png
+What is ETL? see ETL1.png ETL2.png ETL3.png ETL4.png
+
+What is ELT? see ELT1.png ELT2.png ELT3.png ELT4.png
+
+Comparing ETL and ELT? see comparingETLandELT1.png comparingETLandELT2.png comparingETLandELT3.png comparingETLandELT4.png comparingETLandELT5.png
+
+What are the data extraction techniques? see rawDataSourcesExamples1 rawDataSourcesExamples2 techniquesForExtractingData1 techniquesForExtractingData2 usecases.png summaryDataExtractionTechniques.png
+
+What are some data transformation techniques (formating data to suit the application)? see dataTransformationTechniques1.png dataTransformationTechniques2 dataTransformationTechniques3
+dataTransformationTechniques4 dataTransformationTechniques5 dataTransformationTechniques6 
+dataTransformationTechniques7
+
+Examples of data loading techniques? see dataLoadingTechniques1.png dataLoadingTechniques2 dataLoadingTechniques3
+dataLoadingTechniques4 dataLoadingTechniques5 dataLoadingTechniques6 dataLoadingTechniques7 dataLoadingTechniques8
+dataLoadingTechniques9
 
 What are data pipelines? see introductiontodatapipelines.png
 

@@ -23,9 +23,9 @@ bytes to each segment. The resulting packages of information, known as packets i
 are then sent through the network to the destination end system, where they are reassembled into the original data. 
 
 A packet switch takes a packet arriving on one of its incoming communication links and forwards that packet on one 
-of its outgoing communication links. Packet switches come in many shapes and flavors, but the two most prominent types
-in today's Internet are routers and link-layer switches. Both types of switches forward packets toward their ultimate
-destinations. 
+of its outgoing communication links. Packet switches come in many shapes and flavors, but the two most prominent types in today's Internet are routers and link-layer switches. Both types of switches forward packets toward their ultimate destinations. 
+
+Link-layer switches are typically used in access networks(?), while routers are typically used in the network core.
 
 The sequence of communication links and packet switches traversed by a packet from the sending end system to the 
 receiving end system is known as a route or path through the network. 
@@ -35,6 +35,8 @@ cable or telephone companies; corporate ISPs; university ISPs; ISPs that provide
 coffee shops, and other public places; and cellular data ISPs, providing mobile access to our smartphones and other 
 devices.
 
+Each ISP is in itself a network of packet switches and communication links. ISPs provide a variety of types of network access to the end systems, including residential broadband access such as cable modem or DSL, high-speed local area network access, and mobile wireless access. ISPs also provide  Internet access to content providers, connecting servers directly to the Internet.
+
 The Internet is all about connecting end systems to each other, so the ISPs that provide access to end systems must
 also be interconnected. These lower-tier ISPs are interconnected through national and international upper-tier ISPs 
 such as Level 3 Communications, AT&T, Sprint, and NTT. An upper-tier ISP consists of high-speed routers 
@@ -42,29 +44,25 @@ interconnected with high-speed fiber-optic links. Each ISP network, whether uppe
 independently, runs the IP protocol, and conforms to certain naming and address conventions.
 
 End systems, packet switches, and other pieces of the Internet run protocols that control the sending and receiving 
-of infonnation within the Internet. The Transmission Control Protocol (TCP) and the Internet Protocol (IP) are two 
-of the most important protocols in the Internet.
+of information within the Internet. The Transmission Control Protocol (TCP) and the Internet Protocol (IP) are two 
+of the most important protocols in the Internet. The IP protocol specifies the format of the packets that are sent and received among routers and end systems. The Internet’s principal protocols are collectively known as TCP/IP.
 
-Given the importance of protocols to the Internet, it's important that everyone agree on what each and every protocol
-does, so that people can create systems and products that interoperate. This is where standards come into play. 
-Internet standards are developed by the Internet Engineering Task Force (IETF).
+Given the importance of protocols to the Internet, it's important that everyone agree on what each and every protocol does, so that people can create systems and products that interoperate. This is where standards come into play. Internet standards are developed by the Internet Engineering Task Force (IETF).
 
 The IETF standards documents are called requests for comments (RFCs). RFCs started out as general requests for 
 comments (hence the name) to resolve network and protocol design problems that faced the precursor to the Internet.
 
 RFCs tend to be quite technical and detailed. They define protocols such as TCP, IP, HTTP (for the Web), and SMTP 
 (for e-mail). There are currently more than 7,000 RFCs. Other bodies also specify standards for network components, 
-most notably for network links. The IEEE 802 LAN/MAN Standards Committee [IEEE 802 2016] , for example, specifies the
-Ethernet and wireless WiFi standards. 
+most notably for network links. The IEEE 802 LAN/MAN Standards Committee [IEEE 802 2016] , for example, specifies the Ethernet and wireless WiFi standards. 
 
 A Services Description: Our discussion above has identified many of the pieces that make up the Internet. But we can
-also describe the Internet from an entirely different angle-namely, as an infrastructure that pro vides services to
+also describe the Internet from an entirely different angle-namely, as an infrastructure that provides services to
 applications. 
 
 The applications are said to be distributed applications, since they involve multiple end systems that exchange data
 with each other. Importantly, Internet applications run on end systems-they do not run in the packet switches in the
-network core. Although packet switches facilitate the exchange of data among end systems, they are not concerned with
-the application that is the source or sink of data. 
+network core. Although packet switches facilitate the exchange of data among end systems, they are not concerned with the application that is the source or sink of data. 
 
 Let's explore a little more what we mean by an infrastructure that provides services to applications. To this end, 
 suppose you have an exciting new idea for a distributed Internet application, one that may greatly benefit humanity 
@@ -102,44 +100,27 @@ in terms of an infrastructure for providing services to distributed applications
 
 What Is a Protocol? It is probably easiest to understand the notion of a computer network protocol by first 
 considering some human analogies, since we humans execute protocols all of the time. Consider what you do when you 
-want to ask someone for the time of day . A typical exchange is shown in Figure 1.2 . Human protocol (or good manners,
-at least) dictates that one first offer a greeting (the first "Hi" in Figure 1.2) to initiate communication with 
-someone else. The typical response to a "Hi" is a returned "Hi" message. Implicitly, one then takes a cordial "Hi" 
-response as an indication that one can proceed and ask for the time of day. A different response to the initial "Hi"
-(such as "Don't bother me! " or "I don't speak English," or some unprintable reply) might indicate an unwillingness 
-or inability to communicate. 
+want to ask someone for the time of day . A typical exchange is shown in Figure 1.2 . Human protocol (or good manners, at least) dictates that one first offer a greeting (the first "Hi" in Figure 1.2) to initiate communication with  someone else. The typical response to a "Hi" is a returned "Hi" message. Implicitly, one then takes a cordial "Hi" response as an indication that one can proceed and ask for the time of day. A different response to the initial "Hi" (such as "Don't bother me! " or "I don't speak English," or some unprintable reply) might indicate an unwillingness or inability to communicate. 
 
 In this case, the human protocol would be not to ask for the time of day. Sometimes one gets no response at all to a
 question, in which case one typically gives up asking that person for the time. Note that in our human protocol, 
-there are specific messages we send, and specific actions we take in response to the received reply messages or other
-events (such as no reply within some given amount of time). 
+there are specific messages we send, and specific actions we take in response to the received reply messages or other events (such as no reply within some given amount of time). 
 
 If people run different protocols (for example, if one person has manners but the other does not, or if one 
 understands the concept of time and the other does not) the protocols do not interoperate and no useful work can be 
-accomplished. The same is true in networking- it takes two (or more) communicating entities running the same protocol
-in order to accomplish a task. 
+accomplished. The same is true in networking- it takes two (or more) communicating entities running the same protocol in order to accomplish a task. 
 
 Network Protocols
 
-A network protocol is similar to a human protocol, except that the entities exchanging messages and taking actions are
-hardware or software components of some device (for example, computer, smartphone, tablet, router, or other network-
-capable device). All activity in the Internet that involves two or more communicating remote entities is governed by
-a protocol. For example, hardware-implemented protocols in two physically connected computers control the flow of 
-bits on the "wire" between the two network interface cards; congestion-control protocols in end systems control the 
-rate at which packets are transmitted between sender and receiver; protocols in routers determine a packet's path 
-from source to destination. Protocols are running everywhere in the Internet, and consequently much of this book is 
-about computer network protocols.
+A network protocol is similar to a human protocol, except that the entities exchanging messages and taking actions are hardware or software components of some device (for example, computer, smartphone, tablet, router, or other network-capable device). All activity in the Internet that involves two or more communicating remote entities is governed by a protocol. For example, hardware-implemented protocols in two physically connected computers control the flow of bits on the "wire" between the two network interface cards; congestion-control protocols in end systems control the rate at which packets are transmitted between sender and receiver; protocols in routers determine a packet's path from source to destination. Protocols are running everywhere in the Internet, and consequently much of this book is about computer network protocols.
 
 As an example of a computer network protocol with which you are probably familiar, consider what happens when you 
 make a request to a Web server, that is, when you type the URL of a Web page into your Web browser. The scenario is 
 illustrated in the right half of Figure 1.2. First, your computer will send a connection request message to the Web 
-server and wait for a reply. The Web server wi ll eventuall y receive your connection request message and return a 
-connection reply message. Knowing that it is now OK to request the Web document, your computer then sends the name of
-the Web page it wants to fetch from that Web server in a GET message. Finally, the Web server returns the Web page 
-(file) to your computer.
+server and wait for a reply. The Web server will eventually receive your connection request message and return a 
+connection reply message. Knowing that it is now OK to request the Web document, your computer then sends the name of the Web page it wants to fetch from that Web server in a GET message. Finally, the Web server returns the Web page (file) to your computer.
 
-Given the human and networking examples above, the exchange of messages and the actions taken when these messages are
-sent and received are the key defining elements of a protocol: 
+Given the human and networking examples above, the exchange of messages and the actions taken when these messages are sent and received are the key defining elements of a protocol: 
 
 A protocol defines the format and the order of messages exchanged between two or more communicating entities, as 
 well as the actions taken on the transmission and/or receipt of a message or other event. 
@@ -149,23 +130,68 @@ accomplish different communication tasks.
 
 The Network Edge
 
-Recall from the previous section that in computer networking jargon, the computers and other devices connected to the
-Internet are often referred to as end systems. They are referred to as end systems because they sit at the edge of 
-the Internet, as shown in Figure 1.3. The Internet's end systems include desktop computers (e.g., desktop PCs, Macs,
-and Linux boxes), servers (e.g., Web and e-mail servers), and mobile devices (e.g., laptops, smartphones, and tablets).
-Furthermore, an increasing number of non-traditional "things" are being attached to the Internet as end systems (see
-the Case History feature). 
+Recall from the previous section that in computer networking jargon, the computers and other devices connected to the Internet are often referred to as end systems. They are referred to as end systems because they sit at the edge of the Internet, as shown in Figure 1.3. The Internet's end systems include desktop computers (e.g., desktop PCs, Macs, and Linux boxes), servers (e.g., Web and e-mail servers), and mobile devices (e.g., laptops, smartphones, and tablets). Furthermore, an increasing number of non-traditional "things" are being attached to the Internet as end systems (see the Case History.png). 
 
-End systems are also referred to as hosts because they host (that is, run) application programs such as a Web browser
-program, a Web server program, an e-mail client program, or an e-mail server program. 
+End systems are also referred to as hosts because they host (that is, run) application programs such as a Web browser program, a Web server program, an e-mail client program, or an e-mail server program. 
 
 Hosts are sometimes further divided into two categories: clients and servers. Informally, clients tend to be desktop
 and mobile PCs, smartphones, and so on, whereas servers tend to be more powerful machines that store and distribute 
 Web pages, stream video, relay e-mail, and so on. Today, most of the servers from which we receive search results, 
-e-mail, Web pages, and videos reside in large data centers. For example, Google has 50-100 data centers, including 
-about 15 large centers, each with more than 100,000 servers. 
+e-mail, Web pages, and videos reside in large data centers. 
 
 Access Networks
 
+Having considered the applications and end systems at the "edge of the network," let's next consider the access network-the network that physically connects an end system to the first router (also known as the "edge router") on a path from the end system to any other distant end system. Figure 1.4 shows several types of access networks with thick, shaded lines and the settings (home, enterprise, and wide-area mobile wireless) in which they are used. 
 
+Home Access: DSL, Cable, FTTH, and 5G Fixed Wireless
+
+Today, the two most prevalent types of broadband residential access are digital subscriber line (DSL) and cable. A residence typically obtains DSL Internet access from the same local telephone company (telco) that provides its wired local phone access. Thus, when DSL is used, a customer's telco is also its ISP. As shown in Figure 1.5, each customer's DSL modem uses the existing telephone line (twisted-pair copper wire) to exchange data with a digital subscriber line access multiplexer (DSLAM) located in the telco's local central office (CO). The home's DSL modem takes digital data and translates it to high-frequency tones for transmission over telephone wires to the CO; the analog signals from many such houses are translated back into digital format at the DSLAM. 
+
+The residential telephone line carries both data and traditional telephone signals simultaneously, which are encoded at different frequencies: 
+
+•   A high-speed downstream channel, in the 50 kHz to 1 MHz band 
+•   A medium-speed upstream channel, in the 4 kHz to 50 kHz band 
+•   An ordinary two-way telephone channel, in the Oto 4 kHz band 
+
+This approach makes the single DSL link appear as if there were three separate links, so that a telephone call and an Internet connection can share the DSL link at the same time. 
+
+On the customer side, a splitter separates the data and telephone signals arriving to the home and forwards the data signal to the DSL modem. On the telco side, in the CO, the DSLAM separates the data and phone signals and sends the data into the Internet. Hundreds or even thousands of households connect to a single DSLAM.
+
+The DSL standards define multiple transmission rates, including 24 Mbs and 52 Mbs downstream and 3.5 Mbps and 16  Mbps Mbps upstream, the newest standard provides for aggregate upstream plus downstream rates of 1 Gbp. Because the downstream and upstream rates are different, the access is said to be asymmetric. 
+
+The actual downstream and upstream transmission rates achieved may be less than the rates noted above, as the DSL provider may purposefully limit a residential rate when tiered service (different rates, available at different prices) are offered. The maximum rate is also limited by the distance between the home and the CO, the gauge of the twisted-pair line and the degree of electrical interference. Engineers have expressly designed DSL for short distances between the home and the CO; generally, if the residence is not located within 5 to 10 miles of the CO, the residence must resort to an alternative form of Internet access. 
+
+While DSL makes use of the telco's existing local telephone infrastructure, cable Internet access makes use of the cable television company's existing cable television infrastructure. A residence obtains cable Internet access from the same company that provides its cable television. As illustrated in Figure 1.6, fiber optics connect the cable head end to neighborhood-level junctions, from which traditional coaxial cable is then used to reach individual houses and apartments. Each neighborhood junction typically supports 500 to 5,000 homes. Because both fiber and coaxial cable are employed in this system, it is often referred to as hybrid fiber coax (HFC). 
+
+Cable Internet access requires special modems, called cable modems. As with a DSL modem, the cable modem is typically an external device and connects to the home PC through an Ethernet port.
+
+At the cable head end, the cable modem termination system (CMTS) serves a similar function as the DSL network's DSLAM-turning the analog signal sent from the cable modems in many downstream homes back into digital format. Cable modems divide the HFC network into two channels, a downstream and an upstream channel. As with DSL, access is typically asymmetric, with the downstream channel typically allocated a higher transmission rate than the upstream channel. The DOCSIS 2.0 and 3.0 standards define downstream bitrates of 40 Mbps and 1.2 Gbps, and upstream rates of 30 Mbps and 100 Mbps, respectively. As in the case of DSL networks, the maximum achievable rate may not be realized due to lower contracted data rates or media impairments. 
+
+One important characteristic of cable Internet access is that it is a shared broadcast medium. In particular, every packet sent by the head end travels downstream on every link to every home and every packet sent by a home travels on the upstream channel to the head end. For this reason, if several users are simultaneously downloading a video file on the downstream channel , the actual rate at which each user receives its video file will be significantly lower th an the aggregate cable downstream rate . On the other hand, if there are only a few active users and they are all Web surfing, then each of the users may actually receive Web pages at the full cable downstream rate, because the users will rarely request a Web page at exactly the same time. Because the upstream channel is also shared, a distributed multiple access protocol is needed to coordinate transmissions and avoid collisions.
+
+An up-and-coming technology that provides even higher speeds is fiber to the home (FTTH). As the name suggests, the FTTH concept is simple-provide an optical fiber path from the CO directly to the home. FTTH can potentially provide Internet access rates in the gigabits per second range.
+
+There are several competing technologies for optical distribution from the CO to the homes. The simplest optical distribution network is called direct fiber, with one fiber leaving the CO for each home. More commonly, each fiber leaving the central office is actually shared by many homes; it is not until the fiber gets relatively close to the homes that it is split into individual customer-specific fibers. There are two competing optical-distribution network architectures that perform this splitting: active optical networks (AONs) and passive optical networks (PONs).
+
+Here, we briefly discuss PON. Figure 1.7 shows FTTH using the PON distribution architecture. Each home has an optical network terminator (ONT), which is connected by dedicated optical fiber to a neighborhood splitter. The splitter combines a number of homes (typically less than 100) onto a single, shared optical fiber, which connects to an optical line terminator (OLT) in the telco's CO. The OLT, providing conversion between optical and electrical signals, connects to the Internet via a telco router. In the home, users connect a home router (typically a wireless router) to the ONT and access the Internet via this home router. In the PON architecture, all packets sent from OLT to the splitter are replicated at the splitter (similar to a cable head end). 
+
+FTTH can potentially provide Internet access rates in the gigabits per second range. However, most FTTH ISPs provide different rate offerings, with the higher rates naturally costing more money. 
+
+Two other access network technologies are also used to provide Internet access to the home. In locations where DSL, cable, and FTTH are not available (e.g., in some rural settings), a satellite link can be used to connect a residence to the Internet at speeds of more than 1 Mbps; StarBand and HughesNet are two such satellite access providers. Dial-up acces s over traditional phone lines is based on the same model as DSL-a home modem connects over a phone line to a modem in the ISP. Compared with DSL and other broadband access networks , dial-up access is excruciatingly slow at 56 kbps. 
+
+In addition to DSL, Cable, and FTTH, 5G fixed wireless is beginning to be deployed. 5G fixed wireless not only promises high-speed residential access, but will do so without installing costly and failure-prone cabling from the telco’s CO to the home. With 5G fixed wireless, using beam-forming technology, data is sent wirelessly from a provider’s base station to the a modem in the home. A WiFi wireless router is connected to the modem (possibly bundled together), similar to how a WiFi wireless router is connected to a cable or DSL modem. 
+
+Access in the Enterprise (and the Home): Ethernet and WiFi
+
+On corporate and university campuses, and increasingly in home settings, a local area network (LAN) is used to connect an end system to the edge router. Although there are many types of LAN technologies , Ethernet is by far the most prevalent access technology in corporate, university, and home networks. As shown in Figure 1.8 , Ethernet users use twisted-pair copper wire to connect to an Ethernet switch. The Ethernet switch, or a network of such interconnected switches, is then in turn connected into the larger Internet. With Ethernet access, users typically have 100 Mbps to tens of Gbps access to the Ethernet switch, whereas servers may have 1 Gbps or even 10 Gbps access. 
+
+Increasingly, however, people are accessing the Internet wirelessly from laptops, smartphones, tablets, and other "things". In a wireless LAN setting , wireless users transmit/receive packets to/from an access point that is connected into the enterprise's network (most likely using wired Ethernet), which in turn is connected to the wired Internet. A wireless LAN user must typically be within a few tens of meters of the access point. Wireless LAN access based on IEEE 802.11 technology, more colloquially known as WiFi, is now just about everywhere-universities, business offices, cafes, airports , homes, and even in airplanes. In many cities, one can stand on a street corner and be within range of ten or twenty base stations (for a browseable global map of 802.11 base stations that have been discovered and logged on a Web site by people who take great enjoyment in doing such things, see [wigle.net].
+
+Even though Ethernet and WiFi access networks were initially deployed in enterprise (corporate, university) se ttings, they have recently become relatively common components of home networks. Many homes combine broadband residential access (that is, cable modems or DSL) with these inexpensive wireless LAN technologies to create powerful home networks. Figure 1.9 shows a typical home network. This home network consists of a roaming laptop, multiple Internet-connected home appliances, as well as a wired PC; a base station (the wireless access point), which communicates with the wireless PC and other wireless devices in the home; and a home router that connects the wireless access point, and any other wired home devices, to the Internet. This network allows household members to have broadband access to the Internet with one member roaming from the kitchen to the backyard to the bedrooms. 
+
+Wide-Area Wireless Access: 3G and LTE 4G and 5G 
+
+Increasingly, devices such as iPhones and Android devices are being used to message, share photos in social networks, watch movies, and stream music while on the run . These devices employ the same wireless infrastructure used for cellular telephony to send/receive packets through a base station that is operated by the cellular network provider. Unlike WiFi, a user need only be within a few tens of kilometers (as opposed to a few tens of meters) of the base station.
+
+Telecommunications companies have made enormous investments in so-called fourth-generation (4G) wireless, which provides real-world download speeds of up to 60 Mbps. But even higher-speed wide-area access technologies—a fifth-generation (5G) of wide-area wireless networks—are already being deployed. 
 

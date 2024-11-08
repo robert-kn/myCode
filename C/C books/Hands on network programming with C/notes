@@ -139,3 +139,142 @@ Another address type that you should be familiar with are link-local addresses. 
 
 It should be noted the IPv6 introduces many additional features over IPv4 besides just a greatly expanded address range. IPv6 addresses have new attributes, such as scope and lifetime, and it is normal for IPv6 network interfaces to have multiple IPv6 addresses. IPv6 addresses are used and managed differently than IPv4 addresses.
 
+Domain names
+
+The Internet Protocol can only route packets to an IP address, not a name. So, if you try to connect to a website, such as example.com, your system must first resolve that domain name, example.com, into an IP address for the server that hosts that website.
+
+This is done by connecting to a Domain Name System (DNS) server. You connect to a domain name server by knowing in advance its IP address. The IP address for a domain name server is usually assigned by your ISP.
+
+Many other domain name servers are made publicly available by different organizations.
+
+To resolve a hostname, your computer sends a UDP message to your domain name server and asks it for an AAAA-type record for the domain you're trying to resolve. If this record exists, an IPv6 address is returned. You can then connect to a server at that address to load the website. If no AAAA record exists, then your computer queries the server again, but asks for an A record. If this record exists, you will receive an IPv4 address for the server. In many cases, a site will publish an A record and an AAAA record that route to the same server.
+
+It is also possible, and common, for multiple records of the same type to exist, each pointing to a different address. This is useful for redundancy in the case where multiple servers can provide the same service.
+
+Internet routing
+
+The internet today has an estimated 20 billion devices connected. When you make a connection over the internet, your data first transmits to your local router. From there, it is transmitted to another router, which is connected to another router, and so on. Eventually, your data reaches a router that is connected to the receiving device, at which point, the data has reached its destination: see diagram
+
+Imagine that each router in the preceding diagram is connected to tens, hundreds, or even thousands of other routers and systems. It's an amazing feat that IP can discover the correct path and deliver traffic seamlessly.
+
+Windows includes a utility, tracert, which lists the routers between your system and the destination system. see diagram
+
+The IP addresses are usually listed for many of the intermediate routers, but a few sometimes miss with the 'Request timed out message'. This usually means that the system in question doesn't support the part of the Internet Control Message Protocol (ICMP) protocol needed. It's not unusual to see a few such systems when running tracert.
+
+In Unix-based systems, the utility to trace routes is called traceroute. The information obtained is essentially the same.
+
+Local networks and address translation
+
+It's common for households and organizations to have small Local Area Networks (LANs). As mentioned previously, there are IPv4 addresses ranges reserved for use in these small local networks. 
+
+These reserved private ranges are as follows:
+10.0.0.0 to 10.255.255.255
+172.16.0.0 to 172.31.255.255
+192.168.0.0 to 192.168.255.255
+
+When a packet originates from a device on an IPv4 local network, it must undergo Network Address Translation (NAT) before being routed on the internet. A router that implements NAT remembers which local address a connection is established from.
+
+The devices on the same LAN can directly address one another by their local address. However, any traffic communicated to the internet must undergo address translation by the router. The router does this by modifying the source IP address from the original private LAN IP address to its public internet IP address: see diagram
+
+Likewise, when the router receives the return communication, it must modify the destination address from its public IP to the private IP of the original sender. It knows the private IP address because it was stored in memory after the first outgoing packet: see diagram
+
+Network address translation can be more complicated than it first appears. In addition to modifying the source IP address in the packet, it must also update the checksums in the packet. Otherwise, the packet would be detected as containing errors and discarded by the next router. The NAT router must also remember which private IP address sent the packet in order to route the reply. Without remembering the translation address, the NAT router wouldn't know where to send the reply to on the private network.
+
+NATs will also modify the packet data in some cases. For example, in the File Transfer Protocol (FTP), some connection information is sent as part of the packet's data. In these cases, the NAT router will look at the packet's data in order to know how to forward future incoming packets. IPv6 largely avoids the need for NAT, as it is possible (and common) for each device to have its own publicly-addressable address.
+
+Subnetting and CIDR
+
+IP addresses can be split into parts. The most significant bits are used to identify the network or subnetwork, and the least significant bits are used to identify the specific device on the network.
+
+IPv4 traditionally uses a mask notation to identify the IP address parts. For example, consider a router on the 10.0.0.0 network with a subnet mask of 255.255.255.0. This router can take any incoming packet and perform a bitwise AND operation with the subnet mask to determine whether the packet belongs on the local subnet or needs to be forwarded on. For example, this router receives a packet to be delivered to 10.0.0.105. It does a bitwise AND operation on this address with the subnet mask of 255.255.255.0, which produces 10.0.0.0. That matches the subnet of the router, so the traffic is local. If, instead, we consider a packet destined for 10.0.15.22, the result of the bitwise AND with the subnet mask is 10.0.15.0. This address doesn't match the subnet the router is on, and so it must be forwarded.
+
+IPv6 uses CIDR. Networks and subnetworks are specified using the CIDR notation we described earlier. For example, if the IPv6 subnet is /112, then the router knows that any address that matches on the first 112 bits is on the local subnet.
+
+So far, we've covered only routing with one sender and one receiver. While this is the most common situation, let's consider alternative cases too.
+
+Multicast, broadcast, and anycast
+
+When a packet is routed from one sender to one receiver, it uses unicast addressing. This is the simplest and most common type of addressing. All of the protocols we deal with in this book use unicast addressing.
+
+Broadcast addressing allows a single sender to address a packet to all recipients simultaneously. It is typically used to deliver a packet to every receiver on an entire subnet.
+
+If a broadcast is a one-to-all communication, then multicast is a one-to-many communication. Multicast involves some group management, and a message is addressed and delivered to members of a group.
+
+Anycast addressed packets are used to deliver a message to one recipient when you don't care who that recipient is. This is useful if you have several servers that provide the same functionality, and you simply want one of them (you don't care which) to handle your request.
+
+IPv4 and lower network levels support local broadcast addressing. IPv4 provides some optional (but commonly implemented) support for multicasting. IPv6 mandates multicasting support while providing additional features over IPv4's multicasting. Though IPv6 is not considered to broadcast, its multicasting functionality can essentially emulate it.
+
+It's worth noting that these alternative addressing methods don't generally work over the broader internet. Imagine if one peer was able to broadcast a packet to every connected internet device. It would be a mess!
+
+If you can use IP multicasting on your local network, though, it is worthwhile to implement it. Sending one IP level multicast conserves bandwidth compared to sending the same unicast message multiple times.
+
+However, multicasting is often done at the application level. That is, when the application wants to deliver the same message to several recipients, it sends the message multiple times – once to each recipient.
+
+We've covered how messages are routed through a network. Now, let's see how a message knows which application is responsible for it once it arrives at a specific system.
+
+Port numbers
+
+An IP address alone isn't quite enough. We need port numbers. To return to the telephone analogy, if IP addresses are phone numbers, then port numbers are like phone extensions. Generally, an IP address gets a packet routed to a specific system, but a port number is used to route the packet to a specific application on that system.
+
+For example, on your system, you may be running multiple web browsers, an email client, and a video-conferencing client. When your computer receives a TCP segment or UDP datagram, your operating system looks at the destination port number in that packet. That port number is used to look up which application should handle it.
+
+Port numbers are stored as unsigned 16-bit integers. This means that they are between 0 and 65,535 inclusive.
+
+Some port numbers for common protocols are as follows:
+
+Port Number             Protocol
+20, 21          TCP     File Transfer Protocol (FTP)
+22              TCP     Secure Shell (SSH)
+23              TCP     Telnet
+25              TCP     Simple Mail Transfer Protocol (SMTP)
+53              UDP     Domain Name System (DNS)
+80              TCP     Hypertext Transfer Protocol (HTTP)
+110             TCP     Post Office Protocol, Version 3 (POP3)
+143             TCP     Internet Message Access Protocol(IMAP)
+194             TCP     Internet Relay Chat (IRC)
+443             TCP     HTTP over TLS/SSL (HTTPS)
+993             TCP     IMAP over TLS/SSL (IMAPS)
+995             TCP     POP3 over TLS/SSL (POP3S)
+
+Each of these listed port numbers is assigned by the Internet Assigned Numbers Authority (IANA). They are responsible for the official assignments of port numbers for specific protocols. Unofficial port usage is very common for applications implementing custom protocols. In this case, the application should try to choose a port number that is not in common use to avoid conflict.
+
+Clients and servers
+
+In the telephone analogy, a call must be initiated first by one party. The initiating party dials the number for the receiving party, and the receiving party answers.
+This is also a common paradigm in networking called the client-server model.  In this model, a server listens for connections. The client, knowing the address and port number that the server is listening on, establishes the connection by sending the first packet.
+For example, the web server at example.com listens on port 80 (HTTP) and port 443 (HTTPS). A web browser (client) must establish the connection by sending the first packet to the web server address and port.
+
+Putting it together
+
+A socket is one end-point of a communication link between systems. It's an abstraction in which your application can send and receive data over the network, in much the same way that your application can read and write to a file using a file handle.
+
+An open socket is uniquely defined by a 5-tuple item consisting of the following:
+
+Local IP address
+Local port
+Remote IP address
+Remote port
+Protocol (UDP or TCP)
+
+This 5-tuple is important, as it is how your operating system knows which application is responsible for any packets received. For example, if you use two web browsers to establish two simultaneous connections to example.com on port 80, then your operating system keeps the connections separate by looking at the local IP address, local port, remote IP address, remote port, and protocol. In this case, the local IP addresses, remote IP addresses, remote port (80), and protocol (TCP) are identical.
+
+The deciding factor then is the local port (also called the ephemeral port), which will have been chosen to be different by the operating system for connection. This 5-tuple is also important to understand how NAT works. A private network may have many systems accessing the same outside resource, and the router NAT must store this five tuple for each connection in order to know how to route received packets back into the private network.
+
+What's your address?
+
+You can find your IP address using the ipconfig command on Windows, or the ifconfig command on Unix-based systems (such as Linux and macOS).
+
+On Unix-based systems, we use either the ifconfig or ip addr commands. The ifconfig command is the old way and is now deprecated on some systems. The ip addr command is the new way, but not all systems support it yet.
+
+If you are behind a NAT, there is often no good way to know your public IP address. Usually, the only resort is to contact an internet server that provides an API that informs you of your IP address.
+
+A few free and public APIs for this are as follows:
+
+http://api.ipify.org/
+http://icanhazip.com/
+http://ifconfig.me/ip
+
+Listing network adapters from C
+Sometimes, it is useful for your C programs to know what your local address is. For most of this book, we are able to write code that works both on Windows and Unix-based (Linux and macOS) systems. However, the API for listing local addresses is very different between systems. For this reason, we split this program into two: one for Windows and one for Unix-based systems.
+
+We will address the Windows case first.

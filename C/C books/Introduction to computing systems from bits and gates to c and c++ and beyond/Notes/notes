@@ -885,6 +885,8 @@ speciﬁed by A[1:0] is presented to the address decoder, resulting in the corre
 write enable (WE) also asserted, the three bits D[2:0] can be written into the three gated latches corresponding to 
 that word line.
 
+Sequential Logic Circuits:
+
 In this section, we discuss digital logic structures that can both process information (i.e., make decisions) and 
 store information. That is, these structures base their decisions not only on the input values now present, but also
 (and this is very important) on what has happened before. These structures are usually called sequential logic 
@@ -956,9 +958,11 @@ In the case of the lock of Figure 3.23a, there are four states A, B, C, and D. E
 if it is not open, we have already performed either zero (State A), one (State B), or two (State C) correct 
 operations. This is the sum total of all possible states that can exist.
 
-Question: Why are there exactly four states needed to describe the combination lock of Figure 3.23a? Can you think 
-of a snapshot of the combination lock after an operation (Rn or Ln) that requires a ﬁfth state because it is not 
-covered by one of the four states A, B, C, or D?
+Question: Why are there exactly four states needed to describe the combination lock of Figure 3.23a? because there 
+are no other variables that are valid in the system e.g. their is no other turn that is valid.
+
+Can you think of a snapshot of the combination lock after an operation (Rn or Ln) that requires a ﬁfth state 
+because it is not covered by one of the four states A, B, C, or D? no
 
 There are many examples of systems that you are familiar with that can be easily described by means of states.
 
@@ -1112,13 +1116,16 @@ First, let us look at the outputs that control the lights. As we have said, ther
 to control the lights. Light 5 is controlled by the output of the AND gate labeled V, since the only time light 5 
 is on is when the controller is in state 11. Lights 3 and 4 are controlled by the output of the OR gate labeled X, 
 since there are two states in which those lights are on, those labeled 10 and 11. Why are lights 1 and 2 controlled 
-by the output of the OR gate labeled W?
+by the output of the OR gate labeled W? because the only time they are on is when the controller is in state 01 and
+11
 
 Next, let us look at the internal outputs that control the storage elements, which specify the next state of the 
 controller. Storage element 2 should be set to 1 for the next clock cycle if the next state is 10 or 11. This is 
 true only if the switch is on and the current state is either 01 or 10. Therefore, the output signal that will make 
 storage element 2 be 1 in the next clock cycle is the output of the OR gate labeled Y. Why is the next state of 
-storage element 1 controlled by the output of the OR gate labeled Z?
+storage element 1 controlled by the output of the OR gate labeled Z? storage element 1 should be set to 1 for the
+next clock cyle if the state of the controller is currently 00 or 10 and the switch is on. This only occurs if
+the output is produced by gate Z.
 
 The Two Storage Elements: In order for the danger sign controller to work, the state transitions must occur once 
 per second when the switch is on.
@@ -1220,3 +1227,6 @@ The arrows in Figure 3.35 represent wires that transmit values from one struc- t
 include a cross-hatch with a number next to it. The number represents the number of wires, corresponding to the 
 number of bits being transmitted. Thus, for example, the arrow from the register labeled PC to one of the inputs of 
 the MUX labeled ADDR1MUX indicates that 16 bits are transmitted from PC to an input of ADDR1MUX.
+
+A two-input AND and a two-input OR are both examples of two-input logic functions. How many diﬀerent two-input 
+logic functions are possible? There can be 16 different two input logic functions.
