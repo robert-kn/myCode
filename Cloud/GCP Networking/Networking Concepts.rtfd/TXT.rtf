@@ -1,0 +1,149 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;\f1\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh16960\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 Track 1\
+\
+What is a VPC?\
+\
+How many VPC\'92s can you attach per project?\
+\
+What are subnets?\
+\
+How to create VPC\'92s and subnets on the ui and using gcloud command tools.\
+\
+Converting auto mode subnets to custom mode. Can you do the opposite?\
+\
+What are regions and zones in GCP?\
+\
+How many subnets can you deploy in a GCP region? As many as you want provided the IP ranges for each is unique.\
+\
+What are the default firewall rules provisioned in the default VPC network? \
+\
+How to convert an auto mode VPC to a custom VPC (on the UI and the command line)\
+\
+Gcloud commands to create firewall rules as well as how to do it on the UI.\
+\
+How to create secondary IP ranges along with a primary IP range when creating a subnet\
+\
+When can you enable private google access and flow logs?\
+\
+How to expand IP range of a subnet after it has already been created (can do it both on the UI and a gcloud command line tool). Will resources already be deployed in the subnet be affected when you do so?\
+\
+Google reserves 4 IP addresses per subnet IP range. 1\'92st IP is reserved for the network, 2\'92n for the default gateway, penultimate address is reserved for future use, and last address is reserved for the broadcast address.\
+\
+Can you revert back to a smaller IP range in a subnet after increasing the IP range?\
+\
+Vm\'92s must have at least one internal address; external addresses are optional.\
+\
+Internal addresses are assigned from DHCP primary address range pool. Ephemeral and remain when instance is stopped. \
+\
+Can assign internal static (within subnet ip range) and external static ip address. If you do not assign external static ip to a resource, you will still be billed.  \
+\
+External ip is ephemeral and is released back into pool when an instance is stopped/ deleted.\
+\
+Static IP\'92s are bound to region I.e. regional resources.\
+\
+Can attach multiple network interface controllers (NIC) to a vm and have it operate as a network appliance. NIC\'92s must be assigned during instance creation i.e. cannot attach a NIC to a pre existing instance. Obviously subnet IP ranges belonging to VPC\'92s attached to an instance assigned NIC\'92s cannot overlap. Each NIC is assigned/ attached to one VPC. VCPU\'92s on an instance will determine the amount of NIC\'92s you can attach to an instance (up to a max of 8 NIC\'92s (i.e 8 VPC\'92s attached) per instance). For example an instance with <= 2 VCPU\'92s can only be assigned a max of 2 NIC\'92s. If an instance has a higher number of VCPU\'92s > 2, then you can assign 1 NIC per extra VCPU up to a max of 8 NIC\'92s i.e. instances with vCPU\'92s > 8 cannot be assigned more 8 NIC\'92s.\
+\
+Reasons why you would want to use a vm as a network appliance? use it as NAT gateway I.e. an instance that provides internet connectivity to instances in a network that do not have public IP addresses. Could also be used a web intrusion/firewall device. Could also be used when an application requires traffic separation e.g. separate data plane traffic from management plane traffic.\
+\
+Firewall on GCP, allows or denies traffic to resources deployed in a VPC. They are defined at the network level but enforced at the instance level. Implied \'91deny all\'92 ingress traffic in default network and \'91allow all\'92 for egress traffic.\
+\
+Unlike in a traditional network where devices within the network can freely communicate with each other and traffic is only allowed or denied eat the edge of network, GCP firewall also controls the flow of traffic between resources \
+Within the network. You can control which traffic flows to a resource depending on your needs e.g. some instances in a subnet can allow ssh traffic via a deployed firewall rule that permits ssh via port 22 using the TCP protocol whilst other instances in the same subnet can only be accessed by rdp protocol via port 3389.   \
+
+\f1\fs24 {{\NeXTGraphic Pasted Graphic.png \width13780 \height6040 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}
+\f0\fs48 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 1.png \width13780 \height6040 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}
+\f0\fs48 \
+\
+Firewall rule components that you have to be familiar with:\
+1. Direction - ingress or egress\
+2. Target - service account or all instances in a network or specified instances e.g. tagged instances\
+3. Source/ destination filter - what IP range should have its traffic allowed or denied into your GCP network e.g. 0.0.0.0/0 (the whole internet) or say a specific range from say on prem e.g. 172.16.1.0/24 \
+4. Action on match - Allow or deny\
+5. Protocol and port - protocol and ports that are allowed or denied\
+6. Priority - each firewall (fwl) rule must be assigned a priority within the range 0-65535. Lower number \'91wins\'92 i.e. if two similar fwl rules are deployed, one with priority 1000 and the other with 500, the one with priority set to 500 \'91wins\'92\
+\
+Resources such as instances can be assigned with tags (key value pair) which can then be used when creating a fwl rule to allow/ deny traffic to instances that have the tag attached.\
+\
+Routing on GCP defines paths/ routes network packets will take from a resource deployed in a VPC to other destination e.g. on prem or to the wider internet. Each route has a single destination plus a next hop. Routes are defined for both within the VPC and outside of the VPC. Subnet routes allow resources deployed in a VPC to communicate with each other. Subnet routes cannot be deleted but the default gateway route in a VPC can be deleted (to isolate VPC from internet). Default gateway normally forwards traffic to the wider internet (0.0.0.0/0); it can be replaced by a custom route that forwards traffic to e.g. on prem instead.\
+\
+Most GCP services automatically create system generated routes. They are created and removed for  you as needed.\
+\
+Simply having a route is not a guarantee for traffic being delivered. A corresponding fwl rule must be in place to allow/ deny the traffic.\
+\
+Routes have priority property similar to fwl rules (lower number \'91wins\'92). Routes apply to an entire network or network tagged instances.\
+\
+Two types of routes:\
+1. System generated; e.g. aforementioned default route, aforementioned subnet routes which define destination path for each VPC subnet. To restrict traffic between resources deployed in different subnets in your VPC use fwl rules.\
+2. Custom routes; can be either static or dynamic routes. Static routes are created by a user (cannot be more specific than existing subnet route destinations). Dynamic routes are created and maintained by cloud router (more on this later). You will need to configure your next hop i.e. where the traffic will be delivered to, if you choose to use custom routes.\
+\
+When to use/ assign custom routes? When using a NAT gateway, load balancer, or a manual firewall appliance. Despite having the ability to create user managed NAT gateways or fwl appliances, google recommends using managed services instead.\
+\
+If you configure an instance as a NAT gateway you must enable IP forwarding during instance creation otherwise it won\'92t work.\
+\
+Security of VPC resources is multi layered:\
+\
+1. Cloud identity and access management (IAM) - a service that lets you control who (can be either a google account, a cloud identity account that is part of an organisation, a google group, or a service account) can do what (actions are assigned using roles which are made up of permissions) on which resource (e.g. access to a GCE instance, cloud storage bucket, cloud sql instance etc). Projects are the primary separator of identities i.e. identities (also referred to as principals) defined in two projects will be different and thus treated as unique. \
+2. FWL rules restrict traffic by type and location (regardless of who).\
+3. Cloud armour prevents DDOS attacks an other malicious traffic from entering into you VPC. Deployed at edge points of presence (POPs) and is paired with load balancers (a POP is a location where traffic running in googles subterranean infrastructure is connected to the internet). Features; IP whitelist/ blacklist controls, Geo-based access control. Each cloud armor policy contains 1 or more rules which are assigned allow or deny actions and have priorities (similar to fwl rules or routes).\
+4. Restricting connection methods - e.g. who can connect to linux instances, should google manage it for you using IAM roles OS login and service account user assigned to an identity (enable-oslogin should be added to metadata of an instance or specified in project wide metadata) whilst managing keys used to connect to the instances or does the user want to have control of the process by creating their own keys and managing them? \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 2.png \width13780 \height4600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+Adding the above key value pair to the metadata of an instance when creating it will allow a user to connect to that instance only. If the key value pair are added to the metadata at the project level then a user will be able to login to all instances created in the VPC.\
+\
+For external users outside of an organisation then assign the OS login external user role\
+\
+Further breakdown of roles:\
+1. Primitive roles - project wide include owner, editor, viewer, billing admin. \
+2. Pre-defined roles - more granular per service/resource e.g. compute admin, storageObject user\
+3. Custom roles - even more granular; user has full control of what permission to include\
+\
+IAM policy is a collection of access statements containing members (identities or principals) and roles assigned to them. Basically, who has access to what. Policies are attached to a resource which enforces control. Policies have hierarchies and are inherited downwards i.e. from organisation-> folder -> project -> resource. You cannot take away access at a lower level that has been granted at a higher level to an identity.\
+\
+All networking roles are under the compute engine api. Networking roles are applied project wide  I.e. across all VPC\'92s per project. Compute admin role has all networking roles in it. Network admin, security admin, network user, network viewer, compute instance admin all have subsets of permissions contained within the compute admin role.\
+\
+Options for editing roles assigned to identities in a project:\
+1. Edit exported policy by making needed changes. gcloud projects get-iam-policy [PROJECT-ID] -- format [FORMAT- YAML OR JSON] > [FILE-PATH] will retrieve copy of policy document for a project and save it locally. After making changes needed you can apply the changes by running gcloud projects set-iam-policy [PROJECT-ID] [FILE-PATH]  \
+2. Directly update role(s) attached to an identity using either gcloud projects add-iam-policy-binding [PROJECT-ID] --member [IDENTITY-EMAIL] \'97-role [DESIRED-ROLE], or gcloud projects remove-iam-policy-binding [PROJECT-ID] --member [IDENTITY-EMAIL] \'97-role [DESIRED-ROLE] \
+\
+\
+\
+\
+\
+Track 2 \
+\
+Shared VPC - so far VPC\'92s have been in a single project. A shared VPC is literally one VPC that is shared across multiple projects which allows private network communication across the projects. Used to be referred to as cross project networking. A project must be designated as the host project (hosting the shared VPC) and proceed to attach other projects (called service projects) to existing subnets in the shared VPC. Service projects can then be assigned to different teams where they will own and be billed for resources that are created within each respective project whilst having the capability to oversee access control.\
+\
+Creating shared VPC requires organisation or folder level roles. An organisation or folder level admin will assign shared VPC admin roles.\
+\
+A shared VPC admin can enable shared VPC on a host project and attach service projects. They also assign Network user role to a service project admin in the host project which grants them access to subnets created in the host project. Access to subnets in the host project can restricted or shared to a subset or all service projects.\
+\
+A shared VPC can only exist within a single GCP organisation\
+\
+ \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0   \
+\
+\
+\
+\
+\
+\
+\
+}

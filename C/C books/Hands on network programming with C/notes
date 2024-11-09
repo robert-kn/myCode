@@ -277,4 +277,8 @@ http://ifconfig.me/ip
 Listing network adapters from C
 Sometimes, it is useful for your C programs to know what your local address is. For most of this book, we are able to write code that works both on Windows and Unix-based (Linux and macOS) systems. However, the API for listing local addresses is very different between systems. For this reason, we split this program into two: one for Windows and one for Unix-based systems.
 
-We will address the Windows case first.
+We will address the Windows case first. Please see win_list.c program in Code-and-IAC/C/listing-network-adapters-windows
+
+Now that we can list local IP addresses on Windows, let's consider the same task for Unix-based systems.
+
+Listing network adapters on Linux and macOS: Listing local network addresses is somewhat easier on a Unix-based system, compared to Windows. See unix_list.c in Code-and-IAC/C/listing-network-adapters-linux-macos
