@@ -62,8 +62,9 @@ Within the network. You can control which traffic flows to a resource depending 
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 1.png \width13780 \height6040 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}
-\f0\fs48 \
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
 \
 Firewall rule components that you have to be familiar with:\
 1. Direction - ingress or egress\
@@ -134,9 +135,49 @@ Creating shared VPC requires organisation or folder level roles. An organisation
 \
 A shared VPC admin can enable shared VPC on a host project and attach service projects. They also assign Network user role to a service project admin in the host project which grants them access to subnets created in the host project. Access to subnets in the host project can restricted or shared to a subset or all service projects.\
 \
-A shared VPC can only exist within a single GCP organisation\
+A shared VPC can only exist within a single GCP organisation.\
 \
- \
+Shared VPC scenarios:\
+1. Subnets in different environments can have the same CIDR ranges in order to make configuration consistent/uniform.\
+2. In hybrid cloud situations where e.g. a VPN gateway operates over a dedicated interconnect connection from on prem, the host project could be connected to the interconnect connection over cloud router. The service projects can then be assigned to different teams.\
+\
+Familiarise yourself with what VPC peering I.e. private RFC1918 connectivity across 2 VPC networks. Can be done regardless of project and organisation VPC\'92s belong to. Only requirement is that the VPC\'92s belong to google cloud. Traffic stays in google network and doesn\'92t go on internet. Use cases? Software as a service ecosystem I.e. make services available across VPC\'92s and across different organisations.\
+\
+Why choose VPC peering over VPN use? Lower latency compared to VPN, security (traffic doesn\'92t traverser through internet),  cost (VPN use will lead to egress traffic charges), and easier to set up.\
+\
+Restrictions to be mindful of when using VPC peering: CIDR ranges of subnets cannot overlap, applicable to GCP VPC\'92s only, cannot restrict which subnets are shared, network tag/ svc account filters do not carry over to peered network, firewall rules not exchanged, and no transitive peering.\
+\
+Load balancers -  think of them as force multipliers I.e. no more overloaded servers, they are global in scope, and they allow your application to have global scope. Load balancers distribute user traffic amongst a back end pool of instances from a single front end point of access. They are software defined and can either be deployed globally or regionally. LB\'92s must be assigned to a backend either a target pool or managed group. \
+\
+There are different types of load balancers: http(s) layer 7 LB\'92s, SSL proxy, TCP proxy, Network LB\'92s, internal tcp/udpLB\'92s, internal http(s) \
+\
+Proxied vs non-proxied traffic: proxied traffic (on all global LB\'92s) terminates incoming traffic at the load balancing layer then creates new connection to backend instances. Non proxied (on internal LB\'92s) or pass through traffic goes through LB and is forwarded on to backend instance.\
+\
+What is session affinity? allows multiple requests from a user need to be directed to the same instance. \
+\
+What are managed instance groups? What are some of their features? Resizable, can be set to autoscale, can be health checked, often paired with load balancers.\
+\
+Layer 7 http(s) load forwards traffic to backend using either of two criteria:\
+1. Location based\
+2. URL map (content type)\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic.png \width26900 \height14600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}
+\f0\fs48 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 1.png \width25800 \height14600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+SSL Proxy load balancer is used for encrypted non-http traffic. Terminates client traffic at the load balancing layer. It manages SSL certificates for user. Traffic between LB and backends can either be SSL or TCP.\
+\
+Tcp proxy load balancer is used for unencrypted non-http traffic.\
+\
+Target pools are individual instances (not similar I.e. not from a template) that are grouped together.\
+\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 \cf0   \
 \

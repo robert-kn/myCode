@@ -503,6 +503,8 @@ macos
 
 - conda activate islp
 
+- conda deactivate
+
 - Once in the env, install the ISLP package using the command pip install ISLP
 
 - The ISLP package will include datasets and custom built functions provide to you by the teaching staff. It also

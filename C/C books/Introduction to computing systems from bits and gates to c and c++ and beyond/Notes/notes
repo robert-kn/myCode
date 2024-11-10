@@ -1230,3 +1230,58 @@ the MUX labeled ADDR1MUX indicates that 16 bits are transmitted from PC to an in
 
 A two-input AND and a two-input OR are both examples of two-input logic functions. How many diﬀerent two-input 
 logic functions are possible? There can be 16 different two input logic functions.
+
+chapter 4
+
+To get a task done by a computer, we need two things: (a) a computer program that speciﬁes what the computer must 
+do to perform the task, and (b) the computer that is to carry out the task.
+
+A computer program consists of a set of instructions, each specifying a well-deﬁned piece of work for the computer 
+to carry out. The instruction is the smallest piece of work speciﬁed in a computer program. That is, the computer 
+either carries out the work speciﬁed by an instruction or it does not. The computer does not have the luxury of 
+carrying out only a piece of an instruction.
+
+John von Neumann proposed a fundamental model of a computer for processing computer programs in 1946. Figure 4.1 
+shows its basic components. We have taken a little poetic license and added a few of our own minor embellishments 
+to von Neumann’s original diagram. The von Neumann model consists of ﬁve parts: memory, a processing unit, input, 
+output, and a control unit. The computer program is contained in the computer’s memory. The data the program needs 
+to carry out the work of the program is either contained in the program’s memory or is obtained from the input 
+devices. The results of the program’s execution are provided by the output devices. The order in which the 
+instructions are carried out is performed by the control unit.
+
+We will describe each of the ﬁve parts of the von Neumann model in greater detail.
+
+Memory
+
+Previously you saw a simple 2^2-by-3-bit memory that was constructed out of gates and latches. A more realistic 
+memory for one of today’s computer systems is 2^34 by 8 bits. That is, a typical memory in today’s world of 
+computers consists of 2^34 distinct memory locations, each of which is capable of storing eight bits of information.
+We say that such a memory has an address space of 2^34 uniquely identiﬁable locations, and an addressability of 
+eight bits.
+
+We refer to such a memory as a 16-gigabyte memory (abbreviated, 16 GB). The “16 giga” refers to the 2^34 locations, 
+and the “byte” refers to the eight bits stored in each location. The term is 16 giga because 16 is 2^4 and giga is 
+the term we use to represent 2^30, which is approximately one billion; 2^4 times 2^30 = 2^34
+.A byte is the word we use to describe eight bits, much the way we use the word gallon to describe four quarts.
+
+We note (as we will note again and again) that with k bits, we can represent uniquely 2^k items. Thus, to uniquely 
+identify 2^34 memory locations, each location must have its own 34-bit address. 
+
+To read the contents of a memory location, we ﬁrst place the address of that location in the memory’s address 
+register (MAR) and then interrogate the computer’s memory. The information stored in the location having that 
+address will be placed in the memory’s data register (MDR). To write (or store) a value in a memory location, we 
+ﬁrst write the address of the memory location in the MAR, and the value to be stored in the MDR. We then 
+interrogate the computer’s memory with the write enable signal asserted. The information contained in the MDR will 
+be written into the memory location whose address is in the MAR. 
+
+Before we leave the notion of memory for the moment, let us again emphasize the two characteristics of a memory 
+location: its address and what is stored there. Figure 4.2 shows a representation of a memory consisting of eight 
+locations. Its addresses are shown at the left, numbered in binary from 0 to 7. Each location contains eight bits 
+of information. Note that the value 6 is stored in the memory location whose address is 4, and the value 4 is 
+stored in the memory location whose address is 6. These represent two very diﬀerent situations.
+
+Finally, an analogy: the post oﬃce boxes in your local post oﬃce. The box number is like the memory location’s 
+address. Each box number is unique. The information stored in the memory location is like the letters contained in 
+the post oﬃce box. As time goes by, what is contained in the post oﬃce box at any particular moment can change. 
+But the box number remains the same. So, too, with each memory location. The value stored in that location can be 
+changed, but the location’s memory address remains unchanged.
