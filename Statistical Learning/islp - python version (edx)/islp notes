@@ -515,3 +515,32 @@ packages installed in the requirements.txt file in this repo https://github.com/
 
 - for more information on the datasets used in the book, where they were sourced from etc see https://intro-stat-learning.github.io/ISLP/data.html
 
+Generate random data using np.random.normal() function generates a vector of random normal 
+variables. np.random.default_rng() function takes an arbitrary, user specified integer argument 
+If I set a random seed before generating random data, then re-running your code will yield the 
+same results. The object `rng` has essentially all the random number generating methods found in 
+`np.random`. Hence to generate random data they use rng.normal()
+
+In Python, common practice is to use the library matplotlib for graphics. However, since Python
+was not written with data analysis in mind, the notion of plotting is not intrinsic to the 
+language. We will use the subplots() function from matplotlib.pyplot to create a figure and the
+axes onto which we plot our data. For many more examples of how to make plots in Python, 
+readers are encouraged to visit matplotlib.org/stable/gallery/.
+
+In matplotlib, a plot consists of a figure and one or more axes. You can think of the figure as
+the blank canvas upon which one or more plots will be displayed: it is the entire plotting 
+window. The axes contain important information about each plot, such as its x- and y- axis
+labels, title, and more. (Note that in matplotlib, the word axes is not the plural of axis: a 
+plot's axes contains much more information than just the x-axis and the y-axis.)
+
+We begin by importing the subplots() function from matplotlib. We use this function throughout 
+when creating figures. The function returns a tuple of length two: a figure object as well as 
+the relevant axes object. We will typically pass figsize as a keyword argument. Having created 
+our axes, we attempt our first plot using its plot() method. To learn more about it, type 
+ax.plot?.
+
+from matplotlib.pyplot import subplots
+fig, ax = subplots(figsize=(8, 8))
+x = rng.standard_normal(100)
+y = rng.standard_normal(100)
+ax.plot(x, y);
