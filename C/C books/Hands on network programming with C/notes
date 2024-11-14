@@ -282,3 +282,52 @@ We will address the Windows case first. Please see win_list.c program in Code-an
 Now that we can list local IP addresses on Windows, let's consider the same task for Unix-based systems.
 
 Listing network adapters on Linux and macOS: Listing local network addresses is somewhat easier on a Unix-based system, compared to Windows. See unix_list.c in Code-and-IAC/C/listing-network-adapters-linux-macos
+
+questions:
+
+What are the key differences between IPv4 and IPv6?
+
+IPv4 only supports 4 billion unique addresses, and because they were allocated inefficiently, we are now running out. IPv6 supports 3.4 x 10^38 possible addresses. IPv6 provides many other improvements, but this is the one that affects our network programming directly.
+
+Are the IP addresses given by the ipconfig and ifconfig commands the same IP addresses that a remote web server sees if you connect to it?
+
+Sometimes, these addresses will match, but not always. If you're on a private IPv4 network, then your router likely performs network address translation. The remote web server then sees the translated address.
+If you have a publicly routable IPv4 or IPv6 address, then the address seen by the remote web server will match those reported by ipconfig and ifconfig.
+
+What is the IPv4 loopback address?
+
+The IPv4 loopback address is 127.0.0.1, and it allows networked programs to communicate with each other while executing on the same machine.
+
+What is the IPv6 loopback address?
+
+The IPv6 loopback address is ::1. It works in the same way as the IPv4 loopback address.
+
+How are domain names (for example, example.com) resolved into IP addresses?
+
+DNS is used to resolve domain names into IP addresses. 
+
+How can you find your public IP address?
+
+The easiest way is to visit a website that reports it for you.
+
+How does an operating system know which application is responsible for an incoming packet?
+
+Each IP packet has a local address, remote address, local port number, remote port number, and protocol type. These five attributes are memorized by the operating system to determine which application should handle any given incoming packet.
+
+----
+
+chapter 2
+
+what are sockets? a socket is one endpoint of a communication link between end systems (hosts). You applications sends and receives all of its network data through a socket.
+
+There are a few different socket application programming interfaces (APIs). The first were Berkeley sockets, which were released in 1983 with 4.3BSD Unix. The Berkeley socket API was widely successful and quickly evolved into a de facto standard. From there, it was adopted as a POSIX standard with little modification. The terms Berkeley sockets, BSD sockets, Unix sockets, and Portable Operating System Interface (POSIX) sockets are often used interchangeably.
+
+If you're using Linux or macOS, then your operating system provides a proper implementation of Berkeley sockets.
+
+Windows' socket API is called Winsock. It was created to be largely compatible with Berkeley sockets.
+
+Historically, sockets were used for inter-process communication (IPC) as well as various network protocols. In this book, we use sockets only for communication with TCP and UDP.
+
+Before we can use the socket API, we need to include the socket API header files. These files vary depending on whether we are using Berkeley sockets or Winsock. Additionally, Winsock requires initialization before use. It also requires that a cleanup function is called when we are finished. These initialization and cleanup steps are not used with Berkeley sockets.
+
+We will use the C preprocessor to run the proper code on Windows compared to Berkeley socket systems. By using the preprocessor statement, #if defined(_WIN32), we can include code in our program that will only be compiled on Windows.

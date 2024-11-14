@@ -9,7 +9,7 @@
 \
 What is a VPC?\
 \
-How many VPC\'92s can you attach per project?\
+How many VPC\'92s can you create per project?\
 \
 What are subnets?\
 \
@@ -163,8 +163,9 @@ Layer 7 http(s) load forwards traffic to backend using either of two criteria:\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f1\fs24 \cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic.png \width26900 \height14600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}
-\f0\fs48 \
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f1\fs24 \cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 1.png \width25800 \height14600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
@@ -178,13 +179,216 @@ Tcp proxy load balancer is used for unencrypted non-http traffic.\
 \
 Target pools are individual instances (not similar I.e. not from a template) that are grouped together.\
 \
+Content delivery network (CDN) caches websites and application content closer to users (at edge POPs). The closer your data is to your end users, the better the performance and user experience. Paired with load balancers. Only applies to http(s) load balancers. The service caches content from instance groups and cloud storage buckets. The first time data is requested from a backend, it is pulled and cached at a CDN location which is much closer to the end user than where the data centre resides. Later requests from service will be served from the CDN location and not the backend.  \
+\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf0   \
+
+\f1\fs24 \cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic.png \width19240 \height8820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+CDN terminology:\
+1. Cache miss; first time content request not at cache location\
+2. Cache fill; after first request, cache loaded by either backend or another nearby cache. Subsequent requests will pull from cache location.\
+3. Cache key; identifier for cached content. In the form of a complete URL. Must be matched before the item is cached. You can also customise the URL and remove parts of it (e.g. protocol part, or company domain, or part of query string) in order to improve performance or better scalability or flexibility.\
+\
+Managing what is and is not cached:\
+1. Both instance groups and gcs objects utilise headers for cache control headers\
+2. Whitelist or blacklist query strings to limit caching\
+3. For instance groups, you will need to add cache control headers to your global web server configuration or per page basis. The header will be in the form of cache-control=public, max-age=(seconds)\
+4. GCS objects - per object controls. Objects must be made public (or signed URL) to be cached. Edit object header via metadata to restrict per object caching\
+\
+Cloud CDN does not compress or decompress content but can serve compressed content from backend server.\
+\
+Expiration for time sensitive content - some content needs to be fresher than others. Set expiration time in cache control header (max-age=(seconds))\
+\
+What is GKE? A managed Kubernetes service for container workloads. Google handles OS management, master node, scaling, health checks, services, replication controllers. User focuses on code deployed in containers and their functionality.\
+\
+GKE components:\
+1. Cluster; group of master/control and worker/slave nodes. Master nodes are the central administrative point for container management via kubectl commands (or api calls). Clusters are either zonal or regional (multi zone in the same region). For high availability, pair multiple regional clusters with http load balancer.\
+2. Nodes; are comprised of GCE instances. Pods (the smallest deployable units in k8s) host one or more containers. The pods in the cluster are distributed in the worker nodes. Behind the scenes nodes are arranged in managed instance groups. Each pod has an ip address that is derived from a secondary ip range of a subnet. Each pod can communicate with other pods in the cluster (provided restrictive network policy is not in place) - which node a pod is in doesn\'92t matter.\
+3. Services; are k8s abstractions that provide access to a group of similar pods (called a deployment) in a cluster (think of front end address for backend groups). Each service has its own ip address and will direct traffic to pods in the cluster depending on the label they have (pod labels must match service labels). Services can be paired with load balancers (network -internal/external) and http). HTTP load balancer requires ingress object.  \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 2.png \width29160 \height17900 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+ \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 1.png \width27760 \height16320 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+ \
+\
+In GKE, cloud armour can be paired with ingress object (http load balancer).\
+\
+In shared VPC, enable GKE in all host and service projects. Grant the below service project service accounts the network user role in the host project (each project has both GKE and google api service accounts)\
+1. Service-[project_number]@container-engine-robot.iam.gserviceaccount.com\
+2. [project_number]@cloudservices.gserviceaccount.com\
+\
+Additionally, grant the host service agent user role of the service project GKE service account in the host project.\
+\
+Planning for the growth of your k8s engine cluster: nodes, pods and services have their own IP range. Nodes get their IP\'92s from the primary subnet IP range; Pods/Services get theirs from the secondary VPC IP ranges. You can create your own secondary IP ranges or have GKE create them for you. By default per node IP allocation for pods is /24 CIDR range which allows for 256 addresses. /24 is the max per node range; you can assign a smaller per node range if desired. Each node is limited to a max of 110 pods. More IP\'92s allocated for pod range than max pod number to allow for IP re-use I.e. during rolling updates. Ergo, any per node IP range must be at least twice as large as desired max pods per node. Services ip allocation is for the entire cluster. Pod and service IP ranges must be specified before cluster creation not afterwards.\
+\
+Deploying a GKE cluster results in google creating an instance template from which a managed instance group is created which is used as the worker instances of the cluster. \
+\
+By default, nodes and master are publicly accessible. Private clusters remove external ip\'92s from the nodes whilst restricting master plane communication with master authorised networks (whitelisted private RFC 1918 range) or public endpoints (whitelisted external non RFC 1918 resource). Both connection types use --master-authorised-networks. Private cluster creates network peering connection to GCP controlled project.\
+\
+What is the domain name system (DNS)? Translates human readable domain names into IP addresses\
+\
+What is cloud DNS? Managed (means automatic scaling to handle query volume) DNS host- both public (external) and private (internal) hosting. Not a registrar but an authoritative DNS record host; requires pointing registrar name servers to cloud DNS. Only GCP service with 100% SLA.\
+\
+Cloud DNS organisation: hosted in a GCP project where you can create one or more managed zones for DNS records. Think of a manage zone as a container for all DNS records for your domain. Each domain has its own managed zone which will typically include subdomains. You can have a delegated zone where subdomain requests will be forwarded to separate set of name server records.\
+\
+Cloud DNS managed zones:\
+1. Public zone; visible to the public internet and will therefore be queried over the public internet.\
+2. Private zone; not visible or queried over the public internet.\
+\
+Hybrid DNS scenarios (private zones): if you are connecting private networks together (GCP to GCP or GCP to non GCP) over vpn or network peering etc, you need to merge DNS resolution between environments. This is where DNS forwarding zones come into play.\
+\
+DNS forwarding zones override normal DNS resolution for a zone. It instead forwards queries to a different forwarding target. All matching queries are forwarded to alternate destination DNS servers instead. Used for GCP and non GCP combinations only. For GCP to GCP, use DNS peering instead. Example when integrating GCP with an on premise environment, both environments will have their own authoritative DNS servers. Cloud DNS handles GCP DNS resolution. On premise DNS server handles on premise DNS resolution. \'91other environment\'92 requests are forwarded to other DNS resolver via DNS forwarding zone.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic.png \width27700 \height8080 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
 \
 \
+DNS peering is used for GCP to GCP VPC connections, regardless of connection method. Producer and consumer network - only one of the VPC networks is an authoritative DNS resolver. Consumer network forwards requests to producer network.\
+\
+What is DNSSEC (DNS security)? Authenticates responses to DNS lookups ensuring that poisoning (or spoofing) of responses to requests doesn\'92t happen. Provides strong authentication of lookups. How to enable DNSSEC:\
+1. First enable DNSSEC in cloud DNS. Then enable it at the registrar after which you can add DS record to registrar at top level domain. Not all registrars support DNSSEC.\
+\
+Disabling DNSSEC:\
+1. First disable DNSSEC at the domain registrar (ensures that DNSSEC resolvers can still resolve names in your cloud DNS zone)\
+2. After DS records expire in registrar cache then turn off DNSSEC in cloud DNS \
 \
 \
+Track 3\
 \
+Hybrid networking means connecting your network infrastructure (outside of GCP) to GCP over private connection. This is usually internal private RFC1918 connection from on premises network (or another cloud network) to GCP.\
+\
+There are 3 hybrid connectivity options:\
+1. Cloud VPN (privately encrypted tunnel to GCP VPC over public internet connection)\
+2. Cloud interconnect; dedicated physical connection to google GCP VPC\
+3. Cloud peering; dedicated connection to google but not a GCP VPC. Not the same as VPC peering and not an RFC 1918 connection.\
+\
+VPN connections are low cost and are available from any location with internet connection (site to site VPN connection over IPsec - no site (VPN gateway) to client option available). Data can be transferred at a rate between 1.5-3 Gbps per tunnel (you are limited by data transfer rate procured from your ISP). Cloud VPN resources are regional resources that can also send traffic to other regions in a VPC network. Multiple tunnels (up to 8) per VPN gateway can be provisioned for increased performance (max of 24Gbps per gateway). Can be used in conjunction with cloud router service which discovers routes dynamically and advertises them. Can only go down the dynamic route path if your VPN gateway (and peer gateway as well) supports BGP. Supports IKEv1 and IKEv2 using shared secret (think of it as a password that allows a tunnel on one VPN gateway to authenticate another tunnel that wants to send traffic from another VPN gateway). You can also configure the VPN gateway to use static routes by manually creating/updating local and peer routes I.e. subnet ranges to connect to (high administrative overhead\'85 dynamic routing makes life so much easier). If you decide to go via the static route configuration of your gateway, the routes can be one of two types: route based or policy based. Route based specify remote (peer) IP ranges to connect to. Policy based specify both local ranges and remote ranges. Is there a preference?\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic.png \width29440 \height12320 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 1.png \width29440 \height13820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 2.png \width29440 \height15440 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+\
+Anatomy of a BGP session: private autonomous system number (ASN) assigned to cloud router and VPN gateway service. It uniquely identifies the two cloud resources. Link local IP address also assigned to cloud router and peer gateway e.g. 169.254.1.1 (misconfiguration of peer session either direction will cause failure when setting things up). You will also need to specify whether the cloud router should advertise and learn routes solely in the region it was created in (regional) or globally (for all regions in VPC). Why use regional dynamic routing? Don\'92t want to advertise all region subnets and you have internal load balancing over VPN/interconnect. By default, cloud router advertises all known VPC routes for the subnets to peer network. You can choose which subnets are advertised but this will mean that you have to manually add routes/subnets when new subnets are created or when a subnet is removed. This will not affect learning new peer network routes. BGP operates over TCP port 179.    \
+\
+High availability with regards to networking working between on premises and GCP connected environment: in order to prevent service interruption of individual gateways and/or tunnels. A second gateway/tunnel should be provisioned to serve traffic (remember that you can provision up to 8 tunnels per gateway).\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic.png \width29080 \height13480 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}
+\f0\fs48 \
+\
+High availability topologies of VPN gateways:\
+1. Single gateway and two tunnels\
+2. Two gateways with one tunnel each\
+3. Two gateways with two tunnels each\
+\
+Each of the above setup has its won specific peer gateway requirements e.g. multiple peer IP addresses or a peer that supports multi path routing may be needed. Need to be familiar with route failover and/or load balancing. Failover: assign one route/tunnel higher priority; if it fails, VPN service will failover to the secondary route. Load balance: assign each route/tunnel same route priority leading to the traffic being balanced between each tunnel (useful for increasing through put I.e. amount of traffic passing through VPN per unit time).\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 1.png \width25820 \height7520 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 2.png \width26340 \height7700 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 3.png \width26340 \height8400 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+What is cloud interconnect? Extends on premise network to google cloud VPC over a direct physical connection. The traffic from on premises go straight to google\'92s network without traversing the internet. Can be achieved by either dedicated interconnect or partner interconnect. Starts from 50 Mbps (partner interconnect) to 200 Gbps (dedicated interconnect). Connections are not encrypted, ergo it would behoove a company to use cloud VPN service (preferably paired with cloud router) with the interconnect. Alternatively you can use application level encryption. Obviously more expensive than using cloud VPN owing to the amount of data that can be transferred per second.\
+\
+Dedicated interconnect requires on premise router in GCP colocation facility. Minimum of 10 Gbps up to 200 Gbps (can create multiple circuits - available in 10 Gbps increments to 80 Gbps, or 100/200 Gbps). It is layer 2 connection (data link layer on the OSI model) that requires BGP capabilities in on premises router.\
+\
+Partner interconnect connects to GCP VPC via service provider connection. Minimum 50 Mbps up to 10 Gbps per circuit (can create multiple circuits). Layer 2 and layer 3 (Network layer on OSI model). Layer 2 requires on prem BGP negotiation whilst layer 3 doesn\'92t (set up by service provider).\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 4.png \width29180 \height13680 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 5.png \width28980 \height14900 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 7.png \width29280 \height15240 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 8.png \width29280 \height16000 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+Anatomy of a cloud interconnect connection: interconnect is a physical connection between google and on premises network that is done at a colocation facility at a google peering edge (edge point of presence I.e. hop off point from public internet to googles private network). A VLAN attachment is a virtual point to point tunnel between interconnect and a single region in a VPC network. It is also known as an interconnect attachment. Can create multiple VLAN attachments to different VPC regions (or multiple attachments from single interconnect to multiple VPC\'92s).\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 6.png \width28980 \height9540 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+Shared VPC\'92s can be used with VLAN attachments but they must set up in the host project. VLAN attachments require network admin role or higher to create/edit/delete.\
+\
+What is cloud peering? Direct connection from our business to google\'92s edge network (that avoids exposure to public internet). Offers shorter route to google services (less hops); reduced egress pricing for GCP resources; better cloud VPN tunnel performance. Not a GCP product but need to know the differences. Not tied to a google cloud VPC. Can use GCP resources with cloud peering but not required. Direct access to YouTube, g suite, and other google services (including GCP). Layer 3 connection. Dedicated and carrier options that are similar to dedicated vs partner interconnect. Dedicated peering is provided by google at 10 Gbps per link. Carrier peering - work with third party partner where speed will depend on carrier.\
 \
 \
 }

@@ -1261,8 +1261,8 @@ eight bits.
 
 We refer to such a memory as a 16-gigabyte memory (abbreviated, 16 GB). The “16 giga” refers to the 2^34 locations, 
 and the “byte” refers to the eight bits stored in each location. The term is 16 giga because 16 is 2^4 and giga is 
-the term we use to represent 2^30, which is approximately one billion; 2^4 times 2^30 = 2^34
-.A byte is the word we use to describe eight bits, much the way we use the word gallon to describe four quarts.
+the term we use to represent 2^30, which is approximately one billion; 2^4 times 2^30 = 2^34.A byte is the word we 
+use to describe eight bits, much the way we use the word gallon to describe four quarts.
 
 We note (as we will note again and again) that with k bits, we can represent uniquely 2^k items. Thus, to uniquely 
 identify 2^34 memory locations, each location must have its own 34-bit address. 
@@ -1285,3 +1285,164 @@ address. Each box number is unique. The information stored in the memory locatio
 the post oﬃce box. As time goes by, what is contained in the post oﬃce box at any particular moment can change. 
 But the box number remains the same. So, too, with each memory location. The value stored in that location can be 
 changed, but the location’s memory address remains unchanged.
+
+Processing Unit
+
+The actual processing of information in the computer is carried out by the processing unit. The processing unit in 
+a modern computer can consist of many sophisticated complex functional units, each performing one particular 
+operation (divide, square root, etc.). The simplest processing unit, and the one normally thought of when 
+discussing the basic von Neumann model, is the ALU. ALU is the abbreviation for Arithmetic and Logic Unit, so called
+because it is usually capable of performing basic arithmetic functions (like ADD and SUBTRACT) and basic logic 
+operations (like bit-wise AND, OR, and NOT) . 
+
+The ALU normally processes data elements of a ﬁxed size referred to as the word length of the computer. The data 
+elements are called words. For example, to perform ADD, the ALU receives two words as inputs and produces a single 
+word (the sum) as output. Each ISA has its own word length, depending on the intended use of the computer.
+
+Most microprocessors today that are used in PCs or workstations have a word length of 64 bits or 32 bits. Even most
+microprocessors now used in cell phones have 64-bit word lengths, However, the microprocessors used in very 
+inexpensive applications often have word lengths of as little as 16 or even 8 bits.
+
+It is almost always the case that a computer provides some small amount of storage very close to the ALU to allow 
+results to be temporarily stored if they will be needed to produce additional results in the near future. For 
+example, if a computer is to calculate (A+B)⋅C, it could store the result of A+B in memory, and then subsequently 
+read it in order to multiply that result by C. However, the time it takes to access memory is long compared to the 
+time it takes to perform the ADD or MULTIPLY. Almost all computers, therefore, have temporary storage for storing 
+the result of A + B in order to avoid the much longer access time that would be necessary when it came time to 
+multiply. The most common form of temporary storage is a set of registers. Typically, the size of each register is 
+identical to the size of values processed by the ALU; that is, they each contain one word.
+
+Current microprocessors typically contain 32 registers, each consisting of 32 or 64 bits, depending on the 
+architecture. These serve the same purpose as the eight 16-bit registers in the LC-3. However, the importance of 
+temporary storage for values that most modern computers will need shortly means many computers today have an 
+additional set of special-purpose registers consisting of 128 bits of information to handle special needs. 
+
+Input and Output
+
+In order for a computer to process information, the information must get into the computer. In order to use the 
+results of that processing, those results must be displayed in some fashion outside the computer. Many devices 
+exist for the purposes of input and output. They are generically referred to in computer jar- gon as peripherals 
+because they are in some sense accessories to the processing function. Nonetheless, they are no less important.
+
+Control Unit
+
+The control unit is like the conductor of an orchestra; it is in charge of making all the other parts of the 
+computer play together. As we will see when we describe the step-by-step process of executing a computer program, 
+it is the control unit that keeps track of both where we are within the process of executing the program and where 
+we are in the process of executing each instruction.
+
+To keep track of which instruction is being executed, the control unit has an instruction register to contain that 
+instruction. To keep track of which instruction is to be processed next, the control unit has a register that 
+contains the next instruction’s address. For historical reasons, that register is called the program counter 
+(abbreviated PC), although a better name for it would be the instruction pointer, since the contents of this 
+register is, in some sense, “pointing” to the next instruction to be processed. Curiously, Intel does in fact call 
+that register the instruction pointer, but the simple elegance of that name has not caught on.
+
+The LC-3: An Example von Neumann Machine
+
+We have already shown you its data path in Chapter 3 (Figure 3.35) and identiﬁed several of its structures in above.
+In this section, we will pull together all the parts of the LC-3 we need to describe it as a von Neumann computer 
+(see Figure 4.3).
+
+We constructed Figure 4.3 by starting with the LC-3’s full data path (Figure 3.35) and removing all elements that 
+are not essential to pointing out the ﬁve basic components of the von Neumann model.
+
+Note that there are two kinds of arrowheads in Figure 4.3: ﬁlled-in and not-ﬁlled-in. Filled-in arrowheads denote 
+data elements that ﬂow along the corresponding paths. Not-ﬁlled-in arrowheads denote control signals that control 
+the processing of the data elements. For example, the box labeled ALU in the processing unit processes two 16-bit 
+values and produces a 16-bit result. The two sources and the result are all data, and are designated by ﬁlled-in 
+arrowheads. The operation performed on those two 16-bit data elements (it is labeled ALUK) is part of the control—
+therefore, a not-ﬁlled-in arrowhead.
+
+MEMORY consists of the storage elements, along with the Memory Address Register (MAR) for addressing individual 
+locations and the Memory Data Register (MDR) for holding the contents of a memory location on its way to/from the 
+storage. Note that the MAR contains 16 bits, reﬂecting the fact that the memory address space of the LC-3 is 2^16 
+memory locations. The MDR contains 16 bits, reﬂecting the fact that each memory location contains 16 bits—that is, 
+the LC-3 is 16-bit addressable.
+
+INPUT/OUTPUT
+
+consists of a keyboard and a monitor. The simplest keyboard requires two registers: a keyboard data register (KBDR)
+for holding the ASCII codes of keys struck and a keyboard status register (KBSR) for maintaining status information
+about the keys struck. The simplest monitor also requires two registers: a display data register (DDR) for holding 
+the ASCII code of something to be displayed on the screen and a display status register (DSR) for maintaining 
+associated status information.
+
+THE PROCESSING UNIT
+
+consists of a functional unit (ALU) that performs arithmetic and logic operations and eight registers (R0, … R7) 
+for storing temporary values that will be needed in the near future as operands for subsequent instructions. The 
+LC-3 ALU can perform one arithmetic operation (addition) and two logical operations (bitwise AND and bitwise NOT).
+
+THE CONTROL UNIT 
+
+consists of all the structures needed to manage the processing that is carried out by the computer. Its most 
+important structure is the ﬁnite state machine, which directs all the activity. Processing is carried out step by 
+step, or rather, clock cycle by clock cycle. Note the CLK input to the ﬁnite state machine in Figure 4.3. It 
+speciﬁes how long each clock cycle lasts. The instruction register (IR) is also an input to the ﬁnite state machine
+since the LC-3 instruction being processed determines what activities must be carried out. The program counter (PC)
+is also a part of the control unit; it keeps track of the next instruction to be executed after the current 
+instruction ﬁnishes.
+
+Note that all the external outputs of the ﬁnite state machine in Figure 4.3 have arrowheads that are not ﬁlled in. 
+These outputs control the processing through- out the computer. For example, one of these outputs (two bits) is 
+ALUK, which controls the operation performed in the ALU (ADD, AND, or NOT) during the current clock cycle. Another 
+output is GateALU, which determines whether or not the output of the ALU is provided to the processor bus during 
+the current clock cycle.
+
+The complete description of the data path, control, and ﬁnite state machine for one implementation of the LC-3 is 
+the subject of Appendix C.
+
+Instruction Processing
+
+The central idea in the von Neumann model of computer processing is that the program and data are both stored as 
+sequences of bits in the computer’s memory, and the program is executed one instruction at a time under the 
+direction of the control unit.
+
+The Instruction
+
+The most basic unit of computer processing is the instruction. It is made up of two parts, the opcode (what the 
+instruction does) and the operands (who it does it to!).
+
+There are fundamentally three kinds of instructions: operates, data movement, and control, although many ISAs have 
+some special instructions that are necessary for those ISAs. Operate instructions operate on data. The LC-3 has 
+three operate instructions: one arithmetic (ADD) and two logicals (AND and NOT). Data movement instructions move 
+information from the processing unit to and from memory and to and from input/output devices. The LC-3 has six 
+data movement instructions. Control instructions are necessary for altering the sequential processing of 
+instructions.
+
+An LC-3 instruction consists of 16 bits (one word), numbered from left to right, bit [15] to bit [0]. Bits [15:12] 
+contain the opcode. This means there are at most 24 distinct opcodes. Actually, we use only 15 of the possible 
+four-bit codes. One is reserved for some future use. Bits [11:0] are used to ﬁgure out where the operands are.
+
+In this chapter, we will introduce ﬁve of the LC-3’s 15 instructions: two operates (ADD and AND), one data movement
+(LD), and two control (BR and TRAP).
+
+The ADD Instruction The ADD instruction is an operate instruction that requires three operands: two source operands
+(the numbers to be added) and one destination operand (where the sum is to be stored after the addition is 
+performed). We said that the processing unit of the LC-3 contained eight registers for purposes of storing data 
+that may be needed later. In fact, the ADD instruction requires that at least one of the two source operands is 
+contained in one of these registers, and that the result of the ADD is put into one of these eight registers. 
+Since there are eight registers, three bits are necessary to identify each register. The 16-bit LC-3 ADD 
+instruction has one of the following two forms (we say formats):
+
+15 14 13 12  11 10 9   8  7  6   5   4  3   2  1  0
+0  0  0  1 | 1  1  0 | 0  1  0 | 0 | 0  0 | 1  1  0
+  ADD           R6        R2                  R6
+
+
+15  14  13  12  11  10  9   8  7  6   5   4  3  2  1  0
+ 0   0  0   1 | 1   1   0 | 0  1  0 | 1 | 0  0  1  1  0
+  ADD             R6          R2             imm
+
+Both formats show the four-bit opcode for ADD, contained in bits [15:12]: 0001. Bits [11:9] identify the location
+to be used for storing the result, in this case register 6 (R6). Bits [8:6] identify the register that contains one
+of the two source operands, in this case R2. The only diﬀerence in the two formats is the 1 or 0 stored in bit 5, 
+and what that means. In the ﬁrst case, bit 5 is 0, signifying that the second source operand is in the register 
+speciﬁed by bits [2:0], in this case R6. In the second case, bit 5 is 1, signifying that the second source operand 
+is formed by sign-extending the integer in bits [4:0] to 16 bits. In this case, the second source operand is the 
+positive integer 6.
+
+Thus, the instruction we have just encoded is interpreted, depending on whether bit 5 is a 0 or a 1 as either “Add 
+the contents of register 2 (R2) to the contents of register 6 (R6) and store the result back into register 6 (R6),” 
+or “Add the contents of register 2 (R2) to the positive integer 6 and store the result into register 6.”

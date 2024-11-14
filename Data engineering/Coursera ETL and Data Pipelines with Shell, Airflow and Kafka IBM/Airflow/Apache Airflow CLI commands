@@ -1,0 +1,7 @@
+airflow dags list -> list all the existing dags
+
+airflow tasks list example_bash_operator --> list all tasks in the DAG named example_bash_operator
+
+airflow dags unpause tutorial --> unpause a DAG named tutorial.
+
+airflow dags pause tutorial --> pause the DAG.
