@@ -241,7 +241,7 @@ Each of these listed port numbers is assigned by the Internet Assigned Numbers A
 Clients and servers
 
 In the telephone analogy, a call must be initiated first by one party. The initiating party dials the number for the receiving party, and the receiving party answers.
-This is also a common paradigm in networking called the client-server model.  In this model, a server listens for connections. The client, knowing the address and port number that the server is listening on, establishes the connection by sending the first packet.
+This is also a common paradigm in networking called the client-server model. In this model, a server listens for connections. The client, knowing the address and port number that the server is listening on, establishes the connection by sending the first packet.
 For example, the web server at example.com listens on port 80 (HTTP) and port 443 (HTTPS). A web browser (client) must establish the connection by sending the first packet to the web server address and port.
 
 Putting it together
@@ -275,6 +275,7 @@ http://icanhazip.com/
 http://ifconfig.me/ip
 
 Listing network adapters from C
+
 Sometimes, it is useful for your C programs to know what your local address is. For most of this book, we are able to write code that works both on Windows and Unix-based (Linux and macOS) systems. However, the API for listing local addresses is very different between systems. For this reason, we split this program into two: one for Windows and one for Unix-based systems.
 
 We will address the Windows case first. Please see win_list.c program in Code-and-IAC/C/listing-network-adapters-windows

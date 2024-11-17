@@ -3,7 +3,8 @@ Create a topic and producer for processing bank ATM transactions
 
 Next, you will create a bankbranch topic to process messages from bank branch ATM machines.
 
-Suppose the messages come from the ATM in the form of a simple JSON object, including an ATM ID and a transaction ID like the following example:
+Suppose the messages come from the ATM in the form of a simple JSON object, including an ATM ID and a transaction ID
+like the following example:
 
 {"atmid": 1, "transid": 100}
 
@@ -33,7 +34,8 @@ Partition 0 -> Partition 1 -> Partition 0 -> Partition 1 …
 
 Next, you can create a producer to publish ATM transaction messages.
 
-Run the following command in the same terminal window with the topic details to create a producer for the topic bankbranch.
+Run the following command in the same terminal window with the topic details to create a producer for the topic 
+bankbranch.
 
 bin/kafka-console-producer.sh   --bootstrap-server localhost:9092   --topic bankbranch  (You need a producer to send messages to Kafka. Run the command to start a producer.)
 
@@ -73,6 +75,7 @@ At this point, you should have the following three terminals open in Cloud IDE:
 Kafka Server terminal
 Producer terminal
 Consumer terminal
+
 In the next steps, you will frequently switch between these terminals.
 
 First, go to the consumer terminal and stop the consumer using Ctrl + C (Windows) or COMMAND + . (Mac).
@@ -139,7 +142,7 @@ As such, you can keep the states or orders of the transactions for each ATM.
 Consumer offset
 
 
-Topic partitions keep published messages in a sequence, such as a list. Message offset  indicates a message's 
+Topic partitions keep published messages in a sequence, such as a list. Message offset indicates a message's 
 position in the sequence. For example, the offset of an empty Partition 0 of bankbranch  is 0, and if you 
 publish the first message to the partition, its offset will be 1.
 
@@ -178,7 +181,7 @@ Now you should see the offset information for the topic bankbranch.
 Recall that you have published 10 messages in total, and you can see the CURRENT-OFFSET column of partition 
 1 and partition 0 add up to 10 messages.
 
-The LOG-END-OFFSETcolumn indicates the last offset or the end of the sequence. Thus, both partitions have 
+The LOG-END-OFFSET column indicates the last offset or the end of the sequence. Thus, both partitions have 
 reached the end of their queues and no more messages are available for consumption.
 
 Meanwhile, you can check the LAG column which represents the number of unconsumed messages for each partition.

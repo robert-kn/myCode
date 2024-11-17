@@ -310,8 +310,9 @@ High availability with regards to networking working between on premises and GCP
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f1\fs24 \cf0 {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic.png \width29080 \height13480 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}
-\f0\fs48 \
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
 \
 High availability topologies of VPN gateways:\
 1. Single gateway and two tunnels\
@@ -327,8 +328,7 @@ Each of the above setup has its won specific peer gateway requirements e.g. mult
 
 \f0\fs48 \cf0 \
 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf0 \
+\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f1\fs24 \cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 2.png \width26340 \height7700 \appleattachmentpadding0 \appleembedtype0 \appleaqc
@@ -390,5 +390,42 @@ Shared VPC\'92s can be used with VLAN attachments but they must set up in the ho
 \
 What is cloud peering? Direct connection from our business to google\'92s edge network (that avoids exposure to public internet). Offers shorter route to google services (less hops); reduced egress pricing for GCP resources; better cloud VPN tunnel performance. Not a GCP product but need to know the differences. Not tied to a google cloud VPC. Can use GCP resources with cloud peering but not required. Direct access to YouTube, g suite, and other google services (including GCP). Layer 3 connection. Dedicated and carrier options that are similar to dedicated vs partner interconnect. Dedicated peering is provided by google at 10 Gbps per link. Carrier peering - work with third party partner where speed will depend on carrier.\
 \
+Why should you care about private access? Most GCP managed services communicate over public IP. Problem: how do you connect to a GCP managed service without a public IP address? Enable private access to managed GCP services.\
 \
+What private access options exist?\
+1. Private google access: enabled at the subnet level during creation (can be done after as well)\
+2. Private google access for on premises hosts via VPN or interconnect, same as above, enable at the subnet level. Setup; add private domain and IP ranges to on premise DNS CNAME records and firewall plus routes (restricted.googleaapis.com 199.36.153.4/30, private.googleapis.com 199.36.153.8/30)\
+3. Private service access (basically automated VPC peering): service producer (third party you are connecting to), service producer network (network created exclusively for your private connection)\
+4. Private service connect\
+\
+There are two types of managed services on GCP:\
+1. Hosted on google infrastructure; accessed via API or internal google proxy, not in form of instances to interact with, examples include GCS, spanner, big query. Solution? Private google access\
+2. Hosted on google cloud infrastructure: similar infrastructure to VPC-hosted resources, are managed instances, examples include cloud sql, GKE cluster\
+\
+Challenges brought by resources using private IP\'92s: they need to access internet for public resources in order to update repositories or install software. Solution? Use network address translation; managed service cloud NAT.\
+\
+NAT enables resources with private IP\'92s to connect to the internet. A NAAT gateway (traditionally your router) will translate internal IP\'92s into public addresses for external communication.\
+\
+Cloud NAT is a managed NAT gateway for GCP VPC resources. It is a software defined service that is highly scalable. Requires network admin role or higher. Works in conjunction with cloud router to dynamically manage routes. It is a regional resources.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 6__#$!@%!#__Pasted Graphic.png \width24460 \height18400 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}
+\f0\fs48 \
+\
+\
+Track 4\
+\
+Plan network design in advance.\
+\
+Work with stakeholders during the process I.e. security architects, application architects etc\
+\
+Who needs access to what (falls under the domain of security engineers was well): does everyone gets same permissions in each project? \
+\
+Remember some decisions cannot be easily changed afterwards e.g. subnet addressing, resource placement (cannot lie and shift instance to a new subnet, must recreate)\
+\
+Use custom mode networks and plan carefully to avoid conflicting/overlapping IP ranges for subnets. 10.2.0.0/16 contains 10.2.1.0/24 and therefore conflict will occur when routing.\
+\
+Use deascripoting subnet names as it will make it easier to debug issues/ maintain.\
 }

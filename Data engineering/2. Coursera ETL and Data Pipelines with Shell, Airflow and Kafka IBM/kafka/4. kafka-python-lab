@@ -1,30 +1,15 @@
-Download and extract Kafka
+After completing this lab, you will be able to:
 
-wget https://downloads.apache.org/kafka/                      (retrieve the desired binary from folder)
+Use kafka-python to interact with Kafka server in Python
+Send and receive messages through the Kafka-python client
 
-tar -xzf                                                      (to extract the compressed files)
-
-cd                                                            (into the extracted folder)   
-
-Configure KRaft and start server
-
-KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"        (generate a cluster UUID that will uniquely identify the kafka cluster. This cluster id will be used by the KRaft controller.)
-
-bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c config/kraft/server.properties (KRaft requires the log directories to be configured. Run the following command to configure the log directories passing the cluster ID.)
-
-bin/kafka-server-start.sh config/kraft/server.properties (Now that KRaft is configured, you can start the Kafka server by running the following command.)
-
+(assumes you have already installed and configured kafka)
 
 Create a topic in the admin.py file
 
-
-Open a new terminal and navigate to the kafka_2.12-3.7.0 directory.
-
-Install the kafka-python package by running the following command.
-
-pip3 install kafka-python
-
 Create a file named admin.py by running the following command.
+
+touch admin.py
 
 open the file in edit mode and paste the following content in the file and save it.
 
@@ -39,7 +24,7 @@ Note: We are creating a topic "bankbranch" through this code.
 
 Create the producer.py file
 
-Create a file named producer.py by running the following command.
+touch producer.py
 
 open the file in edit mode and paste the following content in the file and save it.
 
@@ -53,7 +38,8 @@ producer.flush()
 
 producer.close()
 
-In the above code, the producer is sending across two messages through this code. These messages will be received by the consumer.
+In the above code, the producer is sending across two messages through this code. These messages will be received 
+by the consumer.
 
 
 Create the consumer.py file
@@ -83,7 +69,6 @@ python3 producer.py
 
 Open a new terminal and execute the following commands to run consumer.py:
 
-cd kafka_2.12-3.7.0
 python3 consumer.py
 
 

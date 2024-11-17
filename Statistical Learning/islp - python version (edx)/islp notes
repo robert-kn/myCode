@@ -602,3 +602,49 @@ a prediction problem because "we are interested in predicting the % change". n =
 error curves, on a single plot, as we go from less fexible statistical learning methods towards more fexible 
 approaches. The x-axis should represent the amount of fexibility in the method, and the y-axis should represent the 
 values for each curve. There should be five curves. Make sure to label each one.
+
+(b) Explain why each of the fve curves has the shape displayed in part (a).
+
+
+4. You will now think of some real-life applications for statistical learning.
+
+(a) Describe three real-life applications in which classifcation might be useful. Describe the response, as well as 
+    the predictors. Is the goal of each application inference or prediction? Explain your answer.)
+
+(b) Describe three real-life applications in which regression might be useful. Describe the response, as well as the
+    predictors. Is the goal of each application inference or prediction? Explain your answer.
+
+(c) Describe three real-life applications in which cluster analysis might be useful.
+
+5. What are the advantages and disadvantages of a very flexible (versus a less fexible) approach for regression or 
+   classifcation? Under what circumstances might a more flexible approach be preferred to a less fexible approach? 
+   When might a less fexible approach be preferred?
+
+   Because of the bias-variance tradeoff, neither approach is better than the other. A very flexible approach is 
+   great when the relationship is highly non-linear, you have a lot of data points to find a pattern from, and/or 
+   the irreducible error is low. A very inflexible approach is great when the relationship is highly linear, you 
+   don't have many data points, and/or the irreducible error is high.
+
+6. Describe the differences between a parametric and a non-parametric statistical learning approach. What are the 
+   advantages of a parametric approach to regression or classification (as opposed to a non-parametric approach)? 
+   What are its disadvantages?
+
+   in a parametric aapproach, you make an assumption about what the functional form of f looks like and based on that
+   assumption, you choose a method to fit the data in question. in the non-paramentric approach, no assumptions about
+   the functional form of f is made hence there is no restriction on the method to choose to fit the data. the parametric
+   approach has the advantage of narrowing down the method that can be chosen to fit the data. in contrast, its
+   disadvantage is that 
+
+7. The table below provides a training data set containing six observations, three predictors, and one qualitative 
+   response variable. see question7figure.png
+
+   Suppose we wish to use this data set to make a prediction for Y when X1 = X2 = X3 = 0 using K-nearest neighbors.
+
+   (a) Compute the Euclidean distance between each observation and the test point, X1 = X2 = X3 = 0.
+
+   (b) What is our prediction with K = 1? Why?
+
+   (c) What is our prediction with K = 3 ? Why?
+
+   (d) If the Bayes decision boundary in this problem is highly non-linear, then would we expect the best value for 
+       K to be large or small? Why?
