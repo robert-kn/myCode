@@ -411,8 +411,9 @@ Cloud NAT is a managed NAT gateway for GCP VPC resources. It is a software defin
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f1\fs24 \cf0 {{\NeXTGraphic 6__#$!@%!#__Pasted Graphic.png \width24460 \height18400 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}
-\f0\fs48 \
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
 \
 \
 Track 4\
@@ -427,5 +428,62 @@ Remember some decisions cannot be easily changed afterwards e.g. subnet addressi
 \
 Use custom mode networks and plan carefully to avoid conflicting/overlapping IP ranges for subnets. 10.2.0.0/16 contains 10.2.1.0/24 and therefore conflict will occur when routing.\
 \
-Use deascripoting subnet names as it will make it easier to debug issues/ maintain.\
+Use descriptive subnet names as it will make it easier to debug issues/ maintain.\
+\
+Multiple VPC\'92s vs Multiple projects? What needs to be separated? VPC\'92s separate resources (single VPC = shared firewall rules, routing, private communications). Projects separate member access to resources via IAM roles (all compute/network IAM roles are project wide across all VPC\'92s in project).\
+\
+High availability and redundancy: plan for failure in mind I.e. if a zone or region goes down, can fail over to another one. Deploy resources across zones an/or regions when possible. What can be deployed across zones vs regions?\
+\
+Multi zone/ regional services:\
+1. Managed instance groups\
+2. GKE cluster\
+3. Pair with a global load balancer for multi region availability\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 7__#$!@%!#__Pasted Graphic.png \width28240 \height15000 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}
+\f0\fs48 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 1.png \width28960 \height15820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 2.png \width28960 \height18940 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 3.png \width27600 \height16940 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+What is cloud deployment manager? Infrastructure deployment service (IAC) similar to terraform, ansible etc. it calls on API resources and is deployed via cmd line and configured was a YAML file. Configuration file can link to templates which separate resource configurations into modular components. The templates are coded in either python or jinja2 format.\
+\
+Deployment manager creates resources in parallel. If you need a resource to be created after another resources has already span up then you will need to specify it in the YAML file.\
+\
+What are network service tiers? Determine path/route and performance of network communications of GCP resources. You are charged on amount of egress traffic from VPC resources. Ingress traffic is always free. Choose between premium tier (traffic kept in google\'92s network as much as possible) and standard tier (more hops over general internet leading to longer path to VPC resources; lower egress costs; ideal for regional hosted services).\
+\
+Enabling network service tiers: enable per VM or instance template. Can also set as project wide default. Restrictions: most multi-regional services require premium tier e.g. global load balancers with multi region backends, cloud CDN, cloud VPN, cloud NAT.\
+\
+When to choose premium or standard tier? Premium should be chosen when an application requires high performance, high availability, and low latency. Standard should be chosen when budget is restricted\
+\
+What are VPC flow logs? They record sample of network flows sent/received by VPC resources (near real time recording). Used for monitoring, forensics, security analysis. Are enabled at the subnet level. Use cases: network monitoring (understanding traffic growth for capacity forecasting), forensics (who are your instances talking to), real time security analysis (integrate with pub/sub for streaming transport). Doesn\'92t capture 100% of traffic (Samples approximately 1 out of 10 packets, packets in low volume flows might be missed, TCP/UDP only), can adjust aggregation/sampling amount to balance costs, shared VPC - all VPC flow logs in host project.\
+\
+What are firewall logs? Logs of firewall rule effects; useful for auditing, verifying, and analysing effect of rules. Applied per firewall rule across the entire VPC. Creates connection record each time rule allows/denies traffic. Can be exported to big query or pub/sub for analysis. TCP/UDP protocols only. Default deny all ingress and allow all egress are not logged.\
+\
+Optimise cloud storage performance: not related to any networking questions however transferring files to and from GCS may be part of a network engineer role. Need to know best practices and diagnostic tools to optimise transfer speeds. Problem: by default, gsutil transfers one file at a time, each transfer has overhead which can affect performance (the smaller the file, the more overhead affects total transfer time). Solution? Transfer multiple files at a time with multi threading. Use -m in your transfer command i.e. gsutil -m cp -r /local-directory gs://my-bucket\
+\
+Problem: large files take a long time to transfer even with sufficient bandwidth. Solution? Parallel composite transfer. Slice large files into smaller pieces (called composite objects), then transfer multiple pieces over multiple threads. GCP will reassemble the pieces when transfer is complete. gsutil -o GSUtil:parallel_composite_upload_threshold=150M cp ./my-large-file gs://my-bucket. Note: do not use with nearline/coldline storage class - will result in modification fee\
+\
+Diagnosing and troubleshooting transfer performance: problem? Need to measure performance for standard transfers and optimised transfers. Solution? Use perfdiag option in gsutil - performance diagnostics. Diagnostic tool only, doesn\'92t facilitate optimised transfers. Test transferring, reading, and deleting multiple test files of different sizes to your GCS bucket. Can adjust testing parameters for file size, multi threading, number of test, etc to view different results. gsutil perfdiag gs://my-bucket  \
+\
 }

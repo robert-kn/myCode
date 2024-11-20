@@ -45,8 +45,7 @@ accuracy of fˆ by using the most appropriate statistical learning technique to 
 
 Even if it were possible to form a perfect estimate of f, so that our estimated response took
 the form of ŷ = f(x), our prediction would still have some error in it. Why? because Y is also
-a function of e which by definition cannot be predicted using x (i don't understand this last
-bit??).
+a function of e which by definition cannot be predicted using x.
 
 Variability associated with e also affects the accuracy of our predictions. This is known as
 the irreducible error, because no matter how well we estimate f, we cannot reduce the error 

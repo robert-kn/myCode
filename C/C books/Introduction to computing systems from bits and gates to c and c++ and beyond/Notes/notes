@@ -171,7 +171,7 @@ of these unacceptable attributes is ambiguity. Natural language is ﬁlled with 
 
 The ﬁrst step in the sequence of transformations is to transform the natural lan- guage description of the problem 
 to an algorithm, and in so doing, get rid of the objectionable characteristics of the natural language. An 
-algorithm is a step-by- step procedure that is guaranteed to terminate, such that each step is precisely stated and
+algorithm is a step-by-step procedure that is guaranteed to terminate, such that each step is precisely stated and
 can be carried out by the computer. There are terms to describe each of these properties.
 
 1. effective computability means each step can be carried out by a computer.
@@ -240,7 +240,7 @@ implementation) of an automobile's ISA is about what goes on underneath the hood
 Here all automobiles brands and models can be different depending on the cost/performance tradeoffs the 
 designer made before the car was manufactured.
 
-Previously, we identiﬁed ISAs of several computer manufactur- ers, including the x86 (Intel), the PowerPC (IBM and 
+Previously, we identiﬁed ISAs of several computer manufacturers, including the x86 (Intel), the PowerPC (IBM and 
 Motorola), and THUMB (ARM). Each has been implemented by many diﬀerent microarchitectures.
 
 Each microarchitecture is an opportunity for computer designers to make different tradeoffs between the cost 
@@ -287,14 +287,14 @@ We can accomplish this by combining many wires, that is, many bits. For example,
 and another value as 11100111. In fact, if we are limited to eight bits we can differentiate at most only 256 values
 (2^8) different things.
 
-In general, with k bits, we can distinguish at most 2k distinct items. Each pattern of these k bits is a code; that
+In general, with k bits, we can distinguish at most 2^k distinct items. Each pattern of these k bits is a code; that
 is, it corresponds to a particular item (or value).
 
 We symbolically represent the presence of a voltage as “1” and the absence of a voltage as “0.” We refer to each 0 
 and each 1 as a “bit,” which is a shortened form of binary digit.
 
 It is not enough simply to represent values; we must be able to operate on those values. We say a particular 
-representation is a data type if there are oper- ations in the computer that can operate on information that is 
+representation is a data type if there are operations in the computer that can operate on information that is 
 encoded in that representation. Each instruction set architecture (ISA) has its own set of data types and its own 
 set of instructions that can operate on those data types. 
 
@@ -306,9 +306,9 @@ An unsigned integer has no sign (plus or minus) associated with it. An unsigned 
 Unsigned.
 
 a computer designer could assign any bit pattern to represent any integer he or she wants. Unfortunately, that 
-could complicate matters when we try to build an electronic circuit to add two integers. Infct, signed magnitude and
+could complicate matters when we try to build an electronic circuit to add two integers. Infact, signed magnitude and
 1'complement data types require unnecessarily cumbersome hardware to do addition. On the other hand, the circuitry 
-required to add 2 integers using 2's complement data type is much simpler. Because com- puter designers knew what it
+required to add 2 integers using 2's complement data type is much simpler. Because computer designers knew what it
 would take to design a circuit to add two integers, they chose representations that simpliﬁed the circuit. The 
 result is the 2’s complement data type, also shown in Figure 2.1. It is used on just about every computer 
 manufactured today.
@@ -552,7 +552,7 @@ like a short circuit and the N-type transistor acts like an open circuit. The ou
 1.2 volts. On the other hand, if the input is supplied with 1.2 volts, the P-type transistor acts like an open 
 circuit, but the N-type transistor acts like a short circuit. The output in this case is connected to ground (i.e.,
 0 volts). The complete behavior of the circuit can be described by means of a table, as shown in Figure 3.4c. If we 
-replace 0 volts with the symbol 0 and 1.2 volts with the symbol 1, we have the truth table see notgate.png
+replace 0 volts with the symbol 0 and 1.2 volts with the symbol 1, we have the truth table 
 
 NOR Gates: a NOR gate contains two P-type and two N-type transistors see NORGate.png
 Figure 3.5b shows the behavior of the circuit if A is supplied with 0 volts and B is supplied 
@@ -611,9 +611,9 @@ microprocessor. As a convenience, we can represent each of these gates by standa
 The bubble shown in the inverter, NAND, and NOR gates signiﬁes the complement (i.e., NOT) 
 function.
 
-Gates with More Than Two Inputs: he notion of AND, OR, NAND, and NOR gates extends to larger numbers of inputs. One
+Gates with More Than Two Inputs: the notion of AND, OR, NAND, and NOR gates extends to larger numbers of inputs. One
 could build a three-input AND gate or a four-input OR gate, for example. An n-input AND gate has an output value of
-1 only if ALL n input variables have values of 1. If anyofthen inputs has a value of 0, the output of the n-input 
+1 only if ALL n input variables have values of 1. If any of the n inputs has a value of 0, the output of the n-input 
 AND gate is 0. An n-input OR gate has an output value of 1 if ANY of the n input variables has a value of 1. That 
 is, an n-input OR gate has an output value of 0 only if ALL n input variables have values of 0. see figure310
 
@@ -943,7 +943,7 @@ For the lock of Figure 3.23a to work, it must identify several relevant situatio
 
 A.  The  lock  is  not  open,  and  NO  relevant  operations  have  been performed.
 B.  The  lock  is  not  open,  but  the  user  has  just  completed  the R13  operation.
-C.   The  lock  is  not  open,  but  the  user  has  just  completed  R13, followed  by  L22.
+C.  The  lock  is  not  open,  but  the  user  has  just  completed  R13, followed  by  L22.
 D.  The  lock  is  open,  since  the  user  has  just  completed  R13, followed  by  L22,  followed  by  R3.
 
 We have labeled these four situations A, B, C, and D. We refer to each of these situations as the state of the lock.
@@ -1028,7 +1028,7 @@ However, almost no computers work that way. On the contrary, we say that compute
 transitions take place, one after the other, at identical ﬁxed units of time. They are controlled by a synchronous 
 ﬁnite state machine.
 
-It is worth pointing out that both the four asynchronous ﬁnite state machines discussed above and the synchronous 
+It is worth pointing out that the two asynchronous ﬁnite state machines discussed above and the synchronous 
 ﬁnite state machine that controls a digital computer share an important characteristic: They carry out work, one 
 state transition at a time, moving closer to a goal. In the case of the combination lock, as long as you make the 
 correct moves, each state transition takes us closer to the lock opening. In the case of the soft drink machine, 
@@ -1084,7 +1084,7 @@ transitions to state A, the “all oﬀ” state.
 
 The Sequential Logic Circuit for the Danger Sign Controller
 
-Recall that Figure 3.22 shows a generic block diagram for a sequential logic circuit.Figure 3.31 is a block diagram 
+Recall that Figure 3.22 shows a generic block diagram for a sequential logic circuit. Figure 3.31 is a block diagram 
 of the speciﬁc sequential logic circuit we need to control the lights. Several things are important to note in this 
 ﬁgure.
 
@@ -1135,7 +1135,7 @@ the two storage elements were gated D latches, when the write enable signal (the
 Y and Z would immediately change the bits stored in the two gated D latches. This would produce new input values to 
 the three AND gates that are input to OR gates Y and Z, producing new outputs that would be applied to the inputs of
 the gated latches, which would in turn change the bits stored in the gated latches, which would in turn mean new 
-inputs to the three AND gates and new outputs of OR gates Y and Z. This would happen again and again, continually 
+inputs to the three AND gates and new outputs for OR gates Y and Z. This would happen again and again, continually 
 changing the bits stored in the two storage elements as long as the Write Enable signal to the gated D latches was 
 asserted. The result: We have no idea what the state of the ﬁnite state machine would be for the next clock cycle. 
 And, even in the current clock cycle, the state of the storage elements would change so fast that the ﬁve lights 
@@ -1223,13 +1223,15 @@ both read the contents of a register throughout a clock cycle and also store a n
 of that same clock cycle. As shown in Figure 3.36, the four-bit value stored in the register during a clock cycle is
 Q₃, Q₂, Q₁, Q₀. At the end of that clock cycle, the value D₃, D₂, D₁, D₀ is written into the register.
 
-The arrows in Figure 3.35 represent wires that transmit values from one struc- ture to another. Most of the arrows 
+The arrows in Figure 3.35 represent wires that transmit values from one structure to another. Most of the arrows 
 include a cross-hatch with a number next to it. The number represents the number of wires, corresponding to the 
 number of bits being transmitted. Thus, for example, the arrow from the register labeled PC to one of the inputs of 
 the MUX labeled ADDR1MUX indicates that 16 bits are transmitted from PC to an input of ADDR1MUX.
 
 A two-input AND and a two-input OR are both examples of two-input logic functions. How many diﬀerent two-input 
 logic functions are possible? There can be 16 different two input logic functions.
+
+----
 
 chapter 4
 
