@@ -1,0 +1,130 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;\f1\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh16960\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 What is the GCP resource hierarchy?\
+\
+Organisation (root node) -> folders -> projects -> resources\
+\
+Top down policy inheritance flowing from the organisation downwards. Policies are controlled by IAM. Grouping mechanism and isolation boundary. Same can be said of projects I.e. grouping mechanism and isolation boundary.\
+\
+Organisation super admin role is created at the org node when an organisation is created; they have the power to edit any/all resources. Its usage on a day to day basis is discouraged.\
+\
+Policies can be set on all layers of the hierarchy. The policy of a resource is the union of the policy set on the resource and the policy inherited from its ancestors. Permissive parent policies overrule restrictive child policies.\
+\
+Policy hierarchy follows the same path as the GCP resource hierarchy. What does this mean? If you move a project from one folder to another folder, it will inherit the policies of the new parent folder (policies from previous folder it was under will no longer be applicable) i.e. changing the resource hierarchy, changes the policy hierarchy as well.\
+\
+Constraints are a type of restriction against a GCP service or a list of GCP services. They are applied at the org layer and inherited by folders and projects.\
+\
+IAM lets you manage access by defining who can do what on which resource. used to grant access to specific GCP resources where you can follow principle of least privilege.\
+\
+Who can be a google group (named collection of google accounts), google account/ cloud identity user, service account, cloud identity/ gsuite domain.\
+\
+What is determined by an IAM which can be one of primitive roles (editor, owner, and viewer), pre-defined roles (collections of permission grouped into one by google), custom role.\
+\
+Resources roles can be applied to include secrets, compute engine instances, buckets etc.\
+\
+A policy is made up of members that are attached to roles.\
+\
+A service account is a special google account that belongs to your application (or a VM) instead of a user. It used for authentication between application and services. It is identified be an email address. Types of service accounts on google cloud:\
+1. Google managed; representing different google services that re automatically granted IAM roles\
+2. User managed; created by user and are based on enabled APIs in the project\
+\
+Service accounts are both a member and (who) and a resource. Users are granted the serviceAccountUser role.\
+\
+Each service account is associated with a key pair. Default service accounts are managed by google whilst custom service accounts can use user managed keys. \
+\
+Service account scopes: legacy method for granting permissions for default service accounts on cloud APIs on GCE instances.\
+\
+Cloud identity: identity as a service solution used for managing users, groups, and security settings from a centralised location. What features does it offer?\
+1. Single sign on; SAML based SSO through a 3rd party identity provider (IdP) where google acts as a service provider. Access 3rd party cloud apps but their credentials aren\'92t stored with the 3rd party.\
+2. Multi factor authentication\
+3. Mobile device management; enforce policies for personal and corporate devices. Create a whitelist of approved apps.\
+4. Federate with on premises Active Directory; cloud identity maps (or federates) AD accounts to cloud identity accounts. Mapping == Federation.\
+\
+Google cloud directory sync (GCDS) synchronises the data in the google company domain with AD or LDAP server. This is a one way synchronisation (from AD/LDAP server to cloud identity through GCDS). GCDS regularly updates from AD or LDAP server.\
+\
+Principle of least privilege: apply only the minimal access level required for what is needed. Predefined roles are preferred over basic/primitive roles. Restrict who can create service accounts.\
+\
+Service accounts; rotate user managed service account keys (wait until new ones have been created and then delete old ones). Name service keys to reflect use and permissions.\
+\
+Auditing; export audit logs to cloud storage for long term retention. Audit who can edit IAM policies on projects (which if edited will be reflected in the logs).\
+\
+Policy management; grant roles to a google group instead of individual users.\
+\
+Networking concepts that you need to be familiar with:\
+1. Subnets\
+2. IP addresses\
+3. Routes\
+4. Firewalls \
+\
+What is a VPC network? Virtual version of a physical network that is software defined. It is global and provides connectivity to GCP resources. It is segmented into subnets which are regional resources that span multiple zones.\
+\
+Routes define paths for packets of data that ingress/egress into the VPC. Firewall rules control ingress and egress traffic from VPC (they are defined and implemented at the network level). \
+\
+Private google access is enabled at the subnet level to allow resources to communicate via private RFC 1918 ranges.\
+\
+VPC networking permissions are baked into compute engine IAM roles; compute admin role gives full access to instance and network admin roles. Compute network admin role grants access to network admin role.\
+\
+VPC network peering (automated by private service access) allows private RFC1918 connectivity across two VPC networks regardless of whether or not they belong to the same project or the same organisation. It is implemented when SaaS needs to be made available across VPC\'92s and organisations. Advantages? Lower network latency, greater network security, lower network costs (saves on egress costs). The connected VPC networks continue to administered separately I.e. firewalls, routes, and VPN\'92s are taken care of per VPC. Each peering is set up independently and the peers always exchange subnet routes. Max of 25 peering connections per VPC. There are also restrictions when it comes to peering networks, they include; non overlapping CIDR ranges for peered networks, all subnets will have routes in a peered network (no way to exclude subnets), transitive peering is not supported, tags or firewall rules that apply in one network will not apply in the peered network, internal DNS not accessible for compute engine in peered networks.\
+\
+Shared VPC allows an organisation to connect resources from multiple projects to a common VPC network in order to communicate securely within the internal google network. A project that participates in shared VPC is either a host project or a service project. Service projects are attached to a host project\'92s subnet. VPC networks in the host project are the shared VPC\'92s. The projects must be within the same organisation. The network is administered centrally in the host project but the billing for resources created in the host and service projects are separated. A single host project can have more than one shared VPC network.\
+\
+Shared VPC admin administers shared VPC for the organisation (compute.xpnadmin). Service project admins maintain ownership and control over resources defined in the service projects (compute.networkuser). \
+\
+Network admins have full control over all network resources except for firewall rules and SSL certificates.\
+\
+Security admins manage firewall rules and SSL certificates.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic.png \width19420 \height13140 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}
+\f0\fs48 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 1.png \width19060 \height20340 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 2.png \width19060 \height20420 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 3.png \width19060 \height21180 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+Firewall rules: they are stateful, allow or deny traffic to and from your resources in a VPC, defined at the network level but enforced at the instance level. Rules are enforced between resources and other networks as well between resources and in the same VPC. Every network has two implied firewall rules (cannot be removed and have the lowest priority) allow egress rule and deny ingress. Some traffic is always blocked on GCP e.g. GRE traffic, protocols other than TCP, UDP, ICMP, and IPIP; egress traffic on TCP port 25 SMTP. Traffic that is always allowed includes DHCP, DNS, instance metadata and NTP.\
+\
+Firewall rule components that must be specified during creation; priority, direction of traffic, action on match, target, source or destination, protocol and port.\
+\
+Network tags allow the application of firewall rules and routes to a specific instance or set of instances.\
+\
+Private google access: enabled at the subnet level and allows instances that only have internal IP\'92s assigned to them to reach google API\'92s within GCP. \
+\
+Load balancing: sits infant of your instances using an IP (frontend). Serves traffic to multiple backend targets. Fully distributed and software defined. Managed service. Types: global vs regional, external vs internal, https vs TC/UDP. Types of load balancers: http(s), ssl proxy, tcp proxy, internal, network. You can implement location based load balancing or content based load balancing (URL map).\
+\
+See https://cloud.google.com/load-balancing/docs/load-balancing-overview\
+\
+Virtual private network (VPN) connects on premises network to a google VPC via an IPSEC tunnel over the public internet. Traffic is encrypted by one gateway and decrypted by the other. Site to site VPN only (no site to client). Can be used in conjunction with private google access. Supports max transmission rate of 3 Gbps per tunnel (8 tunnels max) per gateway. Static or dynamic routing (using cloud router).\
+\
+Cloud interconnect is a physical connection between google and on premises network. Traffic does not traverse public internet. Low latency. Connection to google network made at peering edge I.e. where google\'92s network meets public internet. Can either be dedicated or partner. Save on egress costs.\
+\
+Cloud DNS offers managed domain name system. 100% SLA. Built around managed zones (public/private). Each domain has its own zone.\
+\
+DNSSEC authenticates responses to domain name look ups thereby protecting domains from spoofing and cache poisoning attacks. It provides strong authentication (but not encryption) of domain lookups.\
+\
+  \
+}

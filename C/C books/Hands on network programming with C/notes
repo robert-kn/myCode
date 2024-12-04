@@ -12,6 +12,8 @@ Networking encompasses concerns at many different abstraction levels. The concer
 
 OSI layer model
 
+It's clear that if all of the disparate devices composing the internet are going to communicate seamlessly, there must be agreed-upon standards that define their communications. These standards are called protocols. Protocols define everything from the voltage levels on an Ethernet cable to how a JPEG image is compressed on a web page. It's clear that, when we talk about the voltage on an Ethernet cable, we are at a much different level of abstraction compared to talking about the JPEG image format. If you're programming a website, you don't want to think about Ethernet cables or Wi-Fi frequencies. Likewise, if you're programming an internet router, you don't want to have to worry about how JPEG images are compressed. For this reason, we break the problem down into many smaller pieces.
+
 One common method of breaking down the problem is to place levels of concern into layers. Each layer then provides services for the layer on top of it, and each upper layer can rely on the layers underneath it without concern for how they work.
 
 The most popular layer system for networking is called the Open Systems Interconnection model (OSI model). It was standardized in 1977 and is published as ISO 7498. It has seven layers:
@@ -21,7 +23,7 @@ Let's understand these layers one by one:
 Physical (1): This is the level of physical communication in the real world.  At this level, we have specifications for things such as the voltage levels on an Ethernet cable, the radio frequency of Wi-Fi etc
 Data Link (2): This level builds on the physical layer. It deals with protocols for directly communicating between two nodes.
 Network layer (3): The network layer provides the methods to transmit data sequences (called packets) between nodes in different networks.
-Transport layer (4): At this layer, we have methods to reliably deliver variable length data between hosts. These methods deal with splitting up data, recombining it, ensuring data arrives in order, and so on.
+Transport layer (4): At this layer, we have methods to reliably deliver variable length data between hosts. These methods deal with splitting up data, recombining it, ensuring data arrives in order, and so on. TCP and UDP protocols are in this layer.
 Session layer (5): This layer builds on the transport layer by adding methods to establish, checkpoint, suspend, resume, and terminate dialogs.
 Presentation layer (6): This is the lowest layer at which data structure and presentation for an application are defined. Concerns such as data encoding, serialization, and encryption are handled here.
 Application layer (7): The applications that the user interfaces with (for example, web browsers and email clients) exist here. These applications make use of the services provided by the six lower layers.

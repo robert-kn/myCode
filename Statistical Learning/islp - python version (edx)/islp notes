@@ -647,3 +647,30 @@ values for each curve. There should be five curves. Make sure to label each one.
 
    (d) If the Bayes decision boundary in this problem is highly non-linear, then would we expect the best value for 
        K to be large or small? Why?
+
+----
+
+3. linear regression
+
+This chapter is about linear regression, a very simple approach for supervised learning. In particular, linear 
+regression is a useful tool for predicting a quantitative response. It serves as a good jumping-of point for newer 
+approaches: as we will see in later chapters, many fancy statistical learning approaches can be seen as 
+generalizations or extensions of linear regression. Consequently, the importance of having a good understanding of 
+linear regression before studying more complex learning methods cannot be overstated.
+
+Recall the Advertising data from Chapter 2. Figure 2.1 displays sales (in thousands of units) for a particular 
+product as a function of advertising budgets (in thousands of dollars) for TV, radio, and newspaper media. Suppose 
+that in our role as statistical consultants we are asked to suggest, on the basis of this data, a marketing plan for 
+next year that will result in high product sales. What information would be useful in order to provide such a 
+recommendation? Here are a few important questions that we might seek to address:
+
+Is there a relationship between advertising budget and sales?
+
+Our frst goal should be to determine whether the data provide evi- dence of an association between advertising 
+expenditure and sales. If the evidence is weak, then one might argue that no money should be spent on advertising!
+
+How strong is the relationship between advertising budget and sales?
+
+Assuming that there is a relationship between advertising and sales, we would like to know the strength of this 
+relationship. Does knowledge of the advertising budget provide a lot of information about product sales?
+

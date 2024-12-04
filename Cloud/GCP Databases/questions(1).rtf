@@ -1,0 +1,615 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red63\green63\blue63;\red255\green255\blue255;}
+{\*\expandedcolortbl;;\cssrgb\c31373\c31373\c31373;\cssrgb\c100000\c100000\c100000;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{none\}}{\leveltext\leveltemplateid1\'00;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{none\}}{\leveltext\leveltemplateid101\'00;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{none\}}{\leveltext\leveltemplateid201\'00;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid3}
+{\list\listtemplateid4\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{none\}}{\leveltext\leveltemplateid301\'00;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid4}
+{\list\listtemplateid5\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{none\}}{\leveltext\leveltemplateid401\'00;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid5}
+{\list\listtemplateid6\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{none\}}{\leveltext\leveltemplateid501\'00;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid6}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}{\listoverride\listid4\listoverridecount0\ls4}{\listoverride\listid5\listoverridecount0\ls5}{\listoverride\listid6\listoverridecount0\ls6}}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh16960\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs32 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 1. Your organization has a busy transactional Cloud SQL for MySQL instance. Your analytics team needs access to the data so they can build monthly sales reports. You need to provide data access to the analytics team without adversely affecting performance. What should you do?\
+\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls1\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 A.\'a0Create a read replica of the database, provide the database IP address, username, and password to the analytics team, and grant read access to required tables to the team.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 B.\'a0Create a read replica of the database, enable the cloudsql.iam_authentication flag on the replica, and grant read access to required tables to the analytics team.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 C.\'a0Enable the cloudsql.iam_authentication flag on the primary database instance, and grant read access to required tables to the analytics team.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 D.\'a0Provide the database IP address, username, and password of the primary database instance to the analytics, team, and grant read access to required tables to the team.\cb1 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\cf2 \
+Answer B\
+\
+2. You are configuring a brand new Cloud SQL for PostgreSQL database instance in Google Cloud. Your application team wants you to deploy one primary instance, one standby instance, and one read replica instance. You need to \
+ensure that you are following Google-recommended practices for high availability. What should you do?\
+\
+A. Configure the primary, standby, and read replica instances in zone A, all in the same region.\
+B. Configure the primary instance in zone A, the standby instance in zone C, and the read replica in zone B, all in the same region.\
+C. Configure the primary instance in one region, the standby instance in a second region, and the read replica in a third region.\
+D. Configure the primary and standby instances in zone A and the read replica in zone B, all in the same region.\
+\
+Answer B\
+\
+https://cloud.google.com/sql/docs/postgres/high-availability#failover-overview\
+\
+\
+3. Your organization has a security policy to ensure that all Cloud SQL for PostgreSQL databases are secure. You want to protect sensitive data by using a key that meets specific locality or residency requirements. Your organization \
+needs to control the key's lifecycle activities. You need to ensure that data is encrypted at rest and in transit. What should you do?\
+\
+A. Create the database with Google-managed encryption keys.\
+B Create the database with customer-managed encryption keys.\
+C Create the database persistent disk with customer-managed encryption keys.\
+D Create the database persistent disk with customer-managed encryption keys.\
+\
+Answer B\
+\
+https://cloud.google.com/sql/docs/postgres/configure-cmek#console_2\
+\
+4. You are running a transactional application on Cloud SQL for PostgreSQL in Google Cloud. The database is running in a high availability configuration within one region. You have encountered issues with data and want to restore to \
+the last known pristine version of the database. What should you do?\
+\
+A. Create a clone database from a read replica database, and restore the clone into a different zone.\
+B Create a clone database from a read replica database, and restore the clone into a different zone.\
+C Use the Cloud SQL database import feature. Import last week's dump file from Cloud Storage.\
+D Use the Cloud SQL point-in-time recovery (PITR) feature. Restore the copy from two hours ago to a new database instance.\
+\
+Answer D\
+\
+\
+5. Your organization is running a Firestore-backed Firebase app that serves the same top ten news stories on a daily basis to a large global audience. You want to optimize content delivery while decreasing cost and latency. What \
+should you do?\
+\
+A. Enable serializable isolation in the Firebase app.\
+B Build a Firestore bundle, and deploy bundles to Cloud CDN.\
+C Create a Firestore index on the news story date.\
+D Deploy a US multi-region Firestore location.\
+\
+Answer B\
+\
+\
+6. You have a large Cloud SQL for PostgreSQL instance. The database instance is not mission-critical, and you want to minimize operational costs. What should you do to lower the cost of backups in this environment?\
+\
+A Set the automated backups to occur every other day to lower the frequency of backups.\
+B Change the storage tier of the automated backups from solid-state drive (SSD) to hard disk drive (HDD).\
+C Reduce the number of automated backups that are retained to two (2).\
+D Select a different region to store your backups.\
+\
+Answer C\
+\
+https://cloud.google.com/sql/docs/mysql/backup-recovery/backups\
+\
+\
+7. You are a DBA on a Cloud Spanner instance with multiple databases. You need to assign these privileges to all members of the application development team on a specific database: Can read tables, views, and DDL; Can write \
+rows to the tables; Can add columns and indexes; Cannot drop the database. What should you do?\
+\
+A. Assign the Cloud Spanner Database User role.\
+B Assign the Cloud Spanner Database Admin role.\
+C Assign the Cloud Spanner Database Reader and Cloud Spanner Backup Writer roles.\
+D Assign the Cloud Spanner Admin role.\
+\
+Answer A\
+\
+\
+8. You are deploying a new Cloud SQL instance on Google Cloud using the Cloud SQL Auth proxy. You have identified snippets of application code that need to access the new Cloud SQL instance. The snippets reside and execute \
+on an application server running on a Compute Engine machine. You want to follow Google-recommended practices to set up Identity and Access Management (IAM) as quickly and securely as possible. What should you do?\
+\
+A. For the application server, set up a service account. \
+B For each application code, set up a dedicated user account. \
+C For the application server, set up a common shared user account. \
+D For each application code, set up a common shared user account.\
+\
+Answer A\
+\
+https://cloud.google.com/sql/docs/mysql/sql-proxy#using-a-service-account\
+\
+\
+9. You are configuring a new application that has access to an existing Cloud Spanner database. The new application reads from this database to gather statistics for a dashboard. You want to follow Google-recommended practices \
+when granting Identity and Access Management (IAM) permissions. What should you do?\
+\
+A. Create a new service account, and grant it the Cloud Spanner Database Reader role. \
+B Reuse the existing service account that populates this database. \
+C Create a new service account, and grant it the Cloud Spanner Database Admin role. \
+D Create a new service account, and grant it the spanner.databases.select permission.\
+\
+Answer A\
+\
+https://cloud.google.com/iam/docs/overview\
+\
+10.  Your organization has a ticketing system that needs an online marketing analytics and reporting application. You need to select a relational database that can manage hundreds of terabytes of data to support this new application. \
+Which database should you use?\
+\
+A. Bigtable \
+B Cloud SQL \
+C Cloud Spanner \
+D BigQuery\
+\
+Answer D \
+\
+\
+11. You are designing a database architecture for a global application that stores information about public parks worldwide. The application uses the database for read-only purposes, and a centralized batch job updates the database \
+nightly. You want to select an open source, SQL-compliant database. What should you do?\
+\
+\
+A. Use Cloud Spanner with multi-region configuration. \
+B Use Memorystore for Redis with multi-zones within a region. \
+C Use Cloud SQL for PostgreSQL with cross-region replicas. \
+D Use Bigtable with multi-region clusters\
+\
+\
+Answer C\
+\
+\
+12. You are the database administrator of a Cloud SQL for PostgreSQL instance that has pgaudit disabled. Users are complaining that their queries are taking longer to execute and performance has degraded over the past few \
+months. You need to collect and analyze query performance data to help identity slow-running queries. What should you do?\
+\
+A. Use the Query Insights dashboard to identify high execution times. \
+B White a Logs Explorer query to identify database queries with high execution times. \
+C Review application logs to identify database calls. \
+D View Cloud SQL operations to view historical query information.\
+\
+Answer A\
+\
+\
+13. Your company is shutting down their on-premises data center and migrating their Oracle databases using Oracle Real Application Clusters (RAC) to Google Cloud. You want minimal to no changes to the applications during the \
+database migration. What should you do?\
+\
+A. Migrate the Oracle databases to Cloud Spanner. \
+B Migrate the Oracle databases to Cloud SQL. \
+C Migrate the Oracle databases to Compute Engine. \
+D Migrate the Oracle databases to Bare Metal Solution for Oracle.\
+\
+Answer D\
+\
+\
+14. Your company is developing a new global transactional application that must be ACID-compliant and have 99.999% availability. You are responsible for selecting the appropriate Google Cloud database to serve as a datastore for \
+this new application. What should you do?\
+\
+A. Use Cloud SQL. \
+B Use Firestore. \
+C Use Cloud Spanner. \
+D Use Bigtable.\
+\
+Answer C\
+\
+\
+15. Your company wants you to migrate their Oracle, MySQL, Microsoft SQL Server, and PostgreSQL relational databases to Google Cloud. You need a fully managed, flexible database solution when possible. What should you do?\
+\
+A. Migrate the MySQL, Microsoft SQL Server, and PostgreSQL databases to Compute Engine, and migrate the Oracle databases to Bare Metal Solution for Oracle. \
+B Migrate all the databases to Cloud SQL. \
+C Migrate the Oracle, MySQL, and Microsoft SQL Server databases to Cloud SQL, and migrate the PostgreSQL databases to Compute Engine. \
+D Migrate the MySQL, Microsoft SQL Server, and PostgreSQL databases to Cloud SQL, and migrate the Oracle databases to Bare Metal Solution for Oracle.\
+\
+Answer D\
+\
+\
+16. You use Python scripts to generate weekly SQL reports to assess the state of your databases and determine whether you need to reorganize tables or run statistics. You want to automate this report but need to minimize \
+operational costs and overhead. What should you do?\
+\
+A. Create a Cloud Function, and call the Cloud Function using Cloud Scheduler. \
+B Create a VM in Compute Engine, and run a cron job. \
+C Create a Cloud Function, and call the Cloud Function from a Cloud Tasks queue. \
+D Create a Cloud Composer instance, and create a directed acyclic graph (DAG).\
+\
+Answer A\
+\
+\
+17. \cf2 \cb3 \strokec2 You are writing an application that will run on Cloud Run and require a database running in the Cloud SQL managed service. You want to secure this instance so that it only receives connections from applications running in your \
+VPC environment in Google Cloud. What should you do?\
+\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls2\ilvl0\cf2 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 A.\'a01. Create your instance with a specified external (public) IP address.\cb1 \uc0\u8232 \cb3 2. Choose the VPC and create firewall rules to allow only connections from Cloud Run into your instance.\cb1 \uc0\u8232 \cb3 3. Use Cloud SQL Auth proxy to connect to the instance.\cb1 \
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 B.\'a01. Create your instance with a specified external (public) IP address.\cb1 \uc0\u8232 \cb3 2. Choose the VPC and create firewall rules to allow only connections from Cloud Run into your instance.\cb1 \uc0\u8232 \cb3 3. Connect to the instance using a connection pool to best manage connections to the instance.\cb1 \
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 C.\'a01. Create your instance with a specified internal (private) IP address.\cb1 \uc0\u8232 \cb3 2. Choose the VPC with private service connection configured.\cb1 \uc0\u8232 \cb3 3. Configure the Serverless VPC Access connector in the same VPC network as your Cloud SQL instance.\cb1 \uc0\u8232 \cb3 4. Use Cloud SQL Auth proxy to connect to the instance.\cb1 \
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 D.\'a01. Create your instance with a specified internal (private) IP address.\cb1 \uc0\u8232 \cb3 2. Choose the VPC with private service connection configured.\cb1 \uc0\u8232 \cb3 3. Configure the Serverless VPC Access connector in the same VPC network as your Cloud SQL instance.\cb1 \uc0\u8232 \cb3 4. Connect to the instance using a connection pool to best manage connections to the instance.\cb1 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\cf2 \strokec2 \
+\
+Answer D\
+\
+\
+18. You need to migrate a 1 TB PostgreSQL database from a Compute Engine VM to Cloud SQL for PostgreSQL. You want to ensure that there is minimal downtime during the migration. What should you do?\
+\
+A. Use Database Migration Service to complete the migration. \
+B Export the data from the existing database, and load the data into a new Cloud SQL database. \
+C Use Migrate for Compute Engine to complete the migration. \
+D Use Datastream to complete the migration.\
+\
+Answer A\
+\
+\
+19.  You are working on a new centralized inventory management system to track items available in 200 stores, which each have 500 GB of data. You are planning a gradual rollout of the system to a few stores each week. You need to design an SQL database architecture that minimizes costs and user disruption during each regional rollout and can scale up or down on nights and holidays. What should you do?\
+\
+A. Use sharded Cloud SQL instances with one or more stores per database instance. \
+B Use Oracle Real Application Cluster (RAC) databases on Bare Metal Solution for Oracle. \
+C Use a Biglable cluster with autoscaling. \
+D Use Cloud Spanner with a custom autoscaling solution.\
+\
+Answer D\
+\
+20.  Your organization stores marketing data such as customer preferences and purchase history on Bigtable. The consumers of this database are predominantly data analysts and operations users. You receive a service ticket from the database operations department citing poor database performance between 9 AM-10 AM every day. The application team has confirmed no latency from their logs. A new cohort of pilot users that is testing a dataset loaded from a third-party data provider is experiencing poor database performance. Other users are not affected. You need to troubleshoot the issue. What should you do?\
+\
+A. Use Key Visualizer for Bigtable. \
+B Isolate the data analysts and operations user groups to use different Bigtable instances. \
+C Check the Cloud Monitoring table/bytes_used metric from Bigtable. \
+D Add more nodes to the Bigtable cluster.\
+\
+Answer A\
+\
+https://cloud.google.com/bigtable/docs/performance#troubleshooting\
+\
+21. You need to provision several hundred Cloud SQL for MySQL instances for multiple project teams over a one-week period. You must ensure that all instances adhere to company standards such as instance naming conventions, \
+database flags, and tags. What should you do?\
+\
+A. Automate instance creation by setting up Terraform scripts. \
+B Automate instance creation by writing a Dataflow job. \
+C Create clones from a template Cloud SQL instance. \
+D Create the instances using the Google Cloud Console UI.\
+\
+Answer A\
+\
+\
+22. You are migrating a telehealth care company's on-premises data center to Google Cloud. The migration plan specifies: PostgreSQL databases must be migrated to a multi-region backup configuration with cross-region replicas to allow restore and failover in multiple scenarios. MySQL databases handle personally identifiable information (PII) and require data residency compliance at the regional level. You want to set up the environment with minimal administrative effort. What should you do?\
+\
+\
+A. Set up Pub/Sub to ingest data from Cloud Logging, send an alert every time a new database instance is created, and manually validate the region. \
+B Set up Cloud Logging and Cloud Monitoring with Cloud Functions to send an alert every time a new database instance is created, and manually validate the region. \
+C Set up different organizations for each database type, and apply policy constraints at the organization level. \
+D Set up different projects for PostgreSQL and MySQL databases, and apply organizational policy constraints at a project level.\
+\
+\
+Answer D\
+\
+\
+23. Your project is using Bigtable to store data that should not be accessed from the public internet under any circumstances, even if the requestor has a valid service account key. You need to secure access to this data. What should\
+you do?\
+\
+A. Use Google Cloud Armor to add IP addresses to an allowlist. \
+B Use Identity and Access Management (IAM) for Bigtable access control. \
+C Use VPC Service Controls to create a trusted network for the Bigtable service. \
+D Use customer-managed encryption keys (CMEK).\
+\
+Answer C\
+\
+https://cloud.google.com/security/vpc-service-controls?hl=en\
+\
+\
+24. You are the primary DBA of a Cloud SQL for PostgreSQL database that supports 6 enterprise applications in production. You used Cloud SQL Insights to identify inefficient queries and now need to identify the application that is \
+originating the inefficient queries. You want to follow Google- recommended practices. What should you do?\
+\
+\
+A. Use query tags to add application-centric database monitoring. \
+B Write a utility to scan application logs. \
+C Write a utility to scan database query logs. \
+D Shut down and restart each application.\
+\
+Answer A\
+\
+https://cloud.google.com/sql/docs/postgres/using-query-insights#filter_by_query_tags\
+\
+25. Your organization has strict policies on tracking rollouts to production and periodically shares this information with external auditors to meet compliance requirements. You need to enable auditing on several Cloud Spanner databases. What should you do?\
+\
+A. Manually capture detailed DBA audit logs when changes are rolled out to higher environments. \
+B Use replication to roll out changes to higher environments. \
+C Use backup and restore to roll out changes to higher environments. \
+D Use Liquibase to roll out changes to higher environments.\
+\
+\
+Answer D\
+\
+https://cloud.google.com/spanner/docs/use-liquibase\
+\
+26. Your company is using Cloud SQL for MySQL with an internal (private) IP address and wants to replicate some tables into BigQuery in near-real time for analytics and machine learning. You need to ensure that replication is fast and reliable and uses Google-managed services. What should you do?\
+\
+A. Use Datastream to capture changes, and use Dataflow to write those changes to BigQuery. \
+B Use Database Migration Service to replicate tables into BigQuery. \
+C Use Cloud SQL federated queries. \
+D Develop a custom data replication service to send data into BigQuery. \
+\
+Answer A\
+\
+https://cloud.google.com/datastream/docs/quickstart-replication-to-bigquery\
+\
+\
+27. You work for a financial services company that wants to use fully managed database services. Traffic volume for your consumer services products has increased annually at a constant rate with occasional spikes around holidays. You frequently need to upgrade the capacity of your database. You want to use Cloud Spanner and include an automated method to increase your hardware capacity to support a higher level of concurrency. What should you do?\
+\
+A. Use linear scaling to implement the Autoscaler-based architecture \
+B Use direct scaling to implement the Autoscaler-based architecture. \
+C Set up alerts that are triggered when Cloud Spanner utilization metrics breach the threshold, and then schedule an upgrade during the scheduled maintenance window. \
+D Upgrade the Cloud Spanner instance on a periodic basis during the scheduled maintenance window.\
+\
+Answer A\
+\
+https://cloud.google.com/spanner/docs/autoscaling-overview#linear\
+\
+28. During an internal audit, you realized that one of your Cloud SQL for MySQL instances does not have high availability (HA) enabled. You want to follow Google-recommended practices to enable HA on your existing instance. What should you do?\
+\
+A. Create a new Cloud SQL for MySQL instance, enable HA, and use Cloud Data Fusion to migrate your data. \
+B Shut down your existing Cloud SQL for MySQL instance, and enable HA. \
+C Use the gcloud instances patch command to update your existing Cloud SQL for MySQL instance. \
+D Create a new Cloud SQL for MySQL instance, enable HA, and use the export and import option to migrate your data.\
+\
+Answer C\
+\
+\
+29. You are managing a Cloud SQL for PostgreSQL instance in Google Cloud. You need to test the high availability of your Cloud SQL instance by performing a failover. You want to use the cloud command. What should you do?\
+\
+\
+A. Use gcloud sql instances promote-replica <ReplicaInstanceName>. \
+B Use gcloud sql instances failover <ReplicaInstanceName>. \
+C Use gcloud sql instances failover <PrimaryInstanceName>. \
+D Use gcloud sql instances promote-replica <PrimaryInstanceName>.\
+\
+\
+Answer C\
+\
+30. You are responsible for designing a new database for an airline ticketing application in Google Cloud. This application must be able to: Work with transactions and offer strong consistency. Work with structured and semi-structured (JSON) data. Scale transparently to multiple regions globally as the operation grows. You need a Google Cloud database that meets all the requirements of the application. What should you do?\
+\
+\
+A. Use Firestore in Datastore mode. \
+B Use Cloud SQL for PostgreSQL with both cross-region read replicas. \
+C Use Cloud Spanner in a multi-region configuration. \
+D Use a Bigtable instance with clusters in multiple regions.\
+\
+Answer C\
+\
+31.  You have a Cloud SQL instance (DB-1) with two cross-region read replicas (DB-2 and DB-3). During a business continuity test, the primary instance (DB-1) was taken offline and a replica (DB-2) was promoted. The test has concluded and you want to return to the pre-test configuration. What should you do?\
+\
+A. Delete DB-1, and re-create DB-1 as a read replica in the same region as DB-1. \
+B Create DB-4 as a read replica in the same region as DB-1, and promote DB-4 to primary. \
+C Bring DB-1 back online. \
+D Delete DB-2 so that DB-1 automatically reverts to the primary instance.\
+\
+Answer B\
+\
+https://cloud.google.com/sql/docs/mysql/high-availability#failback\
+\
+\
+32. Your company wants to migrate an Oracle-based application to Google Cloud. The application team currently uses Oracle Recovery Manager (RMAN) to back up the database to tape for long-term retention (LTR). You need a cost-effective backup and restore solution that meets a 2-hour recovery time objective (RTO) and a 15-minute recovery point objective (RPO). What should you do?\
+\
+A. Migrate the Oracle databases to Bare Metal Solution for Oracle, and use Actifio to store backup files on Cloud Storage using the Nearline Storage class. \
+B Migrate the Oracle databases to Bare Metal Solution for Oracle, and back up the Oracle databases to Cloud Storage using the Standard Storage class. \
+C Migrate the Oracle databases to Bare Metal Solution for Oracle, and store backups on tapes on- premises. \
+D Migrate the Oracle databases to Compute Engine, and store backups on tapes on-premises.\
+\
+Answer A\
+\
+33.  You are designing a database strategy for a new web application. You plan to start with a small pilot in one country and eventually expand to millions of users in a global audience. You need to ensure that the application can run 24/7 with minimal downtime for maintenance. What should you do?\
+\
+A. Use Cloud Spanner in a multi-region configuration. \
+B Use highly available Cloud SQL with multiple zones. \
+C Use Cloud Spanner in a regional configuration. \
+D Use Cloud SQL with cross-region replicas.\
+\
+Answer C\
+\
+\
+34. You are designing for a write-heavy application. During testing, you discover that the write workloads are performant in a regional Cloud Spanner instance but slow down by an order of magnitude in a multi-regional instance. You want to make the write workloads faster in a multi-regional instance. What should you do?\
+\
+A. Keep the total CPU utilization under 45% in each region. \
+B Place the bulk of the read and write workloads closer to the default leader region. \
+C Use staleness of at least 15 seconds. \
+D Add more read-write replicas.\
+\
+Answer B\
+\
+https://cloud.google.com/spanner/docs/instance-configurations#multi-region-best-practices%20Best\
+\
+\
+35. Your organization has an existing app that just went viral. The app uses a Cloud SQL for MySQL backend database that is experiencing slow disk performance while using hard disk drives (HDDs). You need to improve performance and reduce disk I/O wait times. What should you do?\
+\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls3\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 A.\'a0Export the data from the existing instance, and import the data into a new instance with solid-state drives (SSDs).\cb1 \
+\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 B.\'a0Edit the instance to change the storage type from HDD to SSD.\cb1 \
+\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 C.\'a0Create a high availability (HA) failover instance with SSDs, and perform a failover to the new instance.\cb1 \
+\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 D.\'a0Create a read replica of the instance with SSDs, and perform a failover to the new instanc\
+\ls3\ilvl0\kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Answer A\
+\
+\
+36. Your hotel booking company is expanding into Country A, where personally identifiable information (PII) must comply with regional data residency requirements and audits. You need to isolate customer data in Country A from the rest of the customer data. You want to design a multi-tenancy strategy to efficiently manage costs and operations. What should you do?\
+\
+A. Apply a schema data management pattern. \
+B Apply a table data management pattern. \
+C Apply an instance data management pattern. \
+D Apply a database data management pattern.\cb1 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\cf2 \strokec2 \
+Answer C\
+\
+https://cloud.google.com/solutions/implementing-multi-tenancy-cloud-spanner#multi-tenancy-%20%20data-management-patterns\
+\
+https://cloud.google.com/solutions/implementing-multi-tenancy-cloud-spanner\
+\
+37.  Your online delivery business that primarily serves retail customers uses Cloud SQL for MySQL for its inventory and scheduling application. The required recovery time objective (RTO) and recovery point objective (RPO) must be in minutes rather than hours as a part of your high availability and disaster recovery design. You need a high availability configuration that can recover without data loss during a zonal or a regional failure. What should you do?\
+\
+A. Set up read replicas in different zones of the same region as the primary instance with asynchronous replication, and set up read replicas in different regions with synchronous replication. \
+B Set up all read replicas in the same region as the primary instance with synchronous replication. \
+C Set up all read replicas in a different region using asynchronous replication. \
+D Set up read replicas in different zones of the same region as the primary instance with synchronous replication, and set up read replicas in different regions with asynchronous replication.\
+\
+Answer D\
+\
+\
+38. You are troubleshooting a connection issue with a newly deployed Cloud SQL instance on Google Cloud. While investigating the Cloud SQL Proxy logs, you see the message Error 403: Access Not Configured. What should you do?\
+\
+A. Ensure that you are using an external (public) IP address interface. \
+B Check the app.yaml value cloud_sql_instances for a misspelled or incorrect instance connection name. \
+C Enable the Cloud SQL Admin API. \
+D Check whether your service account has cloudsql.instances.connect permission.\
+\
+Answer C\
+\
+https://cloud.google.com/sql/docs/mysql/connect-auth-proxy#troubleshooting%20C%20because%20in%20docs%20it\
+\
+\
+\
+39. You want to migrate your PostgreSQL database from another cloud provider to Cloud SQL. You plan on using Database Migration Service and need to assess the impact of any known limitations. What should you do? (Choose two.)\
+\
+\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls4\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 A.\'a0Identify whether the database has over 512 tables.\cb1 \
+\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 B.\'a0Identify all tables that do not have a primary key.\cb1 \
+\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 C.\'a0Identity all tables that do not have at least one foreign key.\cb1 \
+\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 D.\'a0Identify whether the source database is encrypted using pgcrypto extension.\cb1 \
+\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 E.\'a0Identify whether the source database uses customer-managed encryption keys (CMEK).\cb1 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\cf2 \strokec2 \
+Answer B and E\
+\
+\
+40. You manage a production MySQL database running on Cloud SQL at a retail company. You perform routine maintenance on Sunday at midnight when traffic is slow, but you want to skip routine maintenance during the year-end holiday shopping season. You need to ensure that your production system is available 24/7 during the holidays. What should you do?\
+\
+A. Define a maintenance window on Sundays between 12 AM and 5 AM, and deny maintenance periods between November 1 and February 15. \
+B Build a Cloud Composer job to start a maintenance window on Sundays between 12 AM and 1AM, and deny maintenance periods between November 1 and January 15. \
+C Create a Cloud Scheduler job to start maintenance at 12 AM on Sundays. Pause the Cloud Scheduler job between November 1 and January 15. \
+D Define a maintenance window on Sundays between 12 AM and 1 AM, and deny maintenance periods between November 1 and January 15.\
+\
+Answer D\
+\
+https://cloud.google.com/sql/docs/mysql/maintenance\
+\
+\
+41. Your organization is running a low-latency reporting application on Microsoft SQL Server. In addition to the database engine, you are using SQL Server Analysis Services (SSAS), SQL Server Reporting Services (SSRS), and SQL Server Integration Services (SSIS) in your on-premises environment. You want to migrate your Microsoft SQL Server database instances to Google Cloud. You need to ensure minimal disruption to the existing architecture during migration. What should you do?\
+\
+\
+A. Migrate to Cloud SQL for PostgreSQL. \
+B Migrate to Google Kubernetes Engine (GKE). \
+C Migrate to Cloud SQL for SQL Server. \
+D Migrate to Compute Engine.\
+\
+\
+Answer D\
+\
+\
+42. You are designing a physician portal app in Node.js. This application will be used in hospitals and clinics that might have intermittent internet connectivity. If a connectivity failure occurs, the app should be able to query the cached data. You need to ensure that the application has scalability, strong consistency, and multi-region replication. What should you do?\
+\
+A. Use Table.read with the exactStaleness option to perform a read of rows in Cloud Spanner. \
+B Use Memorystore for Memcached. \
+C Use Pub/Sub to synchronize the changes from the application to Cloud Spanner. \
+D Use Firestore and ensure that the PersistenceEnabled option is set to true.\
+\
+Answer D\
+\
+https://firebase.google.com/docs/firestore/manage-data/enable-offline\
+\
+\
+43. An analytics team needs to read data out of Cloud SQL for SQL Server and update a table in Cloud Spanner. You need to create a service account and grant least privilege access using predefined roles. What roles should you assign to the service account?\
+\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls5\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 A.\'a0roles/cloudsql.viewer and roles/spanner.databaseUser\cb1 \
+\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 B.\'a0roles/cloudsql.editor and roles/spanner.admin\cb1 \
+\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 C.\'a0roles/cloudsql.client and roles/spanner.databaseReader\cb1 \
+\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 D.\'a0roles/cloudsql.instanceUser and roles/spanner.databaseUser\cb1 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\cf2 \strokec2 \
+Answer A\
+\
+\
+44. You want to migrate an on-premises 100 TB Microsoft SQL Server database to Google Cloud over a 1 Gbps network link. You have 48 hours allowed downtime to migrate this database. What should you do? (Choose two.)\
+\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls6\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 A.\'a0Use a change data capture (CDC) migration strategy.\cb1 \
+\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 B.\'a0Move the physical database servers from on-premises to Google Cloud.\cb1 \
+\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 C.\'a0Keep the network bandwidth at 1 Gbps, and then perform an offline data migration.\cb1 \
+\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 D.\'a0Increase the network bandwidth to 2 Gbps, and then perform an offline data migration.\cb1 \
+\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 E.\'a0Increase the network bandwidth to 10 Gbps, and then perform an offline data migration.\cb1 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\cf2 \strokec2 \
+Answer A and E\
+\
+\
+45. Your team is building a new inventory management application that will require read and write database instances in multiple Google Cloud regions around the globe. Your database solution requires 99.99% availability and global transactional consistency. You need a fully managed backend relational database to store inventory changes. What should you do?\
+\
+A. Use Cloud Spanner. \
+B Use Cloud SQL for MySQL \
+C Use Firestore. \
+D Use Bigtable.\
+\
+Answer A\
+\
+\
+46. Your organization is migrating 50 TB Oracle databases to Bare Metal Solution for Oracle. Database backups must be available for quick restore. You also need to have backups available for 5 years. You need to design a cost-effective architecture that meets a recovery time objective (RTO) of 2 hours and recovery point objective (RPO) of 15 minutes. What should you do?\
+\
+A. Create the database on a Bare Metal Solution server with the database running on flash storage. Keep a local backup copy on standard storage. Use the Oracle Recovery Manager (RMAN) backup utility to move backups older than one day to a Coldline Storage bucket. \
+B Create the database on a Bare Metal Solution server with the database running on flash storage. Keep a local backup copy on all flash storage. Use the Oracle Recovery Manager (RMAN) backup utility to move backups older than one day to an Archive Storage bucket. \
+C Create the database on a Bare Metal Solution server with the database running on flash storage. Keep a local backup copy on all flash storage. Keep backups older than one day stored in Actifio OnVault storage. \
+D Create the database on a Bare Metal Solution server with the database running on flash storage. Keep a local backup copy on standard storage. Keep backups older than one day stored in Actifio OnVault storage.\
+\
+Answer D\
+\
+\
+47. You are configuring a brand new PostgreSQL database instance in Cloud SQL. Your application team wants to have an optimal and highly available environment with automatic failover to avoid any unplanned outage. What should you do?\
+\
+A. Create one regional Cloud SQL instance with a read replica in another region. \
+B Create two read-write Cloud SQL instances in two different zones with a standby instance in another region. \
+C Create two read-write Cloud SQL instances in two different regions with a standby instance in another zone. \
+D Create one regional Cloud SQL instance in one zone with a standby instance in another zone in the same region.\
+\
+\
+Answer D\
+\
+48. Your company is migrating their MySQL database to Cloud SQL and cannot afford any planned downtime during the month of December. The company is also concerned with cost, so you need the most cost-effective solution. What should you do?\
+\
+\
+A. Use Cloud SQL maintenance settings to prevent any maintenance during the month of December. \
+B Open a support ticket in Google Cloud to prevent any maintenance in that MySQL instance during the month of December. \
+C Create a MySQL regional instance so that, if any downtime occurs, the standby instance will act as the primary instance during the month of December. \
+D Create MySQL read replicas in different zones so that, if any downtime occurs, the read replicas will act as the primary instance during the month of December\
+\
+Answer A\
+\
+\
+49. Your retail organization is preparing for the holiday season. Use of catalog services is increasing, and your DevOps team is supporting the Cloud SQL databases that power a microservices-based application. The DevOps team has added instrumentation through Sqlcommenter. You need to identify the root cause of why certain microservice calls are failing. What should you do?\
+\
+A. Watch Cloud Trace for application requests that are failing. \
+B Watch the Cloud SQL instance monitor for CPU utilization metrics. \
+C Watch the Cloud SQL recommenders for overprovisioned instances. \
+D Watch Query Insights for long running queries.\
+\
+\
+Answer D \
+\
+\
+50.  Your organization has a production Cloud SQL for MySQL instance. Your instance is configured with 16 vCPUs and 104 GB of RAM that is running between 90% and 100% CPU utilization for most of the day. You need to scale up the database and add vCPUs with minimal interruption and effort. What should you do?\
+\
+A. Update a MySQL database flag to increase the number of vCPUs. \
+B Back up the database, create an instance with additional vCPUs, and restore the database. \
+C Issue a gcloud compute instances update command to increase the number of vCPUs. \
+D Issue a gcloud sql instances patch command to increase the number of vCPUs.\
+\
+Answer D\
+\
+}

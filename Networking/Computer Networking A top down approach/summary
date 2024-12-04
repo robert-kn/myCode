@@ -1,0 +1,46 @@
+chapter 1
+
+1. would you agree that the internet is the largest system engineered by man?
+2. give a description of the internet based on hardware and software components? 
+3. what are hosts or end systems?
+4. what are end systems connected by?
+5. what differentiates communication links?
+6. what is the transmission rate measured in?
+7. what does a packet switch do?
+8. what are the two most common packet switches in use today?
+9. where aare link layer switches mostly used and where are routers mostly used?
+10. define what a path or a route means?
+11. how do end systems access the internet?
+12. what are ISP's made up of?
+13. what do end systems, packet switches and other pieces of equipment connected to the internet run?
+14. what organisation is responsible for creating and maintaining internet standards? 
+15. what are the standard documents called? 
+16. are there other bodies that specify standards for network components? name one and the type of standard for a component it defines?
+17. can you describe the internet from services perspective? 
+18. what are the applications in the above definition referred to?
+19. how does a program running one end system instruct the internet to deliver data to another program running on another end system?
+20. what is the socket interface?   
+21. how is a network protocol similar to a human protocol?
+22. why are end systems called hosts?
+23. hosts are further divided into two categories. what are they?
+24. what is an access network? the network that physically connects an end system to the first router (known as the edge router)
+25. name 4 different access networks?
+26. what are the features of DSL an how many frequency groups does it use?
+27. why are the transmission rates defined by the DSL standards said to be asymmetric?
+28. are the actual downstream and upstream transmission rates aachieved by customers equal to those in DSL standards? why not?
+29. name two more factors that limits the maximum transmission rate achieved using DSL?
+30. what of cable, which company acts as the ISP and what communication mediums are used?
+31. what does HFC stand for and where is it used?
+32. what are the DOCSIS standards?
+33. what does FTTH stand for and what does it entail?
+34. what is the most prevalent LAN technology for connecting end systems to an edge router? 
+35. what happens in a wireless LAN setting for a user to connect to the wider internet? a user connects wirelessly to an access point (base station) which is in then connected to enterprises network (likely via wired ethernet) which is then connected to the internet.
+36. what is wireless LAN technology based on? IEEE 802.11 technology more colloquially known as WIFI
+37. what technology do mobile devices use to share photos, videos, stream music etc? same wireless infra used For
+cellular telephony to send/receive packets through a base station operated by a cellular network provider
+38. what is the difference between the wifi base stations and cellular network provider base stations? a user need 
+only be within a few tens of kilometers (as opposed to a few tens of meters) of the base station
+39. what are the two categories that physical media (used for bit propagation) fall into? guided and unguided media
+40. how do guided media operate? include coax cable, twisted pair coper wire, fibre optic cable; waves are guided along a solid medium
+41. what of unguied mediums, how do they operate? the waves propagate in the atmosphere or in space such as in wireless LAN, digital channel satellite 
+42. what are the characteristics of twisted pair copper wires with regards to cost, data rates? cheapest guided medium and has LAN rates of 10 Mbps to 10 Gbps 

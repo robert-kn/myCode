@@ -1323,7 +1323,7 @@ Input and Output
 
 In order for a computer to process information, the information must get into the computer. In order to use the 
 results of that processing, those results must be displayed in some fashion outside the computer. Many devices 
-exist for the purposes of input and output. They are generically referred to in computer jar- gon as peripherals 
+exist for the purposes of input and output. They are generically referred to in computer jargon as peripherals 
 because they are in some sense accessories to the processing function. Nonetheless, they are no less important.
 
 Control Unit
@@ -1387,7 +1387,7 @@ is also a part of the control unit; it keeps track of the next instruction to be
 instruction ﬁnishes.
 
 Note that all the external outputs of the ﬁnite state machine in Figure 4.3 have arrowheads that are not ﬁlled in. 
-These outputs control the processing through- out the computer. For example, one of these outputs (two bits) is 
+These outputs control the processing through-out the computer. For example, one of these outputs (two bits) is 
 ALUK, which controls the operation performed in the ALU (ADD, AND, or NOT) during the current clock cycle. Another 
 output is GateALU, which determines whether or not the output of the ALU is provided to the processor bus during 
 the current clock cycle.
@@ -1414,13 +1414,13 @@ data movement instructions. Control instructions are necessary for altering the 
 instructions.
 
 An LC-3 instruction consists of 16 bits (one word), numbered from left to right, bit [15] to bit [0]. Bits [15:12] 
-contain the opcode. This means there are at most 24 distinct opcodes. Actually, we use only 15 of the possible 
+contain the opcode. This means there are at most 2^4 distinct opcodes. Actually, we use only 15 of the possible 
 four-bit codes. One is reserved for some future use. Bits [11:0] are used to ﬁgure out where the operands are.
 
 In this chapter, we will introduce ﬁve of the LC-3’s 15 instructions: two operates (ADD and AND), one data movement
 (LD), and two control (BR and TRAP).
 
-The ADD Instruction The ADD instruction is an operate instruction that requires three operands: two source operands
+The ADD instruction is an operate instruction that requires three operands: two source operands
 (the numbers to be added) and one destination operand (where the sum is to be stored after the addition is 
 performed). We said that the processing unit of the LC-3 contained eight registers for purposes of storing data 
 that may be needed later. In fact, the ADD instruction requires that at least one of the two source operands is 
@@ -1433,9 +1433,9 @@ instruction has one of the following two forms (we say formats):
   ADD           R6        R2                  R6
 
 
-15  14  13  12  11  10  9   8  7  6   5   4  3  2  1  0
- 0   0  0   1 | 1   1   0 | 0  1  0 | 1 | 0  0  1  1  0
-  ADD             R6          R2             imm
+15 14 13 12  11 10 9   8  7  6   5   4  3  2  1  0
+ 0  0  0 1 | 1  1  0 | 0  1  0 | 1 | 0  0  1  1  0
+  ADD           R6        R2             imm
 
 Both formats show the four-bit opcode for ADD, contained in bits [15:12]: 0001. Bits [11:9] identify the location
 to be used for storing the result, in this case register 6 (R6). Bits [8:6] identify the register that contains one
@@ -1448,3 +1448,108 @@ positive integer 6.
 Thus, the instruction we have just encoded is interpreted, depending on whether bit 5 is a 0 or a 1 as either “Add 
 the contents of register 2 (R2) to the contents of register 6 (R6) and store the result back into register 6 (R6),” 
 or “Add the contents of register 2 (R2) to the positive integer 6 and store the result into register 6.”
+
+The AND Instruction; The AND instruction is also an operate instruction, and its behavior is essentially identical to
+the ADD instruction, except for one thing. Instead of ADDing the two source operands, the AND instruction performs a
+bit-wise AND of the corresponding bits of the two source operands. For example, the instruction shown below
+
+15    14     13     12     11     10     9      8     7     6      5      4     3     2     1     0
+0     1      0      1   |   0      1     0   |  0     1     1  |   1   |  0     0     0     0     0
+         AND                     R2                   R3                         imm
+
+is an AND instruction since bits [15:12] = 0101. The two sources are R3 and the immediate value 0. The instruction 
+loads R2 with the value 0 since the AND instruction performs a bit-wise AND where the bit of the second operand is 
+always 0. As we shall see, this instruction is a convenient technique for making sure a particular register contains 
+0 at the start of processing. We refer to this technique as initializing R2 to 0.
+
+The LD Instruction; The LD instruction requires two operands. LD stands for load, which is computerese for “go to a 
+particular memory location, read the value that is contained there, and store that value in one of the registers.” 
+The two operands that are required are the value to be read from memory and the destination register that will 
+contain that value after the instruction has completed processing. There are many formulas that can be used for 
+calculating the address of the memory location to be read. Each formula is called an addressing mode. The 
+particular addressing mode identiﬁed by the use of the opcode LD is called PC+oﬀset. The 16-bit LC-3 LD instruction 
+has the following format:
+
+15 14 13 12  11 10 9   8  7  6  5  4  3  2  1  0
+0  0  1  0 | 0  1  0 | 0  1  1  0  0  0  1  1  0
+   LD           R2                 198
+
+The four-bit opcode for LD is 0010. Bits [11:9] identify the register that will contain the value read from memory 
+after the instruction is executed. Bits [8:0] are used to calculate the address of the location to be read. Since the
+addressing mode for LD is PC+oﬀset, this address is computed by sign-extending the 2’s complement integer contained 
+in bits [8:0] to 16 bits and adding it to the current contents of the program counter. In summary, the instruction 
+tells the computer to add 198 to the contents of the PC to form the address of a memory location and to load the 
+contents of that memory location into R2. If bits [8:0] had been 111111001, the instruction would have been 
+interpreted: “A d d −7 to the contents of the PC to form the address of a memory location.”
+
+The Instruction Cycle (NOT the Clock Cycle!)
+
+Instructions are processed under the direction of the control unit in a very systematic, step-by-step manner. The 
+entire sequence of steps needed to process an instruction is called the instruction cycle. The instruction cycle 
+consists of six sequential phases, each phase requiring zero or more steps. We say zero steps to indicate that most 
+computers have been designed such that not all instructions require all six phases. We will discuss this momentarily. 
+But ﬁrst, we will examine the six phases of the instruction cycle:
+
+FETCH
+DECODE
+EVALUATE  ADDRESS
+FETCH  OPERANDS
+EXECUTE
+STORE  RESULT
+
+FETCH
+
+The FETCH phase obtains the next instruction from memory and loads it into the instruction register (IR) of the 
+control unit. Recall that a computer program consists of a number of instructions, that each instruction is 
+represented by a sequence of bits, and that the entire program (in the von Neumann model) is stored in the computer’s 
+memory. In order to carry out the work of an instruction, we must ﬁrst identify where it is. The program counter (PC) 
+contains the address of the next instruction to be processed. Thus, the FETCH phase takes the following steps:
+
+First the MAR is loaded with the contents of the PC.
+Next, the memory is interrogated, which results in the next instruction being placed by the memory into the MDR.
+Finally, the IR is loaded with the contents of the MDR.
+
+We are now ready for the next phase, decoding the instruction. However, when the instruction ﬁnishes execution, and 
+we wish to fetch the next instruction, we would like the PC to contain the address of the next instruction. This is 
+accomplished by having the FETCH phase perform one more task: incrementing the PC. In that way, after the current 
+instruction ﬁnishes, the FETCH phase of the next instruction will load into the IR the contents of the next memory 
+location, provided the execution of the current instruction does not involve changing the value in the PC.
+
+The complete description of the FETCH phase is as follows:
+
+Step 1: Load the MAR with the contents of the PC, and simultaneously increment the PC.
+Step 2: Interrogate memory, resulting in the instruction being placed in the MDR.
+Step 3: Load the IR with the contents of the MDR.
+
+Each of these steps is under the direction of the control unit, much like, as we said previously, the instruments in 
+an orchestra are under the control of a conductor’s baton. Each stroke of the conductor’s baton corresponds to one 
+machine cycle. The amount of time taken by each machine cycle is one clock cycle. In fact, we often use the two terms 
+interchangeably. Step 1 takes one clock cycle. Step 2 could take one clock cycle or many clock cycles, depending on 
+how long it takes to access the computer’s memory. Step 3 takes one clock cycle. In a modern digital computer, a 
+clock cycle takes a very small fraction of a second.
+
+Indeed, a 3.1 GHz Intel Core i7 completes 3.1 billion clock cycles in one second. Said another way, one clock cycle 
+takes 0.322 billionths of a second (0.322 nanoseconds). Recall that the light bulb that is helping you read this text 
+is switching on and oﬀ at the rate of 60 times a second. Thus, in the time it takes a light bulb to switch on and oﬀ 
+once, today’s computers can complete more than 51 million clock cycles!
+
+DECODE
+
+The DECODE phase examines the instruction in order to ﬁgure out what the microarchitecture is being asked to do. 
+Recall the decoders we studied in Chapter 3. In the LC-3, a 4-to-16 decoder identiﬁes which of the 16 opcodes is to 
+be processed (even though one of the 16 is not used!). Input is the four-bit opcode IR [15:12]. The output line 
+asserted is the one corresponding to the opcode at the input. Depending on which output of the decoder is asserted, 
+the remaining 12 bits identify what else is needed to process that instruction.
+
+EVALUATE ADDRESS
+
+This phase computes the address of the memory location that is needed to process the instruction. Recall the example 
+of the LD instruction: The LD instruction causes a value stored in memory to be loaded into a register. In that 
+example, the address was obtained by sign-extending bits [8:0] of the instruction to 16 bits and adding that value to
+the current contents of the PC. This calculation was performed during the EVALUATE ADDRESS phase. It is worth noting 
+that not all instructions access memory to load or store data. For example, we have already seen that the ADD and AND
+instructions in the LC-3 obtain their source operands from registers or from the instruction itself and store the 
+result of the ADD or AND instruction in a register. For those instructions, the EVALUATE ADDRESS phase is not needed.
+
+FETCH OPERANDS
+

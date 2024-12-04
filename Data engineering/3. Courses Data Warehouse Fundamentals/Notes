@@ -1,4 +1,10 @@
-what is a data warehouse? see datawarehouse.png
+what will you learn about in the course? how to design, deploy, load, manage, and query data warehouses and data marts. you will begin by understanding the different analytics repositories including data marts, data warehouses,
+data lakes, data lakehouses and their functions and uses. they are designed to enable rapid decision making through
+accurate and flexible reporting and data analysis.
+
+you will design, model, and implement data warehouses and explore data warehousing architectures such as star and snowflake schemas. finally, you will learn how to populate data warehouses using ETL and ELT processes, verify data, query data, and use cubes, rollups, and materialised views/tables. 
+
+what is a data warehouse? see datawarehouse1.png datawarehouse2 datawarehouse3
 
 what do data warehouse systems support? see support.png 
 

@@ -1,0 +1,361 @@
+what will you learn? explore concepts of relational databases. navigate db2, mysql, and postgresql admin and gain insight into their distinctive features.
+
+Every good relational database solution begins with a solid design and implementation strategy. A well designed 
+database ensures that the users and applications that depend on the data will know that it is;
+- accurate; can you rely on the accuracy of the data as new information is added or it is modified?
+- easy to access; is the data organised to make it fast, easy, and predictable to query and maintain?
+- reliable; can your database design ensure data integrity and maintain consistent and reliable data?
+- flexible; can you update or expand on the design to meet future requirements?
+
+this course will teach you basic relational database concepts and learn to think about data in terms of relationships 
+and how information can be best organised to produce results you want to achieve. i will also learn about different 
+deployment topologies (star schema vs snowflake schema?) and the tradeoffs that impact your design decisions.
+
+you will create entity relationship diagrams (ERD's) for specific usecases that will serve as the blueprint for the 
+implementation of my database. i will also learn about the role of relational model contraints in ensuring that my 
+data maintains its integrity and achieves a level of perfomance that meets the needs of the users of the data.
+
+i will then learn how to use sql statements and several relational database management systems (rdbms) tools to 
+transform a relational database design into a database and its objects such as taables, keys, indexes, and 
+constraints.
+
+i will build on hands on experience by developing an erd to map out the data model of a relational database, applying
+techniques that help improve the integrity of my data and the performance of my queries
+
+what is the definition of data? see dataDescription1.png
+
+whaat are the different types of data structure? see structureofData1.png structureofData2 structureofData3 
+structureofData4 structureofData5 structureofData6 structureofData7
+
+typical data sources? datasources.png
+
+after data has been collected, where is it stored? see datastored1 datastored2 datastored3 datastored4 datastored5 
+datastored6 datastored7
+
+what are two key concepts that play an essential role in data organisation? see twoConcepts1.png
+
+what is an information model? see informationModel1.png informationModel2.png 
+
+what is a data model? dataModel1 dataModel2 dataModel3 dataModel4 (They often involve normalization processes to 
+ensure data integrity and reduce redundancy)
+
+what are the differences between information models and data models? differences1.png
+
+what is a hierarchical model? see hierarchicalModel.png 
+
+what is the relationship between information models and hierarchical models? see informationVersusHierarchical1.png 
+informationVersusHierarchical2.png informationVersusHierarchical3
+
+types of data models? typesOfDataModels.png
+
+of the two, which is the most widely used model in databases? see relationlModel1
+
+more on the entity relationship data model see erdm1.png 
+
+concepts in database management that help to ensure adaptability and efficiency in database management? 
+conceptsDatabaseManagement1
+
+recap1.png
+
+what is an ERD? is a graphical representation of entities and relationships between them. it is a modelling technique
+used in database design to represent the structure of a database system visually. the primary components of an ER 
+diagram include entities, attributes, and relationships. see ERD1 ERD2 ERD3 ERD4 ERD5 ERD6 ERD7 ERD8 ERD9 ERD10 
+ERD11 ERD12 ERD13 ERD14 ERD15 ERD16 ERD17
+
+recap2.png
+recap3.png 
+
+what are the best practices for designing a relational database? see best-practices1.png best-practices2 
+best-practices3 best-practices4
+
+a database represents a singular entity with its columns representing the aattributes of that entity see 
+entity-example.png. The data type you assigned to a column controls the data the column can store. see varchar1.png 
+varchar2 varchar3. Different database systems may have variations in how they handle common data types. These include 
+date, time, float, or decimal. Most databases have date for storing dates, year, month, day, and time for time of day.
+They also usually support a DATETIME or TIMESTAMP type for a combination of date and time. Example in MySQL date 
+format is year, month, day while TIMESTAMP includes both date and time. Float and decimal are numeric data types used
+for numbers with fractional parts. Float is a floating point number with approximate precision. It's used when exact 
+precision isn't necessary. Decimal, on the other hand, is used for exact arithmetic calculations. It's more suitable 
+for financial calculations where precision matters. Example in SQL server, FLOAT(24) represents a floating point 
+number, whereas DECIMAL(5,2) stores a number with five total digits, two of which are after the decimal point. 
+Integer types big INT, int, small int store whole numbers. Each type has a different range. For instance, Int 
+typically stores numbers from -2,147,483,648 to 2,147,483,647.
+
+Binary data type stores binary data like images or files and types like binary large object, BLOB. These types store 
+data as a sequence of bytes, which is ideal for non-textual data. Char is another character data type used for 
+fixed-length strings. Unlike Varchar, char always uses the specified number of characters padding the value with 
+spaces if necessary. Understanding the nuances of different data types and their implementation across various 
+database platforms is key to efficient database design and data storage. Always choose the data type that best suits 
+the nature of your data and the requirements of your database system.
+
+Using the appropriate data type provides many advantages. Some of these are when you define the data type, a column 
+should hold, you avoid inserting incorrect data into that column. When date, time, and numeric data are correctly 
+typed, you can accurately sort that data. Similarly, you can accurately select ranges of data when it is correctly 
+typed and you can perform numeric calculations on typed data for example, calculating an order's total cost. see 
+advantages-of-using-data-types.png 
+
+The relational model introduced in 1970 offers a powerful approach to organizing and understanding data.  It centers 
+around two fundamental concepts, sets and relations. see fundamental-concepts1.png fundamental-concepts2 
+fundamental-concepts3 fundamental-concepts4 fundamental-concepts5 fundamental-concepts6 fundamental-concepts7 
+fundamental-concepts8 fundamental-concepts9 fundamental-concepts10 fundamental-concepts11 fundamental-concepts12 
+fundamental-concepts13 fundamental-concepts14. To comprehend the relational model, let us understand key concepts 
+like degree and cardinality see fundamental-concepts15 fundamental-concepts16 
+
+recap4.png
+
+what is a deployment topology and what does it depend on? see deployment-topology1
+
+what are the common deployment topologies? see common-deployment-topologies1
+
+single tier architecture: deploys all components of an application, including the user interface, application logic, 
+and data storage on a single server or machine. In this configuration, the application's entire stack operates within
+the same environment.
+
+client-server architecture: also referred to as a two-tier architecture. The architecture represents a deployment 
+topology that divides the application into two distinct layers. A client layer, responsible for the user interface, 
+and a server layer, managing the application logic and data storage. In this scenario, a remote server hosts the 
+database and users usually access it from client systems, commonly through a web page or local application. In 
+two-tier database set up, the database server and application function are in distinct tiers. The client tier 
+application establishes a connection to the database server through a database interface such as an API or framework. 
+Depending on the programming language used to write the application, this interface communicates with the database 
+server through a database client or API installed on the client system. The server's database management system 
+software, DBMS, comprises several layers, broadly categorized as data access layer, database engine layer, database 
+storage layer. Communication between the database interface and server occurs through a database client or API 
+installed on the client system. The data access layer server provides interfaces for various client types 
+encompassing standard APIs like JDBC and ODBC, command line processor, CLP (command line processor) interfaces, and 
+vendor-specific or proprietary interfaces. Additionally, the database server incorporates an engine responsible for 
+compiling queries, retrieving and processing data, and delivering the result set. see client-server-arch1.png 
+client-server-arch2 client-server-arch3 client-server-arch4
+
+three tier architecture: In scenarios involving multiple users, the introduction of a middle tier or application 
+server layer often occurs between the application client and the remote database server, forming a three-tier 
+architecture commonly deployed in production environments. see three-tier1
+
+Most production environments usually restrict access to database servers, except administrators. This limitation 
+arises for several reasons. A primary concern is security. Database servers contain sensitive data. Limiting access 
+to authorized personnel is important to protect against unauthorized data access or modification. The next concern is 
+performance optimization. Database servers are often critical components of applications, so it is important to avoid 
+overloading them with unnecessary traffic. Lastly, maintainability is crucial, and administrators, with their training 
+and experience, are entrusted with making changes to the database schema or data to avoid disrupting the application. 
+In a three-tier database architecture, the application presentation layer and business logic layer exist in different 
+tiers. The presentation layer serves as the user interface, accessible through various platforms like desktop 
+applications, web browsers, or mobile apps. The client application interacts with an application server via the 
+network. The application server encapsulates both the application and business logic, establishing communication with 
+the database server through a database API or driver. see three-tier2 three-tier3
+
+cloud deployment: the database resides within a cloud environment, offering the many advantages inherent to 
+cloud-based services. Therefore, it eliminates the need to download or install database software locally and ongoing 
+maintenance of supporting infrastructure. Cloud-based databases are easily accessible to users from anywhere at any 
+time, and with only an internet connection required. Client applications and users interact with the database through 
+an application server layer or interface situated within the cloud environment. The flexibility of cloud deployments 
+make them suitable for a wide range of purposes, including development, testing, and full-scale production 
+environments. cloud-based.png
+
+In our exploration of database architectures, we've primarily focused on single-server configurations. However, for 
+critical or large-scale workloads where high availability or scalability is important, relational database management 
+systems, RDBMSs, offer distributed architectures. These distributed database architectures involve clusters of 
+machines interconnected through a network, distributing data processing and storage tasks. The approach brings about 
+notable benefits including enhanced scalability, fault tolerance, and overall performance improvements. see
+distributed-architecture1 distributed-architecture2
+
+types of database architecture? see types-of-architecture
+
+shared disk architecture: involves multiple database servers processing workloads in parallel. Each server 
+establishes a connection to shared storage and communications with other servers using high-speed interconnection. 
+The shared disk architecture also facilitates the effective distribution of workloads, ensuring scalability as the 
+demand for processing power grows. In the event of a server failure, a mechanism is in place to reroute clients 
+seamlessly to other servers, maintaining high availability and minimizing service disruptions. see shared-disk-arch1
+shared-disk-arch2
+
+shared-nothing-architecture: utilizes either replication or partitioning techniques. The approach allows for the 
+effective distribution of client workloads across multiple nodes, promoting parallel processing and efficient 
+resource utilization. One of the key advantages lies in enhanced fault tolerance achieved by rerouting clients to 
+alternative nodes in the event of a server failure. 
+
+Certain distributed database architectures employ a combination of shared disk, shared nothing, replication or 
+partitioning techniques. Additionally, they integrate specialized hardware components to achieve specific goals 
+related to availability and scalability. 
+
+techniques for managing data and optimizing performance. Some of the common techniques include database replication, 
+database partitioning and sharding.
+
+database replication: is a technique that involves copying changes from one database server to one or more replicas. 
+This process distributes the client workload across servers, leading to improved performance. When the replica 
+resides in the same location, we call it a high availability, HA, replica. If the primary database server experiences 
+a failure due to software or hardware issues, the system redirects clients to HA replica. To mitigate broader 
+disasters, organizations establish replicas in geographically distributed locations. This guarantees that during 
+instances of complete data center outages, be it due to power loss, fire, earthquake or flood, clients can be rerouted 
+to disaster recovery replicas. see replication1
+
+An alternative strategy involves partitioning tables with substantial data into logical segments, each containing a 
+subset of the overall data, e.g., sales records for different quarters. This technique, known as sharding, places 
+these partitions on separate nodes in a cluster. Each shard possesses its compute resources, processing, memory, and 
+storage to operate on its specific subset of data. When a client issues a query, it is processed in parallel across 
+multiple nodes or shards, and the results from different nodes are synthesized and returned to the client. As data or 
+query workloads increase, additional shards and nodes can be seamlessly added to the database cluster, facilitating 
+increased parallel processing and improved overall performance. Database partitioning and sharding are particularly 
+prevalent in handling data warehousing and business intelligence workloads that involve extensive volumes of data. 
+see partitioning1
+
+database users? see data-users1
+
+data engineers and database administrators see engineers-and-DBAs1
+
+Data engineers and database administrators employ the following mechanisms for performing their tasks. Graphical user
+interfaces (GUIs) or web-based management tools, command-line interfaces and utilities, application programming 
+interfaces (APIs). Let's explore the utility of these mechanisms. GUIs or web-based management tools serve as common 
+means for interacting with databases. Databases typically offer graphical tools, web-based interfaces, particularly 
+for cloud databases and mobile applications. If vendor-provided tools lack sufficient functionality or user 
+friendliness, users may turn to third-party or specialized alternatives. For example, Oracle SQL Developer is a 
+graphical tool provided by Oracle for database management. Command-line interfaces and utilities continue to play a 
+crucial role despite the prevalence of GUI tools. Proficiency in command-line usage remains valuable for certain tasks. 
+While using these tools, users can issue database commands directly or utilize interactive shells for efficient 
+command line interactions. Let's explore examples of each. Command-line interfaces may involve issuing straightforward 
+database commands directly from the terminal, such as, `db2 create database sample` or `mysqldump sakila > sakila.sql`. 
+Alternatively, interactive command-line shells like sqlplus for Oracle or db2 clp can be utilized as demonstrated by 
+db2, db2 > connect to sample. Furthermore, SQL scripts and batch files executed from the shell provide additional
+means of interacting with databases. Databases often incorporate programmatic interfaces or APIs designed for 
+administrative tasks accessible from applications and tools created by data engineers or third parties. Users commonly
+employ APIs in situations requiring automated or programmatic access for tasks like creating and managing database 
+objects, setting access controls, and monitoring performance. 
+
+Other key users include data scientists and business analysts. These users engage with databases for data analysis, 
+insight derivation, and data-driven predictions. Their typical data access patterns involve reading from existing 
+data sources, occasionally necessitating the creation and population of database objects, especially in their sandbox 
+environments. Frequently employed tools for tasks in data science and machine learning encompass Jupyter, R Studio, 
+Zepplin, SAS, and SPSS. Reporting, dashboarding and business intelligence tasks utilize tools such as Microsoft Excel, 
+Microsoft PowerBI, Microsoft Tableau, and Microstrategy. Both data science and business intelligence tools interact 
+with relational databases through SQL interfaces and APIs, often abstracting away the direct use of SQL. Additionally, 
+users may opt for SQL query tools for ad-hoc querying, commonly provided by databases, or available as third-party 
+solutions compatible with various database systems. 
+
+The last users we will discuss are application developers. They seldom access databases directly. They create 
+applications that can require both read and write access to databases. Developers use programming languages such as 
+C++, C#, Java, JavaScript, .NET, PHP, Perl, Python, and Ruby to write applications. The programming languages 
+communicate with the database through SQL interfaces and APIs like ODBC and JDBC. Some databases, especially 
+cloud-based ones, also include REST APIs for accessing data. Although programming applications using these lower-level 
+APIs is feasible, it is worth noting that this was the conventional approach for developing applications in the past. 
+Nowadays, most programmers opt for object relational mapping (ORM) frameworks when working with databases. ORM 
+frameworks are tools in software development that facilitate the interaction between a relational database and an 
+object-oriented programming language. They are user friendly and can conceal the intricacies of the underlying 
+relational database and SQL. Examples of popular ORM frameworks include, ActiveRecord in Ruby applications, Django in 
+Python, Entity Framework in .Net, Hibernate in Java, and Sequelize in JavaScript. see application-developers1
+
+
+In the 1960s, IBM and American Airlines created the IBM Sabre Seat reservation System, the first product recognizable 
+as a relational database. In the early 70s, Edgar F. Codd listed 12 rules to define relational databases. In 1976, 
+Peter P. Chen introduced the entity relationship (ER) database model. By the late 70s, Ingres from the University of 
+California, Berkeley and System R from IBM San Jose were operational. The 1980s marked the commercial success of 
+relational database systems, with DB2 becoming IBM's flagship product and structured query language (SQL) emerging as 
+the standard query language. Towards the late 80s, an IBM workgroup designed a distributed relational database 
+architecture, facilitating network-connected databases to collaborate for SQL requests. By the early 1990s, new client 
+tools for application development including Oracle developer, power builder and VB, and tools for personal 
+productivity like ODBC, Excel, and Access were becoming popular. In the late 1990s, the database industry experienced 
+exponential growth. Average desktop users began to use client server database systems to access computer systems that 
+contain legacy data. Some of the most popular relational databases included giants such as Oracle, Microsoft SQL 
+Server, and IBM DB2. In the source databases gained momentum, replacing commercial counterparts. MySQL, PostgreSQL, 
+and other systems introduced open source solutions to the internet. The 2010s saw the popularity of cloud databases 
+soar, with the leading players in the industry being Amazon RDS, IBM DB2 on Cloud, Microsoft SQL Azure, and Oracle 
+Cloud. Large corporations developed and maintained the most popular relational database systems for years. They 
+utilized the resources and talent to create sophisticated, fully featured solutions that catered to industry needs at 
+the time. These commercial relational database management systems RDBMS played a pivotal role in this landscape as 
+organizations wanted licensed solutions that offered reliability, scalability, and comprehensive features. Commercial 
+licenses continue to drive the popularity of these relational databases, with Oracle, Microsoft SQL Server, and IBM 
+DB2 leading the market. Most large corporations offer both on-premises and cloud-based versions of their products. In 
+the late 2000s, the popularity of open source licensing for relational database systems such as MySQL, PostgreSQL, and 
+SQLite experienced a surge in popularity. Open-source licensing is software licensing that allows the source code of a 
+computer program to be free and available to the public. The fundamental principles of open-source licensing include 
+allowing users to view, modify and distribute the source code. These principles foster collaboration and transparency 
+within the software development community. Examples of popular open-source databases include MySQL, which Oracle 
+produces and offers under the general public license version 2. PostgreSQL is produced by the PostgreSQL Global 
+Development Group and offered under the free open-source permissive PostgreSQL license. SQLite was created by Dwayne 
+Richard Hipp and provided under a public domain license. Let us now discuss the popularity of commercial and 
+open-source licensing industry analyst DB Engines conducts a monthly assessment of the popularity of various database 
+products. The DB Engines ranking, which evaluates the popularity of relational database systems, relies on a 
+multifaceted approach. The DB Engines' ranking bases its assessment on the following mentions on websites such as 
+Google and Bing, General interest (Google trends), occurrence of technical discussions on platforms such as stack 
+overflow and DBA stack exchange. Number of times mentioned in job postings on Indeed and SimplyHired platforms, 
+mentions on LinkedIn profiles, other social media mentions. As of February 2021, here are the ten most popular 
+relational database systems. Oracle, MySQL, Microsoft SQL Server, PostgreSQL, MongoDB, Redis, Elasticsearch, IBM Db2, 
+SQLite, Microsoft Access. In the last decade, there has been a significant shift in the preference for licensing 
+models impacting various software categories, including relational databases. The ascendancy of open-source licensing 
+has been remarkable, surpassing the declining popularity of commercial licensing. Both licensing models share an equal 
+distribution, with open source slightly leading at 50.1%. A 2023 DB Engine study found that open source systems 
+account for 55.3% of the total DB Engine popularity score, up from 35.5% in 2013. This trend reflects the growing 
+acceptance and adoption of open-source relational databases within the software landscape. A cloud database is a 
+service constructed and accessed through a cloud platform, offering functionalities like traditional databases while 
+leveraging the added advantages of cloud computing. Over the past decade, the popularity of cloud databases has more 
+than doubled and this upward trajectory is expected to persist. By 2025, experts predict that 80% of all databases 
+will deploy on or migrate to a cloud platform. This forecast emphasizes the growing significance of cloud-based 
+solutions in the database landscape and reflects the continuous shift towards leveraging the scalability and 
+efficiency offered by cloud computing. The primary driver for the consistent growth in the popularity of cloud 
+databases is the increasing adoption of the software as a service (SaaS) model, enabling organizations to leverage 
+cloud benefits like enhanced scalability. Cloud databases facilitate processing extensive data volumes essential for 
+robust data analytics. Cloud platforms provide built-in data backup and disaster recovery solutions, guaranteeing 
+critical data protection. Some of the leading cloud databases include Amazon DynamoDB, Microsoft Azure Cosmos DB, 
+Microsoft Azure, SQL DB, Google BigQuery, and Amazon Redshift.
+
+
+Database 2, or Db2, was first released by IBM in 1983 and was an early example of a relational database management 
+system. This first release ran on IBM mainframe computers, but over the years, different versions were developed to 
+run on many other platforms, including OS2, Unix, Linux, and Windows. After some time, the product was rewritten to 
+use the same codebase across the multiple operating systems so that you can easily port applications accessing Db2 
+data from one operating system to another. After many iterations of the offering across many platforms and with 
+enhanced functionality, today, Db2 is a whole suite of database management products. Including Db2 database, Db2 
+warehouse, Db2 on cloud, Db2 warehouse on cloud, Db2 big SQL, and Db2 for z OS. There are many ways to evaluate these 
+products. You can use Db2 database community license for free with a 100-gigabyte data limit, or you can download a 
+free docker image of Db2 database. You can also use the free lite plan of Db2 on cloud for development and evaluation 
+purposes on IBM Cloud. Db2 Warehouse Enterprise Edition and Db2 Big SQL are available in no-cost trial editions. You 
+can use Db2 warehouse on cloud for free up to 1GB of data. The Db2 products all use AI-powered functionality to 
+simplify the management and querying of your data, both on-premises and in cloud environments. You can use machine 
+learning algorithms to improve the efficiency and performance of queries. The column store feature to improve 
+performance and reduce overheads for analytic workloads by directing queries to specific columns rather than 
+processing an entire data table. And the data skipping feature to reduce overheads by automatically avoiding 
+processing data that is not required in a particular query. The common SQL engine across all the Db2 family means 
+that you can write a query once and be sure it will work with other products in the family. This simplifies migration 
+of applications between products and platforms. The support for all data types, relational, structured, and 
+unstructured, means you can access all of your corporate data to make better business decisions. And the Db2 
+replication functionality enables you to implement high availability and disaster recovery solutions. Db2 provides 
+scalability in a number of ways. For short peaks, you can extend on-premises storage and power levels onto hosted 
+cloud deployments. And you can independently scale power and storage in a managed cloud deployment to only use and 
+pay for extra resources when you need them. Or in Db2 warehouse, you can use the database partitioning feature to 
+transparently split data across partitions and servers to maximize the compute power available and enable massively 
+parallel processing. The Db2 family provides you with a range of data management products to work with data 
+on-premises or in the cloud. Db2 database is a powerful enterprise-ready on-premises RDBMS optimized for OLTP. It is 
+supported on Linux, Unix, and Windows and provides performance, high availability, scalability, and resilience. Db2 
+Warehouse is an on-premises data warehouse that provides advanced data analytics, massively parallel processing, and 
+machine learning. Db2 on Cloud is a fully managed cloud-based SQL database which provides similar features to Db2 
+database performance, high availability, scalability, and resilience. And Db2 warehouse on Cloud is a fully managed 
+elastic cloud-based data warehouse that provides similar features to the on-premises Db2 warehouse. You can deploy 
+both of the cloud-based products on IBM Cloud and Amazon Web Services.
+
+Db2 Big SQL is an SQL on-Hadoop engine that provides massively parallel processing and advanced query querying 
+functionality. You can use it to query a range of data sources, including Hadoop HDFS and web HDFS, RDBMS, NoSQL, and 
+other object stores. You can integrate it with Cloudera data platform or use a service on IBM Cloud Pak for data and, 
+finally, Db2 for ZOS, an enterprise data server for IBM Z. It provides a mission-critical data solution with 
+integration for analytics, mobile, and cloud that supports thousands of customers and millions of users. Cloud pack 
+four data is a fully integrated data and AI platform that you can use to work with and manage all of your data. It 
+runs on Red Hat OpenShift in a container, so you can deploy it on any private, public, or hybrid cloud. Using Cloud 
+Pak four data, you can connect to Db2 or any other data source wherever it may be stored. Use the Watson Knowledge 
+catalog to organize your data, work with a range of analytics services to gain insight on your data, and use Watson 
+and other services to infuse AI into your systems. Db2 on Cloud is a great way to get started with Db2. It offers 
+three plans for lite, standard, and enterprise. The lite plan is free and time unlimited, meaning that you can use it 
+in your projects without worrying about a time-limited trial period coming to an end. The plan is limited to 200 
+megabytes of data and 15 simultaneous connections. The standard plan provides flexible scaling of compute capability 
+and storage as well as built-in three-node high availability clustering. And the enterprise plan provides you with a 
+dedicated database instance. Again, with flexible scaling of compute capability and storage and built-in three-node 
+high availability clustering. You can deploy Db2 on Cloud on the IBM Cloud platform or on Amazon Web services. Once 
+running, you can access your Db2 on cloud databases by using the CLPPlus command line interface, the Db2 on cloud GUI 
+console, or standard APIs such as ODBC, JDBC, and rest. You can also easily load data from Excel, CSV, and text files 
+from Amazon S3 object storage using the GUI console, and you can programmatically load data from IBM cloud object 
+storage. Db2 provides high availability, disaster recovery, or HADR functionality to support high availability 
+systems. HADR replicates changes made at a primary database to multiple standby servers. If the primary database fails 
+for any reason, hardware, software, or network issues, you can automatically promote one of the standby databases to 
+be the primary database. Redirect client applications to this new primary database, and continue to replicate to the 
+other standby servers in the group. When the original primary database comes back online, it can either take the place 
+of a standby server or be promoted back to the primary position. Db2 warehouse offers massively parallel processing 
+and data analytics for BI workloads. At times, you may need to scale the storage capabilities of your system to meet 
+peak demand or to reduce costs when demand is low. Data in Db2 warehouse is stored in data nodes. To scale up your 
+storage capacity, you just need to add a node to your deployment. The partitions and their workloads are then 
+automatically rebalanced across the new node setup. Similarly, to scale down, you just remove a node to return to 
+your original state.

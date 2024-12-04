@@ -1,0 +1,49 @@
+chapter 1
+
+1. why is C great to work with when it comes to learning networking? think of details, kernels. compare it to python in terms of downloading a web page
+2. what do you think of interms of the internet and connected devices (and increasingly IOT)?
+3. can you think of any networking stack that is not written in C?
+4. can you think of the different abstraction levels involved in networking?
+5. can you think of the two theoretical models that help you understand networking communications at the different levels of abstraction?
+6. can you name the different layers of osi theoretical model and what each level entails?
+7. where do applications such as web browsers lie in the OSI layer? can you give an example of a protocol in this layer? 
+8. are chunks of data referred to by different names depending on what layer of the osi they are on? 
+9. what do the lower level protocols do for the higher level protocols?
+10. which of the two communication models is most widely used today?
+11. how does the TCP/IP suite differ from the OSI model?
+12. can you name the different levels of the TCP/IP suite?
+13. since lower level data structures must encapsulate higher level data structures, what does this mean when you are working at say level 7 of the OSI model?
+14. does data need to be processed down through the layers and up through the layers again when communication between two devices is occuring?
+15. can you visually picture (in terms of how data is wrapped in different headers as it moves through the different layers) what happens when when a web request is made by an end-system?
+16. can you name at least one protocol that was competing with TCP/IP 20 years ago?
+17. what are some of the reasons you can think of why TCP/IP won the protocol war?
+18. how many versions does the IP come in? how many bits are used in each version?
+19. why was IPV6 invented?
+20. what is a dual stack configuration?
+21. what is an IP address?
+22. for an IPV4 address, how many sections is it divided into?
+23. what is the loopback address and what is it used for?
+24. how many sets of RFC 1918 addresses are there? can you name them?
+25. what does CIDR stand for and what is used for?
+26. how does CIDR notation work?
+27. how many group are IPV6 addressed divided into?
+28. what are the 2 rules that are used to shorted IPV6 addresses?
+29. what is the loop back address for IPV6?
+30. there is a special class of ipv6 addresses that map directly to ipv4 addresses. what do these addresses start with?
+31. whaat are these addresses called fec0::/10? what are they used for? have they been deprecated?
+32. what are link local addresses? do routers forward packets to them? 169.254.0.0/16 ipv4 example and fe80::/10 ipv6 address
+33. what is the essence of DNS?
+34. what does AAAA record return?
+35. what about an AA record?
+36. what is the name of the windows utility that lists routers between two hosts?
+37. what is the equivalent of the windows utility for unix/linux/macos?
+38. 
+
+
+chapter 2
+
+1. definition of sockets and what they are used for
+2. name the different socket types and what OS implements them
+3. are the different socket types compatible?
+4. what do you need to do before using each socket API?
+5. 

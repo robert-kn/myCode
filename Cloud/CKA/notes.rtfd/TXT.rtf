@@ -1,8 +1,13 @@
 {\rtf1\ansi\ansicpg1252\cocoartf2761
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;\f1\fswiss\fcharset0 Helvetica;\f2\fmodern\fcharset0 Courier;
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;\f1\fswiss\fcharset0 Helvetica;\f2\fnil\fcharset0 HelveticaNeue;
+\f3\fnil\fcharset0 AndaleMono;\f4\fnil\fcharset0 .SFNS-Regular_wdth_opsz110000_GRAD_wght1F40000;\f5\fmodern\fcharset0 Courier;
 }
-{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
-{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+{\colortbl;\red255\green255\blue255;\red26\green26\blue26;\red255\green255\blue255;\red251\green0\blue98;
+\red251\green0\blue98;\red199\green199\blue224;}
+{\*\expandedcolortbl;;\cssrgb\c13333\c13333\c13333;\cssrgb\c100000\c100000\c100000;\cssrgb\c100000\c8627\c45882;
+\cssrgb\c100000\c8627\c45882\c20000;\cssrgb\c81961\c82353\c90196;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid1\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
 \paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh16960\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
@@ -15,10 +20,10 @@ Control plane: collection of multiple components responsible for management of c
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic.png \width21720 \height19220 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}
-\f0\fs48 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf0 \
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
 Kube-api-server component: serves the Kubernetes api which is the interface that a user interacts with the cluster.\
 \
 Etcd component: is a backend data store for the cluster that provides high availability storage for all data relating to the state of the cluster.\
@@ -37,8 +42,7 @@ Worker nodes are the machines where pods managed by the controller nodes run. Ea
 }¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f0\fs48 \cf0 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf0 \
+\
 Kubelet component: is the Kubernetes agent that runs on each node. It communicates with the control plane nodes to ensure that pods scheduled to run on it are deployed. It also reports back to the master nodes on pod/container status.\
 \
 Container runtime component: not part of Kubernetes but is needed as it is responsible for actually running containers on a worker node. Kubernetes supports multiple container runtime such as docker and containerd.\
@@ -50,9 +54,15 @@ Kubernetes architecture big picture:\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
 
 \f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 3.png \width34320 \height19700 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}
-\f0\fs48 \
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
 \
+For more information see:\
+1. https://kubernetes.io/docs/concepts/overview/\
+2. https://kubernetes.io/docs/concepts/overview/components/\
+3. https://kubernetes.io/docs/concepts/overview/kubernetes-api/\
+4. https://kubernetes.io/docs/concepts/overview/working-with-objects/\
 \
 Would you like to build your own Kubernetes cluster from scratch? If so, you can use the kubeadm tool to simplify building of your cluster. First create your servers using the linux distro of choice with the desired memory and CPU combination.\
 \
@@ -62,9 +72,605 @@ Amend the hosts file so that the servers can communicate with each other using t
 \
 Logout of all servers and log back in. Changes made regarding the hostnames can now be seen. Follow further instructions on CKA course on a cloud guru on how to configure a cluster using kubeadm.\
 \
- 
-\f2\fs26 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 \
+For more information see:\
+1. https://docs.docker.com/engine/install/ubuntu/\
+2. https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/\
+3. https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/\
+4. https://kubernetes.io/blog/2023/08/15/pkgs-k8s-io-introduction/#how-to-migrate\
+\
+What is a namespace? A container where Kubernetes resources can be deployed. They are used to separate and organise objects in your cluster. All clusters have a default namespace which is used when no other namespace is specified. Kubeadm also creates a kube-system namespace for system components. For more information see https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/\
+\
+For high availability in k8s, you need a control plane that is made up of multiple control plane nodes. In order to communicate with the cluster api, you will need a load balancer in such a scenario. Kubelet instances will also communicate with api via the load balancer.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic.png \width20480 \height16360 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+What is stacked etcd? When the persistent data store runs on the same nodes that operate as control nodes.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 1.png \width39560 \height15920 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+What is external etcd? The persistent datastore runs on separate instances from the cluster controller nodes.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 2.png \width34200 \height19040 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+For more information see https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/ha-topology/\
+\
+\
+K8s management tool: there are a variety of management tools available for k8s. These tools interface with k8s to provide additional functionality. Some of these tools include:\
+\
+1. Kubectl; official command line interface for k8s (https://kubernetes.io/docs/reference/kubectl/introduction/) and (https://kubernetes.io/docs/reference/kubectl/quick-reference/#interacting-with-running-pods)\
+2. Kubeadm; used to easily and quickly create k8s clusters (https://kubernetes.io/docs/reference/setup-tools/kubeadm/)\
+3. Minikube; automatically sets up a local single node k8s cluster (used for development purposes https://minikube.sigs.k8s.io/docs/start/?arch=%2Fmacos%2Fx86-64%2Fstable%2Fbinary+download)\
+4. Helm; provides templating and packaging management for k8s objects. Used to manage custom templates or deploy shared templates (
+\f2\fs32 \cf2 \cb3 \expnd0\expndtw0\kerning0
+https://kubernetes.io/blog/2016/10/helm-charts-making-it-simple-to-package-and-deploy-apps-on-kubernetes/)
+\f0\fs48 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
+5. Kompose; translate docker compose files into Kubernetes objects\
+6. kustomise; similar to helm \
+\
+For more information see:\
+1. https://kubernetes.io/docs/reference/tools/\
+2. https://kubernetes.io/blog/2018/05/29/introducing-kustomize-template-free-configuration-customization-for-kubernetes/\
+\
+What is draining? When performing cluster maintenance you may sometimes need to remove a k8s node from service. All services should still run whilst this is occurs. Draining a node causes the containers on the node to be gracefully terminated and potentially rescheduled on another node. When draining a node you may need to ignore daemonsets (pods that are tied to each node). See commands in commands section. First you drain a node; after maintenance tasks are completed you can uncordon the node to allow k8s to run pods on the node again. For more information see https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/\
+\
+Upgrading k8s with kubeadm; to keep your cluster up to date. The steps to update the control plane nodes are as follows:\
+\
+1. Drain the control plane node. (kubeadm drain [control-node-hostname] --ignore-daemonsets])\
+\
+2. Upgrade kubeadm; sudo apt update && sudo apt install -y --allow-change-held-packages kubeadm=[version-00] \
+\
+3. Plan the upgrade (sudo kubeadm upgrade plan [version])\
+4. Apply the upgrade (sudo kubeadm upgrade apply [version])\
+5. Upgrade kubelet and kubectl in the control plane node\
+\
+sudo apt update && sudo apt install -y --allow-change-held-packages kubelet=[version-00] kubectl=[version-00]\
+\
+Sudo systemctl daemon-reload\
+\
+Sudo systemctl restart kubelet\
+\
+6. Uncordon the control plan node\
+\
+Worker node upgrade steps:\
+1. Drain the node (from k8s control node using the same drain command but replace target node with worker hostname)\
+2. Upgrade kubeadm (same command that was run on control node but run it on worker node) then run (sudo kubeadm upgrade node).\
+3. Upgrade the kubelet and kubectl configuration (Same command that was run in control plane)\
+\
+Sudo systemctl daemon-reload\
+\
+Sudo systemctl restart kubelet\
+\
+4. Uncordon the node from control node\
+\
+For more information see https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/\
+\
+\
+Backing up and restoring etcd data: why back up? All your k8s objects, applications, and configurations are stored in etcd. You can back up etcd data using the etcd command line tool etcdctl. Use the etcdctl snapshot save command to back up the data I.e. ETCDCTL_API=3 etcdctl --endpoints $ENDPOINT snapshot save <file name>. You can restore the backed up data using the etcdctl snapshot restore command. You will need to supply some additional parameters when restoring. For more information see https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/#backing-up-an-etcd-cluster\
+\
+Steps to back up a cluster:\
+1. Look up value for the key cluster.name in the etcd cluster\
+\
 \pard\pardeftab720\partightenfactor0
-\cf0 \strokec2 \
+
+\f3\fs32 \cf4 \cb5 \expnd0\expndtw0\kerning0
+ETCDCTL_API=3 etcdctl get cluster.name \\ --endpoints=https://10.0.1.101:2379 \\ --cacert=/home/cloud_user/etcd-certs/etcd-ca.pem \\ --cert=/home/cloud_user/etcd-certs/etcd-server.crt \\ --key=/home/cloud_user/etcd-certs/etcd-server.key
+\f0\fs48 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 2. Back up etcd\
+\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls1\ilvl0
+\f3\fs32 \cf4 \cb5 \expnd0\expndtw0\kerning0
+ETCDCTL_API=3 etcdctl snapshot save /home/cloud_user/etcd_backup.db \\ --endpoints=https://10.0.1.101:2379 \\ --cacert=/home/cloud_user/etcd-certs/etcd-ca.pem \\ --cert=/home/cloud_user/etcd-certs/etcd-server.crt \\ --key=/home/cloud_user/etcd-certs/etcd-server.key \uc0\u8232 
+\f4 \cf6 \cb1 \
+\pard\tx720\pardeftab720\sa80\partightenfactor0
+
+\f0\fs48 \cf0 \kerning1\expnd0\expndtw0 3. Reset etcd by removing all etcd data\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs32 \cf4 \cb5 \expnd0\expndtw0\kerning0
+sudo systemctl stop etcd\
+sudo rm -rf /var/lib/etcd\
+\pard\tx720\pardeftab720\sa80\partightenfactor0
+
+\f0\fs48 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
+Restore the etcd data from backup\
+\
+1. Restore the data from back up\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs32 \cf4 \cb5 \expnd0\expndtw0\kerning0
+sudo ETCDCTL_API=3 etcdctl snapshot restore /home/cloud_user/etcd_backup.db \\ --initial-cluster etcd-restore=https://10.0.1.101:2380 \\ --initial-advertise-peer-urls https://10.0.1.101:2380 \\ --name etcd-restore \\ --data-dir /var/lib/etcd
+\f0\fs48 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+\
+2. Set ownership on the new directory containing the data\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs32 \cf4 \cb5 \expnd0\expndtw0\kerning0
+sudo chown -R etcd:etcd /var/lib/etcd
+\f0\fs48 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+3. Start etcd\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs32 \cf4 \cb5 \expnd0\expndtw0\kerning0
+sudo systemctl start etcd
+\f0\fs48 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+4. Verify the restored data is present by looking up the value for cluster.name again\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs32 \cf4 \cb5 \expnd0\expndtw0\kerning0
+ETCDCTL_API=3 etcdctl get cluster.name \\ --endpoints=https://10.0.1.101:2379 \\ --cacert=/home/cloud_user/etcd-certs/etcd-ca.pem \\ --cert=/home/cloud_user/etcd-certs/etcd-server.crt \\ --key=/home/cloud_user/etcd-certs/etcd-server.key
+\f0\fs48 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+The sort-by option allows you to sort resources by a path expression.\
+\
+The selector flag allows you to filter resources by labels.\
+\
+There are two ways to create Kubernetes objects:\
+1. Declarative commands\
+2. Imperative commands: define objects using kubectl commands and flags e.g. kubectl create deployment my-deployment --image=nginx\
+\
+For more information see:\
+1. https://kubernetes.io/docs/reference/kubectl/\
+2. https://kubernetes.io/docs/concepts/overview/working-with-objects/object-management/\
+3. https://kubernetes.io/docs/reference/kubectl/quick-reference/\
+\
+Do you want to get some sample yaml using imperative commands which you can then modify to your liking? Use the --dry-run flag with the imperative command to create your object e.g. kubectl create deployment my-deployment --image=nginx --dry-run -o yaml\
+\
+You can also use the --record flag to record the command that was used to make a change e.g. kubectl scale deployment my-deployment replicas=5 --record\
+\
+Role-based access control (RBAC) in k8s allows you to control what users are allowed to do and access within the cluster e.g. you can use RBAC to allow a developer to read metadata and logs from k8s pods but not make changes to them\
+\
+Roles and clusterRoles are Kubernetes objects that define a set of permissions. These permissions determine what users can do in the cluster. A role defines permissions within a particular namespace, and a cluster-role defines cluster wide permissions not specific to a single namespace. See https://kubernetes.io/docs/reference/access-authn-authz/rbac/ for information on how to define these types of objects within a cluster.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic.png \width25680 \height18900 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+Rolebindings and clusterrolebindings are objects that bind roles and clusterroles to groups, users, or service accounts.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 1.png \width25680 \height18900 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0  \
+\
+In k8s, a service account is used by container processes within pods to authenticate with the k8s API. Can be created either declaratively or imperatively. For more info see https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/\
+\
+Bind service accounts with rolebindings and clusterrolebindings to provide access to k8s API functionality.\
+\
+Inspecting pod resource usage: in order to view metrics about the resources being used by containers running inside pods, an add-on is needed to collect and provide that data. One such add-on is the Kubernetes metrics server. Once the add-one has been installed, I can view data resource usage by running the kubectl top pod command e.g. kubectl top pod --sort-by cpu. For more info see https://kubernetes.io/docs/tasks/debug/debug-cluster/resource-usage-monitoring/\
+\
+You can also retrieve	how much resources are being used in each of the worker nodes by running kubectl top node.\
+\
+Managing application configuration: when you are running applications in k8s, you may want to pass dynamic values to your applications at runtime to control how they behave. This is known as application configuration. You can store configuration data in Kubernetes using the following methods:\
+1. configMaps; they are used to store data in the form keys and values which can then be passed to container applications. For more information see https://kubernetes.io/docs/concepts/configuration/configmap/\
+2. Secrets; they are designed to store sensitive data such as passwords or API keys more securely. For more information see https://kubernetes.io/docs/concepts/configuration/secret/\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 2.png \width22500 \height20100 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 3.png \width22640 \height9620 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+You can pass configmaps and secret data to containers using the following methods:\
+\
+1. Environment variables; these variables will be visible to your container process at runtime.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 5.png \width9600 \height8560 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic 4.png \width22640 \height10780 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+2. Mounted volumes; these cause the config data to appear in files available to the container file system. Each top-level key in the configuration data will appear as a file containing all keys below that top-level key.\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 6.png \width12720 \height5400 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+Managing container resources: resource requests allow you to define an amount of resources (such as CPU or memory) that you expect a container to use. The k8s scheduler will use resource requests to avoid scheduling pods on nodes that do not have the available needed resources. NOTE: containers are allowed to use more (or less) than the requested resources. Resources requests only affect scheduling. Memory is measured in bytes and CPU is measured in CPU units which are 1/1000 of one CPU. So in the example below, the container will require to be scheduled in a worker that has 1/4 of a CPU available and 128 Mebibytes available where (1 MiB == 1.048576 MB).  \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 7.png \width23160 \height13320 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 Resource limits: provide a way to limit the amount of resources containers can use. The container runtime is responsible for enforcing these limits (different container runtimes will achieve this in a variety of ways). For more information see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-requests-and-limits-of-pod-and-container\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic.png \width23160 \height13480 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+Monitoring container health with probes: in order to accurately determine the status of your applications, k8s needs to actively monitor container health where it restarts any that are unhealthy. The following probes are used to achieve this purpose:\
+1. Liveness probes; determine whether or not a container application is in a healthy state. By default, k8s will only consider a container to be \'93down\'94 if the container process stops. Liveness probes allow the customisation of this detection mechanism.\
+2. Startup probes; only run at container startup and stop running once they succeed. They determine when the application has successfully started up. They are especially useful for legacy applications that can have a long startup time.\
+3. Readiness probes; determine when a container is ready to accept requests. When you have a service backed by multiple container endpoints, user traffic will not be sent to a particular pod until its containers have all passed the readiness checks defined by their readiness probes.\
+\
+For more information see:\
+1. https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes\
+2. https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/\
+\
+Building self-healing pods with restart policies: restart policies allow custom behaviour when it comes to the restart of failed containers. They are an important component of self healing applications. There are three possible values for a pods restart policy in k8s:\
+1. Always; the default in k8s. Containers are always restarted if they stop, even if they completed successfully.\
+2. On failure; will restart container process if it exits with an error code or if it is determined to be unhealthy by a probe. \
+3. Never; container process will never be restarted regardless of exit status.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 For more information see https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy\
+\
+Creating multi-container pods: k8s pods can have one or more containers. A pod with more than one container is a multi-container pod. Best practice is to keep containers in separate pods unless they need to share resources. In a multi container pod, the containers share resources such as network and storage. They can interact with one another working together to provide functionality. Containers in a pod share the same networking namespace and can communicate with one another on any port even if that port is not exposed to the cluster. Containers can also use volumes to share data in a pod. Why would you use a sidecar (a multi container pod)? You have an application that is hardcoded to write log output to a the container file system. You can add a secondary container to the pod (a sidecar) that reads the log file from a shared volume and prints it to the console so the log output will appear in the container log.\
+\
+For more information see:\
+1. https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/\
+2. https://kubernetes.io/docs/tasks/access-application-cluster/communicate-containers-same-pod-shared-volume/\
+3. https://kubernetes.io/docs/concepts/workloads/pods/#using-pods\
+\
+Init containers: are containers that run once during the startup process of a pod. A pod can have any number of init containers, and they will each run once to completion. They are useful for keeping your main containers lighter and more secure by offloading startup tasks to a separate container. They could be used for a variety of reasons e.g. cause a pod to wait for another k8s resource to be created before finishing startup, perform sensitive startup steps securely outside of app containers, populate data into a shared volume at startup, or communicate with another service at startup. For more information see https://kubernetes.io/docs/concepts/workloads/pods/init-containers/\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic.png \width19800 \height17160 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+K8s scheduling: process of assigning pods to nodes so kubelets can run them. The scheduler handles scheduling. The scheduler selects a node for each pod and takes into account: resource requests vs available node resources, node labels I.e. nodeselector attribute can be used to configure which node a pod will be deployed to\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 1.png \width22820 \height9900 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+Nodename attribute can be used to bypass scheduling and assign a pod to a specific node\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 2.png \width22820 \height9900 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+For more information see:\
+1. https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/\
+2. https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/\
+\
+Daemonsets: automatically runs a copy of a pod on each node; they will also run a copy of the pod on new nodes that are added to a cluster. They respect scheduling rules around node labels, taints, and tolerations. For more information see https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/\
+\
+Static pods: is a pod that is managed directly by the kubelet on a node, not by the k8s API server. They can run even if there is no k8s AAPI server present. Kubelet automatically creates static pods from YAML manifest files located in the manifest path on the node. For more information see https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/\
+\
+Mirror pods: kubelet will create a mirror pod for each static pod. Mirror pods allow you to see the status of a static pod via the k8s API but you cannot change or manage them via the API.\
+\
+K8s deployments: it defines a desired state for a replicaset (a set of replica pods). The deployment controller seeks to maintain the desired state by creating, deleting, and replacing pods with new configurations. They are useful because of the following reasons; easily scale an application up or down by changing the number of replicas, perform rolling updates to deploy a new software version, roll back to a previous version of software. A deployments desired state includes:\
+1. Replicas; the number of replica pods the deployment will seek to maintain \
+2. Selector; a label selector used to identify the replica pods managed by the deployment\
+3. Template; a pod definition used to create replica pods\
+\
+For more information see https://kubernetes.io/docs/concepts/workloads/controllers/deployment/\
+\
+K8s deployments are very useful in horizontal scaling which involves changing the number of containers running an application. You can change the number of replicas in the YAML descriptor editing the YAML or using the kubectl scale command. For more information see https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#scaling-a-deployment\
+\
+Rolling updates: allow you to make changes to a deployment\'92s pods at a controlled rate, gradually replacing old pods with new pods. This allows the updating of pods without incurring downtime. For more information see https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment\
+\
+Rollback: if an update to a deployment causes a problem, you can roll back the deployment to a previous working state. For more information see https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-back-a-deployment\
+\
+K8s networking model: is a set of standards that define how networking between pods is implemented regardless of the node they are deployed in. There are a variety of different implementations of this model - including the calico network plugin. Each pod has its own unique IP address within the cluster. Any pod can reach another pod using a pod IP address. This creates a virtual network that allows pods to easily communicate with each other regardless of the node they live in. For more information see https://kubernetes.io/docs/concepts/cluster-administration/networking/\
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 3.png \width22820 \height18560 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 4.png \width22820 \height20720 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+CNI plugins are a type of k8s network plugin that provide network connectivity between pods according to the standard set by the k8s network model. Which network plugin is best for your use case will depend on your specific situation. k8s nodes will remain in the NotReady status until a network plugin is installed. For more information see https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/\
+\
+K8s DNS: the k8s virtual network uses DNS to allow pods to locate other pods and services using domain names instead of IP addresses. This DNS runs as a service in the cluster and can usually be found in the kube-system namespace. for more information see https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/\
+\
+Network policies: control the flow of network traffic to and from pods thus allowing you to build a secure cluster network by keeping pods isolated from traffic they do not need. There are a few components of network policies that you should be aware of:\
+1. podSelector; determines which pods in the namespace the network policy applies. Selects pods using pod labels. By default, pods are considered non isolated and completely open to all communication. If any network policy selects a pod, the pod is considered isolated and will only be open to traffic allowed by network policies.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 5.png \width18620 \height9560 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+2. fromSelector; selects ingress traffic that will be allowed\
+3. toSelector; selects egress traffic that will be allowed\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 6.png \width18060 \height9320 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+4. From and to selectors work with podSelector, namespaceSelector, and ipBlock\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 7.png \width13440 \height12440 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic 8.png \width13440 \height12440 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 9.png \width13440 \height12440 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+For more information see https://kubernetes.io/docs/concepts/services-networking/network-policies/\
+\
+K8s services: are abstractions that expose applications running as sets of pods. Clients do not need to be aware of pod ip addresses. The service routes client traffic to the backend pods in a load-balanced fashion. Endpoints are the backend entities to which services route traffic. For more information see https://kubernetes.io/docs/concepts/services-networking/service/ \
+\
+Each service has a type. The service type determines how and where the service will expose your application. There are 4 service types:\
+1. clusterIP; this service exposes applications inside the cluster network. Used when clients will be other pods within the cluster. Is the default type of service created when type is not specified.\
+2. Nodeport; expose applications outside of the cluster network. Used when applications or users will be accessing pods from outside of the cluster.\
+3. Loadbalancer; also expose applications outside the cluster network but they use an external cloud load balancer to do so. This service type only works with cloud platforms that include load balancing functionality.\
+4. Externalname (outside scope of CKA) \
+\
+Service DNS names: the k8s DNS assigns DNS names to services allowing applications within the cluster to easily locate them. A service\'92s fully qualified domain name has the following format:\
+\
+Service-name.namespace-name.svc.cluster-domain.example\
+\
+The default cluster domain is cluster.local.\
+\
+Service DNS and namespaces: a service\'92s fully qualified domain name can be used to reach the service from within any namespace in the cluster. However, pods within the same namespace can also simply use the service name (or its IP address).\
+\
+For more information see https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/\
+\
+Managing access from outside with k8s ingress: an ingress is a k8s object that manages external access to services in the cluster. An ingress is capable of providing more functionality than a simple nodeport service, such as SSL termination, advanced load balancing, or name based virtual hosting. Ingress objects actually do nothing by themselves as they need an ingress controller to be installed for them to work. There are a variety of ingress controllers available - all of which implement different methods for providing external access to your services. Ingresses define a set of routing rules. A routing rule\'92s properties determine which request it will be applied to. Each rule has a set of paths, which lead to a backend.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic.png \width24980 \height5380 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}
+\f0\fs48  \
+\
+In the below example, a request to http://<some endpoint>/somepath would be routed to port 80 on the my-service service.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 1.png \width17860 \height17680 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+If a service uses a named port, an ingress can also use the port\'92s name to choose to which port it will route to.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 2.png \width18120 \height13040 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 3.png \width17900 \height17520 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+For more information see:\
+1. https://kubernetes.io/docs/concepts/services-networking/ingress/\
+2. https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/\
+\
+K8s storage: a container file system is ephemeral I.e. it only exists while the container is running inside a pod. If the container is recreated or deleted then data stored on the container file system is lost. Many applications need a more persistent method of data storage. Volumes allow the storage of data outside of a container file system whilst still allowing the container access to the data at runtime. This allows the data to persist beyond the life of the container. Persistent volumes are a slightly more advanced form of volume. They can be treated as an abstract resource which can be consumed by pods. Both volumes and persistent volumes have a volume type. The volume type determines how the storage is actually handled. Volume types include NFS, cloud storage, configmaps and secrets, directory on a k8s node. For more information see:\
+\
+1. https://kubernetes.io/docs/concepts/storage/persistent-volumes/\
+2. https://kubernetes.io/docs/concepts/storage/volumes/\
+\
+External storage <\'97\'97\'97 Persistent volume 
+\f1\fs24 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 4.png \width19380 \height17940 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}
+\f0\fs48 \
+\
+\
+Regular volumes can be set up relatively easily within a pod/container specification. Volumes are specified in the pod spec and denote the volume type and other data that inform where and how the data is stored. Volume mounts are specified in the container spec where they reference volumes in the pod spec and provide a mount path on the container file system.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 6.png \width12780 \height17600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+You can use volume mounts to mount the same volume to multiple containers within the same pod.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 7.png \width12780 \height19180 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+This is a powerful way to have multiple containers interact with one another. For example, you could create a secondary sidecar container that processes or transforms output from another container.\
+\
+Common volume types: there are many volume types which you will likely have seen here https://kubernetes.io/docs/concepts/storage/volumes/. There are two types that you want to be aware of for the CKA exam. They are:\
+1. hostPath; stores data in a specified directory on the k8s node\
+2. emptyDir; stores data in a dynamically created location on the node. This directory exists only as long as the pod exists on the node. The directory and the data are deleted when the pod is removed. This volume type is very useful for simply sharing data between containers in the same pod.\
+\
+Persistent volumes are k8s objects that allow storage to be treated as abstract resources to be consumed by pods; much like k8s treats compute resources such as memory and CPU. A persistent volume uses a set of attributes to describe the underlying storage resource (such as a disk or cloud storage location) which will be used to store data.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 8.png \width17860 \height13760 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+Storage classes allow k8s admins to specify the types of storage services they offer on their platform. For more information see https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/\
+\
+The allowVolumeExpansion property of a storage class determines whether or not the storage class supports the ability to resize volumes after they are created. If the property is not set to true, attempting to resize a volume that uses this storage class will result in an error.\
+\
+A persistent volume\'92s persistentvolumereclaimpolicy determines how the storage resources can be reused when the persistent volume\'92s associated persistentvolumeclaims are deleted. Retain policy keeps all the data; this requires an admin to manually clean up the data and prepare the storage resource for reuse. Delete policy delete the underlying storage resource automatically (only works for cloud storage resources). Recycle policy automatically deletes all data in the underlying storage resource allowing the persistent volume to be reused. Recycle policy is now deprecated.\
+\
+A persistentvolumeclaim (PVC) represents a user\'92s request for storage resources. It defines a set of attributes similar to those of a persistent volume. When a PVC is created, it will look for a persistent volume that is able to meet the requested criteria. If it finds one, it will automatically be bound to the persistent volume.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 9.png \width17860 \height12420 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+PVC\'92s can be mounted to a pod\'92s containers just like any other volume. If the PVC is bound to a PV, the containers will use the underlying PV storage.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 10.png \width17920 \height15040 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+You can expand PVC\'92s without interrupting applications that are using them by editing spec.resources.requests.storage attribute of an existing PVC increasing/decreasing its value.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 11.png \width17920 \height14680 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \
+\
+You can check the logs for k8s-related services on each node using journalctl e.g.\
+\
+Sudo journalctl -u kubelet\
+Sudo journalctl -u docker\
+\
+The Kubernetes cluster components have log output redirected to /var/log. For example:\
+\
+/var/log/kube-apiserver.log\
+/var/log/kube-scheduler.log\
+/var/log/kube-controller-manager.log\
+\
+Note that these log files may not appear for kubeadm clusters since some components run inside containers. In that case you can access them with kubectl logs.\
+\
+K8s containers maintain logs, which you can use to gain insight into what is going on within the container. A container\'92s log contains everything written to the standard output (stdout) and error (stderr) streams by the container process. Use the kubectl logs command to view a containers logs\
+\
+For more information see:\
+1. https://kubernetes.io/docs/tasks/debug/debug-cluster/\
+2. https://kubernetes.io/docs/tasks/debug/\
+3. https://kubernetes.io/docs/tasks/debug/debug-cluster/#looking-at-logs\
+4. https://kubernetes.io/docs/tasks/debug/debug-application/determine-reason-pod-failure/\
+5. https://kubernetes.io/docs/tasks/debug/debug-application/get-shell-running-container/\
+6. https://kubernetes.io/docs/tasks/debug/debug-application/\
+7. https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/\
+8. https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/\
+9. https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 Commands\
+1. Kubectl get <resource name> \'97> list all namespaces in a cluster\
+2. Kubectl create namespace [namespace]\
+3. Kubectl get pods --all-namespaces\
+4. Kubectl get <object type> <object name> -o <output> --sort-by <JSONPath> --selector <selector>\
+5. Kubectl drain [node-name] [--ignore-daemonsets]\
+6. Kubectl uncordon [node-name]\
+7. Kubectl describe <object type> <object name>\
+8. Kubectl create -f <file name>\
+9. Kubectl apply -f <file name>\
+10. Kubectl delete <object type> <object name>\
+11. Kubectl exec -n <namespace> <pod name> -c <container name> --<command>\
+12. Kubectl api-resources \'97> returns a complete list of supported resources \
+13. Kubectl scale deployment <deployment name> --replicas <desired number>\
+14. Kubectl top pod --sort-by <JSONPATH> --selector <selector> \
+15. Kubectl get --raw /apis/metrics.k8s.io/\
+16. Kubectl label nodes <node name> <key=value>\
+17. Kubectl rollout status deploy/<deployment name>\
+18. Kubectl edit deployment <deployment name>\
+19. Kubectl set image deployment/<deployment name> nginx=nginx:latest\
+20. Kubectl rollout history deployment/<deployment name>\
+21. Kubectl rollout undo deployment/<deployment name>\
+22. Kubectl get endpoints <svc name>\
+23. Kubectl get ingress and kubectl get svc and then use the describe method\
+24. Kubectl logs <pod name> -n <namespace> -c <container name>\
+25. Kubectl exec <pod name> -c <container name> --stdin --tty \'97 <shell to use>\
+\
+\
+\
+\
+\
+\
+\
+\
+ 
+\f5\fs26 \expnd0\expndtw0\kerning0
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \
 }
