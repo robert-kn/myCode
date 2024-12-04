@@ -1,0 +1,32 @@
+chapter 1
+
+1. what do you think of when you hear that a computer is a deterministic system?
+2. a computer is a complex system made up of what? systematically interconnected simple parts; like building a house, it is
+these simple parts that the book will introduce, explain and tie together to show how they make up a computer
+3. what is the main goal of the book? by the time you are finished, you will be able to write programs using a language like C and be able to understand what is going on underneath the computer
+4. what do high level languages enable programmers to do? effectively develop complex sofware by abstracting away the details of the underlying hardware
+5. what are the two recurring themes in the book? abstraction and not separating hardware and software layers of a computer
+6. define abstraction? technique of establishing a simpler way to interact with a system
+7. what is the premise that allows us o use abstraction effectively? allows not getting bogged down in the details of a system when everything is working fine
+8. when the details is not working fine, what must ou be able to do? unabstract i.e. go from the abstraction back to its component parts
+9. why should you strive to keep the level of abstraction as high as possible? allows me to be much more efficient in dealing with systems
+10. why should you be careful about letting abstractions be the deepest level of my understanding? because you will be at the mercy of of the component parts working together without your intervention
+11. what should you keep in mind during your study and practice of computing? hardware and software are component parts of a computing system that work best when they are designed by people who take into account the capabilities and limitations of both
+12. definition of a computer? system consisting of software that directs and specifies the processing of information and the hardware that perfroms the actual processing of information in response to what the software specifies
+13. what piece of hardware actually does the processing in a computer? CPU
+14. when did the first computers show their face on planet earth? 1940s
+15. what was the name of the first computer? ENIAC
+16. what is marked about the computing devices of today and those of yesteryear? the weights have decreased tremendously, so has the power consumption. the computing power has increased by many orders of magnitude
+17. what has brought about this increase in computational power? integrated circuit packages have seen phenomenal improvement e.g first intel microprocessor (intel 4004) contained 2300 transistors and operated at 106 KHz; one of the latest intel microprocessors Core i9-13900K contains a reported 25.9 billion transistors and and can operate at a frequency of 5.8 GHz
+18. what does this mean? that a computer running on on intels latest CPU today can do many more things in the time it took the first intel pc to do one thing 
+19. what does this mean? we have computers today that seem able to understand languages people speak, recognise peoples faces which many seeas the magin of artificial intelligence. however, these feats are only possible because the electronic idiots are able to run simple operations blazingly fast concurrently 
+20. what two ideas are at the core of computing? all computers (fastest, slowest, cheapest, most expensive) are capable of computing exactly he same things if they are given enough time and memory and problems are epressed in human labguage but are solved by electrons moving due to voltage potentials inside the computer. this means a series of systematic transformtions have to be made from a problem expressed in a human language in order for the electrons to do our bidding inside a computer
+21. what has happened to these sequence of transformations over the last 70 years? they have been developed, refined and improved 
+22. how do analogue machines work? produce an answer by meassuring some physical quantity such as distance or voltage
+23. why are analogue machines difficult to work with? it is very hard to increase their accuracy 
+24. why did digital machines come to dominate computing? it is easy to increase their accuracy
+25. definition of a digital machine? machines that perform computations by manipulating a fixed finite set of digits or letters 
+26. what limitations did digital machines of yesteryear have? the mechanical or electro-mechanical devices could only perform a specific type of computation
+27. how are digital computers different from machines of yesteryear? when you think of a new computation, you do not have to buy or design a new computer, you just give the same computer a new set of instructions to carry out the new computation
+28. why do we call digital computers universal computational devices? because of the point made above
+29. what does the study of computing involve? study the fundamentals of all computing along with learning what computation is and what can be computed
