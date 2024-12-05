@@ -30,3 +30,38 @@ these simple parts that the book will introduce, explain and tie together to sho
 27. how are digital computers different from machines of yesteryear? when you think of a new computation, you do not have to buy or design a new computer, you just give the same computer a new set of instructions to carry out the new computation
 28. why do we call digital computers universal computational devices? because of the point made above
 29. what does the study of computing involve? study the fundamentals of all computing along with learning what computation is and what can be computed
+30. who is attributed with the idea of a universal computation device?
+31. what did alan uring propose? that all computations could be carried out by a particular kind of machine - a turing machine
+32. what do computers and turing machines have in common? they are programmable
+33. what implication does the answer to question 32 have? big or expensive computers cannot do anything that a small cheap computer can't
+more money will buy you an faster computer but if you have a small inexpensive laptop then you already have a universal computation device
+34. how do we get the electrons to do our bidding inside of a computer? work through the levels of transformation for a particular problem
+35. what is the first level of transformation? describe a problem in a natural language whilst avoiding ambiguity because the electronic idiot would not know what to do
+36. what is the second level of transformation? convert the problem expressed in natural language into an algorithm thereby getting rid of the ambiguity inherent in natural language
+37. what are the three characteristics of an algorithm?
+38. what is the 3rd level of transformation? transform the algorithm into source code using a chosen programming language
+39. what are the two kinds of programming language that exist? high level and low level
+40. provide a definition for a high level language? independent of the computer from which they will execute on i.e. they are machine independent
+41. provide a definition for a low level langauge? tied to the computer on which the programs will execute i.e. assembly language
+42. what is the fourth level of transformation? translating the source code into the ISA of the computer that will be used to
+execute the program.
+43. what does ISA specify? the interface between the source code and the hardware of the machine that will be used to execute the program
+44. using the automobile and driver analogy, what is represents the source code, the ISA and the hardware?
+45. what do opcode and operand mean? operand is the data value
+46. ISA specifies the acceptable representations for operands, what are the operands called? 
+47. ISA specifies the mechanisms that the computer can use to figure out where operands are located. what are these mechanisms called? 
+48. are the number of opcodes, operands and addressing modes unique to each ISA?
+49. what else does ISA specify (apart from opcodes, operands, and addressing modes)? number of unique locations that comprise the computers memory (address space)
+and the number of bits contained in each location (addressability)
+50. name a few ISAs in use today? x86 by intel (currently also developed by AMD an other companies), SPARC oracle, power (IBM), arm and thumb (ARM)
+51. what is the name of the program that is used to translate source code into the ISA of the machine that will be responsible for executing it? 
+52. what is the name of the program that translates assembly languaage of a computer to its ISA? assembler
+53. what is the 5th level of transformation? micro-architecture i.e. using the automobile analagy from earlier, it refers to what goes on under the hood of a car
+this micro-architecture is dependent performance, cost and energy trade offs made by designers 
+54. what is the 6th level of transformation? logic circuits i.e. the micro-architecture is implemented out of simple logic circuits
+55. what is 7th level of transformation? logic circuits can be implemented different device technologies e.g. CMOS circuits, NMOS circuits or gallium arsenide circuits
+
+
+chapter 2
+
+1. what do you call the tiny little devices inside computer that control the movement of electrons by reacting to the presence or absence electrons?
