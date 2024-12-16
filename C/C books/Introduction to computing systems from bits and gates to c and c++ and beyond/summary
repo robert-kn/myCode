@@ -286,5 +286,8 @@ instruction called? control instruction
 it is incremented (during the FETCH phase of one instruction) and the start of the FETCH phase of the next instruction
 78. at which stage do the control instructions load the PC?
 79. what is the most common control instruction?
-80. 
+80. what is the 4 bit pattern that specifies conditional branching? 0000
+81. what do bits 11:9 represent in the BR instruction? the condition to be tested
+82. what do bits 8:0 contain in the BR instruction? the addressing mode bits that are used to form the address to be loaded into the PC if
+the result of the previous instruction agrees with the test specified by bits 11:9.
 
