@@ -1,13 +1,19 @@
 chapter 1
 
 1. what is the main topic of this unit? basic algebra
-2. where is the word algebra derived from? from the title of the treatise al-Kitāb al-mukhtasar fī hisāb al-jabr wa’l-muqābala (Compendium on alculation by completion and reduction), written by the Islamic mathematician Muh.ammad ibn Mūsā al-Khwārizmī in around 825. This treatise deals with solving linear and quadratic equations, but it doesn’t use algebra in the modern sense, as no letters or other symbols are used to represent numbers.
+2. where is the word algebra derived from? from the title of the treatise al-Kitāb al-mukhtasar fī hisāb al-jabr wa’l-muqābala 
+(Compendium on alculation by completion and reduction), written by the Islamic mathematician Muh.ammad ibn Mūsā 
+al-Khwārizmī in around 825. This treatise deals with solving linear and quadratic equations, but it doesn’t use 
+algebra in the modern sense, as no letters or other symbols are used to represent numbers.
 3. when did modern algebra arise? 1500s and 1600s
 4. what are the natural numbers (positive integers)? 1,2,3...
 5. what are integers made up of? natural numbers, their negatives and zero
-6. where does the word integer come from? it's a latin word that consists of the prefix in, meaning 'not', attached to the root of tangere, meaning 'to touch'. so it literally means 'untouched', in the sense 'whole'
+6. where does the word integer come from? it's a latin word that consists of the prefix in, meaning 'not', attached to 
+the root of tangere, meaning 'to touch'. so it literally means 'untouched', in the sense 'whole'
 7. what are the rational numbers? numbers that can written in the form integer/integer
-8. how can you picture real numbers? think of a number line (or real line) extending infinitely in both directions; every point on the number line corresponds to a real number and every real number corresponds to a number on the line. some points correspond to rational numbers while others correspond to irrational numbers see fig1-chp1.png
+8. how can you picture real numbers? think of a number line (or real line) extending infinitely in both directions; 
+every point on the number line corresponds to a real number and every real number corresponds to a number on the line. 
+some points correspond to rational numbers while others correspond to irrational numbers see fig1-chp1.png
 9. how do you get the irrational number pi? divide the circumfrence of a circle by its diameter
 10. what happens when you express rational numbers as decimal numbers? the result is either terminating or recurring
 11. what are the two alternative notations used to denote recurring decimal numbers? see recurring-decimal.png
@@ -16,3 +22,5 @@ chapter 1
 14. what does it mean to raise a number to a power? means multiply a number by itself a specified number of times
 15. do you know what index notation is?
 16. what does it mean to take a root of a number? means taking its square root
+17. rounding decimal places
+18. rounding significant figures i.e. the first significant figure is the first non zero number from the left

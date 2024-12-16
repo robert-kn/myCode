@@ -64,4 +64,227 @@ this micro-architecture is dependent performance, cost and energy trade offs mad
 
 chapter 2
 
-1. what do you call the tiny little devices inside computer that control the movement of electrons by reacting to the presence or absence electrons?
+1. what do you call the tiny little devices inside computer that control the movement of electrons by reacting to the presence or absence voltages?
+2. could these tiny devices be designed to detect actual value of voltages instead of the presence or absence of them?
+3. why is this not done? it would make the control and detection circuits more complex than they need to be
+4. do these tiny devices actually detect the absence of a voltage i.e. 0 and the presence of a voltage?
+5. how do we symbollicaly represent the presence of a voltage?
+6. how do we symbollically represent the absence of a voltage?
+7. how many things can we differentiate with one wire and what values are assigned to them?
+8. in order to get useful work done by aa computer, it is necessary to be able to distinguish a large number of distinct values and assign each 
+of them a unique representation. what is done in order to achieve this?
+9. what is the word "bit" a short hand of? 
+10. what qualifies a representation as a data type? if there are operations in the computer that can operate on information encoded in tht representation
+11. describe the unsigned integer representation?
+12. describe the signed integer number representation (how many bits are assigned to positive numbers and how many bits to negative numbers)?
+13. define signed magnitude representation of data? if a leading 0 signifies a positive integer then a leading 1 signifies a negative integer
+14. define the 1s complement representation of data? a negative number is represented by taking the representation of the positive number
+that has the same magnitude and flipping all the bits
+15. can a computer designer assign any bit pattern he wants to represent any integer he wants?
+16. why would this not be a good idea? it would complicate matters when they try to build electronic circuits capable of adding the numbers
+17. define 2's complement integer representation?
+18. almost all computers use the same mechanism to perform addition, what is it called?
+19. if you know the bit representation of integer A, what is a short cut you can use to work out -A? 
+20. how many floating point data types do most ISAs specify?
+21. how many bits does the float data type use?
+22. how are the bits allocated?
+23. what is the equation of the normalised form of float numbers? 
+24. what is special about the 8 bit exponent? for normalised numbers it must be restricted to 254 unsigned values i.e. between 1 (00000001) and 254 (11111110)
+for the two remaining values 0 and 255, the data type does not represent normalised numbers
+25. if the exponent field contains 255 (11111111), what number is represented by the floating point data type?
+26. what is the smallest number that can be represented in normalised form?
+27. what are subnormal numbers?
+28. what equation is used to represent subnormal numbers?
+29. wht are ASCII codes used for? transferring characters between main computer processing unit and the input and output devices
+30. define encoding? converting data into a format that is required for processing including transmission, storage and retrieval
+
+
+chapter 3
+
+1. what are most semiconductors used in processors today manufactured from? 
+2. what are the two type of MOS transistors? 
+3. how do n type transistors work? when the gate is supplied with 1.2v, the transistor acts like a piece of wire; when supplied
+with 0 volts it acts like an open wire
+4. what of the p type transistor?
+5. name the 5 types of logic gates that can be constructed from n type and p type transistors?
+6. what did you notice about the configuration of both transistors when they are used to construct logic gates? the n type is always connected to ground; the
+ptype is never connected to ground
+7. what happens when you connect a p type transistor to 1.2 volts or an n type to the ground? there is no voltage across the transistors
+8. what happens when you connect a p type transistor to the ground and an n type transistor to 1.2 volts? because of 
+the electrical characteristics of the transistors, we get what is usually referred to as a transmission voltage of 
+approximately 0.5 volts across the transistor. 
+9. there are two types of logic structures, what are they and what they called? those that include storage of information and those that do not.
+those that do not store information are called decision elements or combinational logic structures. those that store information and make decisions as well
+are called sequential logic circuits
+10. name three decision elements? decoder, mux (multiplexer), full adder 
+11. how does the decoder work? only one of its output value is asserted (i.e. has a value of 1) that corresponds to the input pattern that it is 
+expected to detect. it basically interprets a bit pattern
+12. what is logic gates is the decoder made of? NAND and AND gates
+13. how does the mux work? the select signal selects one of the inputs (the source) and connects it to the output   
+14. what gates is the mux constructed out of? NAND, AND and OR gates
+15. how does the full adder work? it adds two binary numbers 
+16. what logic gates is the one bit adder made up of? NAND, AND, and OR gates
+17. if you wish to implement a logic circuit for adding two 16 bit numbers, how many one bit adders will you require? 16 one bit adders 
+18. what is the name of the building block that is used to implement any collection of logic functions? 
+19. what logic gates if the PLA made up of? collection of AND gates (called AND arrays) followed by an array of OR gates
+20. what does the number of OR gates correspond to in the PLA? the number of logic functions that we wish to implement i.e. the number of output columns
+in the truth table
+21. name 2 logic structures that do include storage information? R-S latch and gated D latch
+22. how does the R-S latch work? stores 1 bit of information, a 0 or a 1. can be implemented in many ways; inputs S and R are normally held at a logic level 1.
+23. what is meant when we state that the R-S latch is in a quiescent state? when the latch is storing a bit and nothing is trying to change that value
+24. what contributes to this quiescent state? the fact that both R and S are held at a logic level of 1
+25. in order for the R-S latch to work properly, what must be done to R and S? must never be set to 0 at the same time
+26. how can you set the latch to a 1 or a 0? you an set the latch to a 1 by temporarily setting s to 0 and having R remain at logic level 1; the latch can be set to
+0 by temporarily setting R to 0 and having S remain at logic level 1
+27 what happens if both S and R are set to 0 at the same time? outputs a and b would both be 1 and the final state of the latch would depend on
+the electrical properties of the transistors making up the gates
+28. what logic gates make up he R-S latch? NAND gates
+29. how does a gated d latch work? controls when the R-S latch is set to the value of D when write enable is asserted. in this case exactly one of the outputs S and radio
+is set to 0 depending on the value of D
+30. what happens when WE is not asserted? the outputs of S and R are both equal to a 1
+31. what do we call the unique identiﬁer associated with each memory location?
+32. what name do we give to the number of bits of information stored in each location?
+33. what do we call the total number of uniquely identiﬁable memory locations?
+34. what do we mean by stating that a computing device has a 2GB memory? colloquially we say the computing device has 2 billion memory locations, however, the address space
+is actually 1024x1024x1024x2 which yields 2,147,483,648 locations
+35. why 1024? because 1024 bytes make a kb and 1024 kb make a mb and 1024 mb make a GB
+36. why are most memories byte-adddressable? most computers got their start processing data where one character on the keyboard corresponds to
+one 8-bit ASCII code
+37. summarise how sequential logic circuits operate? they base their decisions on the input values present but also on what has happened before; they 
+contaain storage elements which that allow them to keep track of prior history information
+38. what machines are sequential logic circuits used to implement? 
+39. can you give two examples; one for a combination decision element and the other for a sequential logic element?
+40. define what is meant by the state of a mechanism/system? snapshot of a system with all relevant items explicitly expressed.
+41. how many elements does a finite state machine consist of?
+42. can you state all 5? a finite number of states, a finite number of external inputs, a finite number of external outputs, an explicit specification of all state transitions,
+an explicit specification of what determines each external output value
+43. what is a characteristic of asynchronous machines? there is nothing that synchronises when each state transition occurs
+44. are computers synchronous or aynchronous systems? synchronous because state transitions take place one after another at identical fixed units of time
+45. what is the common characteristic of synchronous and asynchronous finite state machines? they carry out work, one state transition at a time, moving closer to a goal
+46. what controls the synchronous behaviour of finite state machines? a clock circuit which produces a signal whose value alternates between 0 volts and 1 volt
+47. what is a clock cycle? an identical interval that is repeated in the value of the clock signal as a function of time. it starts when the clock signal transitions from 0
+to 1 and ends the next time the clock signal transitions from 0 to 1
+48. what is meant by a laptop running at a frequency of 2GHz? it can perform 2 billion pieces of work each second since 2 GHz means 2 billion clock cycles each second
+the synchronous finite state machine makes one state transition each cycle
+49. what does a state diagram show? all of the 5 characteristics of finite state system
+50 what is the problem with gated D latches as storage elements? when WE is asserted (i.e. the clock signal value is 1), the value of the storage elements would immediately change
+which in turn would trigger new inputs to the logic gates they are connected to. This cycle would repeat thereby making it impossible to
+for the current state to remain unchanged
+51. how do flip flops work? they are storage elements that allow the reading of the current state throughout the current clock cycle and not write the next state into the storage elements 
+until the beginning of the next clock cycle. reading must be allowed throughout the current clock cycle and writing must occur at the end of the clock cycle
+52. what is a flip flop made of? two gated D latches in a master/slave relationship
+53. how do flip flops work when used as storage elements? at the start of each clock cycle, the output of the storage elements i.e. the slave latch are input to the logic gates which produce
+the next state for the storage elements. in the timing diagram, there is a propagation delay as the combinational logic takes place to achieve this. despite the next state values being produced
+sometime during half cycle A, the WE signal (i.e. the clock) to the master latches is 0 hence the next state cannot be written. at the start of half cycle b, the WE to the slave latches becomes 0
+which means the clock signal for the mster latches is 1 - hence the master latches can be written. however, since the WE signal for the slave latches is 0, they cannot yet write the new information 
+stored in the master latches. at the start of the next clock cycle, the WE signal to the slave latches becomes 1 and hence they can now be written into by the master latches thereby storing the next
+state that was created using combinational logic in the previous clock cycle. this becomes the current state of the next clock cycle. this process is repeated as long as the switch is on and the clock 
+signal value alternates between 1v and 0v
+54. what does the data of a computer consist of? all of the logic structures that combine to process information in the core of the computer
+55. what is a register made of? flip flops i.e. gated D latches where one bit of informtion can be stored in one flip flop hence a 16 bit register is composed of 16 flip flops
+56. can a register be any size you need?
+
+chapter 4
+
+1. what two things do you need to get a task done by a computer? a computer that will do the work and a computer program specifying the task that needs to be achieved
+2. what is the name of the smallest piece of work specified in a computer program? an instruction
+3. who proposed the fundamental model of computers?
+4. what are the basic components of the model? 
+5. in which of the components is the computer program contained in?
+6. which of the components can hold the data that the program will operate on?
+7. which component controls the order in which operations are carried out?
+8. what does the 16GB when talking about memory refer to? the "16 giga" refers to the 2^(34) memory locations and the "byte" refers to the eight bits stored in each location
+the term is 16 giga because 16 is 2^(4) and giga is the term used to represent 2^(30) which is approximately one billion, 2^(4) x 2^(30) = 2^(34)
+9. if you have k bits, how many unique items can you represent?
+10. ergo, to uniquely identify 2^(34) memory locations, how many bits do you need? 
+11. to read the contents of a memory location, where do we place the address of that location in memory? in the memory address register
+12. where will the informaation stored in the address stored in MAR be placed? in the MDR register
+13. what is the process of writing or storing a value in a memory location? location of the address to be written to is first stored in MAR aand the data stored to be written is
+stored in the MDR register. computer memory is then interrogated using with the WE signal asserted such that the information stored in MDR is writtent to the address stored in MAR
+14. what are the two characteristics of a memory location? its address and what is stored there
+15. what component carries out the processing of information in a computer? 
+16. what is processing unit in a computer comprised of? many sophisticated functional units each performing one particular operation (divide, square root etc) 
+17. what is the name of simplest processing unit and the one thought of when discussing the von neumann model? ALU which is capable of performing basic arithmetic functions
+aand basic logic operations 
+18. what is the name given to the fixed size elements that the ALU processes?
+19. what specifies the word length (depends on the intended use of the computer) of a computer? the ISA
+20. what word length is specified by most ISAs today? 64 bits and 32 bits (though 32 bits is slowly being demised)
+21. what range of word lengths can you expect to find being processed in inexpensive processors today? 8 bits to 16 bits
+22. what is the name given to the most common form of storage used to temporarily cache results (e.g. close to the ALU) that will need to be accessed in the near future?
+23. typically what is the size of a register equal to? values being processed by the ALU i.e. a word or any other processing unit 
+24. what is the result of the importance of temporary storage for values that most modern computers will need shortly? many processors have access to an additional set of special purpose
+registers consisting of 128 bits to handle special needs
+25. what component is used to keep track of both where we are within the process of executing a program and where we are in the process of executing an instruction?
+26. what mechanism does the control unit use to keep track of which instruction is being executed? instruction register contains the instruction being executed
+27. what mechanism does the control unit use to keep track of which instruction is to be executed next? program counter/(instruction pointer) contains the next instructions address
+28. what is the keyboard data register (KBDR) used for? used for holding of ASCII codes of keys that have been struck
+29. what is the keyboard status register (KBSR) used for? used to maintain status information about keys struck
+30. what is the display data register (DDR) used for? for holding ASCII code of information to be displayed on a screen
+31. what is the display status register (DSR) used for? for maintaining associated status of data displayed 
+32. what does the control unit do? it comprises of all the structures needed to manage the processing that is carried out by the computer
+33. what is the most important structure of the control unit? the finite state machine which directs all processing activity clock cycle by clock cycle
+34. what is the central idea in the von neumann model of computer processing? program and data are both stored as sequences of bits in the computer's memory and the program is executed one instruction 
+at a time under the direction of the control unit
+35. what is the most basic unit of computer processing? an instruction
+36. what is an instruction made up of? opcode (what the instruction does) and operand (what is does it to)
+37. there are 3 types of opcodes (instructions), what are they? operates, data movement, and control
+38. what do operate opcodes do? operate on data
+39. what do data movement opcodes do? move data from processing unit to and from memory and to and from input/output devices
+40. what do control opcodes do? they alter the sequential processing of instructions
+41. for LC-3, which has 16 bits, and are numbered right to left from 0 to 15, how are they divided? bits 15:12 contain the opcode and bits 11:0 are used to figure out where the operands are
+42. how many opcodes does the LC-3 have? 15 opcodes; one is reserved for future use
+43. how many operands does the ADD operate instruction have? 3 operands, two source operands the numbers to be added and one destination operand (where the sum is to be stored)
+44. what does the ADD operate require? at least one of the two source operands must be stored in one of the 8 registers; the result should also be dumped in one of the 8 registers
+45. since the LC-3 has 8 registers, how many bits are necessry to identify each register? 
+46. what is the four bit opcode (from 15:12) for the ADD operate in LC-3? 0001
+47. in the ADD opcode, what do bits 11:9 specify? the register for storing the result 
+48 in the ADD opcode, what do bits 8:6 specify? the register storing one of the two source operands
+49. how many formats does the ADD instruction have? two
+50. what is the difference between the two formats of the ADD instruction? the 1 or 0 stored in bit 5 and what they each mean
+51. what does the 0 stored in bit 5 mean? that the second source operand is in the register specified by bits 2:0
+52. what does the 1 stored in bit 5 mean? the second source operand is formed by sign-extending the integer in bits [4:0] to 16 bits.
+53. what is the four bit opcode (from 15:12) for the AND operate in LC-3? 0101
+54. what is the four bit opcode (from 15:12) for the LD operate in LC-3? 0010
+55. what is load instruction used for? goes to a particular memory location, reads the value that is stored there
+and store that value in one of the registers
+56. how many operands does the load instruction require? two operands; are the value to be read from memory and the 
+destination register that will contain that value after the instruction has completed processing
+57. what is addressing mode? formulas that are used to calculate the address of the memory location to be read
+58. what do bits 11:9 in the LD instruction represent? identifies the register that will contain the value read from 
+memory after the instruction is executed. 
+59. what do bits 8:0 in the LD instruction represent? used to calculate the address of the location to be read. 
+60. what addressing mode is used by the load instruction? PC+offset where the address specified in bits 8:0 is sign 
+extended to 16 bits and then added to the contents of the PC
+61. what system is used to control instruction processing? the program counter
+62. what is the entire sequence of steps needed to process an instruction called? instruction cycle
+63. how many steps does the instruction cycle consist of? 6 sequential phases, each phase consisting of zero or more steps  
+64. name the six phases of the instruction life cycle? fetch, decode, evaluate address, fetch operands, execute, store result
+65. what does the fetch stage involve? fetches the next instruction from memory and loads it in the IR of the control unit
+66. elaborate more on this fetch phase i.e. how it works from end to end? program made up of instructions; instructions comprised of bits
+stored in memory per von neumann model; PC or instruction pointer contains address of next instruction to be executed; this address in the 
+PC is loaded into the MAR (1); once in the MAR, the address is interrogated resulting in the instruction being loaded from the memory into 
+the MDR (2); finally the IR is loaded with the instruction from the MDR (3)
+67. what other task is accomplished in the fetch phase? incrementing of the PC/IP to point to point to the next instruction in memory; this
+is done after the MAR has been loaded with the contents of the PC/IP
+68. how many clock cycles does each of the 3 steps in the fetch cycle take? step 1 takes one clock cycle; step 2 takes one or many clock
+cycles depending on how long it takes to access a computers memory; step 3 takes one clock cycle
+69. in a modern digital computer, how long is a clock cycle? a very small fraction of a second
+70. what does the decode phase of the instruction life cycle do? examines an instruction to figure out what the micro architecture is being
+asked to do
+71. how does the decode phase work? a decoder is used to identify which of the 16 opcodes is to be processed with the input being bits
+15:12
+72. what occurs in the evaluate address phase? computes the address of the memory location that is needed to process the instruction; not
+all instructions access memory to load or store data
+73. what occurs in the fetch operands phase? obtains the source operands needed to process the instruction
+74. what is notable about the store result phase? in many computers, for some instructions such as ADD, the fetching of source operands,
+performing the ADD in the ALU, and storing the result in the destination register happens all in a single clock cycle hence a separate 
+store result phase is not needed
+75. so far you have come across 2 types of instructions; operate (ADD, AND) and data movement (LOAD), what is the 3rd type of 
+instruction called? control instruction
+76. what do control instructions do? they change the sequence of instruction execution
+77. if you want to change the sequence of instructions executed, what must be changed? the contents of the PC must change between the time
+it is incremented (during the FETCH phase of one instruction) and the start of the FETCH phase of the next instruction
+78. at which stage do the control instructions load the PC?
+79. what is the most common control instruction?
+80. 
+

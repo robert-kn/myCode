@@ -37,7 +37,34 @@ chapter 1
 35. what about an AA record?
 36. what is the name of the windows utility that lists routers between two hosts?
 37. what is the equivalent of the windows utility for unix/linux/macos?
-38. 
+38. what are the three ipv4 ranges reserved for private networks?
+39. if a device in a privte network want to communicate with another device on the wider internet, wht must happen?
+40. does ipv6 avoid the NAT? why? 
+41. how does a router know whether a packet can be delivered locally or it must be forwarded? use of subnet mask, net mask, or CIDR
+42. IP addresses are split into two parts, what are the two paarts called?
+43. what does IPV4 use to identify IP address parts? mask notation. For example, consider a router on the 10.0.0.0 network with a subnet mask of 255.255.255.0. This router can take any incoming packet and perform a bitwise AND operation with the subnet mask to determine whether the packet belongs on the local subnet or needs to be forwarded on. For example, this router receives a packet to be delivered to 10.0.0.105. It does a bitwise AND operation on this address with the subnet mask of 255.255.255.0, which produces 10.0.0.0. That matches the subnet of the router, so the traffic is local. If, instead, we consider a packet destined for 10.0.15.22, the result of the bitwise AND with the subnet mask is 10.0.15.0. This address doesn't match the subnet the router is on, and so it must be forwarded.
+44. does ipv6 use CIDR?
+45. how do we describe a situation when a packet is routed from one sender to one receiver? unicast addressing
+46. define broadcast addressing? a single sender to address a packet to all recipients simultaneously.
+47. define multi-cast addressing? one to many communication; it involves group management as the message is addressed and delivered to members of a group
+48. define anycast addressing? packet is delivered to one recipient when you dont care who the recipient is
+49. application level multi-casting and ip multicasting are two different things
+50. what is an ip address used for? to route a packet to a particular system
+51. once the packet arrives at the destination system, how does the system know which application should handle it?
+52. how many bits are used to store port numbers?
+53. what organisation assigns port numbers for specific protocols? IANA
+54. describe the client-server model? a server listens for connections, a client knowing the address and the port number that the server is listening on, sends the first packet
+55. what is a socket? one endpoint of a communication link between systems; think of it as an abstraction that your application can use to send and receive data over a network
+56. an open socket is uniquely defined by tuple of 5 items made up of? 
+57. what is the 5 tuple item used by? 
+58. wht other system uses the 5 tuple item to keep track of connections? NAT gateway stores a 5 tuple item for each connection in order to know how to route ingress packets into the private network
+59. what comman can you use to find your ip address on a windows machine? ipconfig
+60. what command can you use to find your address on a mac/linux/unix? ifconfig or ip addr
+61. do ethernet adapters serve the same purpose as network interface cards? 
+62. what do the commands ipconfig, ifconfig, ip addr show? the ip addresses associated with each adapter on a pc
+63. if a device is operating behind a NAT, how can one find out its public ip address? contact an internet server that provides an API that informs you of the IP address
+64. can you name a few of these public APIs? http://api.ipify.org/, http://icanhazip.com/, http://ifconfig.me
+65. what is the windows networking api called? winsock
 
 
 chapter 2

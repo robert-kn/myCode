@@ -1231,6 +1231,7 @@ the MUX labeled ADDR1MUX indicates that 16 bits are transmitted from PC to an in
 A two-input AND and a two-input OR are both examples of two-input logic functions. How many diﬀerent two-input 
 logic functions are possible? There can be 16 different two input logic functions.
 
+(chapter 3 questions were mostly about logic gates which I don't have sufficient knowledge on to attempt now)
 ----
 
 chapter 4
@@ -1553,3 +1554,74 @@ result of the ADD or AND instruction in a register. For those instructions, the 
 
 FETCH OPERANDS
 
+This phase obtains the source operands needed to process the instruction. In the LD example, this phase took two steps: loading 
+MAR with the address calculated in the EVALUATE ADDRESS phase and reading memory that resulted in the source operand being placed 
+in MDR.
+
+In the ADD example, this phase consisted of obtaining the source operands from R2 and R6. In most current microprocessors, this phase 
+(for the ADD instruction) can be done at the same time the instruction is being executed (the ﬁfth phase of the instruction cycle). 
+
+EXECUTE
+
+This phase carries out the execution of the instruction. In the ADD example, this phase consisted of the step of performing the addition 
+in the ALU.
+
+STORE RESULT
+
+The ﬁnal phase of an instruction’s execution. The result is written to its designated destination. In the case of the ADD instruction, in 
+many computers this action is performed during the EXECUTE phase. That is, in many computers, including the LC-3, an ADD instruction can 
+fetch its source operands, perform the ADD in the ALU, and store the result in the destination register all in a single clock cycle. A 
+separate STORE RESULT phase is not needed.
+
+Once the instruction cycle has been completed, the control unit begins the instruction cycle for the next instruction, starting from the 
+top with the FETCH phase. Since the PC was updated during the previous instruction cycle, it contains at this point the address of the 
+instruction stored in the next sequential memory location. Thus, the next sequential instruction is fetched next. Processing continues in 
+this way until something breaks this sequential ﬂow, or the program ﬁnishes execution.
+
+ADD [eax], edx This is an example of an Intel x86 instruction that requires all six phases of the instruction cycle. All instructions 
+require the ﬁrst two phases, FETCH and DECODE. This instruction uses the eax register to calculate the address of a memory location 
+(EVALUATE ADDRESS). The contents of that memory location is then read (FETCH OPERAND), added to the contents of the edx register (EXECUTE), 
+and the result written into the memory location that originally contained the ﬁrst source operand (STORE RESULT).
+
+Changing the Sequence of Execution
+
+There is a third type of instruction, the control instruction, whose purpose is to change the sequence of instruction execution. For 
+example, there are times, as we shall see very soon, when it is desirable to ﬁrst execute the ﬁrst instruction, then the second, then the 
+third, then the ﬁrst again, the second again, then the third again, then the ﬁrst for the third time, the second for the third time, and 
+so on. As we know, each instruction cycle starts with loading the MAR with the PC. Thus, if we wish to change the sequence of instructions 
+executed, we must change the contents of the PC between the time it is incremented (during the FETCH phase of one instruction) and the 
+start of the FETCH phase of the next instruction.
+
+Control instructions perform that function by loading the PC during the EXECUTE phase, which wipes out the incremented PC that was loaded 
+during the FETCH phase. The result is that, at the start of the next instruction cycle, when the computer accesses the PC to obtain the 
+address of an instruction to fetch, it will get the address loaded during the previous instruction’s EXECUTE phase, rather than the next 
+sequential instruction in the computer’s program.
+
+The most common control instruction is the conditional branch (BR), which either changes the contents of the PC or does not change the 
+contents of the PC, depending on the result of a previous instruction (usually the instruction that is executed immediately before the 
+conditional branch instruction).
+
+The BR Instruction The BR instruction consists of three parts, the opcode (bits [15:12] = 0000), the condition to be tested (bits [11:9]), 
+and the addressing mode bits (bits [8:0]) that are used to form the address to be loaded into the PC if the result of the previous 
+instruction agrees with the test speciﬁed by bits [11:9]. The addressing mode, i.e., the mechanism used to determine the actual address, 
+is the same one we used in the LD instruction. Bits [8:0] are sign-extended to 16 bits and then added to the current contents of the PC.
+
+Suppose the BR instruction shown below is located in memory location x36C9.
+
+15 14 13 12  11 10 9   8  7  6  5  4  3  2  1  0
+0  0  0  0 | 1  0  1 | 1  1  1  1  1  1  0  1  0
+   BR       condition              -6
+
+   The opcode 0000 identiﬁes the instruction as a conditional branch. Bits [11:9] = 101 speciﬁes that the test to be performed on the most 
+   recent result is whether or not that result is something other than 0. In Chapter 5 we will describe in detail all the tests that can 
+   be performed on the most recent result. For now, we will just use one test: Is the result not zero? Bits [8:0] is the value −6.
+
+   Assume the previous instruction executed (in memory location x36C8) was an ADD instruction and the result of the ADD was 0. Since the 
+   test “not-zero” failed, the BR instruction would do nothing during its EXECUTE phase, and so the next instruction executed would be the 
+   instruction at M[x36CA], the address formed by incrementing the PC during the FETCH phase of the BR instruction’s instruction cycle.
+
+   On the other hand, if the result of the ADD instruction is not 0, then the test succeeds, causing the BR instruction to load PC with 
+   x36C4, the address formed by sign-extending bits [8:0] to 16 bits and adding that value (-6) to the incremented PC (x36CA).
+
+   Thus, the next instruction executed after the BR instruction at x36C9 is either the instruction at x36CA or the one at x36C4, depending 
+   on whether the result of the ADD instruction was zero or not zero.

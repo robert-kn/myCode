@@ -44,3 +44,22 @@ only be within a few tens of kilometers (as opposed to a few tens of meters) of 
 40. how do guided media operate? include coax cable, twisted pair coper wire, fibre optic cable; waves are guided along a solid medium
 41. what of unguied mediums, how do they operate? the waves propagate in the atmosphere or in space such as in wireless LAN, digital channel satellite 
 42. what are the characteristics of twisted pair copper wires with regards to cost, data rates? cheapest guided medium and has LAN rates of 10 Mbps to 10 Gbps 
+43. how do fibre optics work? conducts pulses of light where each pulse represents a bit; immune to electromagnetic interference; very low signal attentuation
+44. fibre optics are prevalent for long haul guide transmission media, why has they not been adopted for short haul guided transmission media?
+because of the high costs associated with opticaal devices such as transmitters, receivers and switches
+45. how do radio channels transmit signals? via the electromagnetic spectrum
+46. what factors influence the transmission of a radio channel? propagation environment (interference, signal reflection) and distance over which the signal is to be characterised
+47. what are the 3 categories of radio channels? those that operate over a short distance, those that operate in local areas, those that operate over a wide area
+48. how does a satellite radio channel work? links two or more earth based microwaave transmitter/receiver, known as ground stations
+49. how do geostationary satellites operate? remain permanently above the same spot on the earth about 36000 kilometres
+50. how do low earth orbiting satellites operate? placed much closer to the earth and do not remain permanently above one spot 
+51. how would you define the network core? the mesh of packet switches and links that interconnects the internet end systems
+52. in network aplications, end systems exchange messages with each other. what can these messages exchanged contain? might perform a control function or
+may contain data
+53. what needs to be happen in order for an source end system to send data to a destination end system? the source needs to break messages into smaller chunks
+54. what are these chunks called? packets
+55. between source and destination, the packets travel through what? communication links and packet switches
+56. what are the two pre dominant types of packet switches? routers and link layer switches
+57. at what rate are packets transmitted over each communication link? at a rate equal to the full transmission rate of the link
+58. when it comes to packet switches, describe what is store and forward transmission? a packet switch must receive the entire packet before it can begin 
+to transmit the first bit of the packet onto the outbound link (it must buffer the packet's bits)

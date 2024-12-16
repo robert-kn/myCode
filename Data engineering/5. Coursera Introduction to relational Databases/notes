@@ -359,3 +359,842 @@ peak demand or to reduce costs when demand is low. Data in Db2 warehouse is stor
 storage capacity, you just need to add a node to your deployment. The partitions and their workloads are then 
 automatically rebalanced across the new node setup. Similarly, to scale down, you just remove a node to return to 
 your original state.
+
+what is mysql? mysql1 mysql2 mysql3 mysql4; The default MySQL storage engine is InnoDB mysql6; also supports MyISAM engine 
+mysql7 mysql8 mysql9 mysql10 mysql11 mysql12
+
+what is postgresql? originates from the POSTGRES project at the University of California more than 30 years ago. 
+POSTGRES was used for many research and production applications across a range of industries, including financial 
+services, aviation, and medicine. In 1994, the open source Postgres95 was released, which included an SQL language 
+interpreter. This was soon renamed PostgreSQL, and is today generally pronounced as simply Postgres. You can use it 
+as part of the LAPP, Linux, Apache, PostgreSQL, and PHP stack for web applications and websites. And you can also use
+independently developed extensions for additional functionality such as PostGIS for geographic and spatial data 
+handling. see postgresql1
+
+When using Postgres, you can use all the standard relational database constructs such as keys, transactions, views, 
+functions, and stored procedures. And you can also use some of the NoSQL functionality such as JSON for structured 
+data and HSTORE for non-hierarchical data. see postgresql2 postgresql2 
+
+For even greater flexibility for scaling applications, you can use commercial additions such as EDB PostgreSQL 
+replication server, which provide multi-master read/write replication. This enables you to run multiple read/write 
+databases that all replicate changes with each other. If one fails, users can easily be redirected to another 
+instance until it is available again. see postgresql4
+
+Other technologies that have been added to PostgreSQL in recent releases to enhance scalability and working with 
+larger data sets include partitioning, which enables you to split a large table into multiple smaller sections or 
+partitions to improve query performance. And sharding, which enables you to store horizontal partitions across 
+multiple remote servers. 
+
+In the world of managing databases, it's super important to understand some fancy concepts to make databases work 
+well. Three big ones are functional dependencies, multi-valued dependencies, and candidate keys. These are like the 
+building blocks for organizing and speeding up databases.
+
+1. Functional Dependencies (FDs)
+
+FDs are fundamental building blocks for ensuring data integrity and consistency in relational databases. They 
+represent a specific type of relationship between attributes in a relation, where the value of one attribute 
+(determinant) uniquely determines the value of another attribute (dependent). In simpler terms, if you know the value 
+of the determinant, you can always identify the exact value of the dependent attribute.
+
+For example, if you know an employee's ID number, you can look it up in the table and find out their first and last 
+name. In this case, the employee ID "determines" the first and last name. This is a functional dependency. Think of it
+as a special kind of connection between pieces of information. The determining attribute acts like a key that unlocks
+the related information.
+
+Properties of FDs:
+
+- Notation: FDs are typically written as X -> Y, where X is the determinant and Y is the dependent attribute.
+
+Properties:
+
+- Reflexivity: X -> X (every attribute determines itself).
+- Transitivity: If X -> Y and Y -> Z, then X -> Z (dependencies can chain together).
+- Closure: The minimal set of FDs that implies all other FDs in a relation.
+
+Key points
+
+- FDs are essential for maintaining data accuracy and minimizing redundancy.
+- They play a crucial role in database normalization, ensuring the efficient organization of data.
+- FDs help in eliminating unnecessary repetition and ensuring the correctness of data.
+
+2. Multi-Valued Dependencies (MVDs)
+
+MVDs are more complex than FDs. With an MVD one attribute, the determinant, determines a set of possible values for 
+another attribute, the dependent. In other words, knowing the value of the determinant narrows down the potential 
+values the dependent attribute can hold.
+
+Here's how it works:
+
+- If you know an employee's ID (let's say ID 123), you can't just look it up and find their one assigned project.
+- With MVD, knowing ID 123 tells you there will be multiple rows in the table, each listing a different project that 
+employee 123 works on.
+- So, the employee ID "multi-determines" the project because it doesn't give you a single answer, but lets you know 
+there are potentially several project assignments for that employee in separate rows. This is different from a regular 
+dependency, where one piece of information leads to one or two specific others.
+
+Properties of MVDs:
+
+Notation: 
+
+- MVDs are written as X -> {Y1, Y2, …, Yn}, where X is the determinant and Y1, Y2, …, Yn are the possible values for the dependent attribute.
+
+Properties:
+
+- MVDs have similar properties to FDs, like reflexivity and transitivity. However, they lack the closure property.
+- dentifying MVDs helps understand the complex relationships between attributes and ensures data consistency within those relationships. Violations of MVDs can lead to invalid data entries.
+
+Key points:
+
+- MVDs are essential for organizing complex relationships between sets of attributes.
+- They help in avoiding mix-ups and ensuring proper organization of data.
+- Understanding MVDs is crucial for maintaining data integrity and optimizing database performance.
+
+3. Candidate Keys
+
+Candidate keys uniquely identify each row in a relation. They represent a minimal set of attributes that collectively 
+guarantee no duplicates exist in the table. In other words, if you know the values of the candidate key, you can 
+pinpoint a specific row and only that row. The keys are unique within that table.
+
+Imagine going back to the basic table with just employee ID, first name, and last name.
+
+- An employee ID is a strong candidate key on its own. Why? Because every employee has a unique ID, knowing the ID 
+instantly tells you which record belongs to that particular employee.
+- Here's the twist: This table might have another candidate key! Think about it: what if two employees have the same 
+first and last name (less common, but possible)? In that case, the combination of first name and last name wouldn't 
+be enough to distinguish between them.
+- But the employee ID, by itself, will always be unique and pinpoint the exact employee. That's why a single 
+attribute (employee ID) can be a candidate key in this scenario.
+
+Key points:
+
+- Uniqueness: Each combination of values in the candidate key must uniquely identify a distinct row.
+- Minimality: No proper subset of the candidate key should be able to uniquely identify a row. This ensures that the 
+candidate key is the smallest possible set of attributes needed for unique identification.
+- Performance: Having well-defined candidate keys significantly improves query performance. Queries searching for 
+specific rows can utilize indexing on the candidate key for faster data retrieval. It also helps maintain data 
+integrity by preventing duplicate entries.
+- Multiple keys: A relation can have multiple candidate keys, meaning different minimal sets of attributes can 
+uniquely identify each row.
+
+Here's the important thing: A table can have multiple candidate keys. As long as a set of attributes guarantees 
+finding one specific employee record and no others, it qualifies as a candidate key. The key thing is that it 
+uniquely identifies a row in the table.
+
+Practical scenario
+
+Let's consider a hypothetical scenario where we have a database for tracking employee projects. Each employee can work 
+on multiple projects, and each project can involve multiple employees. We'll create a table to represent this 
+scenario:
+
+EmployeeID	ProjectID	EmployeeName	ProjectName	    Department
+1	        101	        Alice	        Project X	    HR
+1	        102	        Alice	        Project Y	    Finance
+2	        101	        Bob	            Project X	    HR
+3	        101	        Charlie	        Project X	    IT
+3	        102	        Charlie	        Project Y	    Finance
+
+In this table:
+
+EmployeeID: Unique identifier for each employee.
+ProjectID: Unique identifier for each project.
+EmployeeName: Name of the employee.
+ProjectName: Name of the project.
+Department: Department to which the project belongs.
+
+Functional Dependencies (FDs)
+
+EmployeeID -> EmployeeName
+
+- Knowing the EmployeeID uniquely determines the EmployeeName.
+- For instance, if you look up EmployeeID 1 in the table, it uniquely identifies the EmployeeName as "Alice".
+    EmployeeID -> EmployeeName
+    1 -> Alice
+
+ProjectID -> ProjectName
+
+Knowing the ProjectID uniquely determines the ProjectName.
+In the table, ProjectID 101 corresponds to "Project X" and ProjectID 102 corresponds to "Project Y", demonstrating a one-to-one relationship.
+    ProjectID ↔ ProjectName
+    101 ↔ Project X
+    102 ↔ Project Y
+
+
+Multi-Valued Dependencies (MVDs)
+
+{EmployeeID} ->> {ProjectID}
+
+- Knowing the EmployeeID tells us all the projects that employees are working on, independent of each other.
+
+Let's revisit the example of EmployeeID 1 (Alice) from the table:
+
+EmployeeID 1 is associated with ProjectID 101 (Project X) in the HR department.
+EmployeeID 1 is also associated with ProjectID 102 (Project Y) in the Finance department.
+
+EmployeeID – {associated with} –> ProjectID (department)
+1———–> 101 (HR)
+1———–> 102 (Finance)
+
+Knowing only EmployeeID 1 doesn't tell you which specific project Alice works on. It indicates there are potentially 
+several project assignments for her, reflected in separate rows in the table. This highlights the many-to-many 
+relationship between EmployeeID and ProjectID.
+
+Candidate Keys
+
+There are two candidate keys (CKs):
+
+EmployeeID: As discussed earlier, each employee has a unique identifier (EmployeeID) that pinpoints their specific 
+record. You can identify any employee solely based on their EmployeeID, making it a candidate key.
+
+EmployeeID -> EmployeeName
+1 -> Alice
+
+Combination of EmployeeID, ProjectID: This might seem surprising, but consider a scenario where every employee has a 
+distinct name within a project (no duplicates within projects). In that case, the combination of EmployeeName and 
+ProjectID would uniquely identify each employee record.
+
+EmployeeID and ProjectID determine the Department
+EmployeeID -> ProjectID ==> Department
+1 -> 101 => HR
+
+For instance, if Alice was assigned to Project X and Charlie to Project Y (assuming unique names within projects), 
+then the combination of "John" and "Project X" or "Mary" and "Project Y" would uniquely identify their respective rows.
+
+Summary
+
+Aspect	    Functional Dependencies	                            Multi-Valued Dependencies (MVDs)	                    Candidate Keys
+Definition	Describe relationships between attributes	        Extend the concept to groups of attributes	            Sets of attributes uniquely identifying rows
+Essence	    Values of certain attributes determined by others	Dependencies between sets of attributes	                Uniquely identify each row in a table
+Example	    Knowing one attribute allows finding another	    Describe how sets of attributes determine each other	Combination of attributes uniquely identifying each record
+Purpose	    Ensure data accuracy and minimize redundancy	    Organize data effectively, avoiding mix-ups	            Enforce entity integrity constraints
+Usage	    Essential for database normalization	            Crucial for maintaining data integrity	                Establish relationships between tables
+
+Now, let's apply the concepts learned in this module to a real-world example of a database.
+
+After completing this reading, you will be able to evaluate your knowledge of Advanced relational model concepts.
+
+Here you are going to:
+
+Apply advanced relational concepts like functional dependencies, multi-valued dependencies, and candidate keys to the
+"Car Dealership" database schema.
+Identify constraints within the schema based on these concepts.
+Understand the impact of these concepts on data integrity and manipulation.
+
+Exercise
+
+In this exercise, we will work on a relational database schema called Car Dealership, designed to keep track of 
+automobile sales in a car dealership.
+
+Schema diagram for the Car Dealership relational database see Car_dealership 1.png
+
+Relational instance of SALE: Car_dealership 2.png
+
+Now, let's go through some questions based on the above database schema of Car Dealership and the relational instance of SALE:
+
+1. Identify FDs in the Car Dealership schema:
+
+A. Analyze each pair of attributes in each relation (Car, Sale, Salesperson, Customer).
+
+B. For each pair, consider if the value of one attribute always determines the value of the other.
+
+C. List all identified FDs for each relation.
+
+Car:
+
+Serial_no -> (Model, Manufacturer, Price)
+
+Model -> Manufacturer
+
+Sale:
+
+Serial_no -> Date
+
+Serial_no -> Sale_Price
+
+Salesperson:
+
+Salesperson_id -> Name
+
+Salesperson_id -> Phone
+
+2. Explore MVDs:
+
+A. Consider if any attribute in the schema determines a set of possible values for another.
+
+B. For example, does "Car Model" determine a set of possible values for "Sale Price"?
+
+C. List any identified MVDs for the schema.
+
+No MVDs are explicitly identified in the given schema.
+
+3. Determine candidate keys:
+
+A. Analyze each relation and identify any subset of attributes that uniquely identifies each row.
+
+B. Remember, a candidate key must not contain any redundant attributes.
+
+C. List all identified candidate keys for each relation.
+
+Car: Serial_no
+
+Sale: Serial_no
+
+Salesperson: Salesperson_id
+
+4. Discuss the implications:
+
+A. How do the identified FDs and MVDs impact data integrity and manipulation in the schema?
+
+B. Could any data inconsistencies arise due to violating these constraints?
+
+C. How do candidate keys affect query optimization and data retrieval?
+
+A. Data Integrity: The identified FDs and candidate keys help ensure data integrity by preventing inconsistencies:
+
+Changing Serial_no automatically updates dependent attributes in Car.
+
+Serial_no and Date prevents duplicate sales and ensures association with correct car and salesperson.
+
+Unique keys (Serial_No, Salesperson_id ) guarantee distinct, identifiable entities.
+
+Data Manipulation: FDs guide proper data updates. Modifying VIN requires cascading changes to dependent attributes.
+
+B. Potential Inconsistencies due to Constraint Violations:
+
+Incorrect data updates: Forgetting to update dependent attributes when modifying a determining attribute (e.g., changing Serial_no without updating Model) can lead to inconsistencies.
+
+Duplicate data: if Serial No doesn't determine Price, multiple entries with the same car could have different prices.
+
+Inaccurate queries: A salesperson selling a non-existent car if Salesperson_id doesn't determine Serial_no.
+
+C. Effects on query optimization and data retrieval:
+
+Impact of candidate keys: Unique candidate keys (Serial_no for Car, Serial_no for Sale, etc.) significantly improve query performance by creating efficient indexing mechanisms.
+
+Fast lookups: Queries using candidate keys can quickly locate specific rows without scanning the entire table, resulting in faster data retrieval.
+
+Reduced redundancy: Candidate keys eliminate redundant identifiers, resulting in smaller data storage requirements and potentially faster table scans for non-indexed searches.
+
+SQL Statements are used for interacting with Entities (that is, tables), Attributes (that is, columns) and their tuples
+(or rows with data values) in relational databases. SQL statements fall into two different categories: Data Definition 
+Language statements and Data Manipulation Language statements. 
+
+Data Definition Language (or DDL) statements are used to define, change, or drop database objects such as tables. 
+Common DDL statement types include CREATE, ALTER, TRUNCATE, and DROP. CREATE: which is used for creating tables and 
+defining its columns; ALTER: is used for altering tables including adding and dropping columns and modifying their 
+datatypes; TRUNCATE: is used for deleting data in a table but not the table itself; DROP: is used for deleting tables.
+see DDL1.png
+
+Data Manipulation Language (or DML) statements are used to read and modify data in tables. These are also sometimes 
+referred to as CRUD operations, that is, Create, Read, Update and Delete rows in a table. Common DML statement types 
+include INSERT, SELECT, UPDATE, and DELETE. INSERT: is used for inserting a row or several rows of data into a table; 
+SELECT: reads or selects row or rows from a table; UPDATE: edits row or rows in a table; And DELETE: removes a row or 
+rows of data from a table. see DML1.png
+
+what about creating tables? see creating-tables1 creating-tables2 creating-tables3 creating-tables4 creating-tables5 
+creating-tables6 creating-tables7 creating-tables8 creating-tables9 creating-tables10 creating-tables11 
+creating-tables12 creating-tables13 creating-tables14 creating-tables15 creating-tables16 creating-tables17
+creating-tables18 creating-tables28 creating-tables19 creating-tables20 creating-tables21 creating-tables22 creating-tables23
+creating-tables24 creating-tables25 creating-tables26 creating-tables27
+
+Data engineers and database administrators often need to move data into and out of an existing database. There are 
+multiple reasons for this action. These include, populating the database and its objects like tables, creating a 
+duplicate database for development and testing needs. Creating a snapshot of the state of the database for disaster 
+recovery, generating a new table using data from external sources or files, adding data into one or more existing 
+tables. see data-movement1
+
+Most databases support different ways to move data in and out of the database using multiple file formats. Each 
+database has its tools and utilities for data movement, but for this lesson we will classify them into three 
+categories, backup and restore, import and export, and load. see data-movement2 data-movement3 data-movement4 
+data-movement5 data-movement6 (create copies of the database for development and test purposes) data-movement7
+data-movement8 data-movement9 data-movement10 data-movement11 data-movement12 data-movement13
+
+Using SQL statements such as insert to add data into tables can work well for a few rows or when you are developing 
+and testing your database systems. However, it's often not practical to use this method to load hundreds or thousands 
+of rows of data. see loading-data1
+
+Instead, most relational database management systems, or RDBMS, provide a method of directly loading large amounts of 
+data into tables in a quick, efficient, and scalable manner. Your data might originate from a range of different 
+sources in a variety of formats. For example, you might want to populate your table with information exported from 
+another database into limited text files or object data output from a bespoke application. see loading-data2
+loading-data3
+
+hands on lab: Create Tables and Load Data in Datasette
+
+Objectives
+
+After completing this lab, you will be able to:
+
+Create and load data into a table from a CSV file
+Create and load data into a table from a SQL script file
+
+What did you learn?
+
+- how to load a csv file from n S3 bucket into a dataset in the datasette tool, fairly simple and straightforward.
+- loaded data from the below SQL script file
+
+-- Drop the tables in case they exist
+
+DROP TABLE IF EXISTS BookShop;
+DROP TABLE IF EXISTS BookShop_AuthorDetails;
+
+-- Create the table
+
+CREATE TABLE BookShop (
+	BOOK_ID VARCHAR(4) NOT NULL, 
+	TITLE VARCHAR(100) NOT NULL, 
+	AUTHOR_NAME VARCHAR(30) NOT NULL, 
+	AUTHOR_BIO VARCHAR(250),
+	AUTHOR_ID INTEGER NOT NULL, 
+	PUBLICATION_DATE DATE NOT NULL, 
+	PRICE_USD DECIMAL(6,2) CHECK(Price_USD>0) NOT NULL
+	);
+
+-- Insert sample data into the table
+
+INSERT INTO BookShop VALUES
+('B101', 'Introduction to Algorithms', 'Thomas H. Cormen', 'Thomas H. Cormen is the co-author of Introduction to Algorithms, along with Charles Leiserson, Ron Rivest, and Cliff Stein. He is a Full Professor of computer science at Dartmouth College and currently Chair of the Dartmouth College Writing Program.', 123 , '2001-09-01', 125),
+('B201', 'Structure and Interpretation of Computer Programs', 'Harold Abelson', 'Harold Abelson, Ph.D., is Class of 1922 Professor of Computer Science and Engineering in the Department of Electrical Engineering and Computer Science at MIT and a fellow of the IEEE.', 456, '1996-07-25', 65.5),
+('B301', 'Deep Learning', 'Ian Goodfellow', 'Ian J. Goodfellow is a researcher working in machine learning, currently employed at Apple Inc. as its director of machine learning in the Special Projects Group. He was previously employed as a research scientist at Google Brain.', 369, '2016-11-01', 82.7),
+('B401', 'Algorithms Unlocked', 'Thomas H. Cormen', 'Thomas H. Cormen is the co-author of Introduction to Algorithms, along with Charles Leiserson, Ron Rivest, and Cliff Stein. He is a Full Professor of computer science at Dartmouth College and currently Chair of the Dartmouth College Writing Program.', 123, '2013-05-15', 36.5),
+('B501', 'Machine Learning: A Probabilistic Perspective', 'Kevin P. Murphy', '', 157, '2012-08-24', 46);
+
+-- Retrieve all records from the table
+
+SELECT * FROM BookShop;
+
+At this point, you know that:
+
+DDL (Data Definition Language) statements, such as CREATE, ALTER, and DROP, are used for defining, modifying, and 
+deleting objects in a database, like tables and their attributes.
+
+When creating tables, key considerations involve selecting a schema, defining columns with names, datatypes, and 
+optional values like primary key constraints, and referencing an Entity Relationship Diagram (ERD).
+
+Methods for creating tables include using visual interfaces like the Db2 on Cloud console, SQL statements, and 
+administrative APIs.
+
+Post-creation actions may include generating SQL code, modifying table structure, exploring dependencies, and 
+dropping the table if necessary.
+
+Data manipulation involves DML (Data Manipulation Language) statements for working with data within tables, such as 
+inserting, updating, deleting, or querying records.
+
+Data movement tasks include populating databases initially, adding or appending data, making copies for development 
+tests or disaster recovery, and ensuring scalability.
+
+Utilities like BACKUP and RESTORE are used to create and recover copies of entire databases, including tables, views, 
+constraints, and their data.
+
+The IMPORT utility facilitates inserting data into tables from different formats like DEL/CSV (delimited CSV), ASC, and IXF, while 
+the EXPORT utility saves table data into various formats like CSV.
+
+LOAD utilities enable high-performance insertion of large volumes of data into specified tables, offering quicker and 
+more efficient data loading compared to multiple INSERT statements.
+
+Loading data can be done from various sources, including delimited text files and Cloud Object Storage, and can be 
+managed through user-friendly interfaces like the Load Data utility in the Db2 Web Console.
+
+Relational database management systems RDBMSs contain many objects that database engineers and database administrators 
+must organize. Storing tables, constraints, indexes, and other database objects in a hierarchical structure allows 
+database administrators to manage security, maintenance, and accessibility. This hierarchy gives you an overview of 
+how RDBMSs are structured. Although slight variations may occur between products, most RDBMSs begin with an instance, 
+a single way of organizing the database and everything it contains. Many RDBMSs permit more than one database within a 
+single instance. You will generally find at least one schema at some level in the hierarchy. A schema is a logical 
+grouping of objects within a database. Schemas define how database objects are named and prevent ambiguous references. 
+Some RDBMSs consider the schema a parent object of a database, and others consider it a database object. There are 
+database objects within a schema, including tables, constraints, and indexes. An instance is a logical boundary for a 
+database, or set of databases where you organize database objects and set configuration parameters. Every database 
+within an instance is assigned a unique name, has its own set of system catalog tables, which keep track of the objects 
+within the database, and has its own configuration files. You have the option to generate multiple instances on a 
+single physical server, ensuring a distinct database server environment for each instance. The databases and other 
+objects within one instance are isolated from those in any other instance. It is possible to establish multiple 
+instances on a single physical server, thereby creating distinct database server environments for each instance. Not 
+all RDBMSs use the concept of instances, often managing database configuration information in a special database 
+instead.
+
+In cloud based RDBMs, the term instance means a specific running copy of a service. A relational database comprises 
+objects designed for the storage, management, and retrieval of data. These objects include tables, views, indexes, 
+functions, triggers, and packages. Database objects can be either defined by the system built-in objects, or defined 
+by the user; User defined objects. in a relational database, database engineers establish relationships between tables 
+to reduce redundant data and improve data integrity. A distributed relational database shares tables and other objects 
+across different but interconnected computer systems. A schema is a specialized database object that provides a way 
+to group other database objects logically. A schema has the capability to include tables, views, nicknames, triggers, 
+functions, packages, and various other objects. When you create a database object, you can assign it to a schema. If 
+you want to assign the object to a specific schema, you can explicitly include the schema name. If you don't include 
+the schema name, the object is implicitly assigned to the current schema. In most RDBMSs, the default schema is the 
+user schema for the currently logged on user. A schema also provides a naming context, using the schema name as a name 
+qualifier enables you to distinguish between objects with the same name in different schemas. For example, the schema 
+names internal and external make it easy to distinguish two different sales tables, internal sales in the internal 
+schema, and external sales in the external schema. Thus, schemas enable multiple applications to store data in a 
+single database without encountering namespace conflicts. Many RDBMSs use a specialized schema to hold configuration 
+information and metadata about a particular database. For example, tables in a system schema can store lists of 
+database users and their access permissions, information about the indexes on tables, details of any database 
+partitions that exist, and user-defined data types. A partitioned relational database is one where data is distributed 
+and managed across multiple database partitions within the relational database system. You can partition tables that 
+need to contain large quantities of data into multiple logical partitions, with each partition containing a subset of 
+the overall data. Database partitioning is used in scenarios that involve large volumes of data, such as data 
+warehousing and data analysis for business intelligence. Database objects encompass items present within the database. 
+The process of database design includes defining database objects and their relationships with each other. In most 
+RDBMSs, you can create objects such as tables, these are logical structures consisting of rows and columns that store 
+data. Constraints within any business, data is often subject to certain restrictions or rules. For example, it is 
+imperative for an employee number to be distinct or unique. Constraints provide a way to enforce such rules. Indexes, 
+an index is a set of pointers used to improve performance and ensure the uniqueness of the data. Views, a view 
+provides a different way of representing the data in one or more tables. It's important to note that a view is not an 
+actual table, and does not demand permanent storage. Aliases, an alias serves as an alternative name for an object 
+such as a table. It can be used to provide a shorter, simpler name to reference an object. You can create and manage 
+database objects through graphical database management tools, scripting or accessing the database through an API. If 
+you are using SQL to create or manage the object, you will use data definition language statements like create or 
+alter. 
+
+You can use the primary key to uniquely identify every row in a table. In some tables, the choice of the primary key 
+is easy because it is a naturally occurring unique attribute of an entity. For example, the book_id of a book or the 
+employee_id number of a staff member. If your table doesn't have an existing unique attribute, you can add a column 
+to the table to serve as the primary key. Or if a combination of the two attributes uniquely identifies each row, you 
+can create a primary key across the two columns. For example, where employees have a unique identifier within their 
+work site, you can use the combination of their site_id and employee_id. Note that each table can only have one 
+primary key. You can create a primary key when you create the table by using the PRIMARY KEY clause and the CREATE 
+TABLE statement. In the parentheses for the PRIMARY KEY clause, state the name of the column or columns that will be 
+the primary key see primary-key1. Alternatively, you can create a primary key on the existing table by using the ADD 
+PRIMARY KEY clause of the ALTER TABLE statement see primary-key2. Again, in the parentheses state the name of the 
+column or columns, that will be the primary key.
+
+You use primary and foreign keys to define the relationships between your tables. A foreign key is a table column that 
+holds information identical to the primary key in another table. For example, the copy table might list all books that 
+the library owns. Therefore, the book_id of a copy of an individual book must exist in the book table as a valid book. 
+see foreign-key1. When the library owns multiple copies of a popular book, the book_id of that particular book will 
+appear multiple times in the copy table. You can also specify that whenever you add a row to the copy table, the 
+book_id you use must already exist in the book table. Similar to primary keys, you can create a foreign key when you 
+create the table by using the CONSTRAINT name FOREIGN KEY clause of the create table statement. In the parentheses for 
+the FOREIGN KEY clause state the name of the column or columns that will be the foreign key and then reference the 
+table and primary key column that the foreign key links to see foreign-key2. You can also use the rule clause to 
+define what action to take if a row in the parent table, the table with the primary key, is updated or deleted. For 
+updates and deletes, you can specify to take no action, in which case the update or delete option on the parent table 
+may fail see foreign-key3. For deletions, you can also specify to cascade the delete, that is to delete the related 
+child row in the dependent table or to set the values in the foreign key column of the child table to null see 
+foreign-key4. Alternatively, you can create a primary key on an existing table by using the ADD PRIMARY KEY clause of 
+the alter table statement. Again, in the parentheses state the name of the column or columns, that will be the 
+primary key. Note to use a comma to separate the column names when using multiple columns for a primary key.
+
+Imagine you have a library with a collection of books. If you want to find a specific book, you could go through each 
+shelf individually until you find it. However, this approach can be quite time consuming and inefficient. A better way 
+to locate the book would be to use the library's catalog. The catalog is an index of all the books in the library, and 
+it lists each book by its title, author, and other relevant information. 
+
+When you use the catalog to find a book, you navigate through the index to locate its entry. Indexing a table in a 
+database works similarly. An index is a data structure that allows you to find specific rows in a table based on 
+certain criteria quickly. For example, if you have a customer data table, you could create an index in the customer's 
+name. Column indexing would allow you to find all the table rows belonging to a specific customer quickly. Here are 
+some real world examples of how databases use indexing. Some of these examples include online shopping websites, 
+airline reservation systems, and bank ATM's. When you search for a product on an online shopping website, the website 
+uses indexes to locate products that align with your search criteria efficiently. When you search for a flight on an 
+airline website, the website uses indexes to find the flights that meet your criteria quickly. Lastly, when you 
+withdraw money from an ATM, the ATM uses indexes to retrieve your account information quickly. 
+
+Indexes can significantly improve the performance database queries. They allow the database to quickly find the 
+relevant rows to the query without scanning the entire table. Usually, when you add data to a table, it is added to 
+the end of the table. However, this action has no guarantee or inherent order to the data. When you select a 
+particular row from that table, the processor must check each row until it finds the one you want. On a large table, 
+it can significantly slow down the process of locating a specific row. Also, when you select multiple rows, the result 
+may lack a specific order unless you specify a sort order in your select statement. As you might want to return the 
+rows in a particular order or select a subset of sequential rows, you can create an index on a table to locate the 
+row or set of rows that you need quickly. An index works by storing pointers to 
+each row in the table, so that when you request a particular row, the SQL processor can use the index to locate the 
+row quickly. It is similar to how you use the index in a book to find a particular section quickly. The unique key 
+dictates the order of the index on which values rely see index-1. By default, when you create a primary key on a table, 
+the system automatically generates an index on that key. However, you can also create your indexes on regularly 
+searched columns see index-2. Use the create index statement to define the index, specifying the index name, its 
+uniqueness, and the table and column on which to base it. Indexes provide the database user with many benefits. These
+include improved performance of select, reduced need to sort data, and guaranteed uniqueness of rows. Improved 
+performance of select queries when searching on an indexed column. Because the index offers a quick route to locate 
+rows matching the search term, it 
+returns results faster than when it needs to check every row in the table. Reduced need to sort data. If you 
+constantly need rows in a specific order, employing an index can eliminate the necessity to sort the rows after their 
+retrieval. Guaranteed uniqueness of rows. If you use the unique clause when you create the index, you ensure that 
+updates and insertions won't result in duplicate entries in that column. There are, however, a few disadvantages of 
+indexes as well. These include use of disk space. Each index you create uses disc space in the same way that adding 
+indexes increases the number of pages in a book. Decreased performance of insert, update, and delete queries. Because 
+the rows in an indexed table are sorted according to the index, adding or removing rows can take longer than a non 
+indexed table.
+
+When you keep records of data such as books in a bookshop, you will inevitably have some inconsistencies and duplicate 
+information. Such duplication can cause extra work and inconsistencies if the data is updated, because you must change 
+it in more than one place. Normalization is the process of organizing your data to reduce redundant data, often by 
+dividing larger tables into multiple relatable tables. Normalization helps speed up transactions because you perform 
+updates, additions, and deletes only once on a normalized database. It also improves data integrity because it reduces 
+the chance of a change being made in one place but not in another. As you begin the normalization process, it's 
+important to recognize that you focus on normalizing each table until you've reached the required normal form level.
+
+Normalization usually results in creating more tables, and once all the tables are normalized, you will have a 
+normalized database. There are several forms of normalization, and most data engineers will need to be familiar with 
+the first normal form, second normal form, and third normal form. For a table to be in the first normal form, each 
+row must be unique and each cell must contain only a single value. First normal form is also called 1NF. Let's look 
+at how you would normalize a simple table. In this example, the book table contains some basic information about books, 
+including titles, formats, and authors see normalisation1. To adhere to the requirements of the first normal form, it is essential that 
+each cell contains a singular value rather than a list. In this example, you can observe that all variations of a book's 
+format are recorded within the same cell. To normalize this table, you can add an extra row and split the two formats 
+of patterns and software into their own row see normalisation2. So now you have a row for the paperback version and a row for the 
+hardback version. Each cell in the table now has only one entry, and so the table is in the first normal form.
+
+To be in the second normal form, the database must already be in first normal form, which involves ensuring that every 
+row in the table is unique, and that each cell contains only a single value. Second normal form specifies that you 
+should separate groups of values that apply to multiple rows by creating new tables. Second normal form is also 
+referred to as 2NF. For clarity, this example shows just a subset of the data in the book table see normalisation3. 
+Book 401 comes in both paperback and hardback format, so in its current form, it must be listed twice, once for each 
+format. In this case, the format column contains values that apply to both rows that reference book 401, so there is 
+some data duplication. To meet the requirements for the second normal form and achieve just one row for book 401, 
+You can split the book table so that the format information for the book is separated from unrelated information such 
+as title and author, each resulting table is in 1NF see normalisation4. To maintain a relationship between the two 
+tables, identify a primary key for one table that will be used as a foreign key in the other. In this example, the 
+book ID is unique to each book, so you can make that the primary key in the book table and include it as a foreign key 
+in the format table see normalisation5. Now you can use it to link between the two tables to find the different formats 
+of each of the unique books. The database must already be in the first and second normal forms to meet the requirements 
+for the third normal form. 
+
+Next, you must eliminate any columns that do not depend on the key. Third normal form is also referred to as 3NF. 
+Let's consider some additional data about books, the publisher, and where the book ships from. Each publisher ships 
+books from warehouses in their own location. So where the book ships from depends on the publisher, not the book ID. 
+see normalisation6. Therefore, the book table is not in 3NF because the ships from data does not depend on the primary 
+key. To fulfill the criteria of the third normal form, 3NF, it is necessary to segregate the publisher and ship's 
+details into a dedicated publisher's table see normalisation7. Both tables are now in third normal form, which is as 
+far as most relational databases go. There are also higher normal forms such as Boyce-Codd normal form, or BCNF, which 
+is an extension to the third normal form, as well as fourth and fifth normal forms, which may be needed for specific 
+scenarios. In transactional systems, OLTP, where data is both read and written frequently, you typically normalize 
+the data to 3NF. OLTP systems need to process and store transactions as well as query transactional data, and 
+normalizing the data to 3NF helps the database to process and store individual transactions efficiently. In analytical 
+OLAP systems, where users primarily read data, databases prioritize read performance over write integrity. Hence, the 
+data may have undergone some denormalization to a lower normal form before being loaded into the analytical system, 
+such as a data warehouse. In data warehousing, data, engineers focus on performance, which can benefit from having 
+fewer tables to process.
+
+In a business, a data relational model needs to adhere to certain restrictions or rules. In a relational data model, 
+data integrity can be implemented using integrity rules or constraints. The following six constraints are defined in 
+a relational database model, entity integrity constraint, referential integrity constraint, semantic integrity 
+constraint, domain constraint, null constraint, and check constraint. To identify each tuple in a relation, the 
+relation must have a primary key. The primary key is a unique value that identifies each tuple or row in a table. This 
+is the entity integrity constraint. The terms primary key constraint or unique constraint are also used. This 
+constraint prevents duplicate values in a table. To implement these constraints, indexes are used. According to the 
+entity integrity constraint, no attribute that is a part of the primary key of a relation should have null values. The 
+value null indicates that the value is unknown. In the entity integrity constraint, the primary key cannot have an 
+unknown value. For example, in the relation author, author ID is the primary key. The primary key identifies each 
+tuple in the relation. The author ID A1, points to author Raul Chong from Toronto. If you replace the value A1 with 
+null, you can still identify the author as Raul Chong. However, if you also replace author ID A4 with null, now you 
+do not know which null value identifies which tuple see constraints1. With the entity integrity constraint, no 
+attribute participating in the primary key is allowed to accept null values. Relationships between tables are defined 
+by the referential integrity constraint. This constraint endorses the relationships between tables. The validity of 
+the data is enforced using a combination of primary keys and foreign keys. As mentioned previously, for a book to 
+exist, it has to be written by at least one author. The correctness of the data in a table is enforced by the semantic 
+integrity constraint. For example, in the relation author, if the attribute or column city contains a garbage value 
+instead of Toronto, the garbage value does not have any meaning see constraints2. The semantic integrity constraint is
+related to the correctness of the data. A domain constraint checks for valid values for a given attribute. For example, 
+in the relation author, the attribute country must contain a two letter country code, such as CA for Canada or IN for 
+India. If a number value of 34 is entered for the country attribute, instead of a two-letter country code, the value 
+34 does not have any meaning see constraints3. As observed earlier, the entity integrity constraint states that no 
+attribute that is part of the primary key should accept null values. The null constraint ensures that attribute values 
+should not be null. For example, in the relation author, if either last name or first name contains a null value, it 
+could be difficult to identify the correct author see constraints4. In this example, first name and last name 
+attribute values cannot be null. An author must have a name. The check constraint enforces domain integrity by 
+limiting the values that are accepted by an attribute. In the relation book, the attribute year is the year in which 
+a particular book is published. If this was still the year 2010, it would not be meaningful to have a year greater 
+than the current year. The check constraint would enforce the domain integrity by limiting the values that are 
+accepted by the attribute year see constraints5.
+
+Hands-on Lab: Normalization, Keys, and Constraints in Relational Database
+
+Instructions
+
+In this lab, you will explore normalization, keys, and constraints in Datasette. Initially, you will learn how to 
+minimize data redundancy and inconsistency in a database by normalizing tables. Next, you will learn how to use keys 
+to uniquely identify a record in a table, to establish a relationship between tables, and to identify the relation 
+between them. Finally, you will learn about different kinds of relational model constraints that help to maintain 
+data integrity in a relational data model.
+
+Objectives
+
+After completing this lab, you will be able to:
+
+Minimize data redundancy and inconsistency in a database by using normalization.
+Use keys to uniquely identify a record in a table, establish a relationship between tables, and identify the 
+relation between them.
+Maintain data integrity in a relational data model using constraints.
+
+Exercise 1: Normalization
+
+In this exercise, you will learn about first normal form (1NF) and implement second normal form (2NF).
+
+Task A: First normal form (1NF)
+
+In this task of normalization, you will be working with the BookShop table. The following image shows the 
+BookShop table: see BookShop_table_Not_1NF
+
+You will answer some questions to determine if the table above is in 1NF.
+
+Does the above table have unique rows? Yes, you can uniquely identify each row.
+
+Does each cell of the above table have single/atomic value? No. The columns AUTHOR_NAME and AUTHOR_ID contain multi 
+valued cell.
+
+By definition, a table is in 1NF if every attribute in that relation contains single valued data and every tuple in 
+that relation is unique. Does the above table fall in first normal form? No, the table is not in 1NF since it has 
+unique rows but not all single valued cell.
+
+If your answer to question 3 is No, how can you normalize the table to ensure first normal form? To normalize this 
+table, add an extra row, and split the multiple author names as well as multiple author IDs of the row containing 
+multi-valued data into their own row.
+
+Task B: Second normal form (2NF)
+
+Download the BookShop-CREATE-INSERT.sql script below, copy and paste it to the Datasette lab, and run it. The script 
+will drop any previous BookShop table that exists, create the new BookShop table, and populate it with the sample 
+data required for this lab. see BookShop_table
+
+By definition, a relation is in second normal form if it is already in 1NF and does not contain any partial 
+dependencies. If you look at the BookShop table, you will find every column in the table is single or atomic valued, 
+but it has multiple books by the same author. This means that the AUTHOR_ID, AUTHOR_NAME and AUTHOR_BIO details for 
+BOOK_ID B101 and B401 are the same. As the number of rows in the table increase, you will be needlessly storing more 
+and more occurrences of these same pieces of information. And if an author updates their bio, you must update all of 
+these occurrences. see exercise1_B_2a
+
+In this scenario, to enforce 2NF you can take the author information such as AUTHOR_ID, AUTHOR_NAME and AUTHOR_BIO 
+out of the BookShop table into another table, for example a table named BookShop_AuthorDetails. You then link each 
+book in the BookShop table to the relevant row in the BookShop_AuthorDetails table, using a unique common column such 
+as AUTHOR_ID to link the tables. To create the new BookShop_AuthorDetails table, copy the code below and paste it to 
+datasette text area. Click on Submit query button.
+
+Now you are only storing the author information once per author and only have to update it in one place; reducing 
+redundancy and increasing consistency of data. Thus 2NF is ensured.
+
+Exercise 2: Keys
+
+In this exercise, you will learn how to utilize a primary key to uniquely identify records in a table, use a foreign 
+key to establish relationships between tables, and discern the relations between them.
+
+Task A: Primary Key
+
+By definition, a primary key is a column or group of columns that uniquely identify every row in a table. A table 
+cannot have more than one primary key. The rules for defining a primary key include:
+
+No two rows can have a duplicate primary key value.
+Every row must have a primary key value.
+No primary key field can be null.
+
+To uniquely identify every row in the BookShop and BookShop_AuthorDetails tables, you will create a primary key. Set 
+the BOOK_ID column of the BookShop table and the AUTHOR_ID column of the BookShop_AuthorDetails table as primary keys 
+for their respective tables. Both columns were declared as NOT NULL when the tables were created (verify this in the 
+SQL script or table definition). The BookShop_AuthorDetails table inherits data types and column constraints, 
+including NOT NULL, from the BookShop parent table).
+
+To set the BOOK_ID column of the BookShop table as a primary key for each of the tables, copy the code below and 
+paste it to datasette text area. Click on Submit query button.
+
+--Drop the table.
+
+DROP TABLE IF EXISTS BookShop;
+
+-----Recreate it with Primary Key -------
+
+CREATE TABLE BookShop (
+ BOOK_ID VARCHAR(4) NOT NULL, 
+ TITLE VARCHAR(100) NOT NULL, 
+ AUTHOR_NAME VARCHAR(30) NOT NULL, 
+ AUTHOR_BIO VARCHAR(250),
+ AUTHOR_ID INTEGER NOT NULL, 
+ PUBLICATION_DATE DATE NOT NULL, 
+ PRICE_USD DECIMAL(6,2) CHECK(Price_USD>0) NOT NULL,PRIMARY KEY (BOOK_ID));
+
+INSERT INTO BookShop VALUES
+('B101', 'Introduction to Algorithms', 'Thomas H. Cormen', 'Thomas H. Cormen is the co-author of Introduction to Algorithms, along with Charles Leiserson, Ron Rivest, and Cliff Stein. He is a Full Professor of computer science at Dartmouth College and currently Chair of the Dartmouth College Writing Program.', 123 , '2001-09-01', 125),
+('B201', 'Structure and Interpretation of Computer Programs', 'Harold Abelson', 'Harold Abelson, Ph.D., is Class of 1922 Professor of Computer Science and Engineering in the Department of Electrical Engineering and Computer Science at MIT and a fellow of the IEEE.', 456, '1996-07-25', 65.5),
+('B301', 'Deep Learning', 'Ian Goodfellow', 'Ian J. Goodfellow is a researcher working in machine learning, currently employed at Apple Inc. as its director of machine learning in the Special Projects Group. He was previously employed as a research scientist at Google Brain.', 369, '2016-11-01', 82.7),
+('B401', 'Algorithms Unlocked', 'Thomas H. Cormen', 'Thomas H. Cormen is the co-author of Introduction to Algorithms, along with Charles Leiserson, Ron Rivest, and Cliff Stein. He is a Full Professor of computer science at Dartmouth College and currently Chair of the Dartmouth College Writing Program.', 123, '2013-05-15', 36.5),
+('B501', 'Machine Learning: A Probabilistic Perspective', 'Kevin P. Murphy', '', 157, '2012-08-24', 46);
+
+-- Retrieve all records from the table
+
+SELECT * FROM BookShop;
+
+To set the AUTHOR_ID column of the BookShop_AuthorDetails table as a primary key for each of the tables, copy the 
+code below and paste it to datasette text area. Click on Submit query button.
+
+--Drop the table.
+
+DROP TABLE IF EXISTS BookShop_AuthorDetails;
+
+-----Rereate another table BookShop_AuthorDetails with author id as the primary key
+
+CREATE TABLE BookShop_AuthorDetails(AUTHOR_ID INTEGER NOT NULL,AUTHOR_NAME VARCHAR(30) NOT NULL,AUTHOR_BIO VARCHAR(250),PRIMARY KEY (AUTHOR_ID)) ;
+
+-----Insert the records of Bookshop to this table.
+
+insert into BookShop_AuthorDetails select DISTINCT AUTHOR_ID, AUTHOR_NAME, AUTHOR_BIO FROM BookShop;
+
+select * from BookShop_AuthorDetails;
+
+After adding primary key lets try add the same record in BookShop table, copy the code below and paste it to 
+datasette text area. Click on Submit query button.
+
+INSERT INTO BookShop VALUES
+('B101', 'Introduction to Algorithms', 'Thomas H. Cormen', 'Thomas H. Cormen is the co-author of Introduction to Algorithms, along with Charles Leiserson, Ron Rivest, and Cliff Stein. He is a Full Professor of computer science at Dartmouth College and currently Chair of the Dartmouth College Writing Program.', 123 , '2001-09-01', 125)
+
+---You will get unique constraint violation.
+
+select * from BookShop;
+
+Now you can use the BOOK_ID column to uniquely identify every row in the BookShop table and the AUTHOR_ID column to 
+uniquely identify every row in the BookShop_AuthorDetails table.
+
+Task B: Foreign Key
+
+By definition, a foreign key is a column that establishes a relationship between two tables. It acts as a 
+cross-reference between two tables because it points to the primary key of another table. A table can have multiple 
+foreign keys referencing primary keys of other tables. Rules for defining a foreign key:
+
+A foreign key in the referencing table must match the structure and data type of the existing primary key in the 
+referenced table.
+A foreign key can only have values present in the referenced primary key
+Foreign keys do not need to be unique. Most often they are not.
+Foreign keys can be null.
+
+To create a foreign key for the BookShop table, set its AUTHOR_ID column as a foreign key, to establish a 
+relationship between the BookShop and BookShop_AuthorDetails tables. Copy the code below and paste it to datasette 
+text area. Click on Submit query button..
+
+Note: ON DELETE clause along with Foreign key is used to configure actions that takes place while deleting rows from 
+referencing table. ON UPDATE along with the foreign key are used to take the set actions while modifying the 
+referencing key values of existing rows.
+
+NO ACTIONS simply means that when a parent key is updated, modified or deleted from the database, there will be no 
+special action taken.
+
+If the configured action is set to RESTRICT then the application is prohibited for deleteing and modifying a parent 
+key where one or more chil keys are already present.
+
+On configuring the action to SET NULL when a parent key is deleted or updated then the column of all child keys that 
+are mapped to parent key will set to contain SQL NULL values.
+
+SET DEFAULT is similar to SET NULL except that the child keys columns will set to contain value as default instead of 
+null.
+
+Now that you have created the relationship, each book in the BookShop table is linked to the relevant row in the 
+BookShop_AuthorDetails table through AUTHOR_ID.
+
+Exercise 3: Constraints
+
+In this exercise, you will review different kinds of relational model constraints crucial for maintaining data 
+integrity in a relational data model.
+
+Entity Integrity Constraint: Entity integrity ensures that no duplicate records exist within a table and that the 
+column identifing each record within the table is not a duplicate and not null. The existence of a primary key in 
+both the BookShop and BookShop_AuthorDetails tables satisfies this integrity constraint because a primary key 
+mandates NOT NULL constraint as well as ensuring that every row in the table has a value that uniquely denotes the 
+row.
+
+Referential Integrity Constraint: Referential integrity ensures the existence of a referenced value if a value of one 
+column of a table references a value of another column. The existence of the foreign Key (AUTHOR_ID) in the BookShop 
+table satisfies this integrity constraint because a cross-reference relationship between the BookShop and 
+BookShop_AuthorDetails tables exists. As a result of this relationship, each book in the BookShop table is linked to 
+the relevant row in the BookShop_AuthorDetails table through the AUTHOR_ID columns.
+
+Domain Integrity Constraint: Domain integrity ensures clarity of column purpose and consistency of valid values. The 
+BookShop table adheres to this constraint through the specification of data types, length, date format, check 
+constraints, and null constraints in its CREATE statement. This comprehensive approach guarantees that the values in 
+each column are not only valid but also conform to the specified domain constraints.
