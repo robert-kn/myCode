@@ -1612,16 +1612,114 @@ Suppose the BR instruction shown below is located in memory location x36C9.
 0  0  0  0 | 1  0  1 | 1  1  1  1  1  1  0  1  0
    BR       condition              -6
 
-   The opcode 0000 identiﬁes the instruction as a conditional branch. Bits [11:9] = 101 speciﬁes that the test to be performed on the most 
-   recent result is whether or not that result is something other than 0. In Chapter 5 we will describe in detail all the tests that can 
-   be performed on the most recent result. For now, we will just use one test: Is the result not zero? Bits [8:0] is the value −6.
+The opcode 0000 identiﬁes the instruction as a conditional branch. Bits [11:9] = 101 speciﬁes that the test to be performed on the most 
+recent result is whether or not that result is something other than 0. In Chapter 5 we will describe in detail all the tests that can 
+be performed on the most recent result. For now, we will just use one test: Is the result not zero? Bits [8:0] is the value −6.
 
-   Assume the previous instruction executed (in memory location x36C8) was an ADD instruction and the result of the ADD was 0. Since the 
-   test “not-zero” failed, the BR instruction would do nothing during its EXECUTE phase, and so the next instruction executed would be the 
-   instruction at M[x36CA], the address formed by incrementing the PC during the FETCH phase of the BR instruction’s instruction cycle.
+Assume the previous instruction executed (in memory location x36C8) was an ADD instruction and the result of the ADD was 0. Since the 
+test “not-zero” failed, the BR instruction would do nothing during its EXECUTE phase, and so the next instruction executed would be the 
+instruction at M[x36CA], the address formed by incrementing the PC during the FETCH phase of the BR instruction’s instruction cycle.
 
-   On the other hand, if the result of the ADD instruction is not 0, then the test succeeds, causing the BR instruction to load PC with 
-   x36C4, the address formed by sign-extending bits [8:0] to 16 bits and adding that value (-6) to the incremented PC (x36CA).
+On the other hand, if the result of the ADD instruction is not 0, then the test succeeds, causing the BR instruction to load PC with 
+x36C4, the address formed by sign-extending bits [8:0] to 16 bits and adding that value (-6) to the incremented PC (x36CA).
 
-   Thus, the next instruction executed after the BR instruction at x36C9 is either the instruction at x36CA or the one at x36C4, depending 
-   on whether the result of the ADD instruction was zero or not zero.
+Thus, the next instruction executed after the BR instruction at x36C9 is either the instruction at x36CA or the one at x36C4, depending 
+on whether the result of the ADD instruction was zero or not zero.
+
+Control of the Instruction Cycle
+
+The instruction cycle is controlled by a synchronous ﬁnite state machine. An abbreviated version of its state diagram, highlighting a 
+few of the LC-3 instructions discussed in this chapter, is shown in Figure 4.4. As is the case with the ﬁnite state machines studied 
+in Section 3.6, each state corresponds to one machine cycle of activity that takes one clock cycle to perform. The processing 
+controlled by each state is described within the node representing that state. The arcs show the next state transitions.
+
+Processing starts with State 1. The FETCH phase takes three clock cycles, corresponding to the three steps described earlier. In the 
+ﬁrst clock cycle, the MAR is loaded with the contents of the PC, and the PC is incremented. In order for the contents of the PC to be 
+loaded into the MAR (see Figure 4.3), the ﬁnite state machine must assert GatePC and LD.MAR. GatePC connects the PC to the processor 
+bus. LD.MAR, the write enable signal of the MAR register, loads the contents of the bus into the MAR at the end of the current clock
+cycle. (Registers are loaded at the end of the clock cycle if the corresponding control signal is asserted.)
+
+In order for the PC to be incremented (again, see Figure 4.3), the ﬁnite state machine must assert the PCMUX select lines to choose 
+the output of the box labeled +1 and must also assert the LD.PC signal to load the output of the PCMUX into the PC at the end of the 
+current cycle.
+
+The ﬁnite state machine then goes to State 2. Here, the MDR is loaded with the instruction, which is read from memory.
+
+In State 3, the instruction is transferred from the MDR to the instruction register (IR). This requires the ﬁnite state machine to 
+assert GateMDR and LD.IR, which causes the IR to be loaded at the end of the clock cycle, concluding the FETCH phase of the 
+instruction cycle.
+
+The DECODE phase takes one clock cycle. In State 4, using the external input IR, and in particular the opcode bits of the instruction, 
+the ﬁnite state machine can go to the appropriate next state for processing instructions depend- ing on the particular opcode in IR 
+[15:12]. Three of the 15 paths out of State 4 are shown. Processing continues clock cycle by clock cycle until the instruction 
+completes execution, and the next state logic returns the ﬁnite state machine to State 1.
+
+As has already been discussed, it is sometimes necessary not to execute the next sequential instruction but rather to access another 
+location to ﬁnd the next instruction to execute. As we have said, instructions that change the ﬂow of instruction processing in this 
+way are called control instructions. In the case of the conditional branch instruction (BR), at the end of its instruction cycle, the 
+PC contains one of two addresses: either the incremented PC that was loaded in State 1 or the new address computed from sign-extending 
+bits [8:0] of the BR instruction and adding it to the PC, which was loaded in State 63. Which address gets loaded into the PC depends 
+on the test of the most recent result.
+
+Halting the Computer (the TRAP Instruction)
+
+From everything we have said, it appears that the computer will continue processing instructions, carrying out the instruction cycle 
+again and again, ad nauseum. Since the computer does not have the capacity to be bored, must this continue until someone pulls the 
+plug and disconnects power to the computer?
+
+Usually, user programs execute under the control of an operating system. Linux, DOS, MacOS, and Windows are all examples of operating 
+systems. Operating systems are just computer programs themselves. As far as the com- puter is concerned, the instruction cycle 
+continues whether a user program is being processed or the operating system is being processed. This is ﬁne as far as user programs 
+are concerned since each user program terminates with a control instruction that changes the PC to again start processing the operating 
+system—often to initiate the execution of another user program.
+
+But what if we actually want to stop this potentially inﬁnite sequence of instruction cycles? Recall our analogy to the conductor’s 
+baton, beating at the rate of billions of clock cycles per second. Stopping the instruction sequencing requires stopping the 
+conductor’s baton. We have pointed out many times that there is inside the computer a component that corresponds very closely to the 
+conductor’s baton. It is called the clock, and it deﬁnes the amount of time each machine cycle takes. We saw in Chapter 3 that the 
+clock enables the synchronous ﬁnite state machine to continue on to the next clock cycle. In Chapter 3 the next clock cycle 
+corresponded to the next state of the danger sign we designed. Here the next clock cycle corresponds to the next state of the 
+instruction cycle, which is either the next state of the current phase of the instruction cycle or the ﬁrst state of the next phase of 
+the instruction cycle. Stopping the instruction cycle requires stopping the clock.
+
+Figure 4.5a shows a block diagram of the clock circuit, consisting primarily of a clock generator and a RUN latch. The clock generator 
+is a crystal oscillator, a piezoelectric device that you may have studied in your physics or chemistry class. For our purposes, the 
+crystal oscillator is a black box that produces the oscillating voltage shown in Figure 4.5b. Note the resemblance of that voltage to the 
+conductor’s baton. Every clock cycle, the voltage rises to 1.2 volts and then drops back to 0 volts.
+
+If the RUN latch is in the 1 state (i.e., Q = 1), the output of the clock circuit is the same as the output of the clock generator. If the 
+RUN latch is in the 0 state (i.e., Q = 0), the output of the clock circuit is 0.
+
+Thus, stopping the instruction cycle requires only clearing the RUN latch. Every computer has some mechanism for doing that. In some older 
+machines, it is done by executing a HALT instruction. In the LC-3, as in many other machines, it is done under control of the operating 
+system, as we will see in Chapter 9. For now it is enough to know that if a user program requires help from the operating system, it 
+requests that help with the TRAP instruction (opcode = 1111) and an eight-bit code called a trap vector, which identiﬁes the help that 
+the user program needs. The eight-bit code x25 tells the operating system that the program has ﬁnished executing and the computer can stop 
+processing instructions.
+
+Question: If a HALT instruction can clear the RUN latch, thereby stopping the instruction cycle, what instruction is needed to set the 
+RUN latch, thereby reinitiating the instruction cycle? Hint: This is a trick question!
+
+Our First Program: A Multiplication Algorithm
+
+We now have all that we need to write our ﬁrst program. We have a data movement instruction LD to load data from memory into a register, 
+and we have two operate instructions, ADD for performing arithmetic and AND for performing a bit-wise logical operation. We have a 
+control instruction BR for loading the PC with an address diﬀerent from the incremented PC so the instruction to be executed next will 
+NOT be the instruction in the next sequential location in memory. And we have the TRAP instruction (a.k.a. system call) that allows us to 
+ask the operating system for help, in this case to stop the computer. With all that under our belt, we can write our ﬁrst program.
+
+Suppose the computer does not know how to multiply two positive integers. In the old days, that was true for a lot of computers! They had 
+ADD instructions, but they did not have multiply instructions. What to do? Suppose we wanted to multiply 5 times 4. Even if we do not 
+know how to multiply, if we know that 5 times 4 is 5+5+5+5, and the computer has an ADD instruction, we can write a program that can 
+multiply. All we have to do is add 5 to itself four times.
+
+Figure 4.6 illustrates the process.
+
+Let us assume that memory location x3007, abbreviated M[x3007], contains the value 5, and M[x3008] contains the value 4. We start by 
+copying the two values from memory to the two registers R1 and R2. We are going to accumulate the results of the additions in R3, so we 
+initialize R3 to 0. Then we add 5 to R3, and subtract 1 from R2 so we will know how many more times we will need to add 5 to R3. We keep 
+doing this (adding 5 to R3 and subtracting 1 from R2) until R2 contains the value 0. That tells us that we have added 5 to R3 four times 
+and we are done, so we HALT the computer. R3 contains the value 20, the result of our multiplication.
+
+Figure 4.7 shows the actual LC-3 program, stored in memory locations x3000 to x3008.
+

@@ -63,3 +63,72 @@ may contain data
 57. at what rate are packets transmitted over each communication link? at a rate equal to the full transmission rate of the link
 58. when it comes to packet switches, describe what is store and forward transmission? a packet switch must receive the entire packet before it can begin 
 to transmit the first bit of the packet onto the outbound link (it must buffer the packet's bits)
+59. what are the two things that each packet switch has? multiple links attached to it and output buffers for each link which store packets
+that the router is aabout to send into that link
+60. what must a packet do that arrives at a packet switch and finds that the link it is supposed to be transmitted onto is busy sending 
+another packet? it must wait in the output buffer of the link
+61. what is this phenomenon of waiting called? queuing delay
+62. what do these queuing delays depend on? congestion in the network
+63. is output buffer space finite or infinite?
+64. what happens when a packet arrives at a packet switch and finds that the output buffer of the link it is supposed to be forwaded on is
+full? the packet will get dropped or one of the queued packets will be dropped
+65. how does a packet switch determine which link to send a packet onto? depends on the computer network; there are several means of 
+achieving it
+66. how is it implemented on the internet? each packet switch has a forwarding table that maps portions of destination addresses to the
+routers outbound links
+67. how do forrwarding tables get set? special routing protocols on the internet are used to automtically set the forwarding tables
+68. there are two different methods of moving packets through a network of communication links and packet switches, what are they?
+circuit switching and packet switching
+69. how do circuit switched networks work? the resources needed along a path (buffers, link transmission rate) to provide for communication
+between end systems are reserved for the duration of the communication session between the end systems
+70. are the resources reserved in packet switched networks? no, they are used on demand by a session and consequently hosts may have
+to wait for access to resources
+71. give an example of a network that is circuit switched? telephone network; when a person wants to initiate a phone call to another
+person, the network must establish a connection between the two end systems. the switches between the end systems on the path must maintain
+an active connection state during the duration of the call. this connection is called a circuit
+72. does the network in question reserve a constant transmission in the networks links (representing a fraction of each links transmission
+capacity)?   
+73. what are the two ways you can implement a circuit in a link? frequency division multiplexing (FDM) or time division multiplexing (TDM)
+74. how does FDM work? the frequency spectrum of a link is divided up among the connections established on the link i.e. the link dedicates
+a frequency band to each connection for the duration of the connection
+75. give two examples of systems that use FDM? telehone networks use a frequency band 4 KHz as the bandwidth; FM radio stations share the 
+frequency spectrum between 88 MHz and 108 MHz with each station being allocated a specific frequency band
+76. how does TDM work? in a TDM link, time is divided into frames of fixed duration and each frame is divided into a fixed number of time
+slots; when the network establishes a connection across a link the network dedicates one time slot in every frame to the connection
+77. for systems that use TDM, what is the transmission rate of a circuit? frame rate multiplied by the number of bits in a slot
+78. what do critics of packet switching state about it? it is not suitable for real-time services such as video conference calls and phone
+calls because of the end-end delays inherent in the system
+79. what do proponents of packets switching state about the inherent advantages it has over circuit switching? better sharing of transmission
+capacity than circuit switching; it is simpler, more efficient and less costly to implement than circuit switching 
+80. what is a network of networks? where access ISPs which connect end systems and content providers to the internet are interconnected
+81. what is a global transit ISP?
+82. how many network structures can you think of that help to explain networks of networks? 
+83. what are points of presence? a group of one or more routers at the same location in the provider's network where customer ISPs can 
+connect into the providers ISP. they exist at all levels except access ISP level (the lowest tier)
+84. for a customer ISP to connect to a provider ISP, what can it do? lease a high speed link from a third party telecommunication provider
+to directly connect one of its routers to aa router at the POP
+85. what is multi homing? when an ISP (except a tier 1 ISP) connects to two or more provider ISPs
+86. what is the advantage of multi homing? if one provider ISP goes down due to a failure, the customer ISP can still receive and send 
+packets from the internet
+87. what does the amount that a customer ISP pays a provider ISP depend on? the amount of traffic it exchanges with the provider
+88. what do nearby ISPs at the same level do in order to reduce costs relating to using the services of provider ISPs? they peer i.e. 
+directly connect their networks together so that traffic between them passes over the direct connection rather than through upstream
+provider ISPs
+89. what does settlement free mean? when two ISPs at the same level peer then neither will pay the other party
+90. what are internet exchange points (IXPs)? a meeting point created by a third party where multiple ISPs can peer together. typically
+IXP are situated in a stand alone building with its own switches
+91. why do content provider networks such as google or amazon attempt to bypass tier-1 ISPs (upper tier ISPs) by peering (settlement free)
+with many access ISPs? to reduce payments to tier-1 ISPs and gain greater control of how their services are ultimately delivered to its
+end users
+92. as packet moves from end system to another end system, it suffers from nodal delay. what does nodal processing delay comprise of? 
+nodal processing delay, queuing delay, transmission delay, and propagtion delay
+93. what does processing delay entail? time required to examine a packets header and determine where to direct the packet; can also include
+time needed to check for bit level errors in the packet that occured whilst transmitting them from an upstream node or router
+94. what does queuing delay entail? 
+95. what does transmission delay entail? is the amount of time required to push all of a packet's bit onto a link. It is calculatted using
+L/R where L bits is the length of packet and R is the transmission rate of a link
+96. what does propagation delay entail?
+97. what does the processing delay strongly influence? the maximum throughput i.e. the maximum rate at which a router can forward packets
+
+
+

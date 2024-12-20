@@ -290,4 +290,26 @@ it is incremented (during the FETCH phase of one instruction) and the start of t
 81. what do bits 11:9 represent in the BR instruction? the condition to be tested
 82. what do bits 8:0 contain in the BR instruction? the addressing mode bits that are used to form the address to be loaded into the PC if
 the result of the previous instruction agrees with the test specified by bits 11:9.
-
+83. what is the instruction cycle controlled by? a synchronous finite state machine
+84. in the state diagram of the instruction cycle, how many clock cycles are used in the FETCH phase? 3
+85. what happens in each of the 3 clock cycles of the FETCH phase? MAR <- PC and PC <- PC + 1; MDR <- MAR; IR <- MDR
+86. when are registers loaded? at the end of a clock cycle if the corresponding control signal is asserted
+87. in order for the contents of the PC to be loaded into the MAR, what must be asserted by the finite state machine? GatePC and LD.MAR
+88. in order for the instruction to be loaded from MDR to the IR, what must the finite state machine assert? LD.IR and GateMDR
+89. how many clock cycles does the DECODE phase (the 4th state) take?
+90. what happens in this fourth state? the external input IR, in particular the opcode bits of the instruction 15:12, are read by the 
+finite state machine to go to the appropriate next state for processing
+91. what do we call instructions that change the flow of instruction processing? control instructions
+92. what happens at the end of the conditional branch instruction? the PC contains one of two addresses; either the incremented PC that was
+loaded in state 1 or the new address computed from sign extending bits 8:0 of the BR instruction and adding it to the PC
+93. what determines which address gets loaded into the PC? the test of the most recent result determined by testing against bit 11:9 of the
+BR instruction
+94. what controls the execution of a user program in a computer? the MacOS
+95. are OS computer programs?
+96. what can we do if we want to stop the infinite sequence of instruction cycles? stopping the clock which controls the transition from
+state cycle to a different state cycle
+97. how can this be achieved? setting the run latch of the clock circuit to 0 which makes the output of the clock circuit 0
+98. how do machines set this run latch to 0? in some older machines, the HALT instruction is executed; in the LC-3 the TRAP instruction
+(with opcode 1111 and an eight bit code called a trap vector x25) informs the OS that a program has finished executing and ergo the 
+PC can stop executing instructions
+99. 

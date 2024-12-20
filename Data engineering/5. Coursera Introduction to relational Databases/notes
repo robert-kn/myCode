@@ -1198,3 +1198,254 @@ Domain Integrity Constraint: Domain integrity ensures clarity of column purpose 
 BookShop table adheres to this constraint through the specification of data types, length, date format, check 
 constraints, and null constraints in its CREATE statement. This comprehensive approach guarantees that the values in 
 each column are not only valid but also conform to the specified domain constraints.
+
+what is mysql? see mysql-rdbms1 You can download and install the free community edition under a GNU, general public 
+license and embed this in your applications. Alternatively, commercial editions like standard, enterprise, and cluster 
+versions with added features are available for purchase. MySQL is also accessible in the cloud, allowing self management 
+in virtual machines or containers. Managed services like IBM Cloud, Amazon RDS, Azure Database, and Google Cloud SQL offer 
+convenient options for MySQL deployment. see mysql-rdbms2 mysql-rdbms3 mysql-rdbms4 mysql-rdbms5 mysql-rdbms6 mysql-rdbms7
+mysql-rdbms8 mysql-rdbms9 mysql-rdbms10 mysql-rdbms11 mysql-rdbms12 mysql-rdbms13 mysql-rdbms14 mysql-rdbms15 mysql-rdbms16
+mysql-rdbms17
+
+As a data engineer or database administrator, you will often need to populate databases and tables. One method of doing this 
+is to back up an existing database containing your data and restore it to your new destination. You can use mysqldump to back 
+up a database to a .SQL file containing all of the statements needed to recreate the contents of the database. see mysql-backup1
+If you're already at the MySQL command prompt, you can restore a dump file by using the source command with the name of the dump 
+file. This method can also be used to execute SQL scripts from file. see mysql-backup2 mysql-backup3 Alternatively, if you only want 
+to populate a small number of rows in an individual table, instead of populating an entire database, you can use the phpMyAdmin tool 
+to manually enter rows or run SQL INSERT statements. see mysql-loading1. when using myaqlimport utility, passing the name of the database 
+that the table resides in and the name of the CSV file the table name is inferred from the name of the CSV file. You must ensure that 
+your file name matches your table name exactly.
+
+Hands-on Lab: Getting Started with MySQL Command Line
+
+In this lab, you will use the MySQL command line interface (CLI) to create a database, restore the structure and contents of tables, 
+explore and query tables, and finally, learn how to dump/backup tables from the database.
+
+Objectives
+
+After completing this lab, you will be able to use the MySQL command line to:
+
+Create a database.
+Restore the structure and data of a table.
+Explore and query tables.
+Dump/backup tables from a database.
+
+Software Used in this Lab
+
+In this lab, you will use MySQL. MySQL is a Relational Database Management System (RDBMS) designed to efficiently store, manipulate, and 
+retrieve data. https://www.mysql.com/
+
+Database Used in this Lab
+
+The Sakila database used in this lab comes from the following source: https://dev.mysql.com/doc/sakila/en/ under New BSD license 
+[Copyright 2021 - Oracle Corporation].
+
+You will use a modified version of the database for the lab, so to follow the lab instructions successfully please use the database 
+provided with the lab, rather than the database from the original source.
+
+The following entity relationship diagram (ERD) shows the schema of the Sakila database: see sakila-ERD.png
+
+Task A: Create a database
+
+1. Go to Terminal > New Terminal to open a terminal
+
+2. Copy the command below to fetch the sakila_mysql_dump.sql file
+
+wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0110EN-SkillsNetwork/datasets/sakila/sakila_mysql_dump.sql
+
+3. Start the MySQL service session
+
+4. Initiate the mysql command prompt session using the command below in the terminal (replace the host and password values):
+
+mysql --host=172.21.10.8 --port=3306 --user=root --password=ZDvq3NXjxUImP9F18HSE0xGM
+
+5. Create a new database sakila using the command below in the terminal and proceed to Task B:
+
+create database sakila;
+
+Task B: Restore the structure and data of a table
+
+1. To use the newly created empty sakila database, use the command below in the terminal:
+
+use sakila;
+
+2. Restore the sakila mysql dump file (containing the sakila database table definitions and data) to the newly created empty sakila 
+database. A dump file is a text file that contains the data from a database in the form of SQL statements. This file can be imported 
+using the command line with the following command:
+
+source sakila_mysql_dump.sql;
+
+Note: You can use the source command to restore the database dump file within the mysql command prompt. To restore the database dump file
+outside of the mysql command prompt, you can use the mysql --host=mysql --port=3306 --user=root --password sakila < sakila_mysql_dump.sql 
+command after quitting the mysql command prompt session with command \q.
+
+Task C: Explore and query tables
+
+1. To list all the tables names from the sakila database, use the command below in the terminal:
+
+SHOW FULL TABLES WHERE table_type = 'BASE TABLE';
+
+The Table_type for these tables is BASE TABLE. BASE TABLE means that it is a table as opposed to a view (VIEW) or an INFORMATION_SCHEMA 
+view (SYSTEM VIEW).
+
+2. Explore the structure of the staff table using the command below in the terminal:
+
+DESCRIBE staff;
+
+To understand the output, see the following table:
+
+Column-Name			Definition
+	
+Field				Name of the column.
+Type				Data type of the column.
+Null				Displays YES if column can contain NULL values and NO if not. Notice how the primary key displays NO.
+Key					Displays the value PRI if the column is a primary key, UNI if the column is a unique key, and MUL if the column is a 
+					non-unique index in which one value can appear multiple times. If there is no value displayed, then the column isn't 
+					indexed or it's indexed as a secondary column. Please note, that if more than one of these values applies to the 
+					column, the value that appears will be displayed based on the following order: PRI, UNI, and MUL.
+Default				The default value of the column. If the column's value has specifically been set as NULL, then the value that appears 
+					will be NULL.
+Extra				Any additional information about a column.
+
+3. Now retrieve all the records from the staff table using the command below in the terminal:
+
+SELECT * FROM staff;
+
+
+4. Quit the MySQL command prompt session using the command below in the terminal and proceed to Task D:
+
+\q
+
+
+Task D: Dump/backup tables from a database
+
+1. Finally, dump/backup the staff table from the database using the command below in the terminal:
+
+mysqldump --host=[replace-me] --port=3306 --user=root --password sakila staff > sakila_staff_mysql_dump.sql
+
+This command will backup the staff table from the sakila database into a file called sakila_staff_mysql_dump.sql.
+
+using keys and constraints in MySQL see keys-constraints1 keys-constraints2 keys-constraints3 keys-constraints4 keys-constraints5
+keys-constraints6 keys-constraints7 keys-constraints8
+
+Getting started with postgres see postgresql-intro1 popular database choice for OLTP, data analytics, and geographic information systems.
+postgresql-intro2 postgresql-intro3 postgresql-intro4 postgresql-intro5 postgresql-intro6 postgresql-intro7 postgresql-intro8
+postgresql-intro9 postgresql-intro10 postgresql-intro11
+
+As with many RDBMs, you can create databases and tables and load data PostgreSQL by using a command line interface, a graphical user 
+interface or API calls. see psql-1 At the command line, you can use PSQL to restore a database that was previously backed up using 
+pg_dump. see psql-2
+
+see pg-admin-1 pg-admin-2 pg-admin-3 pg-admin-4 This step runs the SQL statements contained in that file to recreate the database objects 
+and data in the current database. see pg-admin-5 pg-admin-6 pg-admin-7 pg-admin-8 pg-admin-9 pg-admin-10
+
+see pg-dump-1.png 
+
+Hands-on Lab: Getting Started with the PostgreSQL Command Line
+
+In this lab, you will use the PostgreSQL command line interface (CLI) to create a database and restore the structure and contents of its 
+tables. Then, you will learn how to explore and query tables. Finally, you will learn how to dump/backup tables from a database.
+
+Software used in this lab
+
+In this lab, you will use a PostgreSQL Database. PostgreSQL is a relational database management system (RDBMS) designed to store, 
+manipulate, and retrieve data efficiently. https://www.postgresql.org/
+
+Database used in this lab
+
+The Sakila database used in this lab comes from the following source: https://dev.mysql.com/doc/sakila/en/ under New BSD license 
+[Copyright 2021 - Oracle Corporation].
+
+You will use a modified version of the database for the lab. To follow the lab instructions successfully, please use the database 
+provided by the lab rather than the database from the source.
+
+The following entity relation diagram (ERD) shows the structure of the schema of the Sakila database: see postresql-schema.png
+
+Objectives
+
+After completing this lab, you will be able to use the PostgreSQL command line to:
+
+Create a database
+Restore the structure and data of a table
+Explore and query tables
+Dump/backup tables from a database
+
+Lab structure
+
+In this exercise, you will go through several subtasks where you will use the PostgreSQL command line interface (CLI) to create a 
+database and restore the structure and contents of tables. Then, you will learn how to explore and query tables. Finally, you will learn 
+how to dump/backup tables from a database.
+
+Task A: Create a database
+
+1. Open a new command terminal 
+2. Copy the command below to fetch the sakila_pgsql_dump.sql file
+
+wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0110EN-SkillsNetwork/datasets/sakila/sakila_pgsql_dump.sql
+
+3. open the PostgreSQL Command Line Interface (CLI) 
+4. Create a new database named sakila using the following command in the terminal:
+
+create database sakila;
+
+Note: You are using the create database command to create a new database within the PostgreSQL CLI. To create a new database named sakila 
+outside the command line interface, you can use the following command directly in a terminal window: 
+
+createdb --username=postgres --host=postgres --password sakila, after quitting the psql command prompt session with the command \q.
+
+Task B: Restore the structure and data of a table
+
+1. To connect to the newly created empty sakila database, use the following command in the terminal and enter your PostgreSQL service 
+session password:
+
+\connect sakila;
+
+2. Restore the sakila PostgreSQL dump file (containing the sakila database table definitions and data) to the newly created empty sakila 
+database by using the following command in the terminal:
+
+\include sakila_pgsql_dump.sql;
+
+Note: You are using the \include command to restore the database dump file within the PostgreSQL CLI. To restore the database dump file 
+outside of the Command Line Interface, you can use the command:
+
+pg_restore --username=postgres --host=postgres --password --dbname=sakila < sakila_pgsql_dump.tar 
+
+after quitting the CLI prompt session with the command \q. Non-text format .tar dumps are restored using the pg_restore command. So, 
+before using the pg_restore command, first, fetch the .tar version of this dump file using the command 
+wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0110EN-SkillsNetwork/datasets/sakila/sakila_pgsql_dump.tar
+
+3. Repeat Step 1 to reconnect to the sakila database after restoring the dump file.
+
+Task C: Explore and query tables
+
+1. To list all the table names from the sakila database, use the following command in the terminal:
+
+\dt
+
+2. Explore the structure of the store table using the following command in the terminal:
+
+\d store;
+
+3. Retrieve all the records from the store table using the following command in the terminal:
+
+select * from store;
+
+4. Quit the PostgreSQL command prompt session using the following command in the terminal.
+
+\q
+
+
+Task D: Dump/backup tables from a database
+
+1. Finally, to dump/backup the store table from the database, use the following command in the terminal and enter your PostgreSQL service 
+session password:
+
+pg_dump --username=postgres --host=postgres --password --dbname=sakila --table=store --format=plain > sakila_store_pgsql_dump.sql
+
+what are views? see views-1 
+
+what is a materialised view? see materialised-view
+
+see recap-1.png 
+
