@@ -1723,3 +1723,190 @@ and we are done, so we HALT the computer. R3 contains the value 20, the result o
 
 Figure 4.7 shows the actual LC-3 program, stored in memory locations x3000 to x3008.
 
+The program counter, which keeps track of the next instruction to be executed, initially contains the address x3000.
+
+To move the data from memory locations M[x3007] and M[x3008] to R1 and R2, we use the data movement instruction LD. The LC-3 computer 
+executes the LD instruction in M[x3000] by sign-extending the oﬀset (in this case 6) to 16 bits, adding it to the incremented PC (in this 
+case x3001 since we incremented the PC during the FETCH phase of this instruction), fetching the data from M[x3007], and loading it in 
+R1. The LD instruction in M[x3001] is executed in the same way.
+
+R3 is initialized to 0 by performing a bit-wise AND of the contents of R3 with the sign-extended immediate value 0 and loading the result 
+into R3.
+
+Next  the  computer  executes  the  ADD  instructions  at  M[x3003]  and M[x3004]. The ADD instruction at M[x3003] adds the contents of R1 
+to the contents of R3 and loads the result into R3. The ADD instruction at M[x3004] adds −1 to the contents of R2, which keeps track of 
+how many times the value 5 has been added to R3.
+
+At this point, the PC contains the address x3005. The BR instruction in M[x3005] loads the PC with the address x3003 if the result of the 
+previous instruction (the one in M[x3004]) is not 0. If the result of the previous instruction is 0, the BR instruction does nothing, and 
+so the next instruction to be executed is the instruction at M[x3006], i.e., the incremented PC is x3006.
+
+Thus, the two ADD instructions execute again and again, until the result of executing the instruction in M[x3004] produces the value 0, 
+indicating that the value 5 has been added four times. Finally, the TRAP instruction in M[x3006] is executed, which is a call to the 
+operating system to halt the computer.
+
+chapter 5
+
+The ISA: Overview
+
+The ISA speciﬁes all the information about the computer that the software has to be aware of. In other words, the ISA speciﬁes everything 
+in the computer that is available to a programmer when he/she writes programs in the computer’s own machine language. Most people, however, 
+do not write programs in the computer’s own machine language, but rather opt for writing programs in a high-level language like C++ or 
+Python (or Fortran or COBOL, which have been around for more than 50 years). Thus, the ISA also speciﬁes everything in the computer that 
+is needed by someone (a compiler writer) who wishes to translate programs written in a high-level language into the machine language of 
+the computer.
+
+The ISA speciﬁes the memory organization, register set, and instruction set, including the opcodes, data types, and addressing modes of 
+the instructions in the instruction set.
+
+Memory Organization
+
+The LC-3 memory has an address space of 2^(16) (i.e., 65,536) locations, and an addressability of 16 bits. Not all 65,536 addresses are 
+actually used for memory locations. Since the normal unit of data that is processed in the LC-3 is 16 bits, we refer to 16 bits as one 
+word, and we say the LC-3 is word-addressable.
+
+Registers
+
+Since it usually takes far more than one clock cycle to obtain data from memory, the LC-3 provides (like almost all computers) 
+additional temporary storage locations that can be accessed in a single clock cycle.
+
+The most common type of temporary storage locations, and the one used in the LC-3, is a set of registers. Each register in the set is 
+called a general purpose register (GPR). Like memory locations, registers store information that can be operated on later. The number of 
+bits stored in each register is usually one word. In the LC-3, this means 16 bits.
+
+Registers must be uniquely identiﬁable. The LC-3 speciﬁes eight GPRs, each identiﬁed by a three-bit register number. They are referred to 
+as R0, R1, … R7. Figure 5.1 shows a snapshot of the LC-3’s register set, sometimes called a register ﬁle, with the eight values 1, 3, 5, 
+7, −2, −4, −6, and −8 stored in R0, … R7, respectively.
+
+Recall from Chapter 4 that the instruction to ADD the contents of R0 to R1 and store the result in R2 is speciﬁed as
+
+15 14 13 12  11 10 9   8  7  6   5   4  3   2  1  0
+0  0  0  1 | 0  1  0 | 0  0  0 | 0 | 0  0 | 0  0  1
+  ADD           R2        R0                  R1
+
+
+where the two sources of the ADD instruction are speciﬁed in bits [8:6] and bits [2:0]. The destination of the ADD result is speciﬁed in 
+bits [11:9]. Figure 5.2 shows the contents of the register ﬁle of Figure 5.1 AFTER the instruction "ADD  R2,  R1,  R0." is executed.
+
+The Instruction Set
+
+The instruction set is deﬁned by its set of opcodes, data types, and addressing modes. The addressing modes determine where the operands 
+are located. The data type is the representation of the operands in 0s and 1s.
+
+The instruction ADD R2, R0, R1 has an opcode ADD, one addressing mode (register mode), and one data type (2’s complement integer). The 
+instruction directs the computer to perform a 2’s complement integer addition and speci- ﬁes the locations (GPRs) where the computer is 
+expected to ﬁnd the operands and the location (a GPR) where the computer is to write the result.
+
+We saw in Chapter 4 that the ADD instruction can also have two addressing modes (register mode and immediate mode), where one of the two 
+operands is literally contained in bits [4:0] of the instruction.
+
+Figure 5.3 lists all the instructions of the LC-3, the bit encoding [15:12] for each opcode, and the format of each instruction. Some of 
+them you will recognize from Chapter 4. Many others will be explained in Sections 5.2, 5.3, and 5.4.
+
+Opcodes
+
+Some ISAs have a very large number of opcodes, one for each of a very large number of tasks that a program may wish to carry out. The x86 
+ISA has more than 200 opcodes. Other ISAs have a very small set of opcodes. Some ISAs have specific opcodes to help with processing 
+scientific calculations. For example, the Hewlett Packard Precision Architecture can specify the compound operation (A ⋅ B) + C with one 
+opcode; that is, a multiply, followed by an add on three source operands A, B, and C. Other ISAs have instructions that process video 
+images obtained from the World Wide Web. The Intel x86 ISA added a number of instructions which they originally called MMX instructions 
+because they eXtended the ISA to assist with MultiMedia applications that use the web. Still other ISAs have specific opcodes to help with 
+handling the tasks of the operating system. For example, the VAX ISA, popular in the 1980s, used a single opcode instead of a long 
+sequence of instructions that other computers used to save the information associated with a program that was in the middle of executing 
+prior to switching to another program. The decision as to which instructions to include or leave out of an ISA is usually a hotly debated 
+topic in a company when a new ISA is being specified.
+
+The LC-3 ISA has 15 instructions, each identiﬁed by its unique opcode. The opcode is speciﬁed in bits [15:12] of the instruction. Since 
+four bits are used to specify the opcode, 16 distinct opcodes are possible. However, the LC-3 ISA speciﬁes only 15 opcodes. The code 1101 
+has been left unspeciﬁed, reserved for some future need that we are not able to anticipate today.
+
+As we already discussed brieﬂy in Chapter 4, there are three diﬀerent types of instructions, which means three diﬀerent types of opcodes: 
+operates, data movement, and control. Operate instructions process information. Data move- ment instructions move information between 
+memory and the registers and between registers/memory and input/output devices. Control instructions change the sequence of instructions 
+that will be executed. That is, they enable the execution of an instruction other than the one that is stored in the next sequential 
+location in memory.
+
+Data Types
+
+A data type is a representation of information such that the ISA has opcodes that operate on that representation. There are many ways to 
+represent the same information in a computer. That should not surprise us, since in our daily lives, we regularly represent the same 
+information in many diﬀerent ways. For example, a child, when asked how old he is, might hold up three ﬁngers, signifying that he is 3 
+years old. If the child is particularly precocious, he might write the decimal digit 3 to indicate his age. Or, if the child is a CS or 
+CE major at the university, he might write 0000000000000011, the 16-bit binary representation for 3. If he is a chemistry major, he might 
+write 3.0 ⋅ 10^0 . All four represent the same value: 3.
+
+In addition to the representation of a single number by diﬀerent bit patterns in diﬀerent data types, it is also the case that the same 
+bit pattern can correspond to diﬀerent numbers, depending on the data type. For example, the 16 bits 0011000100110000 represent the 2’s 
+complement integer 12,592, the ASCII code for 10, and a bit vector such that b₁3, b₁2, b₇, b₄, and b₃ have the relevant property of the 
+bit vector.
+
+That should also not surprise us, since in our daily lives, the same represen- tation can correspond to multiple interpretations, as is 
+the case with a red light. When you see it on the roadway while you are driving, it means you should stop. When you see it at Centre Bell 
+where the Montreal Canadiens play hockey, it means someone has just scored a goal.
+
+Every opcode will interpret the bit patterns of its operands according to the data type it is designed to support. In the case of the ADD 
+opcode, for example, the hardware will interpret the bit patterns of its operands as 2’s complement integers. Therefore, if a programmer 
+stored the bit pattern 0011000100110000 in R3, thinking that the bit pattern represented the integer 10, the instruction ADD R4, R3, #10 
+would write the integer 12,602 into R4, and not the ASCII code for the integer 20. Why? Because the opcode ADD interprets the bit patterns 
+of its operands as 2’s complement integers, and not ASCII codes, regardless what the person creating those numbers intended.
+
+Addressing Modes
+
+An addressing mode is a mechanism for specifying where the operand is located. An operand can generally be found in one of three places: 
+in memory, in a register, or as a part of the instruction. If the operand is a part of the instruction, we refer to it as a literal or as 
+an immediate operand. The term literal comes from the fact that the bits of the instruction literally form the operand. The term 
+immediate comes from the fact that we can obtain the operand immediately from the instruction, that is, we don’t have to look elsewhere 
+for it.
+
+The LC-3 supports ﬁve addressing modes: immediate (or literal), register, and three memory addressing modes: PC-relative, indirect, and 
+Base+oﬀset.We will see in Section 5.2 that operate instructions use two addressing modes: register and immediate. We will see in Section 
+5.3 that data movement instructions use four of the ﬁve addressing modes.
+
+Condition Codes
+
+One ﬁnal item will complete our overview of the ISA of the LC-3: condition codes. The LC-3 has three single-bit registers that are 
+individually set (set to 1) or cleared (set to 0) each time one of the eight general purpose registers is written into as a result of 
+execution of one of the operate instructions or one of the load instructions. Each operate instruction performs a computation and writes 
+the result into a general purpose register. Each load instruction reads the contents of a memory location and writes the value found 
+there into a general purpose register. We will discuss all the operate instructions in Section 5.2 and all the load instructions in 
+Section 5.3.
+
+The three single-bit registers are called N, Z, and P, corresponding to their meaning: negative, zero, and positive. Each time a GPR is 
+written by an operate or a load instruction, the N, Z, and P one-bit registers are individually set to 0 or 1, corresponding to whether 
+the result written to the GPR is negative, zero, or positive. That is, if the result is negative, the N register is set, and Z and P are 
+cleared. If the result is zero, Z is set and N and P are cleared. If the result is positive, P is set and N and Z are cleared.
+
+The set of three single-bit registers are referred to as condition codes because the condition of those bits are used to change the 
+sequence of execution of the instructions in a computer program. Many ISAs use condition codes to change the execution sequence. SPARC 
+and x86 are two examples. 
+
+Operate Instructions
+
+ADD, AND, and NOT
+
+Operate instructions process data. Arithmetic operations (like ADD, SUB, MUL, and DIV) and logical operations (like AND, OR, NOT, XOR) 
+are common examples. The LC-3 has three operate instructions: ADD, AND, and NOT.
+
+The NOT (opcode = 1001) instruction is the only operate instruction that performs a unary operation, that is, the operation requires one 
+source operand. The NOT instruction bit-wise complements a 16-bit source operand and stores the result in a destination register. NOT 
+uses the register addressing mode for both its source and destination. Bits [8:6] specify the source register and bits [11:9] specify the 
+destination register. Bits [5:0] must contain all 1s.
+
+If R5 initially contains 0101000011110000, after executing the following instruction:
+
+15    14    13    12     11    10    9     8    7    6     5    4    3    2    1    0
+1     0     0     1  |   0     1     1  |  1    0    1  |  1    1    1    1    1    1
+NOT                           R3                R5
+
+R3 will contain 1010111100001111.
+
+Figure 5.4 shows the key parts of the data path that are used to perform the NOT instruction shown here. Since NOT is a unary operation, 
+only the A input of the ALU is relevant. It is sourced from R5. The control signal to the ALU directs the ALU to perform the bit-wise 
+complement operation. The output of the ALU (the result of the operation) is stored in R3 and the condition codes are set, completing the 
+execution of the NOT instruction.
+
+Recall from Chapter 4 that the ADD (opcode = 0001) and AND (opcode = 0101) instructions both perform binary operations; they require two 
+16-bit source operands. The ADD instruction performs a 2’s complement addition of its two source operands. The AND instruction performs a 
+bit-wise AND of each pair of bits of its two 16-bit operands. Like the NOT, the ADD and AND use the register addressing mode for one of 
+the source operands and for the destina- tion operand. Bits [8:6] specify the source register, and bits [11:9] specify the destination 
+register (where the result will be written).
