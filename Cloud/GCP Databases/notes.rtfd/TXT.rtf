@@ -1,0 +1,226 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 AvenirNext-Regular;\f1\fnil\fcharset0 AvenirNext-Bold;\f2\fswiss\fcharset0 ArialMT;
+\f3\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red24\green25\blue27;\red255\green255\blue255;\red46\green49\blue51;
+\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c12549\c12941\c14118;\cssrgb\c100000\c100000\c100000;\cssrgb\c23529\c25098\c26275;
+\cssrgb\c0\c0\c0\c5098;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid1\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid101\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid201\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid3}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh16960\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf2 \cb3 \expnd0\expndtw0\kerning0
+Ways to run databases on GCP:\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls1\ilvl0
+\f1\b \cf2 \kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}
+\f0\b0 create a VM and install a database on it\
+\ls1\ilvl0
+\f1\b {\listtext	\uc0\u8226 	}
+\f0\b0 install a pre configured machine from the market place with the database software already installed\
+\ls1\ilvl0
+\f1\b {\listtext	\uc0\u8226 	}
+\f0\b0 use a managed database solution like cloud sql\
+\ls1\ilvl0
+\f1\b {\listtext	\uc0\u8226 	}
+\f0\b0 if you have a GKE cluster, you could run the database in the cluster\
+\pard\tx720\pardeftab720\partightenfactor0
+
+\f1\b \cf2 \expnd0\expndtw0\kerning0
+\
+
+\f0\b0 What are the most common enterprise databases? Microsoft sql server and oracle\
+\
+Databases can be the hardest part of an application to move as moving it may break active connections mean data can no longer be updated or written. There are also security concerns. Databases should be designed such that they are protected from unauthorised access. For some applications, defining a maintenance window and bringing the database down during that window is acceptable. For mission critical applications, downtime needs to be minimised and sometimes completely avoided.\
+\
+Between hardware, maintenance, licensing, and administration, the database tier is likely the most expensive part of an application. Moving to the cloud can reduce these costs.\
+\
+Why move your database to the cloud?\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls2\ilvl0\cf2 \kerning1\expnd0\expndtw0 {\listtext	1.	}scalability and high availability provided by hyper scale data centres\
+{\listtext	2.	}easier to manage\
+{\listtext	3.	}reduces the total cost of ownership \
+{\listtext	4.	}security (google already certified by many governments and thereby meets industry compliant standards)\
+\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls2\ilvl0\cf2 \expnd0\expndtw0\kerning0
+Examples of database architectures:\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\cf2 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls3\ilvl0\cf2 {{\NeXTGraphic Pasted Graphic.png \width15620 \height5940 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls3\ilvl0\cf2 \
+\
+\pard\tx720\pardeftab720\partightenfactor0
+
+\f1\b \cf2 {{\NeXTGraphic Pasted Graphic 1.png \width16420 \height5940 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+
+\f0\b0 \cf4 \cb1 As the internet has grown and more and more different types of clients have appeared, there has been a trend toward a service-oriented architecture. \cb3 Databases sit behind a firewall, and their functionality is encapsulated or hidden behind a service that is made available over the network. Clients don't need to know anything about the details of the database. Applications only connect to the service via HTTP and pass data back and forth using a text-based format like XML or JSON.\
+
+\f1\b \cf2 \
+\pard\tx720\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic Pasted Graphic 2.png \width16520 \height5700 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic Pasted Graphic 3.png \width16100 \height8540 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic Pasted Graphic 4.png \width16680 \height8340 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+
+\f0\b0 \cf4 After you move your databases and applications, there is an opportunity for optimising them to run in the Cloud.\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f2\fs32 \cf4 {{\NeXTGraphic Pasted Graphic 5.png \width16680 \height7980 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf4 Microservices should be loosely coupled. That means one service can use another without understanding its details. Data passed between services is simply text in JSON or XML format. Also, different microservices should be able to be deployed and versioned independently.\
+\
+\pard\pardeftab720\partightenfactor0
+\cf4 {{\NeXTGraphic Pasted Graphic 6.png \width17380 \height8540 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf4 \
+\
+There are many benefits of microservices. One benefit is ability to choose which type of database is most appropriate for each individual service. For some services, a relational database is required. But for others, using a NoSQL database or a data warehouse can save money and make programming easier. With monolithic apps, the database you choose has to be one that works for the entire application. That means you probably need a relational database. Relational databases are great and they work for nearly any application. However, relational databases tend to be more expensive and require more administration than other simpler types of databases.\
+\
+\pard\pardeftab720\partightenfactor0
+\cf4 {{\NeXTGraphic Pasted Graphic 7.png \width16480 \height6820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf4 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf4 {{\NeXTGraphic Pasted Graphic 8.png \width16800 \height6820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf4 \
+\
+What is high availability?\
+\
+\pard\pardeftab720\partightenfactor0
+\cf4 {{\NeXTGraphic Pasted Graphic 9.png \width16800 \height8260 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf4 \
+\
+What are failover replicas?\
+\
+\pard\pardeftab720\partightenfactor0
+\cf4 {{\NeXTGraphic Pasted Graphic 10.png \width16800 \height8740 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf4 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf4 {{\NeXTGraphic Pasted Graphic 11.png \width16800 \height6900 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf4 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf4 {{\NeXTGraphic Pasted Graphic 12.png \width16800 \height8820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf4 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf4 {{\NeXTGraphic Pasted Graphic 13.png \width17200 \height8600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf4 \
+\
+There are many ways to run databases in the cloud, each with its own advantage. The one you choose will depend on how much flexibility you need I.e. being able to have more administrative control.\
+\
+\pard\pardeftab720\partightenfactor0
+\cf4 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic.png \width19200 \height8560 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+{{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 1.png \width19200 \height6780 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+{{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 2.png \width19200 \height8760 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+{{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 3.png \width19200 \height7480 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+Or the script can be stored in cloud storage and read from there.\
+\pard\pardeftab720\partightenfactor0
+
+\f1\b \cf2 \
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 4.png \width19200 \height7480 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+{{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 5.png \width19200 \height8640 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+
+\f0\b0 Oracle does not certify its databases to run on virtual machines in google cloud.
+\f1\b \
+\
+
+\f0\b0 Why run your database in a Kubernetes cluster?\
+\
+
+\f1\b {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 6.png \width19200 \height7940 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+{{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 7.png \width19200 \height8700 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+{{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 8.png \width19200 \height8200 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+{{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 9.png \width19200 \height8760 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+{{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 10.png \width19200 \height6500 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 Database Migration Service
+\f0\b0 \'a0provides options for one-time and continuous jobs to migrate data to Cloud SQL using different connectivity options, including IP allowlists, VPC peering, and reverse SSH tunnels (see documentation on connectivity options at\'a0{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/database-migration/docs/postgres/configure-connectivity"}}{\fldrslt \cf0 https://cloud.google.com/database-migration/docs/postgresql/configure-connectivity}}).\
+\
+Migrating a database via\'a0
+\f1\b Database Migration Service
+\f0\b0 \'a0requires some preparation of the source database, including creating a dedicated user with replication rights, adding the\'a0\cb5 pglogical\cb3 \'a0database extension to the source database and granting rights to the schemata and tables in the database to be migrated, as well as the postgres database, to that user. Database Migration API has to be enabled before undertaking activity. Service networking API also needs to be enabled; it is required in order to be able to configure Cloud SQL to support VPC Peering and connections over a private ip-address.\
+\
+If you want to minimise the impact of non-availability of cloud sql instances during database maintenance windows, implement the following:\
+1. Connection pools; they will minimise the impact of dropped connections. Although connections between the pooler and the database are dropped during maintenance, the connections between the application and the pooler are preserved. Thus, the work of reestablishing the connections is transparent to the application and offloaded to the connection pooler instead.\
+2. Exponential backoff; if a query fails or a connection is dropped, the system institutes the a wait period before retrying, which increases for each subsequent retry. Following this pattern ensures that these failures are corrected without overloading the service.\
+\
+Even if you do not set a maintenance window for a database, it will still be conducted.\
+\
+If you need to export a large cloud sql for postgresql instance which has databases that are heavily used in production and export time is not a concern and you want to it conducted without affecting the performance of the instance then you should use serverless export which will result in cloud sql creating a temporary instance to offload the export operation. Offloading the export operation allows databases on the primary instance to continue to serve queries and perform operations at the usual performance rate.\
+\
+The cloud sql over-provisioned instance recommender helps with recommendations on how to resize such instances and reduce costs. Hence, it can help you optimise costs for instances that are too big for the workload that they handle.\
+\
+If you have slow running queries on a mysql database instance running on compute engine and you need to identify the slow queries running on the databases you can set database-flags options for slow_query_log then look for  mysql-slow.log in the logs explorer.\
+\
+Cloud spanner does not evaluate parametrised LIKE patterns until execution time and therefore this doesn\'92t improve query performance. If your application needs to execute many similar queries in which only a literal value changes, you should use a parameter placeholder (e.g. cutomerId=@customerId) for that value. If the storeId is constant over subsequent query invocations leaving it as the constant as a literal in this case would be beneficial because it can improve the specific query plan that is chosen by the query engine.\
+\
+Developers can use cloud functions to offload to google cloud resource intensive work (heavy CPU or networking) that wouldn\'92t be practical to run on a user\'92s device. The real time database feature of firebase lets you trigger updates to followers. ImageMagick command line tools are provided for use with cloud functions to simplify this work.\
+\
+Firebase is a nosql document oriented database that supports flexible schemas. Native mode supports real time updates. Datastore mode does not support real time updates.\
+\
+For cloud sql managed databases, failover replication doesn\'92t automatically backup data. Automated data backups are done once a day and could result in a large amounts of data loss if you are looking to recover a database to a previous state with minimal data loss. Point in time recovery has the most up to date recovery capability.\
+\
+The security policy for a cloud sql database dictates that it should only be accessed from VPC networks within google cloud. You do not want t enable a public IP address for the instance. What should you do? Configure private service access in your VPC.
+\f3 \
+\pard\pardeftab720\partightenfactor0
+
+\f0 \cf2 \
+}

@@ -1,0 +1,45 @@
+we (and the machines we have built to do work) generate a lot of data. this data requires analysis, manipulation and management if we
+are to derive value from it. this is why jobs in the data ecosystem were created and continue to grow.
+
+whichever way you refer to data, data centric world or data is the new oil, the large amount of data that is being generated needs vast 
+repositories for storage.
+
+SQL is a utility that was created to help with querying, updating and manipulating of structured data stored in repositories. 
+
+SQL constructs can also be executed from within various programming languages; perhaps the most popular language that it is used with 
+is python because it is a simple language.
+
+what is data? a collection of facts that can include words, numbers or pictures. it is one of the most critical assets of any business. 
+since it is critical to businesses it needs to be securely stored. this is where databases come into play.
+
+a database is a program that stores data (a repository of data). there are different types of databases, they include - relational 
+databases (data stored in tabular form), nosql etc.
+
+what about database management systems? they are a set of software utilities that help in the management of data stored in a database. 
+this management includes access, organisation, and storage. the terms database, database server, database system, data server, and DBMS 
+are often used interchangeably.
+
+in the case of relational databases, their DBMS are referred to as RDBMS. examples of RDBMS include MySQL, Oracle database, IBM Db2, MS 
+SQL Server, Postgresql etc.
+
+the select statement is a DML statement.
+
+what is a DML statement? used to read and modify data.
+
+the output from a DML statement is called a result set or a result table.
+
+you can restrict the result set returned by using the WHERE clause.
+
+a full list of comparison operators supported by a RDBMS: = > < >= <= <> (not equal to)
+
+count is a built in database function that returns the number of rows that match a criteria.
+
+the distinct built in function removes duplicate values from a result set.
+
+the limit built in function restricts the number of rows retrieved from a table.
+
+insert statement is used to add new rows to a table. it is a DML statement. see insert1.png and insert2.png
+
+the update statement is used to alter the rows of a table that is already populated. it is a DML statement see update1
+
+delete statement is a DML statement see delete.png

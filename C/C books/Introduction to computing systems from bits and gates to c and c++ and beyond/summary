@@ -623,7 +623,7 @@ these locations can be accessed quicker than memory (usually by a single clock c
 bits stored in each GPR is referred to as a word. also called a register file
 
 5. what does an instruction comprise of? comprised of opcode (what the instruction is asking the computer to do) and
-its operands (what the instrcution will operate on)
+its operands (what the instruction will operate on)
 
 6. what does the instruction set specified by an ISA entail? comprises of a set of opcodes, data types, and addressing modes.
 
@@ -636,7 +636,7 @@ the ISA has opcodes that operate on that representation
 
 10. how is the immediate addressing mode different to the register mode? one of the two operands is contained in bits 4:0 of the instruction
 
-11. there are 3 different types of instructions, what are they? 
+11. there are 3 different types of instructions, what are they? operate, data movement, and control
 
 12. what does each of the 3 different types of instruction do? operate instructions process information; data movement instructions move
 data between registers to memory and between registers/memory and input/output devices; control instructions change the sequence of
@@ -657,7 +657,7 @@ have to look elsewhere for it
 
 19. how many 3 single bit registers does the LC-3 have and what are they called? 3; they are referred to as N, Z, and P
 
-20. what does N, Z, and P mean? N stands for negative, Z stands for zero, and P stands for positive
+20. what do N, Z, and P stnd for? N stands for negative, Z stands for zero, and P stands for positive
 
 21. how are these 3 single bit registers used? they are individually set (set to 1) or cleared (set to 0) each time one of the eight GPR's
 is written into as a result of execution of one of the operate instructions or one of the load instructions 
@@ -670,4 +670,130 @@ purpose register
 
 24. why are the 3 single bit registers referred to as condition codes? because the condition of the 3 bits is used to change the sequence
 of execution of instructions in a computer program
+
+25. what is the opcode for the NOT instruction? 1001
+
+26. how many source operands does the NOT instruction operate on and what addressing mode does it use for both source and destination? one;
+register mode
+
+27. in the NOT instruction, what must bits 5:0 contain? all 1's
+
+28. what 2 addressing modes can be used to specify the second source operand for the AND and ADD instructions? register mode for one of the
+source operands and the destination operand; second opernd is specified by either register mode or as an immediate operand
+
+29. which bit determines which addressing mode will be used for the second operand in the AND and ADD instructions? bit 5
+
+30. if bit 5 is 0 which addressing mode is used and what are bits 4:3 set to? register mode; set to 0
+
+31. if bit 5 is 1 which addressing mode is used and what is done to bits 4:0? literal or immediate mode; they are sign extended to 16 bits
+
+32. what must happen at the end of executing the AND and ADD Instruction (infact for all intructions)? the condition codes must be set
+
+33. what implication does using immediate addressing mode present? since the literal operand must fit into bits 4:0 of the instruction, not
+all 2 complement integers can be used as immediate operands (range of -16 through to 8)
+
+34. can a register can be used as a source and also as a destination in the same instruction? yes
+
+35. what does the LEA instruction do? loads a register specified by bits 11:9 with an address specified by adding the PC + sign extended
+bits 8:0 of the instruction (the address is not accessed)
+
+36. what do data movement instructions do? move information between GPRs and memory and between GPRs and input/output devices
+
+37. what do you call the process of moving information from memory to a register? loading
+
+38. what do you call the process of moving information from a register to a memory? storing
+
+39. how many instructions does the LC-3 contain for moving information? 6
+
+40. how many operands do data movement instructions require? two operands
+
+41. name these operands? a source (data to be moved) and a destination
+
+42. what do bits 8:0 contain for data movement instructions? address generation bits i.e. information used to compute the 16 bit address
+of the second operand
+
+43. in the case of LC-3, how many ways are there to interpret bits 8:0 for data movement instructions? 3 ways that are called addressing
+modes
+
+44. what speciﬁes how to interpret bits [8:0] in data movement instructions? the opcode
+
+45. what two instructions specify the PC-relative addressing mode? LD and ST
+
+46. why is the PC-relative addressing mode named as such? because bits 8:0 of the instruction specify an offset relative to the PC
+
+47. how is the memory address computed? by sign extending bit 8:0 to 16 bits and adding the result to the incremented PC
+
+48. in this case, what happens if the instruction is LD? the computed address (PC + offset) specifies the memory to be accessed. its
+contents are loaded into register specified by bits 11:9 of the instruction
+
+49. what if the instruction is ST? the contents of the register specified by bits 11:9 of the instruction is written into the memory 
+location whose address is PC + offset
+
+50. what happens after either the LD or ST instrruction has been executed? the N, Z, P condition codes are set
+
+51. which two instructions specify indirect addressing mode? LDI and STI
+
+52. how are the LDI and STI addresses formed? the same way LD and ST are formed i.e. sign extending bits 8:0 from the instruction and 
+adding it to the incremented value of the PC?
+
+53. how is the sign extended address of the LDI and STI instructions different from that of the LD and ST instructions? instead of it being
+the address of the operand to be loaded or stored, it is the address of the address of the operand to be loaded or stored
+
+54. where in the instruction is the destination register for the LDI instruction and the source register for the STI instruction found? in
+bits 11:9
+
+55. what is the difference between the indirect mode and PC relative addressing modes in terms if the address of the operand in a computers
+memory? for indirect addressing mode, the address of the operand can be anywhere in the computers memory and not just within the range 
+provided by bits 8:0 of the instruction
+
+56. which two instructions use the base + offset addressing mode? LDR and STR
+
+57. how does the base + offset addressing mode work? address of the operand is obtained by adding a sign extended six bit offset (5:0)
+to a base register specified by bits 8:6 
+
+58. what do control instructions do? they change the sequence of instructions to be executed otherwise the next instruction fetched would
+always be after the current instruction finishes in the next sequential memory location
+
+59. how many opcodes does the LC-3 have that allow sequential execution flow to be broken? 5
+
+60. can you name them? conditional branch, unconditional jump, subroutine call, TRAP, and RTI (return from trap or interrupt)
+
+61. what does the TRAP instruction (often called service call) do? allows programmer to get help from operating system to do things that
+the typical programmer does not understand how to do e.g. getting information from input device into the cpu, sending information to output
+device. it breaks the sequential execution of a user program to start a sequence of instructions in the OS 
+
+62. summarise how the conditional branch (BR which is opcode 0000) works? when executed it decides based on a test whether to execute the 
+next instruction in memory or to jump to another instruction in a different part of the memory that was allocated to the program by the
+OS
+
+63. what stage of instruction cycle does the BR instruction decide whether to load the PC with a new address? in the EXECUTE stage; if  
+nothing occurs in this stage then the incremented PC will remain unchanged and the next instruction executed will be the next instruction
+in the sequence, otherwise a new address will be loaded
+
+64. what is the decision whether to do nothing to the incremented PC or whether to change it based on? it is based on the execution of
+previous instructions in the program which are reflected in the condition codes (the conditional branch's execute phase with either do 
+nothing or it loads the PC with the address of the instruction it wishes to execute next) 
+
+65. what is the format of the conditional branch instruction? bits 15:12 display the opcode which in this case is all 0's; bits 11:9
+display the condition codes N, Z, P respectively; bits 8:0 are sign extended to make 16 bits then added to the PC
+
+66. in the LC-3, what instructions write into the GPR's and also set the condition codes? the operate instructions (ADD, AND, and NOT)
+and the three load instructions (LD, LDI, LDR)
+
+67. what can you summise about the contents of bits 11:9 in the BR instruction and its operation? the BR instruction uses the information
+to determine whether to depart from the usual sequential execution of instructions that we get as a result of incrementing the PC during
+the FETCH phase of each instruction
+
+68. how does the above happen? during the EXECUTE phase of the BR instruction cycle, the processor examines the condition codes whose
+associted bits in the instruction bits 11:9 are 1. if bit 11 is 1 then condition code N is examined; if bit 10 is 1 then condition code
+Z is examined; similar action is taken for bit 9. if any of the bits 11:9 are 0 then the associated condition codes are not examined. if
+any of the condition codes examined are set, then the PC is loaded with the address obtained in the EVALUTE ADDRESS phase. if none of the 
+condition codes that are examined are set, the incremented PC is left unchanged
+
+69. how is the address obtained during the EVALUATE ADDRESS phase generated? using PC-relative addressing mode
+
+
+
+
+
 

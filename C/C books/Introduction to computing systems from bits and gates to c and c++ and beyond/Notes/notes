@@ -1601,7 +1601,9 @@ The most common control instruction is the conditional branch (BR), which either
 contents of the PC, depending on the result of a previous instruction (usually the instruction that is executed immediately before the 
 conditional branch instruction).
 
-The BR Instruction The BR instruction consists of three parts, the opcode (bits [15:12] = 0000), the condition to be tested (bits [11:9]), 
+The BR Instruction 
+
+The BR instruction consists of three parts, the opcode (bits [15:12] = 0000), the condition to be tested (bits [11:9]), 
 and the addressing mode bits (bits [8:0]) that are used to form the address to be loaded into the PC if the result of the previous 
 instruction agrees with the test speciﬁed by bits [11:9]. The addressing mode, i.e., the mechanism used to determine the actual address, 
 is the same one we used in the LD instruction. Bits [8:0] are sign-extended to 16 bits and then added to the current contents of the PC.
@@ -1896,7 +1898,7 @@ If R5 initially contains 0101000011110000, after executing the following instruc
 
 15    14    13    12     11    10    9     8    7    6     5    4    3    2    1    0
 1     0     0     1  |   0     1     1  |  1    0    1  |  1    1    1    1    1    1
-NOT                           R3                R5
+      NOT                     R3                R5
 
 R3 will contain 1010111100001111.
 
@@ -1908,5 +1910,532 @@ execution of the NOT instruction.
 Recall from Chapter 4 that the ADD (opcode = 0001) and AND (opcode = 0101) instructions both perform binary operations; they require two 
 16-bit source operands. The ADD instruction performs a 2’s complement addition of its two source operands. The AND instruction performs a 
 bit-wise AND of each pair of bits of its two 16-bit operands. Like the NOT, the ADD and AND use the register addressing mode for one of 
-the source operands and for the destina- tion operand. Bits [8:6] specify the source register, and bits [11:9] specify the destination 
+the source operands and for the destination operand. Bits [8:6] specify the source register, and bits [11:9] specify the destination 
 register (where the result will be written).
+
+Immediates
+
+The second source operand for both ADD and AND instructions (as also discussed in Chapter 4) can be speciﬁed by either register mode or 
+as an immediate operand. Bit [5] determines which. If bit [5] is 0, then the second source operand uses a register, and bits [2:0] 
+specify which register. In that case, bits [4:3] are set to 0 to complete the speciﬁcation of the instruction.
+
+In the ADD instruction shown below, if R4 contains the value 6 and R5 contains the value −18, then R1 will contain the value −12 after 
+the instruction is executed.
+
+15    14    13    12     11    10    9  |  8    7    6     5     4    3     2    1    0
+0     0      0     1  |  0     0     1  |  1    0    0  |  0  |  0    0  |  1    0    1
+        ADD                    R1               R4                            R5
+
+If bit [5] is 1, the second source operand is contained within the instruction. In that case the second source operand is obtained by 
+sign-extending bits [4:0] to 16 bits before performing the ADD or AND. The result of the ADD (or AND) instruction is written to the 
+destination register and the condition codes are set, completing the execution of the ADD (or AND) instruction. Figure 5.5 shows the key 
+parts of the data path that are used to perform the instruction "ADD  R1,  R4,  #-2."
+
+Since the immediate operand in an ADD or AND instruction must ﬁt in bits [4:0] of the instruction, not all 2’s complement integers can be 
+immediate operands. Question: Which integers are OK (i.e., which integers can be used as immediate operands)?
+
+What does the following instruction do?
+
+15    14    13    12     11    10    9  |  8    7    6     5     4    3    2    1    0
+0     1      0     1  |  0     1     0  |  0    1    0  |  1  |  0    0    0    0    0
+
+ANSWER:    Register 2 is cleared (i.e., set to all 0s).
+
+What does the following instruction do?
+
+15    14    13    12     11    10    9  |  8    7    6     5     4    3    2    1    0
+0     0      0     1  |  1     1     0  |  1    1    0  |  1  |  0    0    0    0    1
+
+ANSWER:    Register 6 is incremented (i.e., R6 ← R6 + 1).
+
+Note that a register can be used as a source and also as a destination in the same instruction. This is true for all instructions in 
+the LC-3.
+
+Recall that the negative of an integer represented in 2’s complement can be obtained by complementing the number and adding 1. Therefore, 
+assuming the values A and B are in R0 and R1, what sequence of three instructions performs “A minus B” and writes the result into R2?
+
+ANSWER:
+
+15    14    13    12     11    10    9     8    7    6     5    4    3    2    1    0
+1     0     0     1  |   0     0     1  |  0    0    1  |  1    1    1    1    1    1     R1  ←  NOT(B)
+      NOT                     R1                R1
+
+
+15    14    13    12     11    10    9  |  8    7    6     5     4    3    2    1    0    R2  ←  -B + 1
+0     0      0     1  |  0     1     0  |  0    0    1  |  1  |  0    0    0    0    1
+         ADD                  R2                R1
+
+
+15    14    13    12     11    10    9  |  8    7    6     5     4    3     2    1    0    R2  ←  A  +(-B)
+0     0      0     1  |  0     1     0  |  0    0    0  |  0  |  0    0  |  0    1    0
+         ADD                  R2               R0                               R2
+
+
+Question: What distasteful result is also produced by this sequence? How can it easily be avoided?
+
+
+The LEA Instruction (Although Not Really an Operate)
+
+Where to put the LEA instruction is a matter for debate (when you have nothing more important to do!). It does not really operate on data, 
+it simply loads a register with an address. It clearly does not move data from memory to a register, nor is it a control instruction. We 
+had to put it somewhere, so we chose to discuss it here!
+
+LEA (opcode  =  1110) loads the register speciﬁed by bits [11:9] of the instruction with the value formed by adding the incremented 
+program counter to the sign-extended bits [8:0] of the instruction. We saw this method of constructing an address in Chapter 4 with the 
+LD instruction. However, in this case, the instruction does not access memory, it simply loads the computed address into a register. 
+Perhaps a better name for this opcode would be CEA (for Compute Eﬀective Address). However, since many microprocessors in industry that 
+have this instruction in their ISAs call it LEA (for Load Eﬀective Address), we have chosen to use the same acronym.
+
+We shall see shortly that the LEA instruction is useful to initialize a register with an address that is very close to the address of the 
+instruction doing the initializing.
+
+If memory location x4018 contains the instruction LEA R5, #−3, and the PC contains x4018,
+
+15    14    13    12     11    10    9  |  8    7    6     5     4    3    2    1    0
+1     1      1     0  |  1     0     1  |  1    1    1     1     1    1    1    0    1
+        LEA                    R5                        -3
+
+R5 will contain x4016 after the instruction at x4018 is executed. Question: Why will R5 not contain the address x4015? because the PC will
+be incremented during the fetch phase
+
+Figure 5.6 shows the relevant parts of the data path required to execute the LEA instruction. Note that the value to be loaded into the 
+register does not involve any access to memory. ...nor does it have any eﬀect on the condition codes.
+
+Data Movement Instructions
+
+Data movement instructions move information between the general purpose registers and memory and between the registers and the 
+input/output devices. We will ignore for now the business of moving information from input devices to registers and from registers to 
+output devices. This will be an important part of Chapter 9. In this chapter, we will conﬁne ourselves to moving information between 
+memory and the general purpose registers.
+
+The process of moving information from memory to a register is called a load, and the process of moving information from a register to 
+memory is called a store. In both cases, the information in the location containing the source operand remains unchanged. In both cases, 
+the location of the destination operand is over-written with the source operand, destroying in the process the previous value that was in 
+the destination location.
+
+The LC-3 contains six instructions that move information: LD, LDR, LDI, ST, STR, and STI.
+
+The format of the load and store instructions is as follows:
+
+15    14    13    12    11    10    9    8     7    6     5     4     3     2     1     0
+         opcode       |     DR or SR   |                Addr Gen bits
+
+Data movement instructions require two operands, a source and a destination. The source is the data to be moved; the destination is the 
+location where it is moved to. One of these locations is a register, the other is a memory location or an input/output device. In this 
+chapter we will assume the second operand is in memory. In Chapter 9 we will study the cases where the second operand is an input or 
+output device.
+
+Bits [11:9] specify one of these operands, the register. If the instruction is a load, DR refers to the destination general purpose 
+register that will contain the value after it is read from memory (at the completion of the instruction cycle). If the instruction is a 
+store, SR refers to the register that contains the value that will be written to memory.
+
+Bits [8:0] contain the address generation bits. That is, bits [8:0] contain information that is used to compute the 16-bit address of 
+the second operand. In the case of the LC-3’s data movement instructions, there are three ways to interpret bits [8:0]. They are 
+collectively called addressing modes. The opcode speciﬁes how to interpret bits [8:0]. That is, the LC-3’s opcode speciﬁes which of the 
+three addressing modes should be used to obtain the address of the operand from bits [8:0] of the instruction.
+
+PC-Relative Mode
+
+LD (opcode = 0010) and ST (opcode = 0011) specify the PC-relative addressing mode. It is so named because bits [8:0] of the instruction 
+specify an oﬀset relative to the PC. The memory address is computed by sign-extending bits [8:0] to 16 bits and adding the result to the 
+incremented PC. The incremented PC is the contents of the program counter after the FETCH phase, that is, after the PC has been 
+incremented. If the instruction is LD, the computed address (PC + oﬀset) speciﬁes the memory location to be accessed. Its contents is 
+loaded into the register speciﬁed by bits [11:9] of the instruction. If the instruction is ST, the contents of the register speciﬁed by 
+bits [11:9] of the instruction is written into the memory location whose address is PC + oﬀset. ...and the N, Z, and P one-bit condition 
+codes are set depending on whether the value loaded is negative, positive, or zero.
+
+If the following instruction is located at x4018, it will cause the contents of x3FC8 to be loaded into R2.
+
+15    14    13    12     11    10    9     8    7    6    5    4    3    2    1    0
+0     0     1     0   |  0     1     0  |  1    1    0    1    0    1    1    1    1
+         LD                    R2                       x1AF
+
+Figure 5.7 shows the relevant parts of the data path required to execute this instruction. The three steps of the LD instruction are 
+identiﬁed. In step 1, the incremented PC (x4019) is added to the sign-extended value contained in IR [8:0] (xFFAF), and the result (x3FC8) 
+is loaded into the MAR. In step 2, memory is read and the contents of x3FC8 is loaded into the MDR. Suppose the value stored in x3FC8 is 
+5. In step 3, the value 5 is loaded into R2, and the NZP condition codes are set, completing the instruction cycle.
+
+Note that the address of the memory operand is limited to a small range of the total memory. That is, the address can only be within +256 
+or −255 locations of the LD or ST instruction. This is the range provided by the sign-extended value contained in bits [8:0] of the 
+instruction. If a load instruction needs to access a memory location further away from the load instruction, one of the other two 
+addressing modes must be used.
+
+Indirect Mode
+
+LDI (opcode = 1010) and STI (opcode = 1011) specify the indirect address- ing mode. An address is ﬁrst formed exactly the same way as with 
+LD and ST. However, instead of this address being the address of the operand to be loaded or stored, it is the address of the address of 
+the operand to be loaded or stored. Hence the name indirect. Note that the address of the operand can be anywhere in the computer’s memory, 
+not just within the range provided by bits [8:0] of the instruction as is the case for LD and ST. The destination register for the LDI 
+and the source register for STI, like all the other loads and stores, are speciﬁed in bits [11:9] of the instruction.
+
+If the instruction
+
+15    14    13    12     11    10    9     8    7    6    5    4    3    2    1    0
+1     0     1     0   |  0     1     1  |  1    1    1    0    0    1    1    0    0
+         LDI                   R3                       x1CC
+
+is in x4A1B, and the contents of x49E8 is x2110, execution of this instruction results in the contents of x2110 being loaded into R3.
+
+Figure 5.8 shows the relevant parts of the data path required to execute this instruction. As is the case with the LD and ST instructions, 
+the ﬁrst step consists of adding the incremented PC (x4A1C) to the sign-extended value contained in IR [8:0] (xFFCC), and the result 
+(x49E8) loaded into the MAR. In step 2, memory is in x4A1B and x2110 is in x49E8, and execution of this instruction results in the 
+contents of x2110 being loaded into R3. In step 3, since x2110 is not the operand, but the address of the operand, it is loaded into the 
+MAR. In step 4, memory is again read, and the MDR again loaded. This time the MDR is loaded with the contents of x2110. Suppose the value 
+−1 is stored in memory location x2110. In step 5, the contents of the MDR (i.e., −1) is loaded into R3 and the NZP condition codes are set, 
+completing the instruction cycle.
+
+Base+offset Mode
+
+LDR (opcode = 0110) and STR (opcode = 0111) specify the Base+oﬀset addressing mode. The Base+oﬀset mode is so named because the address 
+of the operand is obtained by adding a sign-extended six-bit oﬀset to a base register. The six-bit oﬀset is obtained from the instruction, 
+bits [5:0]. The base register is speciﬁed by bits [8:6] of the instruction.
+
+If R2 contains the 16-bit quantity x2345, the following instruction loads R1 with the contents of x2362.
+
+15    14    13    12     11    10    9     8    7    6     5    4    3    2    1    0
+0     1     1     0   |  0     0     1  |  0    1    0  |  0    1    1    1    0    1
+         LDR                   R1               R2                    x1D
+
+Figure 5.9 shows the relevant parts of the data path required to execute this instruction. First the contents of R2 (x2345) is added to 
+the sign-extended value contained in IR [5:0] (x001D), and the result (x2362) is loaded into the MAR. Second, memory is read, and the 
+contents of x2362 is loaded into the MDR. Suppose the value stored in memory location x2362 is x0F0F. Third, and ﬁnally, the contents of 
+the MDR (in this case, x0F0F) is loaded into R1 and the NZP condition codes are set, completing the execution of the LDR instruction.
+
+Note that the Base+oﬀset addressing mode also allows the address of the operand to be anywhere in the computer’s memory.
+
+An Example
+
+We conclude our study of addressing modes with a comprehensive example. Assume the contents of memory locations x30F6 through x30FC are 
+as shown in Figure 5.10, and the PC contains x30F6. We will examine the eﬀects of carrying out the seven instructions starting at 
+location x30FC.
+
+Since the PC points initially to location x30F6, the ﬁrst instruction to be executed is the one stored in location x30F6. The opcode of 
+that instruction is 1110, load eﬀective address (LEA). LEA loads the register speciﬁed by bits [11:9] with the address formed by 
+sign-extending bits [8:0] of the instruction and adding the result to the incremented PC. The 16-bit value obtained by sign-extending bits 
+[8:0] of the instruction is xFFFD. The incremented PC is x30F7. Therefore, at the end of execution of the LEA instruction, R1 contains 
+x30F4, and the PC contains x30F7.
+
+Next, the instruction stored in location x30F7 is executed. Since the opcode 0001 speciﬁes ADD, the sign-extended immediate in bits [4:0] 
+(since bit [5] is 1) is added to the contents of the register speciﬁed in bits [8:6], and the result is written to the register speciﬁed 
+by bits [11:9]. Since the previous instruction wrote x30F4 into R1, and the sign-extended immediate value is x000E, the sum is x3102. At 
+the end of execution of this instruction, R2 contains x3102, and the PC contains x30F8. R1 still contains x30F4.
+
+Next, the instruction stored in x30F8. The opcode 0011 speciﬁes the ST instruction, which stores the contents of the register speciﬁed by 
+bits [11:9] (R2) into the memory location whose address is computed using the PC-relative addressing mode. That is, the address is 
+computed by adding the incremented PC (x30F9) to the 16-bit value obtained by sign-extending bits [8:0] of the instruction (xFFFB). 
+Therefore, at the end of execution of the ST instruction, memory location x30F4 (i.e., x30F9 + xFFFB) contains the value stored in R2 
+(x3102) and the PC contains x30F9.
+
+Next the instruction at x30F9. The AND instruction, with an immediate operand x0000. At the end of execution, R2 contains the value 0, 
+and the PC contains x30FA.
+
+At x30FA, the opcode 0001 speciﬁes the ADD instruction. After execution, R2 contains the value 5, and the PC contains x30FB.
+
+At x30FB, the opcode 0111 signiﬁes the STR instruction. STR (like LDR) uses the Base+oﬀset addressing mode. The memory address is obtained 
+by adding the contents of the BASE register (speciﬁed by bits [8:6]) to the sign- extended oﬀset contained in bits [5:0]. In this case, 
+bits [8:6] specify R1, which contains x30F4. The 16-bit sign-extended oﬀset is x000E. Since x30F4 + x000E is x3102, the memory address is 
+x3102. The STR instruction stores into x3102 the contents of the register speciﬁed by bits [11:9], in this case R2. Since R2 contains the 
+value 5, at the end of execution of this instruction, M[x3102] contains the value 5, and the PC contains x30FC.
+
+Finally the instruction at x30FC. The opcode 1010 speciﬁes LDI. LDI (like STI) uses the indirect addressing mode. The memory address is 
+obtained by ﬁrst forming an address as is done in the PC-relative addressing mode. Bits [8:0] are sign-extended to 16 bits (xFFF7) and 
+added to the incremented PC (x30FD). Their sum (x30F4) is the address of the operand address. Since M[x30F4] contains x3102, x3102 is 
+the operand address. The LDI instruction loads the value found at this address (in this case 5) into the register identiﬁed by bits [11:9] 
+of the instruction (in this case R3). At the end of execution of this instruction, R3 contains the value 5 and the PC contains x30FD.
+
+Control Instructions
+
+Control instructions change the sequence of instructions to be executed. If there were no control instructions, the next instruction 
+fetched after the current instruction ﬁnishes would always be the instruction located in the next sequential memory location. As you know, 
+this is because the PC is incremented in the FETCH phase of each instruction cycle. 
+
+The LC-3 has ﬁve opcodes that enable the sequential execution ﬂow to be broken: conditional branch, unconditional jump, subroutine call 
+(sometimes called function), TRAP, and RTI (Return from Trap or Interrupt). In this section, we will deal almost entirely with the most 
+common control instruction, the conditional branch. We will also discuss the unconditional jump and the TRAP instruction. The TRAP 
+instruction, often called service call, is useful because it allows a programmer to get help from the operating system to do things that
+the typical programmer does not fully understand how to do. Typical examples: getting information into the computer from input devices, 
+displaying information to output devices, and stopping the computer. The TRAP instruction breaks the sequential execution of a user 
+program to start a sequence of instructions in the operating system. How the TRAP instruction does this, and in fact, most of the 
+discussion of the TRAP instruction and all of the discussion of the subroutine call and the return from interrupt we will leave for 
+Chapters 8 and 9.
+
+Conditional Branches
+
+Of the ﬁve instructions which change the execution ﬂow from the next sequential instruction to an instruction located someplace else in 
+the program, only one of them decides each time it is executed whether to execute the next instruction in sequence or whether to execute 
+an instruction from outside that sequence. The instruction that makes that decision each time it is executed is the conditional branch 
+instruction BR (opcode = 0000).
+
+Like all instructions in the LC-3, the PC is incremented during the FETCH phase of its instruction cycle. Based on the execution of 
+previous instructions in the program, the conditional branch’s EXECUTE phase either does nothing or it loads the PC with the address of 
+the instruction it wishes to execute next. If the conditional branch instruction does nothing during the EXECUTE phase, then the 
+incremented PC will remain unchanged, and the next instruction executed will be the next instruction in sequence.
+
+That decision, whether to do nothing to the incremented PC or whether to change it, is based on previous results computed by the program, 
+which are reﬂected in the condition codes. We will explain.
+
+The format of the conditional branch instruction is as follows:
+
+15    14    13    12     11    10     9    8    7    6    5    4    3    2    1    0
+0     0     0     0   |  n   |  z  |  p  |               PCoﬀset
+
+Bits [11], [10], and [9] are associated with the three condition codes, N, Z, and P.
+
+As you know, the three operate instructions (ADD, AND, and NOT) and the three load instructions (LD, LDI, and LDR) in the LC-3 write 
+values into general purpose registers, and also set the three condition codes in accordance with whether the value written is negative, 
+zero, or positive.
+
+The conditional branch instruction uses that information to determine whether or not to depart from the usual sequential execution of 
+instructions that we get as a result of incrementing the PC during the FETCH phase of each instruction.
+
+We said (without explanation) in the computer program we studied in Section 4.4 that if bits [11:9] of the conditional branch instruction 
+are 101, we will depart from the usual sequential execution if the last value written into a register by one of the six instructions 
+listed above is not 0. We are now ready to see exactly what causes that to happen.
+
+During the EXECUTE phase of the BR instruction cycle, the processor examines the condition codes whose associated bits in the instruction, 
+bits [11:9], are 1. Note the lower case n, z, and p in bits [11:9] of the BR instruction format shown above. If bit [11] is 1, 
+condition code N is examined. If bit [10] is 1, condition code Z is examined. If bit [9] is 1, condition code P is examined. If any of 
+bits [11:9] are 0, the associated condition codes are not examined. If any of the condition codes that are examined are set (i.e., equal 
+to 1), then the PC is loaded with the address obtained in the EVALUATE ADDRESS phase. If none of the condition codes that are examined 
+are set, the incremented PC is left unchanged, and the next sequential instruction will be fetched at the start of the next instruction 
+cycle.
+
+The address obtained during the EVALUATE ADDRESS phase of the instruction cycle is generated using the PC-relative addressing mode.
+
+In our example in Section 4.4, the ADD instruction in memory location x3004 subtracted 1 from R2, wrote the result to R2, and set the 
+condition codes. The BR instruction in memory location x3005 shows bits [11:9] = 101. Since bit [11] is 1, if the N bit is set, the 
+result of the ADD must have been negative. Since bit [9] is also 1, if the P bit is set, the result must have been positive. Since bit 
+[10] is 0, we do not examine the Z bit. Thus if the previous result is positive or negative (i.e., not 0), the PC is loaded with x3003, 
+the address calculated in the EVALUATE ADDRESS phase of the branch instruction.
+
+Recall that the program of Figure 4.7 used R2 to keep track of the number of times the number 5 was added to R3. As long as we were not 
+done with all our additions, the result of subtracting 1 from R2 was not zero. When we were done with our additions, subtracting 1 from 
+R2 produced the result 0, so Z was set to 1, N and P were set to 0. At that point, bits [11:9] checked the N and P condition codes which 
+were 0, so the incremented PC was not changed, and the instruction at location x3006, a trap to the operating system to halt the computer, 
+was executed next.
+
+Let’s Look at Another Example. Suppose the following instruction is located at x4027, and the last value loaded into a general purpose 
+register was 0.
+
+15    14    13    12    11   10   9    8    7    6    5    4    3    2    1    0
+0     0     0     0  |  0    1    0  | 0    1    1    0    1    1    0    0    1
+         BR             n    z    p                   x0D9
+
+Figure 5.11 shows the data path elements that are required to execute this instruction. Note the logic required to determine whether the 
+sequential instruction ﬂow should be broken. Each of the three AND gates corresponds to one of the three condition codes. The output of 
+the AND gate is 1 if the corresponding condition code is 1 and if the associated bit in the instruction directs the hardware to check that 
+condition code. If any of the three AND gates have an output 1, the OR gate has an output 1, indicating that the sequential instruction 
+ﬂow should be broken, and the PC should be loaded with the address evaluated during the EVALUATE ADDRESS phase of the instruction cycle.
+
+In the case of the conditional branch instruction at x4027, the answer is yes, and the PC is loaded with x4101, replacing x4028, which 
+had been loaded into the PC during the FETCH phase of the BR instruction.
+
+Another Example. If all three bits [11:9] are 1, then all three condition codes are examined. In this case, since the last result stored 
+into a register had to be either negative, zero, or positive (there are no other choices!), one of the three condition codes must be in 
+state 1. Since all three are examined, the PC is loaded with the address obtained in the EVALUATE ADDRESS phase. We call this an 
+unconditional branch since the instruction ﬂow is changed unconditionally, that is, independent of the data.
+
+For example, if the following instruction, located at x507B, is executed, the PC is loaded with x5001.
+
+15    14    13    12    11   10   9    8    7    6    5    4    3    2    1    0
+0     0     0     0  |  1    1    1  | 1    1    0    0    0    0    1    0    1
+         BR             n    z    p                   x185
+
+Question: What happens if all three bits [11:9] in the BR instruction are 0?
+
+Two Methods of Loop Control
+
+We saw in Section 4.4 in our multiplication program that we repeatedly executed a sequence of instructions until the value in a register 
+was zero. We call that sequence a loop body, and each time the loop body is executed we call it one iteration of the loop body. The BR 
+instruction at the end of the sequence controls the number of times the loop body is executed. There are two common ways to control the 
+number of iterations.
+
+Loop Control with a Counter Suppose we know that the 12 locations x3100 to x310B contain integers, and we wish to compute the sum of 
+these 12 integers. A ﬂowchart for an algorithm to solve the problem is shown in Figure 5.12.
+
+First, as in all algorithms, we must initialize our variables. That is, we must set up the initial values of the variables that the 
+computer will use in executing the program that solves the problem. There are three such variables: the address of the next integer to 
+be added (assigned to R1), the running sum (assigned to R3), and the number of integers left to be added (assigned to R2). The three 
+variables are initialized as follows: The address of the ﬁrst integer to be added is put in R1. R3, which will keep track of the 
+running sum, is initialized to 0. R2, which will keep track of the number of integers left to be added, is initialized to 12. Then the 
+process of adding begins.
+
+The program repeats the process of loading into R4 one of the 12 integers and adding it to R3. Each time we perform the ADD, we 
+increment R1 so it will point to (i.e., contain the address of) the next number to be added and decrement R2 so we will know how many 
+numbers still need to be added. When R2 becomes zero, the Z condition code is set, and we can detect that we are done.
+
+The 10-instruction program shown in Figure 5.13 accomplishes the task. The details of the program execution are as follows: The program 
+starts with PC = x3000. The ﬁrst instruction (at location x3000) initializes R1 with the address x3100. (The incremented PC is x3001; 
+the sign-extended PCoﬀset is x00FF.)
+
+The instruction at x3001 clears R3. R3 will keep track of the running sum, so it must start with the value 0. As we said previously, 
+this is called initializing the SUM to zero.
+
+The instructions at x3002 and x3003 initialize R2 to 12, the number of inte- gers to be added. R2 will keep track of how many numbers 
+have already been added. This will be done (by the instruction in x3008) by decrementing R2 after each addition takes place.
+
+The instruction at x3004 is a conditional branch instruction. Note that bit [10] is a 1. That means that the Z condition code will be 
+examined. If it is set, we know R2 must have just been decremented to 0. That means there are no more numbers to be added, and we are 
+done. If it is clear, we know we still have work to do, and we continue with another iteration of the loop body.
+
+The instruction at x3005 loads the next integer into R4, and the instruction at x3006 adds it to R3.
+
+The instructions at x3007 and x3008 perform the necessary bookkeeping. The instruction at x3007 increments R1, so R1 will point to the 
+next location in memory containing an integer to be added. The instruction at x3008 decrements R2, which is keeping track of the number 
+of integers still to be added, and sets the condition codes.
+
+The instruction at x3009 is an unconditional branch, since bits [11:9] are all 1. It loads the PC with x3004. It also does not aﬀect 
+the condition codes, so the next instruction to be executed (the conditional branch at x3004) will be based on the instruction executed 
+at x3008.
+
+This is worth saying again. The conditional branch instruction at x3004 fol- lows the instruction at x3009, which does not aﬀect 
+condition codes, which in turn follows the instruction at x3008. Thus, the conditional branch instruction at x3004 will be based on the 
+condition codes set by the instruction at x3008. The instruction at x3008 sets the condition codes based on the value produced by 
+decrementing R2. As long as there are still integers to be added, the ADD instruction at x3008 will produce a value greater than zero 
+and therefore clear the Z condition code. The conditional branch instruction at x3004 examines the Z condition code. As long as Z is 
+clear, the PC will not be aﬀected, and the next iteration of the loop body will begin. That is, the next instruction cycle will start 
+with an instruction fetch from x3005.
+
+The conditional branch instruction causes the execution sequence to follow: x3000, x3001, x3002, x3003, x3004, x3005, x3006, x3007, 
+x3008, x3009, x3004, x3005, x3006, x3007, x3008, x3009, x3004, x3005, and so on. The loop body consists of the instructions at x3005 
+to x3009. When the value in R2 becomes 0, the PC is loaded with x300A, and the program continues at x300A with its next activity.
+
+You may have noticed that we can remove the branch instruction at x3004 if we replace the unconditional branch instruction at x3009 
+with a conditional branch that tests for not 0 (i.e., bits [11:9]=101), and branches to the instruc- tion currently located in x3005. 
+It is tempting to do that since it decreases the loop body by one instruction. BUT, we admonish you not to do that! The program as 
+shown obeys the rules of structured programming that we will discuss in Chapter 6. The shortcut does work for this simple example, but 
+it breaks the methodology of structured programming. You do not want to get in the habit of taking such shortcuts, since for larger 
+programs it is a clear invitation to disaster. More on this in Chapter 6.
+
+Finally, it is worth noting that we could have written a program to add these 12 integers without any control instructions. We still 
+would have needed the LEA instruction in x3000 to initialize R1. We would not have needed the instruction at x3001 to initialize the 
+running sum, nor the instructions at x3002 and x3003 to initialize the number of integers left to be added. We could have loaded the 
+contents of x3100 directly into R3, and then repeatedly (by incrementing R1), loaded subsequent integers into R4 and adding R4 to the 
+running sum in R3 11 more times! After the addition of the twelfth integer, we would go on to the next task, as does the example of 
+Figure 5.13 with the branch instruction in x3004.
+
+Unfortunately, instead of a 10-instruction program, we would have a 35- instruction program. Moreover, if we had wished to add 100 
+integers without any control instructions instead of 12, we would have had a 299-instruction program instead of 10. The control 
+instructions in the example of Figure 5.13 permit the reuse of sequences of code (the loop body) by breaking the sequential instruction 
+execution ﬂow.
+
+Loop Control with a Sentinel 
+
+The example above controls the number of times the loop body executes by means of a counter. We knew we wanted to execute the loop 12 
+times, so we simply set a counter to 12, and then after each execution of the loop, we decremented the counter and checked to see if it 
+was zero. If it was not zero, we set the PC to the start of the loop and continued with another iteration.
+
+A second method for controlling the number of executions of a loop is to use a sentinel. This method is particularly eﬀective if we do 
+not know ahead of time how many iterations we will want to perform. Each iteration is usually based on processing a value. We append to 
+our sequence of values to be processed a value that we know ahead of time can never occur (i.e., the sentinel). For example, if we are 
+adding a sequence of numbers, a sentinel could be a letter A or a *, that is, something that is not a number. Our loop test is simply 
+a test for the occurrence of the sentinel. When we ﬁnd it, we know we are done.
+
+Suppose we know the values stored in locations x3100 to x310B are all pos- itive. Then we could use any negative number as a sentinel. 
+Let’s say the sentinel stored at memory address x310C is −1. The resulting ﬂowchart for this solution is shown in Figure 5.14, and the 
+resulting program is shown in Figure 5.15.
+
+As before, the instruction at x3000 loads R1 with the address of the ﬁrst value to be added, and the instruction at x3001 initializes 
+R3 (which keeps track of the sum) to 0.
+
+At x3002, we load the contents of the next memory location into R4. If the sentinel is loaded, the N condition code is set.
+
+The conditional branch at x3003 examines the N condition code. If N=1, PC is loaded with x3008 and onto the next task. If N=0, R4 must 
+contain a valid number to be added. In this case, the number is added to R3 (x3004), R1 is incremented to point to the next memory 
+location (x3005), R4 is loaded with the contents of the next memory location (x3006), and the PC is loaded with x3003 to begin the next 
+iteration (x3007).
+
+The JMP Instruction
+
+The conditional branch instruction, for all its capability, does have one unfor- tunate limitation. The next instruction executed must 
+be within the range of addresses that can be computed by adding the incremented PC to the sign- extended oﬀset obtained from bits [8:0] 
+of the instruction. Since bits [8:0] specify a 2’s complement integer, the next instruction executed after the conditional branch can 
+be at most +256 or −255 locations from the branch instruction itself.
+
+What if we would like to execute next an instruction that is 2000 locations from the current instruction? We cannot ﬁt the value 2000 
+into the nine-bit ﬁeld; ergo, the conditional branch instruction does not work.
+
+The LC-3 ISA does provide an instruction JMP (opcode = 1100) that can do the job.
+
+The JMP instruction loads the PC with the contents of the register speciﬁed by bits [8:6] of the instruction. If the following JMP 
+instruction is located at address x4000,
+
+15    14    13    12    11    10    9    8    7    6    5    4    3    2    1    0
+1     1     0     0  |  0     0     0  | 0    1    0  | 0    0    0    0    0    0
+      JMP                                    BaseR
+
+R2 contains the value x6600, and the PC contains x4000, then the instruction at x4000 (the JMP instruction) will be executed, followed 
+by the instruction located at x6600. Since registers contain 16 bits (the full address space of memory), the JMP instruction has no 
+limitation on where the next instruction to be executed must reside.
+
+The TRAP Instruction
+
+We will discuss the details of how the TRAP instruction works in Chapter 9. However, because it will be useful long before that to get 
+data into and out of the computer, we discuss the TRAP instruction here. The TRAP (opcode = 1111) instruction changes the PC to a 
+memory address that is part of the operating system so that the operating system will perform some task on behalf of the program that 
+is executing. In the language of operating system jargon, we say the TRAP instruction invokes an operating system service call. Bits 
+[7:0] of the TRAP instruction form the trapvector, an eight-bit code that identiﬁes the ser- vice call that the program wishes the 
+operating system to perform on its behalf. Table A.2 contains the trapvectors for all the service calls that we will use with the LC-3 
+in this book.
+
+15    14    13    12    11    10    9    8    7    6    5    4    3    2    1    0
+1      1     1     1  |  0     0    0    0  |          trapvector
+
+Once the operating system is ﬁnished performing the service call, the pro- gram counter is set to the address of the instruction 
+following the TRAP instruction, and the program continues. In this way, a program can, during its execution, request services from the 
+operating system and continue processing after each such service is performed. The services we will require for now are:
+
+*  Input  a  character  from  the  keyboard  (trapvector  =  x23).
+*  Output  a  character  to  the  monitor  (trapvector  =  x21).
+*  Halt  the  program  (trapvector  =  x25).
+
+Another Example: Counting Occurrences of a Character
+
+We will ﬁnish our introduction to the ISA of the LC-3 with another example program. Suppose we would like to be able to input a 
+character from the keyboard, then count the number of occurrences of that character in a ﬁle, and ﬁnally display that count on the 
+monitor. We will simplify the problem by assuming that the number of occurrences of any character that we would be interested in is 
+small enough that it can be expressed with a single decimal digit. That is, there will be at most nine occurrences. This simpliﬁcation 
+allows us to not have to worry about complex conversion routines between the binary count and the ASCII display on the monitor—a 
+subject we will get into in Chapter 10, but not today.
+
+Figure 5.16 is a ﬂowchart of the algorithm that solves this problem. Note that each step is expressed both in English and also (in 
+parentheses) in terms of an LC-3 implementation.
+
+The ﬁrst step is (as always) to initialize all the variables. This means pro- viding starting values (called initial values) for R0, 
+R1, R2, and R3, the four registers the computer will use to execute the program that will solve the problem. R2 will keep track of the 
+number of occurrences; in Figure 5.16, it is referred to as Count. It is initialized to zero. R3 will point to the next character in 
+the ﬁle that is being examined. We refer to it as a pointer since it points to (i.e., contains the address of) the location where the 
+next character of the ﬁle that we wish to examine resides. The pointer is initialized with the address of the ﬁrst character in the ﬁle. 
+R0 will hold the character that is being counted; we will input that character from the keyboard and put it in R0. R1 will hold, in 
+turn, each character that we get from the ﬁle being examined.
+
+We should also note that there is no requirement that the ﬁle we are examining be close to or far away from the program we are 
+developing. For example, it is perfectly reasonable for the program we are developing to start at x3000 and the ﬁle we are examining to 
+start at x9000. If that were the case, in the initialization process, R3 would be initialized to x9000.
+
+The next step is to count the number of occurrences of the input character. This is done by processing, in turn, each character in the 
+ﬁle being examined, until the ﬁle is exhausted. Processing each character requires one iteration of a loop. Recall from Section 5.4.3 
+that there are two common methods for keeping track of iterations of a loop. We will use the sentinel method, using the ASCII code for 
+EOT (End of Transmission) (00000100) as the sentinel. A table of ASCII codes is in Appendix E.
+
+In each iteration of the loop, the contents of R1 is ﬁrst compared to the ASCII code for EOT. If they are equal, the loop is exited, 
+and the program moves on to the ﬁnal step, displaying on the screen the number of occurrences. If not, there is work to do. R1 (the 
+current character under examination) is compared to R0 (the character input from the keyboard). If they match, R2 is incremented. In 
+either case, we move on to getting the next character. The pointer R3 is incremented, the next character is loaded into R1, and the 
+program returns to the test that checks for the sentinel at the end of the ﬁle.
+
+When the end of the file is reached, all the characters have been examined, and the count is contained as a binary number in R2. In 
+order to display the count on the monitor, it is first converted to an ASCII code. Since we have assumed the count is less than 10, 
+we can do this by putting a leading 0011 in front of the four-bit binary representation of the count. Note in Figure E.2 the 
+relationship between the binary value of each decimal digit between 0 and 9 and its corresponding ASCII code. Finally, the count is 
+output to the monitor, and the program terminates.
+
+Figure 5.17 is a machine language program that implements the ﬂowchart of Figure 5.16.
+
+First the initialization steps. The instruction at x3000 clears R2 by ANDing it with x0000. The instruction at x3001 loads the starting 
+address of the ﬁle to be examined into R3. Again, we note that this ﬁle can be anywhere in memory. Prior to starting execution at 
+x3000, some sequence of instructions must have stored the ﬁrst address of this ﬁle in x3012. Location x3002 contains the TRAP 
+instruction, which requests the operating system to perform a service call on behalf of this program. The function requested, as 
+identiﬁed by the eight-bit trapvector 00100011 (i.e., x23), is to load into R0 the ASCII code of the next character typed on the 
+keyboard. Table A.2 lists trapvectors for all operating system service calls that can be performed on behalf of a user program. The 
+instruction at x3003 loads the character pointed to by R3 into R1.

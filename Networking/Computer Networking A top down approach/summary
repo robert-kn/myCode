@@ -1,134 +1,326 @@
 chapter 1
 
-1. would you agree that the internet is the largest system engineered by man?
-2. give a description of the internet based on hardware and software components? 
-3. what are hosts or end systems?
-4. what are end systems connected by?
-5. what differentiates communication links?
-6. what is the transmission rate measured in?
-7. what does a packet switch do?
-8. what are the two most common packet switches in use today?
-9. where aare link layer switches mostly used and where are routers mostly used?
-10. define what a path or a route means?
-11. how do end systems access the internet?
-12. what are ISP's made up of?
-13. what do end systems, packet switches and other pieces of equipment connected to the internet run?
-14. what organisation is responsible for creating and maintaining internet standards? 
-15. what are the standard documents called? 
-16. are there other bodies that specify standards for network components? name one and the type of standard for a component it defines?
-17. can you describe the internet from services perspective? 
-18. what are the applications in the above definition referred to?
-19. how does a program running one end system instruct the internet to deliver data to another program running on another end system?
-20. what is the socket interface?   
-21. how is a network protocol similar to a human protocol?
-22. why are end systems called hosts?
-23. hosts are further divided into two categories. what are they?
+1. what is the purpose of the internet? interconnect billions of computing devices throughout the world
+
+2. give a description of the internet based on hardware and software components? hardware description sees the internet made up of communication
+links and packet switches
+
+3. what are hosts or end systems? systems in which software runs on
+
+4. what are end systems connected by? communication links and packet switches
+
+5. what differentiates communication links? made up of different physical media
+
+6. what is the transmission rate measured in? bits per second
+
+7. what does a packet switch do? forwards incoming packets to an outbound communication link
+
+8. what are the two most common packet switches in use today? routers and link layer switches
+
+9. where are link layer switches mostly used and where are routers mostly used? link layer switches are mostly used in access networks
+whilst routers are used in the core of the network
+
+10. define what a path or a route means? sequence of communication links and packet switches traversed by a packet from the sending end 
+system to the receiving end system
+
+11. how do end systems access the internet? via ISPs
+
+12. what are ISP's made up of? network of communication links and packet switches
+
+13. what do end systems, packet switches and other pieces of equipment connected to the internet run? protocols which control the sending and
+receiving of infomation
+
+14. what organisation is responsible for creating and maintaining internet standards? IETF 
+
+15. what are the standard documents called? RFC 
+
+16. are there other bodies that specify standards for network components? yes. name one and the type of standard for a component 
+it defines? IEEE which specifies standards for network components such as ethernet and WIFI
+
+17. can you describe the internet from services perspective? an infrastructure that provides services to distributed applications i.e. 
+applications running on different end systems which need to exchange data with each other via socket interfaces
+
+18. what are the applications in the above definition referred to? distributed applications
+
+19. how does a program running one end system instruct the internet to deliver data to another program running on another end system? via
+a socket interface
+
+20. what is the socket interface?  speciefies how a program on one end system instructs the internet infrastructure to deliver data to a 
+specific destination program on another end system. also think of it as a set of rules that must be followed for a message to be delivered
+
+21. how is a network protocol similar to a human protocol? entities i.e. computers (instead of humans) exchange messages by following 
+a specified set of rules that govern format and order
+
+22. why are end systems called hosts? because they host application programs such as browsers why are they called end systems? because 
+they sit at the edge of the internet
+
+23. hosts are further divided into two categories. what are they? clients and servers
+
 24. what is an access network? the network that physically connects an end system to the first router (known as the edge router)
-25. name 4 different access networks?
-26. what are the features of DSL an how many frequency groups does it use?
-27. why are the transmission rates defined by the DSL standards said to be asymmetric?
-28. are the actual downstream and upstream transmission rates aachieved by customers equal to those in DSL standards? why not?
-29. name two more factors that limits the maximum transmission rate achieved using DSL?
-30. what of cable, which company acts as the ISP and what communication mediums are used?
-31. what does HFC stand for and where is it used?
-32. what are the DOCSIS standards?
-33. what does FTTH stand for and what does it entail?
-34. what is the most prevalent LAN technology for connecting end systems to an edge router? 
-35. what happens in a wireless LAN setting for a user to connect to the wider internet? a user connects wirelessly to an access point (base station) which is in then connected to enterprises network (likely via wired ethernet) which is then connected to the internet.
-36. what is wireless LAN technology based on? IEEE 802.11 technology more colloquially known as WIFI
-37. what technology do mobile devices use to share photos, videos, stream music etc? same wireless infra used For
+
+25. name 4 different access networks? DSL, cablem, FTTH, 5G/4G
+
+26. what are the features of DSL an how many frequency groups does it use? typically obtained from telco that provides its wired telephone
+access made of twisted copper wire. customer's dsl model uses it to exchange data with the dslam located in the telcos CO. telephone calls
+and internet share the same link
+
+27. why are the transmission rates defined by the DSL standards said to be asymmetric? because the dsl standards define multiple transmission
+rates (upstream and downstream) which are different
+
+28. are the actual downstream and upstream transmission rates achieved by customers equal to those in DSL standards? nope. why not? because
+the telco ISP will purposefully limit the residential rates when tiered service is offered. Max transmission rates are also limited by the
+distance between a home and the CO, electrical interference, and gauge of the twisted pair line
+
+29. name two more factors that limits the maximum transmission rate achieved using DSL? listed above
+
+30. what of cable, which company acts as the ISP and what communication mediums are used? cable television acts as ISP and provides it HFC
+for use to customers
+
+31. what does HFC stand for and where is it used? hybrid fibre coaxial. how does cable work? cmts serves a similar role to dslam which is
+turning analog signal sent from cable modems in downstream homes back into digital format. cable modems divide the network into upstream
+and downstream channels which are asymmetric
+
+32. what are the DOCSIS standards? define the transmission rates to be expected when using cable to access the internet
+
+33. what does FTTH stand for and what does it entail? fibre to the home. how does it work? provides fibre path from the CO directly to homes
+
+34. how does FTTH work? central fibre leaves the CO and reaches neighbourhood junction where it is split up into individual homes
+
+35. what are the names of the two technologies that can perform this splitting? active optical networks (AON) and passive optical networks
+(PON)
+
+36. in locations where dsl, cable and ftth is hard to reach, how do people connect to the internet? via a satellite link
+
+37. describe dial access method of connecting to the internet? a home modem connects over a telephone line to a modem in the ISP
+
+38. what is the advantage of 5g wireless over other methods of connecting to the internet? does not need the installation of costly
+failure prone cabling from telco CO to homes
+
+40. what is the most prevalent LAN technology for connecting end systems to an edge router in corporate settings? ethernet
+
+41. what happens in a wireless LAN setting for a user to connect to the wider internet? a user connects wirelessly to an access point 
+(base station) which is in then connected to enterprises network (likely via wired ethernet) which is then connected to the internet.
+
+42. what is wireless LAN technology based on? IEEE 802.11 technology more colloquially known as WIFI
+
+43. what technology do mobile devices use to share photos, videos, stream music etc? same wireless infra used For
 cellular telephony to send/receive packets through a base station operated by a cellular network provider
-38. what is the difference between the wifi base stations and cellular network provider base stations? a user need 
+
+44. what is the difference between the wifi base stations and cellular network provider base stations? a user need 
 only be within a few tens of kilometers (as opposed to a few tens of meters) of the base station
-39. what are the two categories that physical media (used for bit propagation) fall into? guided and unguided media
-40. how do guided media operate? include coax cable, twisted pair coper wire, fibre optic cable; waves are guided along a solid medium
-41. what of unguied mediums, how do they operate? the waves propagate in the atmosphere or in space such as in wireless LAN, digital channel satellite 
-42. what are the characteristics of twisted pair copper wires with regards to cost, data rates? cheapest guided medium and has LAN rates of 10 Mbps to 10 Gbps 
-43. how do fibre optics work? conducts pulses of light where each pulse represents a bit; immune to electromagnetic interference; very low signal attentuation
-44. fibre optics are prevalent for long haul guide transmission media, why has they not been adopted for short haul guided transmission media?
-because of the high costs associated with opticaal devices such as transmitters, receivers and switches
-45. how do radio channels transmit signals? via the electromagnetic spectrum
-46. what factors influence the transmission of a radio channel? propagation environment (interference, signal reflection) and distance over which the signal is to be characterised
-47. what are the 3 categories of radio channels? those that operate over a short distance, those that operate in local areas, those that operate over a wide area
-48. how does a satellite radio channel work? links two or more earth based microwaave transmitter/receiver, known as ground stations
-49. how do geostationary satellites operate? remain permanently above the same spot on the earth about 36000 kilometres
-50. how do low earth orbiting satellites operate? placed much closer to the earth and do not remain permanently above one spot 
-51. how would you define the network core? the mesh of packet switches and links that interconnects the internet end systems
-52. in network aplications, end systems exchange messages with each other. what can these messages exchanged contain? might perform a control function or
-may contain data
-53. what needs to be happen in order for an source end system to send data to a destination end system? the source needs to break messages into smaller chunks
-54. what are these chunks called? packets
-55. between source and destination, the packets travel through what? communication links and packet switches
-56. what are the two pre dominant types of packet switches? routers and link layer switches
-57. at what rate are packets transmitted over each communication link? at a rate equal to the full transmission rate of the link
-58. when it comes to packet switches, describe what is store and forward transmission? a packet switch must receive the entire packet before it can begin 
-to transmit the first bit of the packet onto the outbound link (it must buffer the packet's bits)
-59. what are the two things that each packet switch has? multiple links attached to it and output buffers for each link which store packets
-that the router is aabout to send into that link
-60. what must a packet do that arrives at a packet switch and finds that the link it is supposed to be transmitted onto is busy sending 
+
+45. what are the two categories that physical media (used for bit propagation) fall into? guided and unguided media
+
+46. how do guided media operate? include coax cable, twisted pair coper wire, fibre optic cable; elecctromagnetic waves are guided along a 
+solid medium
+
+47. what of unguided mediums, how do they operate? include atmosphere and outer space the waves propagate in the atmosphere or in space 
+such as in wireless LAN, digital channel satellite 
+
+48. what are the characteristics of twisted pair copper wires with regards to cost, data rates? cheapest guided medium that has been used in 
+telephone networks since they started; a single pair forms a communication link; data rates achieved depend on thickness of wire and distance
+between transmitter and receiver; has LAN rates of 10 Mbps to 10 Gbps 
+
+49. what are the charcateristics of coax cables? comprised of copper conductors that are concentric; support bit rates in the hundreds of
+Mbps 
+
+50. how do fibre optics work? conducts pulses of light where each pulse represents a bit; immune to electromagnetic interference; very low 
+signal attentuation; support bit rates of tens or hundreds of Gbps; preferred long haul guided transmission medium
+
+51. fibre optics are prevalent for long haul guide transmission media, why has they not been adopted for short haul guided transmission 
+media? because of the high costs associated with optical devices such as transmitters, receivers and switches
+
+52. what is the name of the standard which outlines the bit rates to be expected of different generation of optical fibre equipment?
+the optical carrier standard
+
+53. how do radio channels transmit signals? via the electromagnetic spectrum
+
+54. what factors influence the transmission of a radio channel? propagation environment (interference, signal reflection) and distance over 
+which the signal is to be carried
+
+55. what do environmental considerations have an effect on when it comes to terrestrial radio channels? path loss (also known as path 
+attentuation; it affects the strength and quality of signals as they propagate through space) and shadow fading which is the fluctuation
+in the strength of the signal caused by large scale obstacles obstructing the propagation path between transmitter and the receiver
+
+56. what are the 3 categories of radio channels? those that operate over a short distance (used by wireless headsets), those that operate 
+in local areas (used by wireless LAN technologies), those that operate over a wide area (used by cellular networks)
+
+57. how does a satellite radio channel work? links two or more earth based microwave transmitter/receiver, known as ground stations
+
+58. how do the satellites in satellite radio channels work? they receive transmissions on one frequency band and then regenerate the signal
+and transmit it on another frequency
+
+59. how do geostationary satellites operate? remain permanently above the same spot on the earth about 36000 kilometres
+
+60. what kind of effect does this type of distance from a ground station to a satellite have? brings about a substantial signal propagation
+delay in the milliseconds range
+
+61. what kind of speeds can be supported when satellites are used for internet connections? hundreds of Mbps
+
+62. how do low earth orbiting satellites operate? placed much closer to the earth and do not remain permanently above one spot 
+
+63. how would you define the network core? the mesh of packet switches and links that interconnects the internet end systems
+
+64. in network aplications, end systems exchange messages with each other. what can these messages exchanged contain? might perform a 
+control function or may contain data such as jpeg image or an email etc
+
+65. what needs to be happen in order for an source end system to send data to a destination end system? the source needs to break messages 
+into smaller chunks known as packets
+
+66. what do packets packets travel through between aa source end system and a destination end system? communication links and packet 
+switches
+
+67. what are the two pre dominant types of packet switches? routers and link layer switches
+
+68. at what rate are packets transmitted over each communication link? at a rate equal to the full transmission rate of the link
+
+69. when it comes to packet switches, describe what is store and forward transmission? a packet switch must receive the entire packet 
+before it can begin to transmit the first bit of the packet onto the outbound link (it must buffer the packet's bits)
+
+70. what are the two things that each packet switch has? multiple output links attached to it and output buffers for each link which store 
+packets that the router is about to send into that link
+
+71. what must a packet do that arrives at a packet switch and finds that the link it is supposed to be transmitted onto is busy sending 
 another packet? it must wait in the output buffer of the link
-61. what is this phenomenon of waiting called? queuing delay
-62. what do these queuing delays depend on? congestion in the network
-63. is output buffer space finite or infinite?
-64. what happens when a packet arrives at a packet switch and finds that the output buffer of the link it is supposed to be forwaded on is
+
+72. what is this phenomenon of waiting called? queuing delay
+
+73. what do these queuing delays depend on? congestion in the network
+
+74. is output buffer space finite or infinite?
+
+75. what happens when a packet arrives at a packet switch and finds that the output buffer of the link it is supposed to be forwaded on is
 full? the packet will get dropped or one of the queued packets will be dropped
-65. how does a packet switch determine which link to send a packet onto? depends on the computer network; there are several means of 
+
+76. how does a packet switch determine which link to send a packet onto? depends on the computer network; there are several means of 
 achieving it
-66. how is it implemented on the internet? each packet switch has a forwarding table that maps portions of destination addresses to the
-routers outbound links
-67. how do forrwarding tables get set? special routing protocols on the internet are used to automtically set the forwarding tables
-68. there are two different methods of moving packets through a network of communication links and packet switches, what are they?
+
+77. how is it implemented on the internet? each packet switch has a forwarding table that maps portions of a hierarchical destination 
+addresses to the routers outbound links
+
+78. how do forwarding tables get set? special routing protocols on the internet are used to automtically set the forwarding tables
+
+79. there are two different methods of moving packets through a network of communication links and packet switches, what are they?
 circuit switching and packet switching
-69. how do circuit switched networks work? the resources needed along a path (buffers, link transmission rate) to provide for communication
-between end systems are reserved for the duration of the communication session between the end systems
-70. are the resources reserved in packet switched networks? no, they are used on demand by a session and consequently hosts may have
+
+80. how do circuit switched networks work? the resources needed along a path (buffers, link transmission rate) to provide for 
+communication between end systems are reserved for the duration of the communication session between the end systems
+
+81. are the resources reserved in packet switched networks? no, they are used on demand by a session and consequently hosts may have
 to wait for access to resources
-71. give an example of a network that is circuit switched? telephone network; when a person wants to initiate a phone call to another
-person, the network must establish a connection between the two end systems. the switches between the end systems on the path must maintain
-an active connection state during the duration of the call. this connection is called a circuit
-72. does the network in question reserve a constant transmission in the networks links (representing a fraction of each links transmission
-capacity)?   
-73. what are the two ways you can implement a circuit in a link? frequency division multiplexing (FDM) or time division multiplexing (TDM)
-74. how does FDM work? the frequency spectrum of a link is divided up among the connections established on the link i.e. the link dedicates
+
+82. give an example of a network that is circuit switched? telephone network; when a person wants to initiate a phone call to another
+person, the network must establish a connection between the two end systems. the switches between the end systems on the path must 
+maintain an active connection state during the duration of the call which has a constant transmission rate. this connection is called a 
+circuit
+
+83. does the network in question reserve a constant transmission in the networks links (representing a fraction of each links transmission
+capacity)?
+
+84. what are the two ways you can implement a circuit in a link? frequency division multiplexing (FDM) or time division multiplexing (TDM)
+
+85. how does FDM work? the frequency spectrum of a link is divided up among the connections established on the link i.e. the link dedicates
 a frequency band to each connection for the duration of the connection
-75. give two examples of systems that use FDM? telehone networks use a frequency band 4 KHz as the bandwidth; FM radio stations share the 
+
+86. give two examples of systems that use FDM? telehone networks use a frequency band 4 KHz as the bandwidth; FM radio stations share the 
 frequency spectrum between 88 MHz and 108 MHz with each station being allocated a specific frequency band
-76. how does TDM work? in a TDM link, time is divided into frames of fixed duration and each frame is divided into a fixed number of time
+
+87. how does TDM work? in a TDM link, time is divided into frames of fixed duration and each frame is divided into a fixed number of time
 slots; when the network establishes a connection across a link the network dedicates one time slot in every frame to the connection
-77. for systems that use TDM, what is the transmission rate of a circuit? frame rate multiplied by the number of bits in a slot
-78. what do critics of packet switching state about it? it is not suitable for real-time services such as video conference calls and phone
-calls because of the end-end delays inherent in the system
-79. what do proponents of packets switching state about the inherent advantages it has over circuit switching? better sharing of transmission
+
+88. for systems that use TDM, what is the transmission rate of a circuit? frame rate multiplied by the number of bits in a slot
+
+89. what do critics of packet switching state about it? it is not suitable for real-time services such as video conference calls and phone
+calls because of the end-to-end delays inherent in the system
+
+90. what do proponents of packets switching state about the inherent advantages it has over circuit switching? better sharing of transmission
 capacity than circuit switching; it is simpler, more efficient and less costly to implement than circuit switching 
-80. what is a network of networks? where access ISPs which connect end systems and content providers to the internet are interconnected
-81. what is a global transit ISP?
-82. how many network structures can you think of that help to explain networks of networks? 
-83. what are points of presence? a group of one or more routers at the same location in the provider's network where customer ISPs can 
+
+91. what are the disadvantages of circuit switched networks? it is wasteful because the resources utilised in dedicated circuits cannot be
+shared during silent periods e.g. when one person on the other end of a phone call stops talking; complex signalling software is needed to
+establish end to end circuits and reserving end to end transmission capacity 
+
+92. what is a network of networks? where access ISPs which connect end systems and content providers to the internet are interconnected
+
+93. what drives the evolution of the network of networks? economics and national policy rather than performance considerations
+
+94. succintly explain how network structure 1 works? a global ISP interconnects all of the access ISPs; requires the global ISP to have a
+router close to all of each and every access ISP; would be very costly to do so; each ISP would be charged in accordance to the amount of
+traffic it exchanges with the global ISP where they connect
+
+95. succintly explain how network structure 2 works? two tier hierarchy where multiple global transit providers (tier 1 ISPs) get close to
+access ISPs in order to exchange traffic with them. There does not exist a single global ISP which has presence in all the cities in the
+world. instead access ISPs connect to regional ISPs which in turn connect to tier 1 ISPs i.e. global transit ISPs
+
+96. succintly explain how network structure 3 works? in addition to multiple competing tier 1 ISPs, there are also multiple competing 
+regional ISPs in each region which access ISPs can connect to. Access ISPs can also connect directly to tier 1 ISPs.
+
+97. to build a network that closely resembles the internet we have today, what must we add to the network structure 3? PoPs, multi homing,
+peering, and internet exchange points. call this structure network 4
+
+98. what are points of presence? a group of one or more routers at the same location in the provider's network where customer ISPs can 
 connect into the providers ISP. they exist at all levels except access ISP level (the lowest tier)
-84. for a customer ISP to connect to a provider ISP, what can it do? lease a high speed link from a third party telecommunication provider
-to directly connect one of its routers to aa router at the POP
-85. what is multi homing? when an ISP (except a tier 1 ISP) connects to two or more provider ISPs
-86. what is the advantage of multi homing? if one provider ISP goes down due to a failure, the customer ISP can still receive and send 
-packets from the internet
-87. what does the amount that a customer ISP pays a provider ISP depend on? the amount of traffic it exchanges with the provider
-88. what do nearby ISPs at the same level do in order to reduce costs relating to using the services of provider ISPs? they peer i.e. 
+
+99. for a customer ISP network to connect to a provider ISP, what can it do? lease a high speed link from a third party telecommunication 
+provider to directly connect one of its routers to a router at the POP
+
+100. what is multi homing? when an ISP (except a tier 1 ISP) connects to two or more provider ISPs in aa PoP 
+
+101. what is the advantage of multi homing? if one provider ISP goes down due to a failure, the customer ISP can still receive and send 
+packets via the other(s) ISPs it is connected to
+
+102. what does the amount that a customer ISP pays a provider ISP depend on? the amount of traffic it exchanges with the provider ISP
+
+103. what do nearby ISPs at the same level do in order to reduce costs relating to using the services of provider ISPs? they peer i.e. 
 directly connect their networks together so that traffic between them passes over the direct connection rather than through upstream
 provider ISPs
-89. what does settlement free mean? when two ISPs at the same level peer then neither will pay the other party
-90. what are internet exchange points (IXPs)? a meeting point created by a third party where multiple ISPs can peer together. typically
-IXP are situated in a stand alone building with its own switches
-91. why do content provider networks such as google or amazon attempt to bypass tier-1 ISPs (upper tier ISPs) by peering (settlement free)
-with many access ISPs? to reduce payments to tier-1 ISPs and gain greater control of how their services are ultimately delivered to its
-end users
-92. as packet moves from end system to another end system, it suffers from nodal delay. what does nodal processing delay comprise of? 
-nodal processing delay, queuing delay, transmission delay, and propagtion delay
-93. what does processing delay entail? time required to examine a packets header and determine where to direct the packet; can also include
-time needed to check for bit level errors in the packet that occured whilst transmitting them from an upstream node or router
-94. what does queuing delay entail? 
-95. what does transmission delay entail? is the amount of time required to push all of a packet's bit onto a link. It is calculatted using
+
+104. what does settlement free mean? when two ISPs at the same level peer their networks then neither will pay the other party
+
+105. what are internet exchange points (IXPs)? a meeting point created by a third party where multiple ISPs can peer together. typically
+IXPs are situated in a stand alone building with its own switches
+
+106. why do content provider networks such as google or amazon attempt to bypass tier-1 ISPs (upper tier ISPs) by peering directly 
+(settlement free) with many access ISPs or connecting with them at IXPs? to reduce payments to tier-1 ISPs and gain greater control of how 
+their services are ultimately delivered to its end users
+
+107. why do content provider networks still need to connect with tier 1 ISPs? because that is the only way they can connect to many access
+ISPs
+
+108. why is it impossible for internet services to move large amounts of data between end systems instantaneously? because computer networks
+constrain thoughput (amount of data that is transferred per second), introduce delays between end sytems
+
+109. as packet moves from end system to another end system, it suffers from delays. what does this delay comprise of? nodal processing 
+delay, queuing delay, transmission delay, and propagtion delay
+
+110. what does processing delay entail? time required to examine a packets header and determine where to direct the packet; can also 
+include time needed to check for bit level errors in the packet that occured whilst transmitting them from an upstream node or router
+
+111. what does queuing delay entail? a packet experiences a queuing delay as it waits to be transmitted onto the link
+
+112. what does transmission delay entail? is the amount of time required to push all of a packet's bit onto a link. It is calculatted using
 L/R where L bits is the length of packet and R is the transmission rate of a link
-96. what does propagation delay entail?
-97. what does the processing delay strongly influence? the maximum throughput i.e. the maximum rate at which a router can forward packets
 
+113. what is the transmission delay a function of? the length of packet and the transmission rate of a link
 
+114. what does propagation delay entail? time required to propagate from the beginning of the link to the next router
+
+115. what does the propagation speed depend on? the physical medium of the link
+
+116. what is the range of the propagation speed? 2 x 10^8  meters/sec to 3 x 10^8  meters/sec
+
+117. how is the propagation delay calculated? distance between two routers divided by the propagation speed of the link
+
+118. what does the processing delay strongly influence? the maximum throughput i.e. the maximum rate at which a router can forward packets
+
+119. which of the delays is the most complicated and interesting of the nodal delays? queuing delay
+
+120. why? because it can vary from packet to packet i.e. if 10 packets arrive at an empty queue at the same time then the first packet
+will have no queuing delay but the last packet will suffer a massive queuing delay
+
+121. when is queuing delay large and when is it insignificant? it depends on the rate at which traffic arrives at the queue, the transmission
+rate of the link, and the nature of the traffic i.e. whether it arrives periodically or in bursts
+
+122. summarise the relationship between traffic intensity and queuing delay? as the traffic intensity increases the average queuing 
+delay rises sharply in response
 
