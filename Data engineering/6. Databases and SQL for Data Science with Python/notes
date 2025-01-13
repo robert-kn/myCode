@@ -43,3 +43,57 @@ insert statement is used to add new rows to a table. it is a DML statement. see 
 the update statement is used to alter the rows of a table that is already populated. it is a DML statement see update1
 
 delete statement is a DML statement see delete.png
+
+The relational model is the most used data model for databases because this model allows for 
+data independence. Data is stored in a simple data structure - Tables.
+
+An entity relationship data model, or ER data model, is an alternative to a relational data model.
+
+An entity relationship model proposes thinking of a database as a collection of entities rather than being used as a model 
+on its own, the ER model is used as a tool to design relational databases. In the ER model, entities are objects that exist 
+independently of any other entities in the database. The building blocks of an ER diagram are entities and attributes. An 
+entity can be a noun: person, place, or thing. In an ER diagram, an entity is drawn as a rectangle. Entities have attributes 
+which are the data elements that characterize the entity. Attributes tell us more about the entity. In an ER diagram, 
+attributes are drawn as ovals. 
+
+Using a simplified library as an example, the book is an example of an entity. Attributes are certain properties or 
+characteristics of an entity and tell us more about the entity. The entity book has attributes such as book title, the 
+edition of the book, the year the book was written, etc Attributes are connected to exactly one entity. The entity book 
+becomes a table in the database and the attributes become the columns in a table. A table is a combination of rows and 
+columns.
+
+Each attribute stores data values of different formats, characters, numbers dates, currency etc.
+
+Each table is assigned a primary key. The primary key of a relational table uniquely identifies each tuple or row in a table, 
+preventing duplication of data and providing a way of defining relationships between tables. Tables can also contain foreign 
+keys which are primary keys defined in other tables, creating a link between the tables.
+
+SQL Statements are used for interacting with Entities (that is, tables), Attributes (that is, columns) and their tuples (or 
+rows with data values) in relational databases. SQL statements fall into two different categories: Data Definition Language 
+statements and Data Manipulation Language statements.
+
+Data Definition Language (or DDL) statements are used to define, change, or drop database objects such as tables. Common DDL 
+statement types include CREATE, ALTER, TRUNCATE, and DROP. 
+
+CREATE: which is used for creating tables and defining its columns; ALTER: is used for altering tables including adding and 
+dropping columns and modifying their datatypes; TRUNCATE: is used for deleting data in a table but not the table itself; 
+DROP: is used for deleting tables.
+
+Data Manipulation Language (or DML) statements are used to read and modify data in tables. These are also sometimes referred 
+to as CRUD operations, that is, Create, Read, Update and Delete rows in a table. Common DML statement types include INSERT, 
+SELECT, UPDATE, and DELETE. INSERT: is used for inserting a row or several rows of data into a table; SELECT: reads or 
+selects row or rows from a table; UPDATE: edits row or rows in a table; And DELETE: removes a row or rows of data from a 
+table. 
+
+see create-statement-syntax1.png create-statement-example1.png create-statement-example2 create-statement-example3
+
+You use the alter table statement to add or remove columns from a table, to modify the data 
+type of columns, to add or remove keys, and to add or remove constraints. The syntax of the 
+alter table statement alter-statement-syntax.png alter-statement-syntax2.png alter-statement-syntax3.png
+drop-statement-syntax.png truncate-statement-syntax.png
+
+Altering the data type of a column containing existing data can cause problems though, if the 
+existing data is not compatible with a new data type.
+
+There are variations in syntax between different databases. 
+
