@@ -1814,7 +1814,7 @@ opcode; that is, a multiply, followed by an add on three source operands A, B, a
 images obtained from the World Wide Web. The Intel x86 ISA added a number of instructions which they originally called MMX instructions 
 because they eXtended the ISA to assist with MultiMedia applications that use the web. Still other ISAs have specific opcodes to help with 
 handling the tasks of the operating system. For example, the VAX ISA, popular in the 1980s, used a single opcode instead of a long 
-sequence of instructions that other computers used to save the information associated with a program that was in the middle of executing 
+sequence of instructions that other computers used, to save the information associated with a program that was in the middle of executing 
 prior to switching to another program. The decision as to which instructions to include or leave out of an ISA is usually a hotly debated 
 topic in a company when a new ISA is being specified.
 
@@ -1823,7 +1823,7 @@ four bits are used to specify the opcode, 16 distinct opcodes are possible. Howe
 has been left unspeciﬁed, reserved for some future need that we are not able to anticipate today.
 
 As we already discussed brieﬂy in Chapter 4, there are three diﬀerent types of instructions, which means three diﬀerent types of opcodes: 
-operates, data movement, and control. Operate instructions process information. Data move- ment instructions move information between 
+operates, data movement, and control. Operate instructions process information. Data movement instructions move information between 
 memory and the registers and between registers/memory and input/output devices. Control instructions change the sequence of instructions 
 that will be executed. That is, they enable the execution of an instruction other than the one that is stored in the next sequential 
 location in memory.
@@ -1842,7 +1842,7 @@ bit pattern can correspond to diﬀerent numbers, depending on the data type. Fo
 complement integer 12,592, the ASCII code for 10, and a bit vector such that b₁3, b₁2, b₇, b₄, and b₃ have the relevant property of the 
 bit vector.
 
-That should also not surprise us, since in our daily lives, the same represen- tation can correspond to multiple interpretations, as is 
+That should also not surprise us, since in our daily lives, the same representation can correspond to multiple interpretations, as is 
 the case with a red light. When you see it on the roadway while you are driving, it means you should stop. When you see it at Centre Bell 
 where the Montreal Canadiens play hockey, it means someone has just scored a goal.
 
@@ -1861,7 +1861,7 @@ immediate comes from the fact that we can obtain the operand immediately from th
 for it.
 
 The LC-3 supports ﬁve addressing modes: immediate (or literal), register, and three memory addressing modes: PC-relative, indirect, and 
-Base+oﬀset.We will see in Section 5.2 that operate instructions use two addressing modes: register and immediate. We will see in Section 
+Base+oﬀset. We will see in Section 5.2 that operate instructions use two addressing modes: register and immediate. We will see in Section 
 5.3 that data movement instructions use four of the ﬁve addressing modes.
 
 Condition Codes
@@ -1932,7 +1932,7 @@ destination register and the condition codes are set, completing the execution o
 parts of the data path that are used to perform the instruction "ADD  R1,  R4,  #-2."
 
 Since the immediate operand in an ADD or AND instruction must ﬁt in bits [4:0] of the instruction, not all 2’s complement integers can be 
-immediate operands. Question: Which integers are OK (i.e., which integers can be used as immediate operands)?
+immediate operands. Question: Which integers are OK (i.e., which integers can be used as immediate operands)? range of -32 to 16
 
 What does the following instruction do?
 

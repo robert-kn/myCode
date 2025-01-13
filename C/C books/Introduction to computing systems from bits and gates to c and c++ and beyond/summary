@@ -615,17 +615,22 @@ computer that is available to a programmer when they write programs in the compu
 
 2. what 3 things does ISA specify? memory organisation, register set, and instruction set
 
-3. what does the memory organisation specified by an ISA entail? address space (quantity of memory locations) and addressability (amount of 
+3. why do computers such as the LC-3 have/use registers? it takes more than one clock cycle to access an address in memory.
+registers can be accessed in one clock cycle 
+
+4. what do you call the number of bits stored in a register? a word
+
+5. what is an instruction made up of? opcode (what the instruction is asking the computer to do)
+and its operands (what the computer is expected to do it to)
+
+6. what does the memory organisation specified by an ISA entail? address space (quantity of memory locations) and addressability (amount of 
 bits in each memory location)
 
-4. what does the register set specified by an ISA entail? these are temporary locations used to store data that a computer will need shortly.
+7. what does the register set specified by an ISA entail? these are temporary locations used to store data that a computer will need shortly.
 these locations can be accessed quicker than memory (usually by a single clock cycle). each register is referred to as GPR. the number of
 bits stored in each GPR is referred to as a word. also called a register file
 
-5. what does an instruction comprise of? comprised of opcode (what the instruction is asking the computer to do) and
-its operands (what the instruction will operate on)
-
-6. what does the instruction set specified by an ISA entail? comprises of a set of opcodes, data types, and addressing modes.
+8. what does the instruction set specified by an ISA entail? comprises of a set of opcodes, data types, and addressing modes.
 
 7. what do addressing modes determine? where operands are located
 
@@ -636,88 +641,96 @@ the ISA has opcodes that operate on that representation
 
 10. how is the immediate addressing mode different to the register mode? one of the two operands is contained in bits 4:0 of the instruction
 
-11. there are 3 different types of instructions, what are they? operate, data movement, and control
+11. there are many ISA's out there, do they have the same number of opcodes? 
 
-12. what does each of the 3 different types of instruction do? operate instructions process information; data movement instructions move
+12. how many instructions does the LC-3 have? 15; each identified by a unique opcode
+
+13. there are 3 different types of instructions, what are they? operate, data movement, and control
+
+14. what does each of the 3 different types of instruction do? operate instructions process information; data movement instructions move
 data between registers to memory and between registers/memory and input/output devices; control instructions change the sequence of
 instructions that will be executed
 
-13. how do opcodes interpret bit patterns of an operand? according to the data type it is designed to support
+15. how do opcodes interpret bit patterns of an operand? according to the data type it is designed to support
 
-14. An operand can generally be found in one of three places, what are they? in memory, in a register, or in an instruction
+16. An operand can generally be found in one of three places, what are they? in memory, in a register, or in an instruction
 
-15. if an operand is part of an instruction, what do we refer to it as? a literal or an immediate operand
+17. if an operand is part of an instruction, what do we refer to it as? a literal or an immediate operand
 
-16. where does the term 'literal' come from? from the fact that the bits of the instruction literally form the operand
+18. where does the term 'literal' come from? from the fact that the bits of the instruction literally form the operand
 
-17. where does the term immediate come from? from the fact that we can obtain the operand immediately from the instruction i.e. we do Not
+19. where does the term immediate come from? from the fact that we can obtain the operand immediately from the instruction i.e. we do Not
 have to look elsewhere for it
 
-18. what are the 3 addressing modes supported by the LC-3? literal (or immediate), register, PC-relative, indirect, and base + offset
+20. what are the 5 addressing modes supported by the LC-3? literal (or immediate), register, PC-relative, indirect, and base + offset
 
-19. how many 3 single bit registers does the LC-3 have and what are they called? 3; they are referred to as N, Z, and P
+21. operate instructions use two addressing modes, what are they? register and immediate
 
-20. what do N, Z, and P stnd for? N stands for negative, Z stands for zero, and P stands for positive
+22. how many addressing modes do data movement instructions use? 4 of 5 of the addressing modes
 
-21. how are these 3 single bit registers used? they are individually set (set to 1) or cleared (set to 0) each time one of the eight GPR's
+23. how many 3 single bit registers does the LC-3 have and what are they called? 3; they are referred to as N, Z, and P
+
+24. what do N, Z, and P stand for? N stands for negative, Z stands for zero, and P stands for positive
+
+25. how are these 3 single bit registers used? they are individually set (set to 1) or cleared (set to 0) each time one of the eight GPR's
 is written into as a result of execution of one of the operate instructions or one of the load instructions 
 
-22. how do the operate and load instructions work with respect to the GPRs? each operate instruction performs a computation and writes
+26. how do the operate and load instructions work with respect to the GPRs? each operate instruction performs a computation and writes
 the result into a GPR; each load instruction reads the contents of a memory location and writes the value found there into a general
 purpose register
 
-23. what is the set of the 3 single bit registers referred to as? condition codes 
+27. what is the set of the 3 single bit registers referred to as? condition codes 
 
-24. why are the 3 single bit registers referred to as condition codes? because the condition of the 3 bits is used to change the sequence
+28. why are the 3 single bit registers referred to as condition codes? because the condition of the 3 bits is used to change the sequence
 of execution of instructions in a computer program
 
-25. what is the opcode for the NOT instruction? 1001
-
-26. how many source operands does the NOT instruction operate on and what addressing mode does it use for both source and destination? one;
+29. how many source operands does the NOT instruction operate on and what addressing mode does it use for both source and destination? one;
 register mode
 
-27. in the NOT instruction, what must bits 5:0 contain? all 1's
+30. in the NOT instruction, what must bits 5:0 contain? all 1's
 
-28. what 2 addressing modes can be used to specify the second source operand for the AND and ADD instructions? register mode for one of the
-source operands and the destination operand; second opernd is specified by either register mode or as an immediate operand
+31. what 2 addressing modes can be used to specify the second source operand for the AND and ADD instructions? register mode for one of the
+source operands and the destination operand; second operand is specified by either register mode or as an immediate operand
 
-29. which bit determines which addressing mode will be used for the second operand in the AND and ADD instructions? bit 5
+32. which bit determines which addressing mode will be used for the second operand in the AND and ADD instructions? bit 5
 
-30. if bit 5 is 0 which addressing mode is used and what are bits 4:3 set to? register mode; set to 0
+33. if bit 5 is 0 which addressing mode is used and what are bits 4:3 set to? register mode; set to 0
 
-31. if bit 5 is 1 which addressing mode is used and what is done to bits 4:0? literal or immediate mode; they are sign extended to 16 bits
+34. if bit 5 is 1 which addressing mode is used and what is done to bits 4:0? literal or immediate mode; they are sign extended to 16 bits
 
-32. what must happen at the end of executing the AND and ADD Instruction (infact for all intructions)? the condition codes must be set
+35. what must happen at the end of executing the AND and ADD Instruction (infact for load intructions as well)? the condition codes must be set
 
-33. what implication does using immediate addressing mode present? since the literal operand must fit into bits 4:0 of the instruction, not
-all 2 complement integers can be used as immediate operands (range of -16 through to 8)
+36. what implication does using immediate addressing mode present? since the literal operand must fit into bits 4:0 of the instruction, not
+all 2 complement integers can be used as immediate operands (range of -32 through to 16)
 
-34. can a register can be used as a source and also as a destination in the same instruction? yes
+37. can a register can be used as a source and also as a destination in the same instruction? yes
 
-35. what does the LEA instruction do? loads a register specified by bits 11:9 with an address specified by adding the PC + sign extended
+38. what does the LEA instruction do? loads a register specified by bits 11:9 with an address specified by adding the PC + sign extended
 bits 8:0 of the instruction (the address is not accessed)
 
-36. what do data movement instructions do? move information between GPRs and memory and between GPRs and input/output devices
+39. what do data movement instructions do? move information between GPRs and memory and between GPRs and input/output devices
 
-37. what do you call the process of moving information from memory to a register? loading
+40. what do you call the process of moving information from memory to a register? loading
 
-38. what do you call the process of moving information from a register to a memory? storing
+41. what do you call the process of moving information from a register to a memory? storing
 
-39. how many instructions does the LC-3 contain for moving information? 6
+42. how many instructions does the LC-3 contain for moving information? 6
 
-40. how many operands do data movement instructions require? two operands
+43. how many operands do data movement instructions require? two operands
 
-41. name these operands? a source (data to be moved) and a destination
+44. name these operands? a source (data to be moved) and a destination
 
-42. what do bits 8:0 contain for data movement instructions? address generation bits i.e. information used to compute the 16 bit address
+45. what do bits 8:0 contain for data movement instructions? address generation bits i.e. information used to compute the 16 bit address
 of the second operand
 
-43. in the case of LC-3, how many ways are there to interpret bits 8:0 for data movement instructions? 3 ways that are called addressing
+46. in the case of LC-3, how many ways are there to interpret bits 8:0 for data movement instructions? 3 ways that are called addressing
 modes
 
-44. what speciﬁes how to interpret bits [8:0] in data movement instructions? the opcode
+47. what speciﬁes how to interpret bits [8:0] in data movement instructions? the opcode
 
-45. what two instructions specify the PC-relative addressing mode? LD and ST
+48. what two data movement instructions specify the PC-relative addressing mode? LD and ST
+
+
 
 46. why is the PC-relative addressing mode named as such? because bits 8:0 of the instruction specify an offset relative to the PC
 
