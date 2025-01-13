@@ -79,3 +79,14 @@ such that it no longer contains the irrational root. what is this process called
 59. how do you rationalise the denominator? multiplying the top and bottom fraction by the surd see rationalising-denominator
 60. when it comes to working with powers recognise what the base number is and what the power/exponent/index is see index-laws-1 and
 index-laws-2 and index-laws-3
+61. see fractional index rules see fractional-index.png Notice that since the notation n√a is deﬁned only when a is positive or zero, 
+only positive numbers and zero can be raised to fractional powers. So the notation a^n has no meaning if a is negative and n is not an 
+integer.
+62. Converting fractional indices to root signs
+63. Converting root signs to fractional indices
+64. Scientiﬁc notation: One use of indices is in scientiﬁc notation (also known as standard form). This is a way of writing numbers 
+that’s particularly helpful when you’re dealing with very large or very small numbers. To express a number in scientiﬁc notation,you write it in the 
+form (a number between 1and 10, but notincluding 10) × (an integer power of ten). In computer output, scientiﬁc notation is sometimes represented with 
+the power of 10 indicated by the letter E (for exponent). For example, 4.27 × 10^−2 would be represented as 4.27E−2.
+65. An equation that is satisﬁed by all possible values of its variables is called an identity. For example, the equation x(x + y) = x^2 + xy
+is an identity: it’s true no matter what the values of x and y are.
