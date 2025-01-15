@@ -730,11 +730,9 @@ modes
 
 48. what two data movement instructions specify the PC-relative addressing mode? LD and ST
 
+49. why is the PC-relative addressing mode named as such? because bits 8:0 of the instruction specify an offset relative to the PC
 
-
-46. why is the PC-relative addressing mode named as such? because bits 8:0 of the instruction specify an offset relative to the PC
-
-47. how is the memory address computed? by sign extending bit 8:0 to 16 bits and adding the result to the incremented PC
+50. how is the memory address computed in pc-relative addressing mode? by sign extending bit 8:0 to 16 bits and adding the result to the incremented PC
 
 48. in this case, what happens if the instruction is LD? the computed address (PC + offset) specifies the memory to be accessed. its
 contents are loaded into register specified by bits 11:9 of the instruction
