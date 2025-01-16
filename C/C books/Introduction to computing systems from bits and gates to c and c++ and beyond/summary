@@ -734,77 +734,148 @@ modes
 
 50. how is the memory address computed in pc-relative addressing mode? by sign extending bit 8:0 to 16 bits and adding the result to the incremented PC
 
-48. in this case, what happens if the instruction is LD? the computed address (PC + offset) specifies the memory to be accessed. its
+51. in this case, what happens if the instruction is LD? the computed address (PC + offset) specifies the memory to be accessed. its
 contents are loaded into register specified by bits 11:9 of the instruction
 
-49. what if the instruction is ST? the contents of the register specified by bits 11:9 of the instruction is written into the memory 
+52. what if the instruction is ST? the contents of the register specified by bits 11:9 of the instruction is written into the memory 
 location whose address is PC + offset
 
-50. what happens after either the LD or ST instrruction has been executed? the N, Z, P condition codes are set
+53. what happens after either the LD or ST instruction has been executed? the N, Z, P condition codes are set
 
-51. which two instructions specify indirect addressing mode? LDI and STI
+54. what stands about the address generated in pc-relative addressing mode using bits 8:0? the range is limited to within 256 and -256
+of the ld and st instruction 
 
-52. how are the LDI and STI addresses formed? the same way LD and ST are formed i.e. sign extending bits 8:0 from the instruction and 
-adding it to the incremented value of the PC?
+55. which two instructions use indirect addressing mode? LDI and STI
 
-53. how is the sign extended address of the LDI and STI instructions different from that of the LD and ST instructions? instead of it being
+56. how are the LDI and STI operand addresses formed? the same way LD and ST are formed i.e. sign extending bits 8:0 from the instruction and 
+adding it to the incremented value of the PC
+
+57. how is the addressing mode of the LDI and STI instructions different from that of the LD and ST instructions? instead of it being
 the address of the operand to be loaded or stored, it is the address of the address of the operand to be loaded or stored
 
-54. where in the instruction is the destination register for the LDI instruction and the source register for the STI instruction found? in
+58. where in the instruction is the destination register for the LDI instruction and the source register for the STI instruction found? in
 bits 11:9
 
-55. what is the difference between the indirect mode and PC relative addressing modes in terms if the address of the operand in a computers
+59. what is the difference between the indirect mode and PC relative addressing modes in terms of the address of the operand in a computers
 memory? for indirect addressing mode, the address of the operand can be anywhere in the computers memory and not just within the range 
 provided by bits 8:0 of the instruction
 
-56. which two instructions use the base + offset addressing mode? LDR and STR
+60. which two instructions use the base + offset addressing mode? LDR and STR
 
-57. how does the base + offset addressing mode work? address of the operand is obtained by adding a sign extended six bit offset (5:0)
+61. how does the base + offset addressing mode work? address of the operand is obtained by adding a sign extended six bit offset (5:0)
 to a base register specified by bits 8:6 
 
-58. what do control instructions do? they change the sequence of instructions to be executed otherwise the next instruction fetched would
+62. does the Base+oﬀset addressing mode also allow the address of the operand to be anywhere in 
+the computer’s memory like indirect addressing mode?
+
+63. what do control instructions do? they change the sequence of instructions to be executed otherwise the next instruction fetched would
 always be after the current instruction finishes in the next sequential memory location
 
-59. how many opcodes does the LC-3 have that allow sequential execution flow to be broken? 5
+64. how many opcodes does the LC-3 have that allow sequential execution flow to be broken? 5
 
-60. can you name them? conditional branch, unconditional jump, subroutine call, TRAP, and RTI (return from trap or interrupt)
+65. can you name them? conditional branch, unconditional jump, subroutine call, TRAP, and RTI (return from trap or interrupt)
 
-61. what does the TRAP instruction (often called service call) do? allows programmer to get help from operating system to do things that
+66. what does the TRAP instruction (often called service call) do? allows programmer to get help from operating system to do things that
 the typical programmer does not understand how to do e.g. getting information from input device into the cpu, sending information to output
 device. it breaks the sequential execution of a user program to start a sequence of instructions in the OS 
 
-62. summarise how the conditional branch (BR which is opcode 0000) works? when executed it decides based on a test whether to execute the 
+67. summarise how the conditional branch (BR which is opcode 0000) works? when executed it decides based on a test whether to execute the 
 next instruction in memory or to jump to another instruction in a different part of the memory that was allocated to the program by the
 OS
 
-63. what stage of instruction cycle does the BR instruction decide whether to load the PC with a new address? in the EXECUTE stage; if  
+68. what stage of instruction cycle does the BR instruction decide whether to load the PC with a new address? in the EXECUTE stage; if  
 nothing occurs in this stage then the incremented PC will remain unchanged and the next instruction executed will be the next instruction
 in the sequence, otherwise a new address will be loaded
 
-64. what is the decision whether to do nothing to the incremented PC or whether to change it based on? it is based on the execution of
-previous instructions in the program which are reflected in the condition codes (the conditional branch's execute phase with either do 
+69. what is the decision whether to do nothing to the incremented PC or whether to change it based on? it is based on the execution of
+previous instruction in the program which are reflected in the condition codes (the conditional branch's execute phase results in either doing 
 nothing or it loads the PC with the address of the instruction it wishes to execute next) 
 
-65. what is the format of the conditional branch instruction? bits 15:12 display the opcode which in this case is all 0's; bits 11:9
-display the condition codes N, Z, P respectively; bits 8:0 are sign extended to make 16 bits then added to the PC
+70. what is the format of the conditional branch instruction? bits 15:12 display the opcode which in this case is all 0's; bits 11:9
+display the condition codes N, Z, P respectively; bits 8:0 are sign extended to make 16 bits which are then added to the PC
 
-66. in the LC-3, what instructions write into the GPR's and also set the condition codes? the operate instructions (ADD, AND, and NOT)
+71. in the LC-3, what instructions write into the GPR's and also set the condition codes? the operate instructions (ADD, AND, and NOT)
 and the three load instructions (LD, LDI, LDR)
 
-67. what can you summise about the contents of bits 11:9 in the BR instruction and its operation? the BR instruction uses the information
+72. what can you summise about the contents of bits 11:9 in the BR instruction and its operation? the BR instruction uses the information
 to determine whether to depart from the usual sequential execution of instructions that we get as a result of incrementing the PC during
 the FETCH phase of each instruction
 
-68. how does the above happen? during the EXECUTE phase of the BR instruction cycle, the processor examines the condition codes whose
+73. how does the above happen? during the EXECUTE phase of the BR instruction cycle, the processor examines the condition codes whose
 associted bits in the instruction bits 11:9 are 1. if bit 11 is 1 then condition code N is examined; if bit 10 is 1 then condition code
 Z is examined; similar action is taken for bit 9. if any of the bits 11:9 are 0 then the associated condition codes are not examined. if
 any of the condition codes examined are set, then the PC is loaded with the address obtained in the EVALUTE ADDRESS phase. if none of the 
 condition codes that are examined are set, the incremented PC is left unchanged
 
-69. how is the address obtained during the EVALUATE ADDRESS phase generated? using PC-relative addressing mode
+74. how is the address obtained during the EVALUATE ADDRESS phase generated? using PC-relative addressing mode
 
+75. why is the uconditonal branch named so? because all bits 11:9 are set to 1 ergo all conditions are examined based on the
+output of the previous instruction. ergo the instruction flow is changed unconditionally, independent ofthe data
 
+76. there are two methods of loop control, name them: loop control with a counter and loop control with a sentinel
 
+77. what is the difference between the two? a counter will control the number of times a loop executes by being decremented in
+each cycle and then checked to see if it is zero (conditional branch instruction). if not the loop body is executed again; otherwise 
+next instruction to be executed is after the last instruction of the loop body. on the other hand, sentinels are used when we do
+not know beforehand how many iterations we will want to perform; each iteration will be based on processing a value and when the
+sentinel is encountered the loop is broken
 
+78. what is the limitation of the conditional branch instruction? the next instruction that it loads the PC with (computed from 
+sign-extending bits 8:0 and adding them to the incremented PC) can be at most +256 or -256 locations from the currently executing branch 
+instruction
 
+79. what if you want to execute an instruction that is 2000 locations from the BR instruction? you cannot use the BR instruction
+since you cannot fit 2000 into the 9 bit field 
+
+80. what instruction provided by the LC-3 can do the above? the jmp instruction
+
+81. how does it work? the jmp instruction loads the PC with the contents of the register specified by bits 8:6
+
+82. how the TRAP instruction work? it changes the PC to a memory address that is part of the operating system so that the
+OS will perform some task on behalf of the executing program. it is said to invoke an operating system service call
+
+83. how are the bits arranged in the TRAP instruction? bits 7:0 form the trap vector; which is an eight bit code that
+identifies the os service call 
+
+84. what happens after an os finishes executing a service call? the PC is set to the address of the instruction following the 
+TRAP instruction thereby allowing a program to resume execution
+
+85. what are the basic components of the data path? the global bus, memory, the alu and the register file, the pc and the pcmux,
+and the marmux
+
+86. what does the LC-3 global bus consist of? 16 wires and associated electronics
+
+87. what is the global bus used for? allows one structure to transfer upto 16 bits of information to another structure by making
+the necessary electronic connections on the bus. exactly one value can be transferred on the bus at one time. each structure that 
+supplies a signal to the bus has a triangle just behind its input arrow to the bus
+
+88. what is this triangle called? the tri-state device
+
+89. what is it used for? allows the computer's control logic to enable exactly one supplier to provide information
+to the bus at one time. the structure wishing to obtain the value being supplied can do so by asserting its ld.x (load enable)
+signal
+
+90. how does memory work? it contains both instructions and data. it is accessed by loading the MAR with the address of the 
+location to be accessed. control signals then read the contents of that memory location and the result of that read
+is stored in the MDR
+
+91. how does it work when it comes to storing? value to be stored in loaded into the MDR. the control signals then assert a WE signal
+in order to store the value contained in the MDR in the memory location specified by the MAR
+
+92. how does the ALU work? as the processing element, it has two inputs, source 1 from a register and source 2 from either
+a register or the sign-extended immediate value provided by the instruction
+
+93. what happens at the start of each instruction cycle? the PC supplies the MAR via the global bus the address of the instruction to be
+fetched 
+
+94. the PC is supplied via the three-to-one PCMUX. how is this three-to-one MUX configured? the rightmost input to the PCMUX is used to
+increment and write into the PC by one; when a control signal such as BR is executed and the sign-extended bits 8:0 are added to the incremented
+PC (addition takes place in a separate adder not the ALU), the output of this adder is the middle input to the PCMUX; the third input to the 
+PCMUX is obtained from the global bus
+
+95. what does the MARMUX component do? it controls which source out of two will supply the MAR with the appropriate address during
+the execution of a load, a store, or a TRAP instruction. The right input to the MARMUX is obtained by adding either the incremented PC or
+a base register to zero or a literal value supplied by the IR. Whether the PC or a base register and what literal value depends on which 
+opcode is being processed. The control signal ADDR1MUX speciﬁes the PC or base register. The control signal ADDR2MUX speciﬁes which of four 
+values is to be added.
 
