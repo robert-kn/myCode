@@ -97,3 +97,17 @@ existing data is not compatible with a new data type.
 
 There are variations in syntax between different databases. 
 
+retrieving rows of data from a table using a string pattern and where clause:
+        - firstname like 'R%' will retrieve tuples with firstname column values that start with R eg Raul, Robert etc
+        - pages >= 290 and pages <= 300 is the same as pages between 290 and 300
+        - country='AU' or country='BR' is the same as country in('AU', 'BR')
+
+if you want to sort result sets use the order by clause eg order by title will order result set alphabetically on the title column. sorting will be done in ascending order by default. if you want the result set to be sorted in descending order, add the desc clause after the column name
+
+eliminate duplicates using the distinct clause
+
+grouping result sets using the group by clause. the having clause only works with the group by clause
+
+see built-in-func1.png built-in-func2 built-in-func3
+
+see date-time-1.png date-time-2 date-time-3 date-time-4 date-time-5
