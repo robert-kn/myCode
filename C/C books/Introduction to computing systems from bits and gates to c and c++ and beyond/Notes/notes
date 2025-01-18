@@ -2615,7 +2615,7 @@ the addressing modes that can be used with the instruction.
 
 ADD -> 0001 -> operate instruction -> register and immediate addressing modes
 JMP -> 1100 -> control instruction -> register mode
-LEA -> 1110 -> data movement instruction -> PC-relative 
+LEA -> 1110 -> data movement instruction -> immediate addressing
 NOT -> 1001 -> operate instruction -> register mode
 
 A memory’s addressability is 64 bits. What does that tell you about the
@@ -2643,7 +2643,68 @@ extended and then added to PC), base+offset (base register specified by bits 8:6
 5:0), indirect addressing (use pc-relative addressing mode except it points to the address of an address of the operand)
 
 What is the largest positive number we can represent literally (i.e., as an immediate value) 
-within an LC-3 ADD instruction? 8
+within an LC-3 ADD instruction? 15
 
 We want to increase the number of registers that we can specify in the LC-3 ADD instruction to 
 32. Do you see any problem with that? Explain.
+
+We would like to have an instruction that does nothing. Many ISAs
+actually have an opcode devoted to doing nothing. It is usually called
+NOP, for NO OPERATION. The instruction is fetched, decoded, and
+executed. The execution phase is to do nothing! Which of the following
+three instructions could be used for NOP and have the program still work
+correctly?
+a. 0001 001 001 1 00000 Add R1, R1, #0 =>differs from a NOP in that it sets the CC’s.
+b. 0000 111 000000001   BRnzp#1=> Unconditionally branches to one afte the next address in the PC. Therefore
+no, this instruction is not the same as NOP.
+c. 0000 000 000000000 Branch that is never taken. Yes same as NOP.
+
+We wish to execute a single LC-3 instruction that will subtract the decimal number 20 from 
+register 1 and put the result into register 2. Can we do it? If yes, do it. If not, explain why not. No. We cannot do it in a single instruction as the 
+smallest representable integer with the 5 bits available for the immediate field in the ADD instruction 
+is -16. However this could be done in two instructions.
+
+How might one use a single LC-3 instruction to move the value in R2 into R3?
+0001 011 010 1 00000 (ADD R3, R2, #0)
+
+The LC-3 has no subtract instruction. How could one perform the following operation using only 
+three LC-3 instructions: R1 ← R2 − R3
+1001 011 011 111111 (NOT R3, R3 )
+0001 011 011 1 00001 (ADD R3, R3, #1 )
+0001 001 010 0 00011 (ADD R1, R2, R3 )
+
+Using only one LC-3 instruction and without changing the contents of any register, how might 
+one set the condition codes based on the value that resides in R1?
+0001 001 001 1 00000 (ADD R1, R1, #0)
+or
+0101 001 001 1 11111 (AND R1, R1, #-1)
+
+Is there a sequence of LC-3 instructions that will cause the condition codes at the end of the 
+sequence to be N = 1, Z = 1, and P = 0? Explain. Can’t happen. The condition where N=1, Z=1 and P=0 
+would require the contents of a register to be both negative and zero.
+
+Write an LC-3 instruction that clears the contents of R2. 
+0101 010 010 1 00000 (AND R2, R2, #0)
+
+How many times does the LC-3 make a read or write request to memory during the processing of 
+the LD instruction? two, once to fetch the instruction, once to fetch thedata. 
+How many times during the processing of the LDI instruction? three, once to fetch the 
+instruction, once to fetch the data address, and once to fetch the data.
+How many times during the processing of the LEA instruction? once, only to fetch the instruction. 
+Processing includes all phases of the instruction cycle.
+
+The LC-3 Instruction Register (IR) is made up of 16 bits, of which the least signiﬁcant nine 
+bits [8:0] represent the PC-relative oﬀset for the LD instruction. If we change the ISA so 
+that bits [6:0] represent the PC-relative oﬀset, what is the new range of addresses we can 
+load data from using the LD instruction? PC-64 to PC+63. The PC value used here is the incremented PC value.
+
+What is the maximum number of TRAP service routines that the LC-3 ISA can support? Explain.
+The Trap instruction provides 8 bits for a trap vector. That means there could be 2^8 = 256 trap routines.
+
+Suppose the following LC-3 program is loaded into memory starting at location x30FF:
+
+x30FF 1110 0010 0000 0001
+x3100 0110 0100 0100 0010
+x3101 1111 0000 0010 0101
+x3102 0001 0100 0100 0001
+x3103 0001 0100 1000 0010
