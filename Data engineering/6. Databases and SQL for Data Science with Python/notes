@@ -111,3 +111,5 @@ grouping result sets using the group by clause. the having clause only works wit
 see built-in-func1.png built-in-func2 built-in-func3
 
 see date-time-1.png date-time-2 date-time-3 date-time-4 date-time-5
+
+subqueries and nested selects: see nested-subq1 nested-subq2 nested-subq3 nested-subq4 nested-subq5
