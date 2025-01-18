@@ -2581,14 +2581,14 @@ In the next cycle, the contents of the IR is decoded, resulting in the control
 logic providing the correct control signals (unﬁlled arrowheads) to control the processing of 
 the rest of this instruction. The opcode is 0110, identifying the LDR instruction. This means 
 that the Base+oﬀset addressing mode is to be used to determine the address of data to be 
-loaded into the destination register R3.
+loaded into the destination register R3.) and the sign-extended
+bits [5:0] of the IR are added and supplihe register to be read to obtain the base address.
+ADDR1MUX seleced via the MARMUX to the MA
 
 EVALUATE ADDRESS
 
-In the next cycle, the contents of R2 (the base register) and the sign-extended
-bits [5:0] of the IR are added and supplied via the MARMUX to the MAR.
-The SR1 ﬁeld speciﬁes 010, the register to be read to obtain the base address.
-ADDR1MUX selects SR1OUT, and ADDR2MUX selects the second from the
+In the next cycle, the contents of R2 (the base registerR.
+The SR1 ﬁeld speciﬁes 010, tts SR1OUT, and ADDR2MUX selects the second from the
 right source.
 
 OPERAND FETCH
@@ -2703,8 +2703,86 @@ The Trap instruction provides 8 bits for a trap vector. That means there could b
 
 Suppose the following LC-3 program is loaded into memory starting at location x30FF:
 
-x30FF 1110 0010 0000 0001
-x3100 0110 0100 0100 0010
+x30FF 1110 0010 0000 0001     --> reg 1 0x3101
+x3100 0110 0100 0100 0010     --> reg 2 0x3103
 x3101 1111 0000 0010 0101
 x3102 0001 0100 0100 0001
 x3103 0001 0100 1000 0010
+
+If the program is executed, what is the value in R2 at the end of execution? 0x3103 but the answers
+claim it is R2 <- 0x1482. why?
+
+The LC-3 ISA contains the instruction LDR DR, BaseR, oﬀset. After the instruction is decoded, 
+the following operations (called microinstructions) are carried out to complete the processing 
+of the LDR instruction:
+
+MAR ← BaseR + SEXT(Offset6) ; set up the memory address
+MDR ← Memory[MAR] ; read mem at BaseR + offset
+DR ← MDR ; load DR
+
+Suppose that the architect of the LC-3 wanted to include an instruction MOVE DR, SR that would 
+copy the memory location with address given by SR and store it into the memory location whose 
+address is in DR.
+
+The MOVE instruction is not really necessary since it can be accomplished with a sequence of 
+existing LC-3 instructions. What sequence of existing LC-3 instructions implements (also called
+“emulates”) MOVE R0, R1? LDR R2, R1, #0 ; load R2 with contents of location pointed to by R1
+STR R2, R0, #0; store those contents into location pointed to by R0
+
+If the MOVE instruction were added to the LC-3 ISA, what sequence of microinstructions, 
+following the decode operation, would emulate MOVE DR,SR?
+
+The constituent micro-ops are:
+MAR <− SR
+MDR<− Mem[MAR]
+MAR <− DR
+Mem[MAR]<−MDR
+
+Using the overall data path in Figure 5.18, identify the elements that implement the ADD 
+instruction of Figure 5.5. The IR, SEXT unit, SR2 MUX, Reg File and ALU implement the ADD 
+instruction, along with NZP and the logic which goes with it.
+
+Using the overall data path in Figure 5.18, identify the elements that
+implement the LDI instruction of Figure 5.8. Memory, MDR, MAR, IR, PC, RegFile, the SEXT unit 
+connected to IR[8:0], ADDR2MUX, ADDR1MUX set to PC, along with the ADDER they connect to, and 
+MAXMUX and GateMARMUX implement the LDI instruction, along with NZP and the logic which goes
+with it.
+
+Using the overall data path in Figure 5.18, identify the elements that implement the LEA 
+instruction of Figure 5.6. IR, PC, Reg File, the SEXT unit connected to IR[8:0], ADDR2MUX, ADDR1MUX set to
+PC, along with the ADDER they connect to, and MAXMUX and GateMARMUX implement the
+LEA instruction, along with NZP and the logic which goes with it.
+
+When a computer executes an instruction, the state of the computer is changed as a result of 
+that execution. Is there any diﬀerence in the state of the LC-3 computer as a result of 
+executing instruction 1 below vs. executing instruction 2 below? Explain. We can assume the 
+state of the LC-3 computer before execution is the same in both cases.
+
+instruction 1: 0001 000 000 1 00000    register 0 <-- register 0 + \#0
+instruction 2: 0000 111 000000000      branch to PC' + \#0 if any of N,Z,orP is set
+
+Yes, there is difference. Instruction 1 (ADD) sets the Condition Codes while Instruction 2
+(BR) doesn’t.
+
+
+In class we showed the ﬁrst few states of the ﬁnite state machine that is
+required for processing instructions of a computer program written for
+LC-3. In the ﬁrst state, the computer does two things, represented as:
+
+MAR <-- PC
+PC <-- PC+1
+
+Why does the microarchitecture put the contents of the PC into the
+MAR? Why does the microarchitecture increment the PC? PC is put into MAR to fetch the next 
+instruction that needs to be executed. PC is incremented to move to the next instruction to be fetched.
+
+We wish to know if R0 is being used as the Base Register for computing
+the address in an LDR instruction. Since the instruction is in memory,
+we can load it into R4. And, since the Base Register is identiﬁed in bits
+8:6 of the instruction, we can load R5 with 0000000111000000 and then
+execute AND R6,R5,R4. We would know that R0 is the base register if
+what condition is met? If R6 is zero, then R0 is used as a base register
+
+
+chapter 6
+
