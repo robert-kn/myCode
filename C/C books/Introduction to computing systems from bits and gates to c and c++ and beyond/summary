@@ -881,116 +881,24 @@ values is to be added.
 
 chapter 6
 
-Recall from Chapter 1 that in order for electrons to solve a problem, we need to go
-through several levels of transformation to get from a natural language description
-of the problem (in our case English, although many of you might prefer Italian,
-Mandarin, Hindi, or something else) to something electrons can deal with. Once
-we have a natural language description of the problem, the next step is to trans-
-form the problem statement into an algorithm. That is, the next step is to transform
-the problem statement into a step-by-step procedure that has the properties of def-
-initeness (each step is precisely stated), eﬀective computability (each step can be
-carried out by a computer), and ﬁniteness (the procedure terminates).
+1. what two things will you learn about in this chapter? develop a methodology for constructing
+programs to solve problems and develop a methodology for fixing said programs under the 
+likely condition that i did not get things right the first time
 
-In the late 1960s, the concept of structured programming emerged as a way
-to dramatically improve the ability of average programmers to take a complex
-description of a problem and systematically decompose it into smaller and smaller
-manageable units so that they could ultimately write a program that executed cor-
-rectly. The methodology has also been called systematic decomposition because
-the larger tasks are systematically broken down into smaller ones.
+2. what is structured programming? methodology developed in the 60s to dramatically improve
+the ability of average programmers to take a complex description of a problem and systematically
+decompose it into smaller manageable units so that they could ultimately write a program 
+that executed correctly
 
-We will ﬁnd the systematic decomposition model a useful technique for
-designing computer programs to carry out complex tasks.
+3. what is the methodology also called? systematic decomposition
 
-Systematic decomposition is the process of taking a task, that is, a unit of work
-(see Figure 6.1a), and breaking it into smaller units of work such that the collec-
-tion of smaller units carries out the same task as the one larger unit. The idea is
-that if one starts with a large, complex task and applies this process again and
-again, one will end up with very small units of work and consequently be able to
-easily write a program to carry out each of these small units of work. The process
-is also referred to as stepwise reﬁnement, because the process is applied one step
-at a time, and each step reﬁnes one of the tasks that is still too complex into a
-collection of simpler subtasks.
+4. define the systematic decomposition/ stepwise refinement process? process of taking A
+unit of work and breaking it into smaller units of work such that the collection of smaller
+units carries out the same task as the larger unit.
 
-The idea is to replace each larger unit of work with a construct that correctly
-decomposes it. There are basically three constructs for doing this: sequential,
-conditional, and iterative.
+5. what is the essential idea behind systematic decomposition or stepwise refinement?
+replace a larger unit of work with a construct that correctly decomposes it
 
-The sequential construct (Figure 6.1b) is the one to use if the designated
-task can be broken down into two subtasks, one following the other. That is, the
-computer is to carry out the ﬁrst subtask completely, then go on and carry out the
-second subtask completely— never going back to the ﬁrst subtask after starting
-the second subtask.
+6. how many constructs are there for doing this? 3
 
-The conditional construct (Figure 6.1c) is the one to use if the task consists
-of doing one of two subtasks but not both, depending on some condition. If the condition is true, the computer is to carry out one subtask. If the condition is not true,
-the computer is to carry out a different subtask. Either subtask may be vacuous; that
-is, it may do nothing. Regardless, after the correct subtask is completed, the program
-moves onward. The program never goes back and retests the condition.
-
-The iterative construct (Figure 6.1d) is the one to use if the task consists of
-doing a subtask a number of times, but only as long as some condition is true. If
-the condition is true, do the subtask. After the subtask is ﬁnished, go back and
-test the condition again. As long as the result of the condition tested is true, the
-program continues to carry out the same subtask again and again. The ﬁrst time
-the test is not true, the program proceeds onward.
-
-Note in Figure 6.1 that whatever the task of Figure 6.1a, work starts with the
-arrow into the top of the ‘‘box’’ representing the task and finishes with the arrow out
-of the bottom of the box. There is no mention of what goes on inside the box. In each
-of the three possible decompositions of Figure 6.1a (i.e., Figure 6.1b, c, and d), there
-is exactly one entrance into the construct and exactly one exit out of the construct.
-Thus, it is easy to replace any task of the form of Figure 6.1a with whichever of its
-three decompositions apply. We will see how with several examples.
-
-Before we move on to an example, we illustrate in Figure 6.2 the use of LC-3
-control instructions to direct the program counter to carry out each of the three 
-decomposition constructs. That is, Figure 6.2b, c, and d corresponds respectively
-to the three constructs shown in Figure 6.1b, c, and d.
-
-We use the letters A, B, C, and D to represent addresses in memory containing
-LC-3 instructions. The letter A, for example, represents the address of the ﬁrst
-LC-3 instruction to be executed in all three cases, since it is the starting address
-of the task to be decomposed (shown in Figure 6.2a).
-
-Figure 6.2b illustrates the control ﬂow of the sequential decomposition. Note
-that no control instructions are needed since the PC is incremented from Address
-B1 to Address B1 +1. The program continues to execute instructions through
-address D1 . It does not return to the ﬁrst subtask.
-
-Figure 6.2c illustrates the control ﬂow of the conditional decomposition.
-First, a condition is generated, resulting in the setting of one of the condition
-codes. This condition is tested by the conditional branch instruction at Address
-B2 . If the condition is true, the PC is set to Address C2 +1, and subtask 1 is
-executed. (Note: x equals 1 + the number of instructions in subtask 2.) If the
-condition is false, the PC (which had been incremented during the FETCH phase
-of the branch instruction) fetches the instruction at Address B2 +1, and subtask
-2 is executed. Subtask 2 terminates in a branch instruction that at address C2
-unconditionally branches to D2 +1. (Note: y equals the number of instructions in
-subtask 1.)
-
-Figure 6.2d illustrates the control ﬂow of the iterative decomposition. As
-in the case of the conditional construct, ﬁrst a condition is generated, a condi-
-tion code is set, and a conditional branch instruction is executed. In this case,
-the condition bits of the instruction at address B3 are set to cause a conditional
-branch if the condition generated is false. If the condition is false, the PC is set
-to address D3 +1. (Note: z equals 1 + the number of instructions in the subtask
-in Figure 6.2d.) On the other hand, as long as the condition is true, the PC will
-be incremented to B3 +1, and the subtask will be executed. The subtask termi-
-nates in an unconditional branch instruction at address D3 , which sets the PC to
-A to again generate and test the condition. (Note: w equals the total number of
-instructions in the decomposition shown as Figure 6.2d.)
-
-Recall the example of Section 5.5. The statement of the problem is as follows:
-“We wish to input a character from the keyboard, count the number of occurrences
-of that character in a ﬁle, and display that count on the monitor.”
-
-The systematic decomposition of this English language statement of the
-problem to the ﬁnal LC-3 implementation is shown in Figure 6.3. Figure 6.3a
-is a brief statement of the problem.
-
-In order to solve the problem, it is always a good idea ﬁrst to examine exactly
-what is being asked for, and what is available to help solve the problem. In this
-case, the statement of the problem says that we will get the character of inter-
-est from the keyboard, and that we must examine all the characters in a ﬁle and
-determine how many are identical to the character obtained from the keyboard.
-Finally, we must output the result.
+7. what are they called? sequential, conditional, and iterative
