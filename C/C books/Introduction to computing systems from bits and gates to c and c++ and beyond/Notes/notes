@@ -2890,7 +2890,7 @@ the condition bits of the instruction at address B3 are set to cause a condition
 branch if the condition generated is false. If the condition is false, the PC is set
 to address D3+1. (Note: z equals 1 + the number of instructions in the subtask
 in Figure 6.2d.) On the other hand, as long as the condition is true, the PC will
-be incremented to B3 +1, and the subtask will be executed. The subtask termi-
+be incremented to B3+1, and the subtask will be executed. The subtask termi-
 nates in an unconditional branch instruction at address D3, which sets the PC to
 A to again generate and test the condition. (Note: w equals the total number of
 instructions in the decomposition shown as Figure 6.2d.)
@@ -2912,3 +2912,141 @@ est from the keyboard, and that we must examine all the characters in a ﬁle an
 determine how many are identical to the character obtained from the keyboard.
 Finally, we must output the result.
 
+To do this, we will need to examine in turn all the characters in a ﬁle, we will need to compare each to the character we 
+input from the keyboard, and we will need a counter to increment each time we get a match.
+
+We will need registers to hold all these pieces of information:
+
+1.  The character input from the keyboard.
+2.  Where we are (a pointer) in our scan of the ﬁle.
+3.  The character in the ﬁle that is currently being examined.
+4.  The count of the number of occurrences.
+
+We will also need to know when we have reached the end of the ﬁle.
+
+The problem decomposes naturally (using the sequential construct) into three parts as shown in Figure 6.3b: (A) initialization, which 
+includes keyboard input of the character to be “counted,” (B) the process of determining how many occurrences of the character are 
+present in the ﬁle, and (C) displaying the count on the monitor.
+
+We have seen the importance of proper initialization in several examples already. Before a computer program can get to the crux of the 
+problem, it must have the correct initial values. These initial values do not just show up in the GPRs by magic. They get there as a 
+result of the ﬁrst set of steps in every algorithm: the initialization of its variables.
+
+In this particular algorithm, initialization (as we said in Chapter 5) consists of starting the counter at 0, setting the pointer to 
+the address of the ﬁrst character in the ﬁle to be examined, getting an input character from the keyboard, and getting the ﬁrst 
+character from the ﬁle. Collectively, these four steps comprise the initialization of the algorithm shown in Figure 6.3b as A.
+
+Figure 6.3c decomposes B into an iteration construct, such that as long as there are characters in the ﬁle to examine, the loop 
+iterates. B1 shows what gets accomplished in each iteration. The character is tested and the count incremented if there is a match. 
+Then the next character is prepared for examination. Recall from Chapter 5 that there are two basic techniques for controlling the 
+number of iterations of a loop: the sentinel method and the use of a counter. Since we are unlikely to know how many characters there 
+are in a random ﬁle, and since each ﬁle ends with an end of text (EOT) character, our choice is obvious. We use the sentinel method, 
+that is, testing each character to see if we are examining a character in the ﬁle or the EOT character.
+
+Figure 6.3c also shows the initialization step in greater detail. Four LC-3 registers (R0, R1, R2, and R3) have been speciﬁed to 
+handle the four requirements of the algorithm: the input character from the keyboard, the current character being tested, the counter, 
+and the pointer to the next character to be tested.
+
+Figure 6.3d decomposes both B1 and C using the sequential construct in both cases. In the case of B1, ﬁrst the current character is 
+tested (B2), and the counter incremented if we have a match, and then the next character is fetched (B3). In the case of C, ﬁrst the 
+count is prepared for display by converting it from a 2’s complement integer to an ASCII code (C1), and then the actual character 
+output is performed (C2).
+
+Finally, Figure 6.3e completes the decomposition, replacing B2 with the elements of the condition construct and B3 with the sequential 
+construct (ﬁrst the pointer is incremented, and then the next character to be scanned is loaded).
+
+The last step (and usually the easiest part) is to write the LC-3 code corresponding to each box in Figure 6.3e. Note that Figure 
+6.3e is essentially identical to Figure 5.16 of Chapter 5 (except now you know where it all came from!).
+
+Before leaving this topic, it is worth pointing out that it is not always possible to understand everything at the outset. When you 
+ﬁnd that to be the case, it is not a signal simply to throw up your hands and quit. In such cases (which realistically are most cases), 
+you should see if you can make sense of a piece of the problem and expand from there. Problems are like puzzles; initially they can be 
+opaque, but the more you work at it, the more they yield under your attack. Once you do understand what is given, what is being asked 
+for, and how to proceed, you are ready to return to square one (Figure 6.3a) and restart the process of systematically decomposing the 
+problem.
+
+Debugging
+
+A logical error in a program can make you take a wrong turn. The simplest way to keep track of where you are as compared to where you 
+want to be is to trace the program. This consists of keeping track of the sequence of instructions that have been executed and the 
+results produced by each instruction executed. When you examine the sequence of instructions executed, you can detect errors in the 
+ﬂow of the program. When you compare what each instruction has done to what it is supposed to do, you can detect logical errors in the 
+program. In short, when the behavior of the program as it is executing is diﬀerent from what it should be doing, you know there is a 
+bug.
+
+A useful technique is to partition the program into parts, often referred to as modules, and examine the results that have been 
+computed at the end of execution of each module. In fact, the structured programming approach discussed in Section 6.1 can help you 
+determine where in the program’s execution you should examine results. This allows you to systematically get to the point where you 
+are focusing your attention on the instruction or instructions that are causing the problem.
+
+Debugging Operations
+
+Many sophisticated debugging tools are oﬀered in the marketplace, and undoubtedly you will use many of them in the years ahead. In 
+Chapter 15, for example, we will examine debugging techniques using a source-level debugger for C.
+
+Right now, however, we wish to stay at the level of the machine architecture, so we will see what we can accomplish with a few very 
+elementary interactive debugging operations. We will set breakpoints, single-step, and examine the state of a program written in the 
+LC-3 ISA.
+
+In Chapter 15, we will see these same concepts again: breakpoints, single-stepping, and examining program state that we are introducing 
+here, but applied to a C program, instead of the 0s and 1s of a program written in the LC-3 ISA.
+
+When debugging interactively, the user sits in front of the keyboard and mon- itor and issues commands to the computer. In our case, 
+this means operating an LC-3 simulator, using the menu available with the simulator. It is important to be able to:
+
+1.  Write values into memory locations and into registers.
+2.  Execute instruction sequences in a program.
+3.  Stop execution when desired.
+4.  Examine what is in memory and registers at any point in the program. 
+
+These few simple operations will go a long way toward debugging programs.
+
+Set Values
+
+In order to test the execution of a part of a program in isolation without having to worry about parts of the program that come before 
+it, it is useful to ﬁrst write values in memory and in registers that would have been written by earlier parts of the program. For 
+example, suppose one module in your program supplies input from a keyboard, and a subsequent module operates on that input. Suppose 
+you want to test the second module before you have ﬁnished debugging the ﬁrst mod- ule. If you know that the keyboard input module ends 
+up with an ASCII code in R0, you can test the module that operates on that input by ﬁrst writing an ASCII code into R0.
+
+Execute Sequences
+
+It is important to be able to execute a sequence of instructions and then stop execution in order to examine the values that the 
+program has computed as a result of executing that sequence. Three simple mechanisms are usually available for doing this: run, step, 
+and set breakpoints.
+
+The Run command causes the program to execute until something makes it stop. This can be either a HALT instruction or a breakpoint.
+
+The Step command causes the program to execute a ﬁxed number of instruc- tions and then stop. The interactive user enters the number 
+of instructions he/she wishes the simulator to execute before it stops. When that number is 1, the computer executes one instruction, 
+then stops. Executing one instruction and then stopping is called single-stepping. It allows the person debugging the program to 
+examine the individual results of each instruction executed.
+
+The Set Breakpoint command causes the program to stop execution at a speciﬁc instruction in a program. Executing the debugging command 
+Set Breakpoint consists of adding an address to a list maintained by the simulator. During the FETCH phase of each instruction, the 
+simulator compares the PC with the addresses in that list. If there is a match, execution stops. Thus, the eﬀect of setting a 
+breakpoint is to allow execution to proceed until the PC contains an address that has been set as a breakpoint. This is useful if one 
+wishes to know what has been computed up to a particular point in the program. One sets a breakpoint at that address in the program and 
+executes the Run command. The program executes until that point and then stops so the user can examine what has been computed up to 
+that point. (When one no longer wishes to have the program stop execution at that point, the breakpoint can be removed by executing the 
+Clear Breakpoint command.)
+
+Display Values
+
+Finally, it is useful to examine the results of execution when the simulator has stopped execution. The Display command allows the user 
+to examine the contents of any memory location or any register.
+
+Use of an Interactive Debugger
+
+We conclude this chapter with four examples, showing how the use of interactive debugging operations can help us ﬁnd errors in a 
+program. We have chosen the following four errors: (1) incorrectly setting the loop control so that the loop executes an incorrect 
+number of times, (2) confusing the load instruction 0010, which loads a register with the contents of a memory location, with the load 
+eﬀective address instruction 1110, which loads a register with the address of a memory location, (3) forgetting which instructions set 
+the condition codes, resulting in a branch instruction testing the wrong condition, and (4) not covering all possible cases of input 
+values.
+
+Example 1: Multiplying Without a Multiply Instruction
+
+Let’s start with an example we have seen before, multiplying two positive integers when the computer (such as the LC-3) does not have 
+a multiply instruction. This time we will assume the two integers to be multiplied are in R4 and R5, and the result of execution (the 
+product of those two integers) will be put in R2. Figure 6.4 shows the program we have written to do the job.
