@@ -114,5 +114,18 @@ see date-time-1.png date-time-2 date-time-3 date-time-4 date-time-5
 
 subqueries and nested selects: see nested-subq1 nested-subq2 nested-subq3 nested-subq4 nested-subq5
 
-working with multiple tables: see multiple-tables1.png multiple-tables2.png mutiple-tables3.png multiple-tables4.png multiple-tables5.png multiple-tables6.png
-multiple-tables7 multiple-tables8 multiple-tables9 
+working with multiple tables: see multiple-tables1.png multiple-tables2.png mutiple-tables3.png multiple-tables4.png multiple-tables5.png multiple-tables6.png multiple-tables7 multiple-tables8 multiple-tables9 
+
+why use python to access databases? see python-db-access-1.png python-db-access-2.png python-db-access-3 python-db-access-4
+python-db-access-5 python-db-access-6 python-db-access-7
+
+what are jupyter notebooks? open source web application that allows creation and sharing of documents that containlive code, equations, visualisations, and narrative texts. see notebook-advantages.png 
+
+what is the db-api? mechanism by which the Python code communicates with the DBMS see python-db-access-6 python-db-access-9 The DB-API includes a connect constructor for creating a connection to the database. It returns a connection object which is then used by the various connection methods. These connection methods are the cursor method, which returns a new cursor object using the connection. The commit method, which is used to commit any pending transaction to the database. The rollback method, which causes the database to roll back to the start of any pending transaction. The close method, which is used to close a database connection. see python-db-access-10 
+
+These objects represent a database cursor which is used to manage the content of a fetch operation. Cursors created from the same connection are not isolated. That is, any changes done to the database by a cursor are immediately visible by the other cursors. Cursors created from different connections can or cannot be isolated depending on how the transaction support is implemented. see
+python-db-access-11
+
+As you already know, each database system has its own library/ api see python-db-access-8
+
+what is a database cursor? It behaves like a file name or file handle in a programming language. Just as a program opens a file to access its contents, it opens a cursor to gain access to the query results. Similarly, the program closes a file to end its access, and closes a cursor to end access to the query results. Another similarity is that just as file handle keeps track of the program's current position within an open file, a cursor keeps track of the program's current position within the query results. see cursor.png
