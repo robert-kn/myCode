@@ -129,3 +129,28 @@ python-db-access-11
 As you already know, each database system has its own library/ api see python-db-access-8
 
 what is a database cursor? It behaves like a file name or file handle in a programming language. Just as a program opens a file to access its contents, it opens a cursor to gain access to the query results. Similarly, the program closes a file to end its access, and closes a cursor to end access to the query results. Another similarity is that just as file handle keeps track of the program's current position within an open file, a cursor keeps track of the program's current position within the query results. see cursor.png
+
+see Create and access sqlite database using python
+
+accessing databases with sql magic: see sql-magic-1 sql-magic-2 sql-magic-3
+
+You can use multiple line magics in a single cell in a Jupyter Notebook. Each line magic should be on its own line. Remember, line magics operate on a single line of input. You can use as many as you need in a single cell if each is on its own line. Some line magic statements can also be used as cell magic statements, which would change the way they respond. see sql-magic-4
+
+Cell magics are not just limited to Python, they allow you to run code in other languages too. see sql-magic-5
+
+Before you can use SQL Magic, however, you will need to install some dependencies. see sql-magic-6. Then you can run SQL queries by entering Percentage SQL or Percentage Percentage SQL depending on whether you want to use line or cell magic.
+
+Before running the queries however, you need to establish a connection between the SQL server and the SQL Magic module of the notebook.
+As an example, let us explore the use of SQL Magic with the SQL Lite3 database server. We first need to establish a connection to a database, say HR.db using SQL Lite3. Next, you load the external SQL module using %load_extsql. Now you need to establish a connection for the SQL magic module to the SQL server being accessed. This is done using the statement %sql sqlite:///HR.db. Now you can use SQL magic for executing any kind of queries on the table. see sql-magic-7
+
+see Accessing Databases with SQL Magic 
+
+see analysing-data-using-python-1.png. Here, the contents of the CSV file are now available as a table MCDONALDS_NUTRITION, which can now be queried as per requirement. see analysing-data-using-python-2 analysing-data-using-python-3 analysing-data-using-python-4
+analysing-data-using-python-5 analysing-data-using-python-6.  Visualizations are very useful for initial data exploration. They can help us understand relationships, patterns, and outliers in the data. Let's first create a scatter plot with protein on the x-axis and total fat on the y-axis. Scatter plots are very popular visualization tools and show the relationship between two variables with a point for each observation. Correlation is a measure of association between two variables and has a value of between negative 1 and plus 1. see analysing-data-using-python-7. Box plots are charts that indicate the distribution of one or more variables. The box in a box plot captures the middle 50% of data. Lines and points indicate possible skewness and outliers. see analysing-data-using-python-8
+
+
+Now you know that SQLite 3 is an in process Python library that implements a self-contained serverless zero configuration, transactional SQL database engine. The pandas.read_csv function is used to read the database csv file. The SQLite 3 connect function is used to connect to a database. To use pandas to retrieve data from the database tables, load data using the read_sql method and select the SQL Select Query. A categorical scatter plot is created using the swarmplot() method by the seaborne package.
+
+working with csv files: see working-with-csv-1.png working-with-csv-2.png As is evident from the example being discussed, the column names can often have spaces and optionally, special characters in the column names of the data. To query such columns, it is often an accepted practice to use backticks around the column name. Note that use of any other form of quotes, like single quotes or double quotes, will not work with column names. If you have very long queries such as join queries or nested queries, it may be useful to split the query into multiple lines for improved readability. see working-with-csv-3 working-with-csv-4 working-with-csv-5
+
+ how do you get a list of tables in the database? Database systems typically contain system or catalog tables from where you can query the list of tables and get their properties. In DB2, this catalog is called SYSCAT.TABLES, in SQL Server, it's information_Schema.tables, in SQLite3, it is sqlite_master, and in MySQL, it is SHOW TABLES. see getting-table-names-1.png getting-table-names-2 getting-table-names-3

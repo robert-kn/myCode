@@ -3050,3 +3050,79 @@ Example 1: Multiplying Without a Multiply Instruction
 Let’s start with an example we have seen before, multiplying two positive integers when the computer (such as the LC-3) does not have 
 a multiply instruction. This time we will assume the two integers to be multiplied are in R4 and R5, and the result of execution (the 
 product of those two integers) will be put in R2. Figure 6.4 shows the program we have written to do the job.
+
+If we examine the program instruction by instruction, we note that the pro- gram ﬁrst clears R2 (i.e., initializes R2 to 0) and then 
+attempts to perform the multiplication by adding R4 to itself a number of times equal to the initial value in R5. Each time an add is 
+performed, R5 is decremented. When R5 = 0, the program terminates.
+
+It looks like the program should work! Upon execution, however, we ﬁnd that if R4 initially contains the integer 10 and R5 initially 
+contains the integer 3, the program produces the result 40. What went wrong?
+
+Our ﬁrst thought is to trace the program. Before we do that, we note that the program assumes positive integers in R4 and R5. Using the 
+Set Values command, we put the value 10 in R4 and the value 3 in R5.
+
+It is also useful to annotate each instruction with some algorithmic description of exactly what each instruction is doing. While 
+this can be very tedious and not very helpful in a 10,000-instruction program, it often can be very helpful after one has isolated a 
+bug to within a few instructions. There is a big diﬀerence between quickly eyeballing a sequence of instructions and stating precisely 
+what each instruction is doing. Quickly eyeballing often results in mistaking what one eyeballs! Stating precisely usually does not. 
+We have included in Figure 6.4, next to each instruction, such an annotation.
+
+Figure 6.5a shows a trace of the program, which we can obtain by single- stepping. The column labeled PC shows the contents of the PC 
+at the start of each instruction. R2, R4, and R5 show the values in those three registers at the start of each instruction.
+
+A quick look at the trace shows that the loop body was executed four times, rather than three. That suggests that the condition codes 
+for our branch instruction could have been set incorrectly. From there it is a short step to noting that the branch should have been 
+taken only when R5 was positive, and not when R5 is 0. That is, bit [10]=1 in the branch instruction caused the extra iteration of the 
+loop.
+
+The program can be corrected by simply replacing the instruction at x3203 with
+
+15    14    13    12    11    10    9    8    7    6    5    4    3    2    1    0
+0     0     0     0  |  0     0     1  | 1    1    1    1    1    1    1    0    1
+      BR                n     z     p                   −3
+
+We should also note that we could have saved a lot of the work of tracing the program by using a breakpoint. That is, instead of 
+examining the results of each instruction, if we set a breakpoint at x3203, we would examine the results of each iteration of the loop. 
+Setting a breakpoint to stop the program after each iteration of the loop is often enough to have us see the problem (and debug the 
+program) without the tedium of single-stepping each iteration of the loop. Figure 6.5b shows the results of tracing the program, where 
+each step is one iteration of the loop. We see that the loop executed four times instead of three, immediately identifying the bug.
+
+One last comment before we leave this example. Before we started tracing the program, we initialized R4 and R5 with values 10 and 3. 
+When testing a program, it is important to judiciously choose the initial values for the test. Here, the program stated that the 
+program had to work only for positive integers. So, 10 and 3 are probably OK. What if a (diﬀerent) multiply program had been written
+to work for all integers? Then we could have tried initial values of −6 and 3, 4 and −12, and perhaps −5 and −7. The problem with this 
+set of tests is that we have left out one of the most important initial values of all: 0. For the program to work for “all” integers, 
+it has to work for 0 as well. The point is that, for a program to work, it must work for all valid source operands, and a good test of 
+such a program is to set source operands to the unusual values, the ones the programmer may have failed to consider. These values are 
+often referred to colloquially as corner cases, and more often that not, they are the values for which the program does not operate 
+correctly.
+
+Example 2: Adding a Column of Numbers
+
+The program of Figure 6.6 is supposed to add the numbers stored in the ten locations starting with x3100, and leave the result in R1.
+
+The contents of the 20 memory locations starting at location x3100 are shown in Figure 6.7.
+
+The program should work as follows: The instructions in x3000 to x3003 initialize the variables. In x3000, the sum (R1) is initialized 
+to 0. In x3001 and x3002, the loop control (R4), which counts the number of values added to R1, is initialized to #10. The program 
+subtracts 1 each time through the loop and repeats until R4 contains 0. In x3003, the base register (R2) is initialized to the starting 
+location of the values to be added: x3100.
+
+From there, each time through the loop, one value is loaded into R3 (in x3004), the base register is incremented to get ready for the 
+next iteration (x3005), the value in R3 is added to R1, which contains the running sum (x3006), the counter is decremented (x3007), 
+the P bit is tested, and if true, the PC is set to x3004 to begin the next iteration of the loop body (x3008). After ten times through 
+the loop, R4 contains 0, the P bit is 0, the branch is not taken, and the program terminates (x3009).
+
+It looks like the program should work. However, when we execute the pro- gram and then check the value in R1, we ﬁnd the number x0024, 
+which is not x8135, the sum of the numbers stored in locations x3100 to x3109. What went wrong?
+
+We turn to the debugger and trace the program. Figure 6.8 shows a trace of the ﬁrst four instructions executed. Note that after the 
+instruction at x3003 has executed, R2 contains x3107, not x3100 as we had expected. The problem is that the opcode 0010 loaded the 
+contents of M[x3100] (i.e., x3107) into R2, not the address x3100. The result was to add the ten numbers starting at M[x3107] instead 
+of the ten numbers starting at M[x3100].
+
+Our mistake: We used the wrong opcode. We should have used the opcode 1110, which would have loaded R2 with the address x3100. We 
+correct the bug by replacing the opcode 0010 with 1110, and the program runs correctly.
+
+Example 3: Does a Sequence of Memory Locations Contain a 5?
+
