@@ -1,0 +1,152 @@
+Chicago Public Schools - Progress Report Cards (2011-2012)
+
+The city of Chicago released a dataset showing all school level performance data used to create School Report Cards for the 2011-2012 school year. The dataset is available from the Chicago Data Portal: https://data.cityofchicago.org/Education/Chicago-Public-Schools-Progress-Report-Cards-2011-/9xs2-f89t
+
+This dataset includes a large number of metrics. Start by familiarizing yourself with the types of metrics in the database: https://data.cityofchicago.org/api/assets/AAD41A13-BE8A-4E67-B1F5-86E711E09D5F?download=true
+
+NOTE:
+
+Do not download the dataset directly from City of Chicago portal. Instead download a static copy which is a more database friendly version from this link.
+
+Now review some of its contents.
+
+Connect to the database
+Let us now load the ipython-sql extension and establish a connection with the database
+
+The syntax for connecting to magic sql using sqllite is
+%sql sqlite://DatabaseName
+
+where DatabaseName will be your .db file
+
+import csv, sqlite3
+
+con = sqlite3.connect("RealWorldData.db")
+cur = con.cursor()
+
+!pip install pandas
+!pip install ipython-sql prettytable
+
+import prettytable
+prettytable.DEFAULT = 'DEFAULT'
+
+!pip install ipython-sql
+%load_ext sql
+
+%sql sqlite:///RealWorldData.db
+
+Store the dataset in a Table
+In many cases the dataset to be analyzed is available as a .CSV (comma separated values) file, perhaps on the internet.
+To analyze the data using SQL, it first needs to be stored in the database.
+We will first read the csv files from the given url into pandas dataframes
+Next we will be using the df.to_sql() function to convert each csv file to a table in sqlite with the csv data loaded in it.
+
+df = pandas.read_csv('ChicagoPublicSchools.csv')
+df.to_sql("chicago_PublicSchools_data", con, if_exists='replace', index=False,method="multi")
+
+Query the database system catalog to retrieve table metadata
+You can verify that the table creation was successful by retrieving the list of all tables in your schema and checking whether the SCHOOLS table was created
+
+# type in your query to retrieve list of all tables in the database
+%sql select * from sqlite_master where type="table"
+
+Query the database system catalog to retrieve column metadata
+The SCHOOLS table contains a large number of columns. How many columns does this table have?
+
+# type in your query to retrieve the number of columns in the SCHOOLS table
+%sql pragma table_info("chicago_PublicSchools_data")
+
+Now retrieve the the list of columns in SCHOOLS table and their column type (datatype) and length.
+
+# type in your query to retrieve all column names in the SCHOOLS table along with their datatypes and length
+%sql SELECT name,type,length(type) FROM PRAGMA_TABLE_INFO('chicago_PublicSchools_data');
+
+Questions
+Is the column name for the "SCHOOL ID" attribute in upper or mixed case?
+What is the name of "Community Area Name" column in your table? Does it have spaces?
+Are there any columns in whose names the spaces and paranthesis (round brackets) have been replaced by the underscore character "_"?
+
+Problems¶
+Problem 1
+How many Elementary Schools are in the dataset?
+%sql select count(*) from chicago_PublicSchools_data where "Elementary, Middle, or High School"='ES';
+
+
+Problem 2
+What is the highest Safety Score?
+%sql select max(SAFETY_SCORE) from chicago_PublicSchools_data;
+
+Problem 3
+Which schools have highest Safety Score?
+%sql select NAME_OF_SCHOOL from chicago_PublicSchools_data where SAFETY_SCORE=99.0;
+
+Problem 4
+What are the top 10 schools with the highest "Average Student Attendance"?
+%sql select NAME_OF_SCHOOL, AVERAGE_STUDENT_ATTENDANCE from chicago_PublicSchools_data where AVERAGE_STUDENT_ATTENDANCE>=(select avg(AVERAGE_STUDENT_ATTENDANCE) from chicago_PublicSchools_data) limit 10;
+
+Problem 5
+Retrieve the list of 5 Schools with the lowest Average Student Attendance sorted in ascending order based on attendance
+%sql select NAME_OF_SCHOOL, AVERAGE_STUDENT_ATTENDANCE from chicago_PublicSchools_data order by AVERAGE_STUDENT_ATTENDANCE asc limit 5;
+
+Problem 6
+Now remove the '%' sign from the above result set for Average Student Attendance column
+%sql SELECT Name_of_School, REPLACE(Average_Student_Attendance, '%', '') from chicago_PublicSchools_data order by Average_Student_Attendance LIMIT 5
+
+Problem 7
+Which Schools have Average Student Attendance lower than 70%?
+%sql select NAME_OF_SCHOOL, Average_Student_Attendance from chicago_PublicSchools_data where Average_Student_Attendance<70;
+
+
+Problem 8
+Get the total College Enrollment for each Community Area
+%sql select Community_Area_Name, sum(College_Enrollment) AS TOTAL_ENROLLMENT \
+   from CHICAGO_PUBLIC_SCHOOLS_DATA \
+   group by Community_Area_Name
+
+
+Problem 9
+Get the 5 Community Areas with the least total College Enrollment sorted in ascending order
+%sql select Community_Area_Name, sum(College_Enrollment) AS TOTAL_ENROLLMENT \
+   from CHICAGO_PUBLIC_SCHOOLS_DATA \
+   group by Community_Area_Name \
+   order by TOTAL_ENROLLMENT asc \
+   LIMIT 5
+
+
+Problem 10
+List 5 schools with lowest safety score.
+%sql SELECT name_of_school, safety_score \
+FROM CHICAGO_PUBLIC_SCHOOLS_DATA  where safety_score !='None' \
+ORDER BY safety_score \
+LIMIT 5
+
+Problem 11
+Get the hardship index for the community area of the school which has College Enrollment of 4368
+NOTE: For this solution to work the CHICAGO_SOCIOECONOMIC_DATA table 
+      as created in the last lab of Week 3 should already exist. If the CHICAGO_SOCIOECONOMIC_DATA table does not exists, please execute the following code beforehand.
+
+df = pandas.read_csv("https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-DB0201EN-SkillsNetwork/labs/FinalModule_Coursera_V5/data/ChicagoCensusData.csv")
+df.to_sql("CENSUS_DATA", con, if_exists='replace', index=False,method="multi")
+
+
+%%sql 
+select hardship_index from CENSUS_DATA CD, CHICAGO_PUBLIC_SCHOOLS_DATA CPS 
+where CD.community_area_number = CPS.community_area_number 
+and college_enrollment = 4368
+
+
+Problem 12
+Get the hardship index for the community area which has the highest value for College Enrollment
+<!-- Solution:
+NOTE: For this solution to work the CHICAGO_SOCIOECONOMIC_DATA table 
+      as created in the last lab of Week 3 should already exist. If the CHICAGO_SOCIOECONOMIC_DATA table does not exists, please execute the following code beforehand.
+
+df = pandas.read_csv("https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-DB0201EN-SkillsNetwork/labs/FinalModule_Coursera_V5/data/ChicagoCensusData.csv")
+df.to_sql("CENSUS_DATA", con, if_exists='replace', index=False,method="multi")
+
+%sql select community_area_number, community_area_name, hardship_index from CENSUS_DATA \
+   where community_area_number in \
+   ( select community_area_number from CHICAGO_PUBLIC_SCHOOLS_DATA order by college_enrollment desc limit 1 )
+-->
+
+Summary
+In this lab you learned how to work with a real word dataset using SQL and Python. You learned how to query columns with spaces or special characters in their names and with mixed case names. You also used built in database functions and practiced how to sort, limit, and order result sets, as well as used sub-queries and worked with multiple tables.
