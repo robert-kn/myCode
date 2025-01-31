@@ -3144,3 +3144,77 @@ When we run the program for some sample data that contains a 5 in one of the mem
 indicating there were no 5s in locations x3100 to x310A.
 
 What went wrong? We examine a trace of the program, with a breakpoint set at x300D. The results are shown in Figure 6.10.
+
+The ﬁrst time the PC is at x300D, we have already tested the value stored in x3100, we have loaded 7 (the contents of x3101) into R2, 
+and R3 indicates there are still nine values to be tested. R4 contains the address from which we most recently loaded R2.
+
+The second time the PC is at x300D, we have loaded 32 (the contents of x3102) into R2, and R3 indicates there are eight values still to 
+be tested. The third time the PC is at x300D, we have loaded 0 (the contents of x3103) into R2, and R3 indicates seven values still to 
+be tested. The value 0 loaded into R2 causes the branch instruction at x300D to be not taken, R0 is set to 0 (x300E), and the program 
+terminates (x300F) before the locations containing a 5 are tested.
+
+The error in the program occurred because the branch instruction immedi- ately followed the load instruction that set the condition 
+codes based on what was loaded. That wiped out the condition codes set by the iteration control instruction at x300B, which was keeping 
+track of the number of iterations left to do. Since the branch instruction should branch if there are still more memory locations to 
+examine, the branch instruction should have immediately followed the iteration control instruction and NOT the load instruction which 
+also sets condition codes.
+
+A conditional branch instruction should be considered the second instruction in a pair of instructions.
+
+Instruction A; sets the condition codes
+BR instruction; branches based on the condition codes
+
+The first instruction in the pair (Instruction A) sets the condition codes. The second instruction (BR) branches or not, depending on 
+the condition codes set by instruction A. It is important to never insert any instruction that sets condition codes between instruction 
+A and the branch instruction, since doing so will wipe out the condition codes set by instruction A that are needed by the branch 
+instruction.
+
+Since the branch at x300D was based on the value loaded into R2, instead of how many values remained to be tested, the third time the 
+branch instruction was executed, it was not taken when it should have been. If we interchange the instructions at x300B and x300C, the 
+branch instruction at x300D immediately follows the iteration control instruction, and the program executes correctly.
+
+It is also worth noting that the branch at x300D coincidentally behaved cor- rectly the ﬁrst two times it executed because the load 
+instruction at x300C loaded positive values into R2. The bug did not produce incorrect behavior until the third iteration. It would be 
+nice if bugs would manifest themselves the ﬁrst time they are encountered, but that is often not the case. Coincidences do occur, 
+which adds to the challenges of debugging.
+
+Example 4: Finding the First 1 in a Word
+
+Our last example contains an error that is usually one of the hardest to ﬁnd, as we will see. The program of Figure 6.11 has been 
+written to examine the contents of a memory location, ﬁnd the ﬁrst bit (reading from left to right) that is set, and store its bit 
+position into R1. If no bit is set, the program is to store −1 in R1. For example, if the location examined contained 0010000110000000, 
+the program would terminate with R1 = 13. If the location contained 0000000000000110, the program would terminate with R1 = 2.
+
+The program Figure 6.11 is supposed to work as follows (and it usually does): x3000 and x3001 initialize R1 to 15, the bit number of 
+the leftmost bit.
+
+x3002 loads R2 with the contents of x3400, the bit pattern to be exam- ined. Since x3400 is too far from x3000 for a LD instruction, 
+the load indirect instruction is used, obtaining the location of the bit pattern in x3009.
+
+x3003 tests the most signiﬁcant bit of the bit pattern (bit [15]), and if it is a 1, branches to x3008, where the program terminates 
+with R1=15. If the most signiﬁcant bit is 0, the branch is not taken, and processing continues at x3004.
+
+The loop body, locations x3004 to x3007, does two things. First (x3004), it subtracts 1 from R1, yielding the bit number of the next 
+bit to the right. Second (x3005), it adds R2 to itself, resulting in the contents of R2 shifting left one bit, resulting in the next 
+bit to the right being shifted into the bit [15] position. Third (x3006), the BR instruction tests the “new” bit [15], and if it is a 
+1, branches to x3008, where the program halts with R1 containing the actual bit number of the current leftmost bit. If the new bit [15] 
+is 0, x3007 is an unconditional branch to x3004 for the next iteration of the loop body.
+
+The process continues until the ﬁrst 1 is found. The program works correctly almost all the time. However, when we ran the program on 
+our data, the program failed to terminate. What went wrong?
+
+A trace of the program, with a breakpoint set at x3007, is shown in Figure 6.12.
+
+Each time the PC contained the address x3007, R1 contained a value smaller by 1 than the previous time. The reason is as follows: 
+After R1 was decremented and the value in R2 shifted left, the bit tested was a 0, and so the program did not terminate. This continued 
+for values in R1 equal to 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, −1, −2, −3, −4, and so forth.
+
+The problem was that the initial value in x3400 was x0000. The program worked ﬁne as long as there was at least one 1 present. For the 
+case where x3400 contained all zeros, the conditional branch at x3006 was never taken, and so the program continued with execution of 
+x3007, then x3004, x3005, x3006, x3007, and then back again to x3004. There was no way to break out of the sequence x3004, x3005, 
+x3006, x3007, and back again to x3004. We call the sequence x3004 to x3007 a loop. Because there is no way for the program execution 
+to break out of this loop, we call it an inﬁnite loop. Thus, the program never terminates, and so we can never get the correct answer.
+
+Again, we emphasize that this is often the hardest error to detect because it is as we said earlier a corner case. The programmer 
+assumed that at least one bit was set. What if no bits are set? That is, it is not enough for a program to execute correctly most of 
+the time; it must execute correctly all the time, independent of the data that the program is asked to process.
