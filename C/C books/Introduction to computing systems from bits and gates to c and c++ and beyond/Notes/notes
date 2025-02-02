@@ -3218,3 +3218,219 @@ to break out of this loop, we call it an inﬁnite loop. Thus, the program never
 Again, we emphasize that this is often the hardest error to detect because it is as we said earlier a corner case. The programmer 
 assumed that at least one bit was set. What if no bits are set? That is, it is not enough for a program to execute correctly most of 
 the time; it must execute correctly all the time, independent of the data that the program is asked to process.
+
+chapter 6 questions
+
+1. Can a procedure that is not an algorithm be constructed from the three basic constructs of structured 
+programming? If so, demonstrate through an example.
+
+Yes, for example, an iterative block where the test condition remains true for each iteration. This procedure 
+will never end and is therefore not finite and not an algorithm. The following is an example of a procedure 
+that isn’t an algorithm:
+
+x3000 0101 000 000 1 00000 (LOOP AND   R0, R0, #0)
+x3001 0000 010 111111110    (     BRz LOOP)
+
+This is not an algorithm because the branch instruction is always taken and the program loops indefinitely.
+
+remember for a procedure to be called an algorithm it must meet 3 characteristics; finiteness, definiteness
+and effective computability.
+
+2. Which of the two algorithms for multiplying two numbers is preferable and why? 88 ⋅ 3 = 88 + 88 + 88 OR 
+3 + 3 + 3 + 3 +…+3? The three additions of 88 + 88 + 88 requires fewer steps to complete than the eighty 
+eight additions of 3 + 3 + ... + 3. Because 88 + 88 + 88 requires fewer instructions to complete, it is 
+faster and therefore preferable.
+
+chapter 7 Assembly Language
+
+By now, you are probably a little tired of 1s and 0s aand keeping track of 0001 meaning ADD and 1001 meaning NOT. Also, 
+wouldn’t it be nice if we could refer to a memory location by some meaningful symbolic name instead of memorizing its 
+16-bit address? And wouldn’t it be nice if we could represent each instruction in some more easily comprehensible way, 
+instead of having to keep track of which bit of an instruction conveys which individual piece of information about that 
+instruction? 
+
+In this chapter, we introduce assembly language, a mechanism that does all of the above, and more.
+
+Assembly Language Programming— Moving Up a Level
+
+Recall the levels of transformation identiﬁed in Figure 1.9 of Chapter 1. Algo- rithms are transformed into programs described in 
+some mechanical language. This mechanical language can be, as it is in Chapter 5, the machine language of a particular computer. 
+Recall that a program is in a computer’s machine language if every instruction in the program is from the ISA of that computer.
+
+On the other hand, the mechanical language can be more user-friendly. We generally partition mechanical languages into two classes, 
+high-level and low-level. Of the two, high-level languages are much more user-friendly. Examples are C, C++, Java, Fortran, COBOL, 
+Python, plus more than a thousand others. Instructions in a high-level language almost (but not quite) resemble statements in a 
+natural language such as English. High-level languages tend to be ISA inde- pendent. That is, once you learn how to program in C 
+(or Fortran or Python) for one ISA, it is a small step to write programs in C (or Fortran or Python) for another ISA.
+
+Before a program written in a high-level language can be executed, it must be translated into a program in the ISA of the computer 
+on which it is expected to execute. It is often the case that each statement in the high-level language speciﬁes several instructions 
+in the ISA of the computer. In Chapter 11, we will introduce the high-level language C, and in Chapters 12 through 19, we will show 
+the relationship between various statements in C and their corresponding translations to LC-3 code. In this chapter, however, we 
+will only move up a small step from the ISA we dealt with in Chapter 5.
+
+A small step up from the ISA of a machine is that ISA’s assembly language. Assembly language is a low-level language. There is no 
+confusing an instruction in a low-level language with a statement in English. Each assembly language instruction usually speciﬁes 
+a single instruction in the ISA. Unlike high-level languages, which are usually ISA independent, low-level languages are very much 
+ISA dependent. In fact, it is usually the case that each ISA has only one assembly language.
+
+The purpose of assembly language is to make the programming process more user-friendly than programming in machine language (i.e., 
+in the ISA of the computer with which we are dealing), while still providing the programmer with detailed control over the 
+instructions that the computer can execute. So, for example, while still retaining control over the detailed instructions the 
+computer is to carry out, we are freed from having to remember what opcode is 0001 and what opcode is 1001, or what is being stored 
+in memory location 0011111100001010 and what is being stored in location 0011111100000101. Assembly languages let us use mnemonic 
+devices for opcodes, such as ADD for 0001 and NOT for 1001, and they let us give meaningful symbolic names to memory locations, such 
+as SUM or PRODUCT, rather than use the memory locations’ 16-bit addresses. This makes it easier to diﬀerentiate which memory 
+location is keeping track of a SUM and which memory location is keeping track of a PRODUCT. We call these names symbolic addresses.
+
+We will see, starting in Chapter 11, that when we take the larger step of moving up to a higher-level language (such as C), 
+programming will be even more user-friendly, but in doing so, we will relinquish some control over exactly which detailed ISA 
+instructions are to be carried out to accomplish the work speciﬁed by a high-level language statement.
+
+An Assembly Language Program
+
+We will begin our study of the LC-3 assembly language by means of an example. The program in Figure 7.1 multiplies the integer 
+initially stored in NUMBER by 6 by adding the integer to itself six times. For example, if the integer is 123, the program computes 
+the product by adding 123 + 123 + 123 + 123 + 123 + 123. Where have you seen that before? :-)
+
+The program consists of 21 lines of code. We have added a line number to each line of the program in order to be able to refer to 
+individual lines easily. This is a common practice. These line numbers are not part of the program. Ten lines start with a semicolon, 
+designating that they are strictly for the beneﬁt of the human reader. More on this momentarily. Seven lines (06, 07, 08, 0C, 0D, 0E, 
+and 10) specify assembly language instructions to be translated into machine language instructions of the LC-3, which will be 
+executed when the program runs. The remaining four lines (05, 12, 13, and 15) contain pseudo-ops, which are messages from the 
+programmer to the translation program to help in the translation process. The translation program is called an assembler (in this 
+case the LC-3 assembler), and the translation process is called assembly.
+
+Instructions
+
+Instead of an instruction being 16 0s and 1s, as is the case in the LC-3 ISA, an instruction in assembly language consists of four 
+parts, as follows:
+
+Label       Opcode       Operands       ;  Comment
+
+Two of the parts (Label and Comment) are optional. More on that momentarily.
+
+Opcodes and Operands
+
+Two of the parts (Opcode and Operands) are mandatory. For an assembly language instruction to correspond to an instruction in the 
+LC-3 ISA, it must have an Opcode (the thing the instruction is to do), and the appropriate number of Operands (the things it is 
+supposed to do it to). Not surprisingly, this was exactly what we encountered in Chapter 5 when we studied the LC-3 ISA.
+
+The Opcode is a symbolic name for the opcode of the corresponding LC-3 instruction. The idea is that it is easier to remember an 
+operation by the symbolic name ADD, AND, or LDR than by the four-bit quantity 0001, 0101, or 0110. Figure 5.3 (also Figure A.2) 
+lists the Opcodes of the 15 LC-3 instructions. Pages 658 through 673 show the assembly language representations for the 15 LC-3 
+instructions.
+
+The number of operands depends on the operation being performed. For example, the ADD instruction (line 0C in the program of Figure 
+7.1) requires three operands (two sources to obtain the numbers to be added, and one destination to designate where the result is to 
+be stored). All three operands must be explicitly identiﬁed in the instruction.
+
+AGAIN   ADD    R3,R3,R2
+
+In this case the operands to be added are obtained from register 2 and from register 3. The result is to be placed in register 3. We 
+represent each of the registers 0 through 7 as R0, R1, R2, … , R7, rather than 000, 001, 010, … , 111.
+
+The LD instruction (line 07 of the program in Figure 7.1) requires two operands (the memory location from which the value is to be 
+read and the destination register that is to contain the value after the instruction ﬁnishes execution). In LC-3 assembly language, 
+we assign symbolic names called labels to the memory locations so we will not have to remember their explicit 16-bit addresses. In 
+this case, the location from which the value is to be read is given the label NUMBER. The destination (i.e., where the value is to 
+be loaded) is register 2.
+
+LD       R2,  NUMBER
+
+As we discussed in Section 5.1.6, operands can be obtained from registers, from memory, or they may be literal (i.e., immediate) 
+values in the instruction. In the case of register operands, the registers are explicitly represented (such as R2 and R3 in line 0C). 
+In the case of memory operands, the symbolic name of the memory location is explicitly represented (such as NUMBER in line 07 and 
+SIX in line 06). In the case of immediate operands, the actual value is explicitly represented (such as the value 0 in line 08).
+
+AND    R3,  R3,  #0  ;  Clear  R3.  It  will  contain  the  product.
+
+A literal value must contain a symbol identifying the representation base of the number. We use # for decimal, x for hexadecimal, 
+and b for binary. Sometimes there is no ambiguity, such as in the case 3F0A, which is a hex number. Nonetheless, we write it as 
+x3F0A. Sometimes there is ambiguity, such as in the case 1000. x1000 represents the decimal number 4096, b1000 represents the 
+decimal number 8, and #1000 represents the decimal number 1000.
+
+Labels
+
+Labels are symbolic names that are used to identify memory locations that are referred to explicitly in the program. In LC-3 
+assembly language, a label consists of from 1 to 20 alphanumeric characters (i.e., each character is a capital or lower-case letter 
+of the English alphabet, or a decimal digit), starting with a letter of the alphabet.
+
+However, not all sequences of characters that follow these rules can be used as labels. You know that computer programs cannot 
+tolerate ambiguity. So ADD, NOT, x1000, R4, and other character strings that have speciﬁc meanings in an LC-3 program cannot be used 
+as labels. They could confuse the LC-3 assembler as it tries to translate the LC-3 assembly language program into a program in the 
+LC-3 ISA. Such not-allowed character strings are often referred to as reserved words.
+
+We said we give a label (i.e., a symbolic name) to a memory location if we explicitly refer to it in the program. There are two 
+reasons for explicitly referring to a memory location.
+1. The location is the target of a branch instruction (e.g., AGAIN in line 0C). That is, the label AGAIN identiﬁes the location of 
+the instruction that will be executed next if the branch is taken.
+2. The location contains a value that is loaded or stored (e.g., NUMBER in line 12, and SIX in line 13).
+
+Note the location AGAIN (identiﬁed in line 0C) is speciﬁcally referenced by the branch instruction in line 0E.
+
+BRp  AGAIN
+
+If the result of ADD R1,R1,#–1 is positive (which results in the P bit being set), then the program branches to the location 
+explicitly referenced as AGAIN to perform another iteration.
+
+The location NUMBER is speciﬁcally referenced by the load instruction in line 07. The value stored in the memory location 
+explicitly referenced as NUMBER is loaded into R2.
+
+If a location in the program is not explicitly referenced, then there is no need to give it a label.
+
+Comments
+
+Comments are messages intended only for human consumption. They have no eﬀect on the translation process and indeed are not acted on 
+by the LC-3 assembler. They are identiﬁed in the program by semicolons. A semicolon signiﬁes that the rest of the line is a comment 
+and is to be ignored by the assembler. If the semicolon is the ﬁrst nonblank character on the line, the entire line is ignored. If 
+the semicolon follows the operands of an instruction, then only the comment is ignored by the assembler.
+
+The purpose of comments is to make the program more comprehensible to the human reader. Comments help explain a nonintuitive aspect 
+of an instruction or a set of instructions. In lines 08 and 09, the comment “Clear R3; it will contain the product” lets the reader 
+know that the instruction on line 08 is initializing R3 prior to accumulating the product of the two numbers. While the purpose of 
+line 08 may be obvious to the programmer today, it may not be the case two years from now, after the programmer has written an 
+additional 30,000 instructions and cannot remember why he/she wrote AND R3,R3,#0. It may also be the case that two years from now, 
+the programmer no longer works for the company, and the company needs to modify the program in response to a product update. If the 
+task is assigned to someone who has never seen the program before, comments go a long way toward helping that person understand the 
+program.
+
+It is important to make comments that provide additional insight and do not just restate the obvious. There are two reasons for this. 
+First, comments that restate the obvious are a waste of everyone’s time. Second, they tend to obscure the comments that say 
+something important because they add clutter to the program. For example, in line 0D, the comment “Decrement R1” would be a bad idea. 
+It would provide no additional insight to the instruction, and it would add clutter to the page.
+
+Another purpose of comments is to make the visual presentation of a program easier to understand. That is, comments are used to 
+separate pieces of a program from each other to make the program more readable. Lines of code that work together to compute a single 
+result are placed on successive lines, but they are separated from the rest of the program by blank lines. For example, note that 
+lines 0C through 0E, which together form the loop body that is the crux of this computer program, are separated from the rest of the 
+code by lines 0B and 0F. There is nothing on lines 0B and 0F other than the semicolons in the ﬁrst column.
+
+Incidentally, another opportunity to make a program easier to read is the judicious use of white space, accomplished by adding 
+extra spaces to a line that are ignored by the assembler—for example, having all the opcodes start in the same column on the page, 
+whether or not the instruction has a label.
+
+Pseudo-Ops (Assembler Directives)
+
+The LC-3 assembler is a program that takes as input a string of characters repre- senting a computer program written in LC-3 
+assembly language and translates it into a program in the ISA of the LC-3. Pseudo-ops help the assembler perform that task.
+
+The more formal name for a pseudo-op is assembler directive. It is called a pseudo-op because, like its Greek root “pseudes” (which 
+means “false”), it does not refer to an operation that will be performed by the program during execution. Rather, the pseudo-op is 
+strictly a message from the assembly language programmer to the assembler to help the assembler in the assembly process. Once the 
+assembler handles the message, the pseudo-op is discarded. The LC-3 assembly language contains ﬁve pseudo-ops that we will ﬁnd 
+useful in our assembly language programming: .ORIG, .FILL, .BLKW, .STRINGZ, and .END. All are easily recognizable by the dot as 
+their ﬁrst character.
+
+.ORIG
+
+.ORIG tells the assembler where in memory to place the LC-3 program. In line 05, .ORIG x3050 says, place the ﬁrst LC-3 ISA 
+instruction in location x3050. As a result, 0010001000001100 (the translated LD R1,SIX instruction) is put in location x3050, and 
+the rest of the translated LC-3 program is placed in the subsequent sequential locations in memory. For example, if the program 
+consists of x100 LC-3 instructions, and .ORIG says to put the ﬁrst instruction in x3050, the remaining xFF instructions are placed 
+in locations x3051 to x314F.
+
+.FILL
+
+.FILL tells the assembler to set aside the next location in the program and initialize it with the value of the operand. The value 
+can be either a number or a label. In line 13, the ninth location in the resulting LC-3 program is initialized to the value x0006.

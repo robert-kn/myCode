@@ -902,3 +902,62 @@ replace a larger unit of work with a construct that correctly decomposes it
 6. how many constructs are there for doing this? 3
 
 7. what are they called? sequential, conditional, and iterative
+
+chapter 7
+
+1. mechanical languages are generally partitioned into two classes. what are they? high level and low level
+
+2. describe high level languaages? are more user friendly, almost resemble statements in natural languge such as english
+
+3. what must happen before a program that is written in a high-level language can be executed? it must be translated into a program
+in the ISA of the computer on which it is expected to execute
+
+4. is it often the case that each statement in a high level language specifies several instructions in the ISA of a computer? yes
+
+5. what do you call the small step up from the ISA of a machine? the ISAs assembly language
+
+6. what is assembly language? a low level language which cannot be confused with a statement in english language. it is ISA dependent
+i.e. each ISA has only one assembly language 
+
+7. does each assembly language instruction usually specify a single instruction in the ISA? yes
+
+8. what is the purpose of assembly language? to make the programming process more user friendly than programming in machine language
+i.e. in the ISA of the computer you are working on while providing the programmer with detailed control over the instructions the
+computer can execute
+
+9. what does assembly language do that help the program avoid minutae? let us use mnemonic devices for opcodes and give meaningful 
+symbolic names to memory locations (they are called symbolic addresses)
+
+10. what do you lose when you use a high level language like C? whilst it is user friendly you relinquish control over which ISA instruction
+are to be used to carry out the work specified by the high level statement
+
+11. what are pseudo ops (assembler directives)? message from the programmer to the translation program to help in the translation 
+process (translating a program represented by a string of characters in assembly language to machine language)
+
+12. what is the translation program that is used to translate assembly programs to machine language? assembler
+
+13. what is the translation process called? assembly
+
+14. instead of an instruction being 16 0's and 1's as is the case of the LC-3 ISA, an instruction in assembly language consists of 
+four parts. what are they called? label, opcode, operands, comment
+
+15. which two are optional? label and comment
+
+16. in LC-3 assembly language, why are symbolic names called labels are assigned to memory locations? so that we do not have to remember
+explicit 16 bit addresses
+
+17. for literal values in assembly language that are used as operands in assembly language, how will know a number is a decimal,
+hex, or a binary? decimal numbers will be preceeded by #, binary by b, and hex by X
+
+18. what are the two reasons for explicitly referring to a memory location using a label? the location is a target of a branch 
+instruction and the location contains a value that is loaded or stored
+
+19. how many pseudo-ops does the LC-3 assembly language contain? 5
+
+20 what are they? .ORIG, .FILL, .BLKW, .STRINGZ, and .END.
+
+21. what does the .ORIG pseudo-op do? it tells the assembler where in memory to place the LC-3 program i.e. first instruction is placed
+in the memory addressed specified whilst the rest of the instructions in the program are placed in subsequent sequential locations.
+
+22. what does the .FILL pseudo-op do? tells the assembler to set aside the next location in the program and initialise it with the value
+of the operand. the value can either be a number or a label
