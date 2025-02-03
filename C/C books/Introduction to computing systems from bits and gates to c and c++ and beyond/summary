@@ -957,7 +957,27 @@ instruction and the location contains a value that is loaded or stored
 20 what are they? .ORIG, .FILL, .BLKW, .STRINGZ, and .END.
 
 21. what does the .ORIG pseudo-op do? it tells the assembler where in memory to place the LC-3 program i.e. first instruction is placed
-in the memory addressed specified whilst the rest of the instructions in the program are placed in subsequent sequential locations.
+in the memory addressed specified, whilst the rest of the instructions in the program are placed in subsequent sequential locations.
 
 22. what does the .FILL pseudo-op do? tells the assembler to set aside the next location in the program and initialise it with the value
 of the operand. the value can either be a number or a label
+
+23. what does the .BLKW pseudo op do? tells the assembler to set aside some number of sequential memory locations in the program. The
+actual number is the operand of the .BLKW pseudo op
+
+24. what does the .STRINGZ pseudo op do? tells the assembler to initialise a sequence of n+1 memory locations. The argument is a 
+sequence of n characters inside double quotation marks. first n words of memory are initialised with zero extended ascii codes of the
+corresponding characters in the string. final word of memory is initialised to 0
+
+25. what does the .END pseudo op do? tells the assembler it has reached the end of the program and need not look at anything after it
+
+26. how does the assembly process unfold? it is done in two complete passes (from beginning to .END) through the entire assembly language
+program. the objective of the first pass is to identify the actual binary addresses corresponding to the symbolic names (or labels).
+this is set of correspondences is known as the symbol table. in pass 2, we translate the individual assembly language instructions
+into their corresponding machine language instructions
+
+27. why are labels used in assembly language? to refer to memory locations either because it is a target of a branch instruction or because
+it contains data that must be loaded or stored
+
+28. how does the lc-3 assembler keep track of the location assigned to  each instruction? by meaans of the location counter. it is 
+initialised to the address specified in .ORIG

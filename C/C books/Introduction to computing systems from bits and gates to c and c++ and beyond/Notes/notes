@@ -3434,3 +3434,205 @@ in locations x3051 to x314F.
 
 .FILL tells the assembler to set aside the next location in the program and initialize it with the value of the operand. The value 
 can be either a number or a label. In line 13, the ninth location in the resulting LC-3 program is initialized to the value x0006.
+
+.BLKW
+
+.BLKW tells the assembler to set aside some number of sequential memory locations (i.e., a BLocK of Words) in the program. The 
+actual number is the operand of the .BLKW pseudo-op. In line 12, the pseudo-op instructs the assembler to set aside one location 
+in memory (and, incidentally, to label it NUMBER).
+
+The pseudo-op .BLKW is particularly useful when the actual value of the operand is not yet known. In our example we assumed the 
+number in location NUMBER was 123. How did it get there? A common use of .BLKW is to set aside a location in the program, as we did 
+here, and have another section of code produce the number, perhaps from input from a keyboard (which we cannot know at the time we 
+write the program), and store that value into NUMBER before we execute the code in Figure 7.1.
+
+.STRINGZ
+
+.STRINGZ tells the assembler to initialize a sequence of n + 1 memory locations. The argument is a sequence of n characters inside 
+double quotation marks. The ﬁrst n words of memory are initialized with the zero-extended ASCII codes of the corresponding 
+characters in the string. The ﬁnal word of memory is initialized to 0. The last word, containing x0000, provides a convenient 
+sentinel for processing the string of ASCII codes.
+
+For example, the code fragment
+
+            .ORIG      x3010
+HELLO       .STRINGZ   "Hello,  World!"
+
+would result in the assembler initializing locations x3010 through x301D to the following values:
+
+x3010: x0048 
+x3011: x0065
+x3012: x006C
+x3013: x006C
+x3014: x006F 
+x3015: x002C 
+x3016: x0020 
+x3017: x0057 
+x3018: x006F 
+x3019: x0072 
+x301A: x006C 
+x301B: x0064 
+x301C: x0021 
+x301D: x0000
+
+.END
+
+.END tells the assembler it has reached the end of the program and need not even look at anything after it. That is, any characters 
+that come after .END will not be processed by the assembler. Note: .END does not stop the program during execution. In fact, .END 
+does not even exist at the time of execution. It is simply a delimiter — it marks the end of the program. It is a message from the 
+programmer, telling the assembler where the assembly language program ends.
+
+Example: The Character Count Example of Section 5.5, Revisited Again!
+
+Now we are ready for a complete example. Let’s consider again the problem of Section 5.5. We wish to write a program that will take 
+a character that is input from the keyboard and count the number of occurrences of that character in a ﬁle. As before, we ﬁrst 
+develop the algorithm by constructing the ﬂowchart. Recall that in Section 6.1, we showed how to decompose the problem systematically 
+so as to generate the ﬂowchart of Figure 5.16. In fact, the ﬁnal step of that process in Chapter 6 is the ﬂowchart of Figure 6.3e, 
+which is essentially identical to Figure 5.16. Next, we use the ﬂowchart to write the actual program. This time, however, we enjoy 
+the luxury of not worrying about 0s and 1s and instead write the program in LC-3 assembly language. The program is shown in Figure 
+7.2.
+
+A few comments about this program: Three times during this program, assistance in the form of a service call is required of the 
+operating system. In each case, a TRAP instruction is used. TRAP x23 causes a character to be input from the keyboard and placed in 
+R0 (line 0D). TRAP x21 causes the ASCII code in R0 to be displayed on the monitor (line 28). TRAP x25 causes the machine to be halted 
+(line 29). As we said before, we will leave the details of how the TRAP instruction is carried out until Chapter 9.
+
+The ASCII codes for the decimal digits 0 to 9 (0000 to 1001) are x30 to x39. The conversion from binary to ASCII is done simply by 
+adding x30 to the binary value of the decimal digit. Line 2D shows the label ASCII used to identify the memory location containing 
+x0030. The LD instruction in line 26 uses it to load x30 into R0, so it can convert the count that is in R2 from a binary value to 
+an ASCII code. That is done by the ADD instruction in line 27. TRAP x21 in line 28 prints the ASCII code to the monitor.
+
+The ﬁle that is to be examined starts at address x4000 (see line 2E). Usually, this starting address would not be known to the 
+programmer who is writing this program since we would want the program to work on many ﬁles, not just the one starting at x4000. 
+To accomplish that, line 2E would be replaced with .BLKW 1 and be ﬁlled in by some other piece of code that knew the starting 
+address of the desired ﬁle before executing the program of Figure 7.2. That situation will be discussed in Section 7.4.
+
+The Assembly Process
+
+Before an LC-3 assembly language program can be executed, it must ﬁrst be translated into a machine language program, that is, one 
+in which each instruction is in the LC-3 ISA. It is the job of the LC-3 assembler to perform that translation.
+
+If you have available an LC-3 assembler, you can cause it to translate your assembly language program into a machine language 
+program by executing an appropriate command. In the LC-3 assembler that is generally available via the web, that command is assemble, 
+and it requires as an argument the ﬁlename of your assembly language program. For example, if the ﬁlename is solution1.asm, then
+
+assemble  solution1.asm  outﬁle
+
+produces the ﬁle outﬁle, which is in the ISA of the LC-3. It is necessary to check with your instructor for the correct command line 
+to cause the LC-3 assembler to produce a ﬁle of 0s and 1s in the ISA of the LC-3.
+
+A Two-Pass Process
+
+In this section, we will see how the assembler goes through the process of trans- lating an assembly language program into a machine 
+language program. We will use as our input to the process the assembly language program of Figure 7.2.
+
+You remember that there is in general a one-to-one correspondence between instructions in an assembly language program and 
+instructions  in the ﬁnal machine language program. We could try to perform this translation in one pass through the assembly 
+language program. Starting from the top of Figure 7.2, the assembler discards lines 01 to 09, since they contain only comments. 
+Comments are strictly for human consumption; they have no bearing on the translation pro- cess. The assembler then moves on to line 
+0A. Line 0A is a pseudo-op; it tells the assembler that the machine language program is to start at location x3000. The assembler
+then moves on to line 0B, which it can easily translate into LC-3 machine code. At this point, we have
+
+x3000:    0101010010100000
+
+The LC-3 assembler moves on to translate the next instruction (line 0C). Unfortunately, it is unable to do so since it does not 
+know the meaning of the symbolic address PTR. At this point the assembler is stuck, and the assembly process fails.
+
+To prevent this from occurring, the assembly process is done in two complete passes (from beginning to .END) through the entire 
+assembly language program. The objective of the ﬁrst pass is to identify the actual binary addresses corresponding to the symbolic 
+names (or labels). This set of correspondences is known as the symbol table. In pass 1, we construct the symbol table. In pass 2, we 
+translate the individual assembly language instructions into their corresponding machine language instructions.
+
+Thus, when the assembler examines line 0C for the purpose of translating during the second pass, it already knows that PTR is the 
+symbolic address of memory location x3013 (from the ﬁrst pass). Thus, it can easily translate line 0C to
+
+x3001:    0010011000010001
+
+The problem of not knowing the 16-bit address corresponding to PTR no longer exists.
+
+The First Pass: Creating the Symbol Table
+
+For our purposes, the symbol table is simply a correspondence of symbolic names with their 16-bit memory addresses. We obtain these 
+correspondences by passing through the assembly language program once, noting which instruction is assigned to which memory 
+location, and identifying each label with the memory address of its assigned entry.
+
+Recall that we provide labels in those cases where we have to refer to a location, either because it is the target of a branch 
+instruction or because it contains data that must be loaded or stored. Consequently, if we have not made any programming mistakes, 
+and if we identify all the labels, we will have identiﬁed all the symbolic addresses used in the program.
+
+The preceding paragraph assumes that our entire program exists between our .ORIG and .END pseudo-ops. This is true for the assembly 
+language program of Figure 7.2. In Section 7.4, we will consider programs that consist of multiple parts, each with its own .ORIG 
+and .END, wherein each part is assembled separately.
+
+The ﬁrst pass starts, after discarding the comments on lines 01 to 09, by noting (line 0A) that the ﬁrst instruction will be 
+assigned to address x3000. We keep track of the location assigned to each instruction by means of a location counter (LC). The LC is 
+initialized to the address speciﬁed in .ORIG, that is, x3000.
+
+The assembler examines each instruction in sequence and increments the LC once for each assembly language instruction. If the 
+instruction examined contains a label, a symbol table entry is made for that label, specifying the current contents of LC as its 
+address. The ﬁrst pass terminates when the .END pseudo-op is reached.
+
+The ﬁrst instruction that has a label is at line 13. Since it is the ﬁfth instruction in the program and since the LC at that point 
+contains x3004, a symbol table entry is constructed thus:
+
+Symbol         Address
+TEST           x3004
+
+The second instruction that has a label is at line 20. At this point, the LC has been incremented to x300B. Thus, a symbol table 
+entry is constructed, as follows:
+
+Symbol    Address
+GETCHAR   x300B
+
+At the conclusion of the ﬁrst pass, the symbol table has the following entries:
+
+Symbol    Address
+TEST      x3004
+GETCHAR   x300B
+OUTPUT    x300E
+ASCII     x3012
+PTR       x3013
+
+The Second Pass: Generating the Machine Language Program
+
+The second pass consists of going through the assembly language program a second time, line by line, this time with the help of the 
+symbol table. At each line, the assembly language instruction is translated into an LC-3 machine language instruction.
+
+Starting again at the top, the assembler again discards lines 01 through 09 because they contain only comments. Line 0A is the .ORIG 
+pseudo-op, which the assembler uses to initialize LC to x3000. The assembler moves on to line 0B and produces the machine language 
+instruction 0101010010100000. Then the assembler moves on to line 0C.
+
+This time, when the assembler gets to line 0C, it can completely assemble the instruction since it knows that PTR corresponds to 
+x3013. The instruction is LD, which has an opcode encoding of 0010. The destination register (DR) is R3, that is, 011.
+
+The only part of the LD instruction left to do is the PCoﬀset. It is computed as follows: The assembler knows that PTR is the label 
+for address x3013 and that the incremented PC is LC+1, in this case x3002. Since PTR (x3013) must be the sum of the incremented PC 
+(x3002) and the sign-extended PCoﬀset, PCoﬀset must be x0011. Putting this all together, the assembler sets x3001 to 
+0010011000010001 and increments the LC to x3002.
+
+Note: In order to use the LD instruction, it is necessary that the source of the load, in this case the address whose label is PTR, 
+is not more than +256 or −255 memory locations from the LD instruction itself. If the address of PTR had been greater than LC+1+255 
+or less than LC+1−256, then the oﬀset would not ﬁt in bits [8:0] of the instruction. In such a case, an assembly error would have 
+occurred, preventing the assembly process from ﬁnishing successfully. Fortunately, PTR is close enough to the LD instruction, so the 
+instruction assembled correctly.
+
+The second pass continues. At each step, the LC is incremented and the location speciﬁed by LC is assigned the translated LC-3 
+instruction or, in the case of .FILL, the value speciﬁed. When the second pass encounters the .END pseudo-op, assembly terminates.
+
+The resulting translated program is shown in Figure 7.3.
+
+That process was, on a good day, merely tedious. Fortunately, you do not have to do it for a living—the LC-3 assembler does that. 
+And, since you now know the LC-3 assembly language, there is no need to program in machine language. Now we can write our programs 
+symbolically in LC-3 assembly language and invoke the LC-3 assembler to create the machine language versions that can execute on an 
+LC-3 computer.
+
+Beyond the Assembly of a Single Assembly Language Program
+
+Our purpose in this chapter has been to take you up one more step from the ISA of the computer and introduce assembly language. 
+Although it is still quite a large step from C or C++, assembly language does, in fact, save us a good deal of pain. We have also 
+shown how a rudimentary two-pass assembler actually works to translate an assembly language program into the machine language of the 
+LC-3 ISA.
+
+There are many more aspects to sophisticated assembly language program- ming that go well beyond an introductory course. However, 
+our reason for teaching assembly language is not to deal with its sophistication, but rather to show its innate simplicity. Before 
+we leave this chapter, however, there are a few additional highlights we should explore.
