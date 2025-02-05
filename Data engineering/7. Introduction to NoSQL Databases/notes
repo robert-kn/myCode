@@ -304,3 +304,250 @@ Database as a Service (DBaaS) provides a fully managed database solution where t
 Containerized deployment involves packaging the database and its dependencies into containers for consistent deployment across various environments, which can ensure consistent operations and resource efficiency—however, if containerization practices are not already in place, the company will need time for employees to gain knowledge of container orchestration tools and implement them.
 
 Serverless deployment provisions and scales database resources automatically based on demand, with organizations paying for actual usage, eliminating manual provisioning and maintenance of server resources, and leading to cost savings. However, companies usually have limited control over the underlying infrastructure, and serverless deployments might not be technically suitable for all databases or workloads.
+
+ACID versus BASE: see acid-base-1.png. The ACID acronym stands for atomic. All operations in a transaction succeed, or every operation is rolled back. Consistent. On the completion of a transaction, the structural integrity of the data in the database is not compromised. Isolated. Transactions cannot compromise the integrity of other transactions by interacting with them while they are still in progress. Durable. The data related to the completed transaction will persist, even in the case of network or power outages. If a transaction fails, it will not impact the already changed data. acid-base-2 acid-base-3. The BASE acronym stands for basically available. Rather than enforcing immediate consistency BASE modeled NoSQL databases will ensure the availability of data by spreading and replicating it across the nodes of the database cluster. Soft state. Due to the lack of immediate consistency, data values may change over time. In the BASE model, data stores don't have to be right consistent nor do different replicas have to be mutually consistent all the time. Eventually consistent. The fact that the BASE model does not enforce immediate consistency does not mean that it never achieves it. However, until it does, data reads might be inconsistent.
+
+Distributed databases: 
+
+A distributed database is a collection of multiple interconnected databases, which are spread physically across various locations that communicate via a computer network. A distributed database is physically distributed across the data sites by fragmenting and replicating the data. And a distributed database follows the base consistency model. see distributed-1.png distributed-2
+distributed-3 distributed-4 distributed-5
+
+MongoDB Design Patterns
+
+MongoDB design patterns help optimize data models based on application queries and usage. However, MongoDB design patterns improve application performance by reducing schema complexity. It helps identify data storage patterns and the type of data returned to the application.
+
+However, MongoDB design patterns are best practices for structuring data and queries to optimize performance, scalability, and maintainability. These patterns arise from common use cases and challenges encountered. Some prominent MongoDB design patterns include approximation, attribute, polymorphic, outliers, and bucket. Let's read about each of these MongoDB design patterns.
+
+Approximation
+
+Approximation MongoDB design pattern helps calculate frequent expenses, where the precision for those calculations is not a priority. For example, Instagram followers are for celebrities.
+
+The approximation design pattern is useful for fewer writes to the database and maintains statistically valid numbers. However, it cannot represent exact numbers
+
+Attribute
+
+The Attribute MongoDB design pattern helps document various characteristics and similar fields that you cannot identify when raising a query. This attribute is useful when the fields need to be sorted and found in a small subset of documents or when both conditions meet within the documents, such as when selling products on e-commerce.
+
+The attribute MongoDB design pattern is useful in less indexing and generating simple and faster queries.
+
+Polymorphic
+
+The polymorphic MongoDB design pattern helps store different documents in the same collection. However, it often uses a discriminator field to differentiate between types of documents, such as customer communication stored using various channels.
+
+This type of design pattern is easy to implement and runs queries across a single collection.
+
+Outlier
+
+The Outlier MongoDB design pattern is useful for queries or documents that don't fit into the typical data pattern, such as a list of a celebrity's social media followers (which could be in millions). This design pattern prevents documents or queries from determining an application's solution; however, it is tailored for typical use cases but doesn't address ad hoc queries.
+
+Bucket Pattern
+
+The bucket pattern in MongoDB design helps to manage streaming data such as time series, real-time analytics, or Internet of Things (IoT) applications. The bucket MongoDB design pattern reduces the number of documentation while collecting them, improves index performance, and simplifies data access by leveraging pre-aggregation.
+
+For example: Collecting weather data using multiple sensors. This data collection helps to reduce efforts to review temperature and wind speed every minute. However, you would receive a summary per hour, such as:
+
+Average temperature
+Average wind speed
+However, you can review the weather forecast in detail. For example, find the temperature per minute and calculate the median and variance. The benefit of the bucket design pattern is that it doesn't repeat device identifiers and entry data with every record. However, if this didn't happen, there would be 1440 records per device per hour, creating a large amount of data.
+
+Summary
+
+In this reading, you've learned that MongoDB design patterns optimize the data model to access the application's patterns. Such as:
+
+Approximation
+Attribute
+Polymorphic
+Outliers
+Bucket
+
+CAP theorem: see cap-1 cap-2 cap-3 cap-4 In a cluster with eight distributed nodes, a network partition could occur, and communication will be broken between all the nodes. In our case, instead of one 8-node cluster we will have two smaller 4-node clusters available. Consistency between the two clusters will be achieved when network communication is re-established. Partition tolerance has become more of a necessity than an option in distributed systems. It is made possible by sufficiently replicating records across combinations of nodes and networks. For such systems as NoSQL, since partition tolerance is mandatory, a system can be either Consistent and Partition Tolerant (CP) or Available and Partition Tolerant (AP). Existing NoSQL systems, like MongoDB or Cassandra, can be classified using CAP Theorem. For example, MongoDB chooses consistency as the primary design driver of the solution, and Apache Cassandra chooses availability. This doesn't mean that MongoDB cannot be available, or that Cassandra cannot become fully consistent. It means that these solutions first ensure that they are consistent (in the case of MongoDB) or available (in the case of Cassandra) and the rest is tunable. see cap-5
+
+challenges in migrating from RDBMS to NoSQL databases: see rdbms-to-nosql-1 rdbms-to-nosql-2 rdbms-to-nosql-3 In NoSQL models should be based on how the app interacts with the data rather than how the model can be stored as rows in one or more tables. Another factor to pay attention to is the fact that in RDBMS, data is normalized while in NoSQL it is denormalized. With NoSQL, starting from your query means that you will structure your data on disk accordingly. Thus, you may need to store the same data in different models just to answer the question, and this will lead to data denormalization. While data in RDBMS is normalized, you need to be open to the situation in which you start with your queries instead of your data. rdbms-to-nosql-4. When migrating from relational to NoSQL databases, you need to understand that sometimes services require availability more than consistency when both availability and performance are needed. Thus, distributed systems consistency cannot be ensured. Remember cap theorem, many of today's online services value availability more than consistency. And because of this they look for systems that can provide it, taking into consideration the amount of data they are dealing with and their geographical presence. One last thing to know when dealing with NoSQL databases, these are not designed to support transactions or joins or complex processing except in limited cases. You need to consider this when moving from RDBMS to NoSQL.
+
+Data Modeling in Relational and Document-based Databases
+
+After completing this reading, you will be able to:
+
+Compare modeling the same data in relational and document databases.
+Describe the complexities of querying data.
+Describe how data duplication affects data modeling
+Describe the considerations associated with evolving the schema.
+
+Introduction
+
+First, compare the information organization in a relational database to a NoSQL document database.
+
+A relational database organizes data into tables with predefined schemas and relationships among tables. In a relational model, you avoid duplicating any data so that the data is stored once and updated in one location. Wherever and whenever the data is needed, the data is referenced. That 's the relational aspect of the data.
+
+On the other hand, an excellent document-based design starts with using that data.
+
+Let's use the example of library books and data organization.
+
+Example: A library book catalog
+
+Library book catalogs store information about books and their authors.
+
+Using a relational database for a library books catalog
+If you work with library book data using a relational database, you will create the Books, Authors, Genres and BookGenres tables:
+
+see books.png authors.png genres.png book-genres.png
+
+Using a document database for a library books catalog
+
+In contrast, a document database is simplified and displayed as a single document with all the required information.
+
+{“_id”: 1,”title”: “The Great Gatsby”,”author”: “F. Scott Fitzgerald,””isbn”: “978-0743273565”,”published_year”: 1925,”genres”: [“Fiction”, “Classic”]}
+
+Next, compare the complexities of querying the data in relational and document databases.
+
+Complexities of querying data
+
+Let's examine the complexities of querying the same book data using a relational database compared to a NoSQL database.
+
+Querying book data using a relational database
+
+Now, query the data. You will need all the book details at once. You will structure your SQL query by performing a JOIN among those tables. Here's your SQL query example:
+
+SELECT Books.Title AS BookTitle, Authors.Name AS Author, GROUP_CONCAT(Genres.GenreName) AS Genres FROM Books JOIN Authors ON Books.AuthorID = Authors.AuthorID JOIN BookGenres ON Books.BookID = BookGenres.BookID JOIN Genres ON BookGenres.GenreID = Genres.GenreID GROUP BY Books.Title, Authors.Name;
+
+The number of joins, use of the GROUP_CONCAT function, and the GROUP BY function make this query complex. Here's how the query breaks down.
+
+The SELECT command obtains the book title, author name, and a concatenated list of genres for each book.
+The JOIN command joins the Books table with the Authors table on the AuthorID field to get the author’s name.
+The JOIN command joins the Books table with the BookGenres table on the BookID field to associate books with genres.
+The JOIN command joins the BookGenres table with the Genres table on the GenreID field to get genre names.
+The query uses the GROUP_CONCAT function (the exact function may vary depending on your SQL database system; GROUP_CONCAT is used in MySQL and STRING_AGG in PostgreSQL) to concatenate multiple genre names into a single string.
+The query uses GROUP BY to display the results by book title and author name.
+
+Here is an example output: example-output.png
+
+Querying book data using a NoSQL document database
+
+You already know the output you need and that the output is a first-order criterion in a document database. Remember that your book document looks like this:
+
+{“_id”: 1,”title”: “The Great Gatsby”,”author”: “F. Scott Fitzgerald,””isbn”: “978-0743273565”,”published_year”: 1925,”genres”: [“Fiction”, “Classic”]}
+
+When creating a document database query, using MongoDB, for example, you specify empty brackets as the first argument denoting you want to see all documents. The second argument, called projection, allows you to choose which fields to present to the client information. You won 't always need to show all of the fields all of the time. And you'll notice the simplicity of this query, as it didn 't need any joins with other collections.
+
+Here is your query:
+
+Db.books.find({}, { title:1, author: 1, genres: 1 })
+
+The data you need to fulfill the request is already in the document and does not require any joins with other collections.
+
+Important! What about data duplication?
+
+Data duplication is a common practice and is known as "denormalization." Data duplication can improve read performance by avoiding complex joins and queries. However, you will face challenges with data consistency and increased storage requirements.
+For example, imagine that the author, J.R.R. Tolkien, wants to be known by his full name, John Ronald Reuel Tolkien, and you need to make this change in a relational database and a document database. How would you implement this change in these two different types of databases?
+
+Relational database	
+This request requires only one change in the Authors table in a relational database.	
+
+Document database
+Since the author has written 12 books in a document database, you must update this information in 12 documents, which is a small price to pay, as this is a rare event.
+
+Next, explore the considerations associated with evolving a schema.
+
+Schema Evolution Considerations
+
+Changing the schema in a database can be necessary to accommodate evolving application requirements. However, a significant difference exists in how a relational and document database enables schema changes.
+
+In relational databases, changing the schema typically involves modifying existing tables, adding new tables, or altering relationships between tables. Here's an example:
+
+ALTER TABLE table_name ADD column_name data_type;
+
+After making schema changes, you might need to migrate existing data to match the new schema, which can involve data transformation and migration scripts.
+
+In document databases like MongoDB, the schema is typically more flexible, and you can often add or remove fields to documents (individual documents, as there is generally no collection-wide enforced schema) without a predefined structure. Here's an example:
+
+Db.books.update ({ _id: 1 },{$set: {Newfield: “Some value”}});
+
+Summary
+
+In this reading, you learned that:
+
+A relational database organizes data into tables with predefined schemas and relationships among tables.
+A good document-based design starts with the usage of data.
+The number of SELECT, JOIN, GROUP, and additional commands contribute to the complexity of building a relational database query.
+For document database queries, you won 't always need to show all of the fields all of the time, and you'll notice the simplicity of these queries, as the queries might not need joins with other collections.
+In relational databases, changing the schema typically involves modifying existing tables, adding new tables, or altering relationships between tables.
+In document databases, such as MongoDB, the schema is typically more flexible, and you can often add or remove fields to documents without a predefined structure.
+
+Vector Databases
+
+Vector databases, a newer NoSQL database, are rapidly becoming popular with the exponential increase in the use of Large Language Models (LLMs), such as OpenAI's GPT. But what is a vector database? Here's how IBM defines a vector database:
+
+A vector database is designed to store, manage, and index massive quantities of high-dimensional vector data efficiently.
+Source: https://www.ibm.com/topics/vector-database
+
+Vectors
+
+You can transform text, images, audio, and video into vectors, also known as vector data, using embedding functions based on various methods, including machine learning models, word embeddings, and feature extraction algorithms. see vectors-1.png
+
+For example, the vector representation of dog is [2.1,-0.3, 7.2, 9.6, 6.1]
+
+Similar words for dogs include the word canine or K9, so a vector database will identify both terms and include the same vector values. see vectors-2.png 
+
+Important! When words have relationships or similar contexts, but the meaning is not identical, these words have vectors that are closer together within the database that help identify the relationship.
+
+For example, you'll see the word animal represented as [1.9, -0.4, 7.2, 8.0, 6.3]
+
+Each numeric value you see displayed inside of a vector is one dimension. see vectors-3.png
+
+Vectors can have a few or thousands of dimensions, depending on the granularity and complexity of the classification required.
+
+Returning to the example of a dog classifications, we know a dog is an animal, but not all animals are dogs. The relevance and relationships between the words "dog" and "animal" mean that these words will be much closer together as vector values and within the database itself. The following illustration shows the one dimension, dimension 7.2, that the word dog and animal share.
+see vectors-4.png 
+
+Next, explore why companies are moving to vector databases.
+
+Vector Database benefits
+In contrast to conventional techniques that involve querying databases for exact matches or predefined criteria, a vector database empowers you to discover the most similar or related data by considering their semantic or contextual significance.
+
+In other words, unlike other database types that require an exact term search, you can use a vector database to conduct similarity searches and retrieve data according to their vector distance or likeness.
+
+For example, you can use a vector database to perform the following tasks:
+
+Recommend TV shows to watch based on your current viewing habits.
+Locate related products based on the first product's features and ratings when shopping online.
+Because related vector data exists mathematically closer to each other within the database, search and data delivery times are faster. So rather than having to perform additional analysis techniques to retrieve related data, the trained model and vector database delivers relevant search results faster.
+
+Popular Vector Databases
+
+Database offerings and their features are changing concurrently with the exponentially fast speed of AI development. Before selecting a vector database, you'll want to review its applicability to your data and LLM. Next, check out these currently popular vector databases:
+
+Chroma
+Chroma is an open source embedding database with which you can perform the following tasks:
+
+Store embeddings and their metadata
+Embed documents and queries
+Search embeddings
+
+
+Pinecone
+Pinecone provides long-term memory for high-performance AI applications. Pinecone emphasizes the following capabilities and features:
+
+Runs as a fully managed service
+Provides high scalability
+Provides real-time data ingestion
+Delivers low-latency search
+
+
+Weaviate
+Weaviate, an open-source vector database that stores data objects and vector embeddings from machine-learning models, is said to provide the following capabilities and features:
+
+Provides efficient similarity searches
+Scales to store and process billions of data objects
+Runs the GraphQL API
+Provides real-time updates
+
+Recap
+
+After completing this reading, you know that:
+
+Vector databases store, manage, and index massive quantities of high-dimensional vector data efficiently.
+You can transform text, images, audio, and video into vector data.
+Vector data consists of a series of numbers known as dimensions.
+Vector databases store Items with similar or "like" vector numbers closely together within the database
+Chroma, Pinecone, and Weaviate are three popular vector databases
+

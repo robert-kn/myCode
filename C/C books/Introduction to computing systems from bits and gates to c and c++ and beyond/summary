@@ -981,3 +981,56 @@ it contains data that must be loaded or stored
 
 28. how does the lc-3 assembler keep track of the location assigned to  each instruction? by meaans of the location counter. it is 
 initialised to the address specified in .ORIG
+
+29. when a computer begins execution of a program, what is the entity being executed called? executable image
+
+30. what is the executable image created from? from modules created independently by individual pogrammers where each module is 
+translated separately into an object file
+
+31. are all modules written by users? no, some are supplied as library routines by the operating system
+
+32. what does each object file consist of? instructions in the ISA of the computer being used along with its associated data
+
+33. what is normally the final step? combining (linking) all of the object modules together into one executable image
+
+34. what happens during the execution of the program? the fetch, decode... instruction cycle is applied to instructions in the executable
+image
+
+35. what does the pseudo-op .EXTERNAL do? identifies the symbolic name of an address that is not known at the time a program is 
+assembled. it sends a message to the LC-3 assembler that the absence of a symbolic label is not an error in the program i.e. the 
+symbolic name is a label in another module that will be translated independently. it allows references by one module to symbolic 
+references in another module without a problem
+
+chapter 8
+
+1. how many instructions does the call/return mechanism consist of? two instructions
+
+2. what is the first instruction? JSR(R) is in the caller program
+
+3. what does the JSR(R) instruction do? it loads the PC with the starting address of the subroutine and it loads R7 with the address
+immediately after the address of the JSR(R) instruction. the address immediately after the address of the JSR(R) instruction is
+the address to come back to after executing the subroutine
+
+4. what name is given to the address we come back to? return linkage
+
+5. what is the second instruction? JMP R7; which happens to be the laast instruction in the subroutine
+
+6. what does this instruction do? it loads the PC with the contents of R7, the address just after the address of the JSR instruction
+thereby completing the round trip flow of control from the caller to the callee and back
+
+7. the LC-3 specifies one control instruction for calling subroutines; what is it called? JSR
+
+8. how many addressing modes does the JSR control instruction have for computing the starting address of a subroutine? 2
+
+9. what are the addressing modes? PC-relative addressing and base register addressing
+
+10. what are the two things that the JSR(R) instruction does? loads the PC hence overwriting the incremented PC that was loaded 
+during the fetch phase of the JSR(R) instruction and then it saves the return address in R7
+
+11. what is the return address that is saved in R7? it is the incremented PC which is the address of the instruction following the
+JSR(R) instruction
+
+12. how many parts does the JSR(R) instruction consist of? 3 parts
+
+13. what are the 3 parts? bits 15:12 specify the opcode; bit 11 specifies what addressing mode will be used (1 for PC-relative); bits
+10:0 are used to obtain the starting address of the subroutine
