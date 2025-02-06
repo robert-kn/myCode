@@ -3885,3 +3885,6 @@ locations to save those register values.
 The caller knows what damage will be done by instructions under its con- trol. It knows that each instance of a JSR instruction will 
 destroy what is in R7. So, before the JSR instruction is executed, R7 is saved. After the caller program resumes execution (upon 
 completion of the subroutine), R7 is restored.
+
+Library Routines
+
