@@ -3888,3 +3888,25 @@ completion of the subroutine), R7 is restored.
 
 Library Routines
 
+We noted early in this section that there are many uses for the call/return mech-
+anism, among them the ability of a user program to call library subroutines that
+are usually delivered as part of the computer system. Libraries are provided as a
+convenience to the user programmer. They are legitimately advertised as pro-
+ductivity enhancers since they allow the application programmer to use them
+without having to know or learn much of their inner details. For example, it is
+often the case that a programmer knows what a square root is (we abbreviate
+SQRT), may need to use sqrt(x) for some value x, but does not have a clue as to
+how to write a program to perform sqrt, and probably would rather not have to
+learn how.
+
+A simple example illustrates the point: We have lost our key and need to get
+into our apartment. We can lean a ladder up against the wall so that the ladder
+touches the bottom of our open window, 24 feet above the ground. There is a
+10-foot ﬂower bed on the ground along the edge of the wall, so we need to keep
+the base of the ladder outside the ﬂower bed. How big a ladder do we need so
+that we can lean it against the wall and climb through the window? Or, stated less
+colorfully: If the sides of a right triangle are 24 feet and 10 feet, how big is the
+hypotenuse (see Figure 8.3)?
+
+
+
