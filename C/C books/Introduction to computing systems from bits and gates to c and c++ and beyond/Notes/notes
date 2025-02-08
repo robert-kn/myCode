@@ -3797,7 +3797,7 @@ the value 0 if the addressing mode is Base Register addressing. Bits [10:0] cont
 address of the subroutine. The only diﬀerence between JSR and JSRR is the addressing mode that is used for evaluating the starting 
 address of the subroutine.
 
-JSR The JSR instruction computes the target address of the subroutine by sign- extending the 11-bit oﬀset (bits [10:0]) of the 
+JSR: The JSR instruction computes the target address of the subroutine by sign-extending the 11-bit oﬀset (bits [10:0]) of the 
 instruction to 16 bits and adding that to the incremented PC. This addressing mode is almost identical to the addressing mode of 
 another control instruction, the BR instruction, except eleven bits of PCoﬀset are used, rather than nine bits as is the case for 
 BR.
@@ -3809,7 +3809,7 @@ x4201) and R7 to be loaded with x4201.
  0     1     0     0  | 1  |   1    0     0     0     0     0     0     0     1     0     0
          JSR            A                    PCoﬀset11
 
-JSRR The JSRR instruction is exactly like the JSR instruction except for the addressing mode. JSRR obtains the starting address of 
+JSRR: The JSRR instruction is exactly like the JSR instruction except for the addressing mode. JSRR obtains the starting address of 
 the subroutine in exactly the same way the JMP instruction does; that is, bits [8:6] identify the Base Register, that contains the 
 address to be loaded into the PC.
 
@@ -3882,31 +3882,178 @@ The callee knows which registers it needs to do the job of the called program. T
 with a sequence of stores. After it ﬁnishes, it restores those registers with a sequence of loads. And it sets aside memory 
 locations to save those register values.
 
-The caller knows what damage will be done by instructions under its con- trol. It knows that each instance of a JSR instruction will 
+The caller knows what damage will be done by instructions under its control. It knows that each instance of a JSR instruction will 
 destroy what is in R7. So, before the JSR instruction is executed, R7 is saved. After the caller program resumes execution (upon 
 completion of the subroutine), R7 is restored.
 
 Library Routines
 
-We noted early in this section that there are many uses for the call/return mech-
-anism, among them the ability of a user program to call library subroutines that
-are usually delivered as part of the computer system. Libraries are provided as a
-convenience to the user programmer. They are legitimately advertised as pro-
-ductivity enhancers since they allow the application programmer to use them
-without having to know or learn much of their inner details. For example, it is
-often the case that a programmer knows what a square root is (we abbreviate
-SQRT), may need to use sqrt(x) for some value x, but does not have a clue as to
-how to write a program to perform sqrt, and probably would rather not have to
-learn how.
+We noted early in this section that there are many uses for the call/return mechanism, among them the ability of a user program to 
+call library subroutines that are usually delivered as part of the computer system. Libraries are provided as a convenience to the 
+user programmer. They are legitimately advertised as productivity enhancers since they allow the application programmer to use them
+without having to know or learn much of their inner details. For example, it is often the case that a programmer knows what a square 
+root is (we abbreviate SQRT), may need to use sqrt(x) for some value x, but does not have a clue as to how to write a program to 
+perform sqrt, and probably would rather not have to learn how.
 
-A simple example illustrates the point: We have lost our key and need to get
-into our apartment. We can lean a ladder up against the wall so that the ladder
-touches the bottom of our open window, 24 feet above the ground. There is a
-10-foot ﬂower bed on the ground along the edge of the wall, so we need to keep
-the base of the ladder outside the ﬂower bed. How big a ladder do we need so
-that we can lean it against the wall and climb through the window? Or, stated less
-colorfully: If the sides of a right triangle are 24 feet and 10 feet, how big is the
-hypotenuse (see Figure 8.3)?
+A simple example illustrates the point: We have lost our key and need to get into our apartment. We can lean a ladder up against the 
+wall so that the ladder touches the bottom of our open window, 24 feet above the ground. There is a 10-foot ﬂower bed on the ground 
+along the edge of the wall, so we need to keep the base of the ladder outside the ﬂower bed. How big a ladder do we need so that we 
+can lean it against the wall and climb through the window? Or, stated less colorfully: If the sides of a right triangle are 24 feet 
+and 10 feet, how big is the hypotenuse (see Figure 8.3)?
 
+We remember from high school that Pythagoras answered that one for us:
 
+c^2 = a^2 + b^2
 
+Knowing a and b, we can easily solve for c by taking the square root of the sum of a^2 and b^2. Taking the sum is not hard—the LC-3 
+ADD instruction can do that job. The square is also not hard; we can multiply two numbers by a sequence of additions. But how does 
+one get the square root? The structure of our solution is shown in Figure 8.4.
+
+The subroutine SQRT has yet to be written. If it were not for the Math Library, the programmer would have to pick up a math book 
+(or get someone to do it for him/her), check out the Newton-Raphson method, and produce the missing subroutine.
+
+However, with the Math Library, the problem pretty much goes away. Since the Math Library supplies a number of subroutines 
+(including SQRT), the user programmer can continue to be ignorant of the likes of Newton-Raphson. The user still needs to know the 
+label of the target address of the library routine that performs the square root function, where to put the argument x, and where to 
+expect the result SQRT(x). But these are easy conventions that can be obtained from the documentation associated with the Math 
+Library.
+
+If the library routine starts at address SQRT, and the argument is provided in R0 to the library routine, and the result is obtained 
+in R0 from the library routine, Figure 8.4 reduces to Figure 8.5.
+Two things are worth noting:
+
+Thing 1 — The programmer no longer has to worry about how to compute the square root function. The library routine does that for us.
+
+Thing 2 — The pseudo-op .EXTERNAL. We already saw in Section 7.4.2 that this pseudo-op tells the assembler that the label (SQRT), 
+which is needed to assemble the .FILL pseudo-op in line 19, will be supplied by some other program fragment (i.e., module) and will 
+be combined with this program fragment (i.e., module) when the executable image is produced. The executable image is the binary 
+module that actually executes. The executable image is produced at link time.
+
+This notion of combining multiple modules at link time to produce an exe- cutable image is the normal case. Figure 8.6 illustrates 
+the process. You will see concrete examples of this when we work with the programming language C in the second half of this course.
+
+Most application software requires library routines from various libraries. It would be very ineﬃcient for the typical programmer to 
+produce all of them— assuming the typical programmer were able to produce such routines in the ﬁrst place. We have mentioned routines 
+from the Math Library. There are also a number of preprocessing routines for producing pretty graphic images. There are other routines 
+for a number of other tasks where it would make no sense at all to have the programmer write them from scratch. It is much easier to 
+require only (1) appropriate documentation so that the interface between the library routine and the program that calls that routine 
+is clear, and (2) the use of the proper pseudo-ops such as .EXTERNAL in the source program. The linker can then produce an executable 
+image at link time from the separately assembled modules.
+
+The Stack
+
+Now we are ready to study some data structures. The ﬁrst and most important data structure is the stack.
+
+The Stack—An Abstract Data Type
+
+Throughout your future interaction with computers (whether writing software or designing hardware), you will encounter again and 
+again the storage mechanism known as a stack. Stacks can be implemented in many diﬀerent ways, and we will get to that momentarily.
+But ﬁrst, it is important to know that the concept of a stack has nothing to do with how it is implemented. 
+
+The concept of a stack is the speciﬁcation of how it is to be accessed. That is, the deﬁning notion of a stack is that the last thing 
+you stored in the stack is the ﬁrst thing you remove from it. That is what makes a stack diﬀerent from everything else in the world. 
+Simply put: Last In, First Out, or LIFO.
+
+In the terminology of computer programming languages, we say the stack is an example of an abstract data type. That is, an abstract 
+data type is a storage mechanism that is deﬁned by the operations performed on it and not at all by the speciﬁc manner in which it 
+is implemented. In this section, you will see stacks implemented as sequential locations in memory.
+
+One Example Implementation
+
+A coin holder in the armrest next to the driver of an automobile is an example of a stack. The ﬁrst quarter you take to pay the 
+highway toll is the last quarter you added to the stack of quarters. As you add quarters, you push the earlier quarters down into 
+the coin holder.
+
+There are special terms for the insertion and removal of elements from a stack. We say we push an element onto the stack when we 
+insert it. We say we pop an element from the stack when we remove it.
+
+The coin holder (figure 8.7) is an example of a stack, precisely because it obeys the LIFO requirement. Each time you insert a 
+quarter, you do so at the top. Each time you remove a quarter, you do so from the top. The last coin you inserted is the ﬁrst coin 
+you remove. Therefore, it is a stack.
+
+Implementation in Memory
+
+By far the most common implementation of a stack in a computer is as shown in Figure 8.9. This stack consists of a sequence of 
+memory locations along with a mechanism, called the stack pointer, which keeps track of the top of the stack. We use R6 to contain 
+the address of the top of the stack. That is, in the LC-3, R6 is the stack pointer.
+
+In Figure 8.9, ﬁve memory locations (x3FFF to x3FFB) are provided for the stack. The actual locations comprising the stack at any 
+single instant of time are the consecutive locations from x3FFF to the location speciﬁed in R6, that is, the top of the stack. For 
+example, in Figure 8.9c, the stack consists of the contents of locations x3FFF, x3FFE, x3FFD, and x3FFC.
+
+Figure 8.9a shows an initially empty stack. Since there are no values on the stack, the stack pointer contains the address x4000, 
+the address of the memory location just after the memory locations reserved for the stack. Why this makes sense will be clear after 
+we show the actual code for pushing values onto and popping values off of the stack. Figure 8.9b shows the stack after pushing the 
+value 18. Note that the stack pointer contains the address x3FFF, which is the new top of the stack.
+
+Figure 8.9c shows the stack after pushing the values 31, 5, and 12, in that order. Note that the values inserted into the stack are 
+stored in memory locations having decreasing addresses. We say the stack grows toward zero. Finally, Figure 8.9d shows the stack 
+after popping the top two elements oﬀ the stack.
+
+Note that those two elements (the values 5 and 12) that were popped are still present in memory locations x3FFD and x3FFC. However, 
+as we will see momentarily, those values 5 and 12 cannot be accessed from memory, as long as every access to memory is controlled by 
+the stack mechanism.
+
+Note also that, unlike the coin holder and computer hardware stack implementations discussed in the previous section, when values 
+are pushed and popped to and from a stack implemented in sequential memory locations, the data already stored on the stack does not 
+physically move.
+
+Push: We push a value onto the stack by executing the two-instruction sequence
+PUSH     ADD      R6,R6,#-1
+         STR      R0,R6,#0
+
+In Figure 8.9a, R6 contains x4000, indicating that the stack is empty. To push the value 18 onto the stack, we decrement R6, the 
+stack pointer, so the address in R6 (i.e., address x3FFF) corresponds to the location where we want to store the value we are pushing 
+onto the stack. The actual push is done by ﬁrst loading 18 into R0, and then executing STR R0,R6,#0. This stores the contents of R0 
+into memory location x3FFF.
+
+That is, to push a value onto the stack, we ﬁrst load that value into R0. Then we decrement R6, which contained the previous top of 
+the stack. Then we execute STR R0,R6,#0, which stores the contents of R0 into the memory location whose address is in R6.
+
+The three values 31, 5, and 12 are pushed onto the stack by loading each in turn into R0 and then executing the two-instruction 
+sequence. In Figure 8.9c, R6 (the stack pointer) contains x3FFC, indicating that the top of the stack is location x3FFC and that 12 
+was the last value pushed.
+
+Pop    To pop a value from the stack, the value is read and the stack pointer is incremented. The following two-instruction sequence
+
+POP   LDR R0,R6,#0
+      ADD R6,R6,#1
+
+pops the value contained in the top of the stack and loads it into R0. The stack pointer (R6) is incremented to indicate that the 
+old value at the top of the stack has been popped and is no longer on the stack, and we have a new value at the top of the stack.
+
+If the stack were as shown in Figure 8.9c and we executed the sequence twice, we would pop two values from the stack. In this case, 
+we would ﬁrst remove the 12, and then the 5. Assuming the purpose of popping two values is to use those two values, we would, of 
+course, have to move the 12 from R0 to some other location before calling POP a second time.
+
+Note that after 12 and 5 are popped, R6 contains x3FFE, indicating that 12 and 5 are no longer on the stack and that the top of the 
+stack is 31. Figure 8.9d shows the stack after that sequence of operations.
+
+Note that the values 12 and 5 are still stored in memory locations x3FFD and x3FFC, respectively. However, since the stack requires 
+that we push by executing the PUSH sequence and pop by executing the POP sequence, we cannot read the values 12 and 5 if we obey the 
+rules. The fancy name for “the rules” is the stack protocol.
+
+Underﬂow What happens if we now attempt to pop three values from the stack? Since only two values remain on the stack, we would have 
+a problem. Attempting to pop items that have not been previously pushed results in an underﬂow situation. In our example, we can 
+test for underﬂow by comparing the stack pointer with x4000, which would be the contents of R6 if there were nothing left on the 
+stack to pop. If UNDERFLOW is the label of a routine that handles the underﬂow condition, our resulting POP sequence would be
+
+POP
+LD
+ADD
+BRz
+R1,EMPTY
+R2,R6,R1
+UNDERFLOW
+;  Compare  stack
+; pointer with x4000.
+;
+;
+LDR
+ADD
+RET
+R0,R6,#0
+R6,R6,#1
+EMPTY         .FILL
+xC000
+;  EMPTY  <--  negative  of  x4000

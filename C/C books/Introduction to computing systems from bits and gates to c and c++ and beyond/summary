@@ -1020,7 +1020,7 @@ thereby completing the round trip flow of control from the caller to the callee 
 
 7. the LC-3 specifies one control instruction for calling subroutines; what is it called? JSR
 
-8. how many addressing modes does the JSR control instruction have for computing the starting address of a subroutine? 2
+8. how many addressing modes does the JSR(R) control instruction have for computing the starting address of a subroutine? 2
 
 9. what are the addressing modes? PC-relative addressing and base register addressing
 
@@ -1033,4 +1033,60 @@ JSR(R) instruction
 12. how many parts does the JSR(R) instruction consist of? 3 parts
 
 13. what are the 3 parts? bits 15:12 specify the opcode; bit 11 specifies what addressing mode will be used (1 for PC-relative); bits
-10:0 are used to obtain the starting address of the subroutine
+10:0 are the address evaluation bits
+
+14. how does the JSR instruction compute the target address of a subroutine? by sign-extending the 11 bit offset (bits 10:0) of the
+instruction to 16 bits and adding it to the incremented PC
+
+15. What other control instruction shares a addressing mode? the BR instruction except in this instruction 9 bits are sign extended 
+instead of 11 bits
+
+16. how does the JSRR instruction differ from the JSR instruction? the addressing mode used;  it obtains the starting address of A
+subroutine in exactly the same way that the JMP instruction  does i.e. bits 8:6 identify the base register that contains the address 
+to be loaded into the PC
+
+17. what problems do  subroutines pose when it comes to registers? they overwrite the contents of a register and therefore if the 
+contents that were overwritten are needed by the caller program then you have a major problem at hand
+
+18. how is the above problem aavoided? by having either the subroutine save the contents of the registers it will overwrite and restore
+them before it finishes executing or have the caller program save the contents of the registers it is using before it invokes a 
+subroutine and restore the contents when the subroutine has finished executing
+
+19. of the two options, which is more efficient? having the callee program (the subroutine) save the contents of the registers is
+more efficient because it knows which registers it will overwrite. The caller program has no way of knowing this in advance
+
+20. what is the technique called? callee save
+
+21. is the caller program or the callee program responsible for saving and restoring the contents of R7? the caller is responsible 
+since it alone is capable of overwriting the value in R7 after the subroutine returns
+
+22. what do we call the above process? caller save
+
+23. what are some of the uses of the call/return mechanism expanded on above? ability of a user program to call library routines
+that are part of the OS
+
+24. can the stack (abstract data type), be implemented in many different ways? yes
+
+25. what makes stack special? LIFO i.e. specification of how it is to be accessed that is the last thing that you stored in a stack 
+is the first thing that you remove from it
+
+26. what is the definition of an abstract data type? a storage mechanism that is defined by the operations performed on it and not
+by the specific manner in which it is implemented
+
+27. how is a stack implemented in computer memory? consists of a sequence of memory locations along with a mechanism called a stack
+pointer which keeps track of the top of the stack
+
+28. how are values inserted into the stack stored? they are stored in memory locations having decreasing addresses i.e. the stack 
+grows towards zero.
+
+30. when values are pushed and popped to and from the stack implemented in sequential memory locations, does the data already stored
+on the stack physically move? no
+
+31. in the LC-3, what is process of pushing a value onto a stack? first load the value into R0, then decrement the value in R6 
+(which contains the memory address of the stack pointer) 
+
+32. in the LC-3, what is the process of popping a value from the stack? the value is read and the staack pointer is incremented
+
+33. what is the fancy name given to the rules that the stack follows? stack protocol
+
+34. what does attempting to pop items that have not been previously pushed result in? underflow
