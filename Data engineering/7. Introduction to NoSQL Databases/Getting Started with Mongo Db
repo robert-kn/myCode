@@ -1,0 +1,25 @@
+After completing this lab you will be able to:
+
+Access the MongoDB server using the command-line interface
+Describe the process of listing and creating collections, which contain documents, and databases, which contain one or more collections
+Perform basic operations on a collection such as inserting, counting and listing 
+
+Assumes you have connected to a mongodb server via the mongo client
+
+Find the version of the server: db.version()
+
+List databases: show dbs
+
+Create database: use training
+
+Create collection: db.createCollection("mycollection")
+
+List collections: show collections
+
+Insert documents into a collection: db.mycollection.insert({"color":"white","example":"milk"}) and db.mycollection.insert({"color":"blue","example":"sky"})
+
+Count the number of documents in a collection: db.mycollection.countDocuments()
+
+List all documents in a collection: db.mycollection.find()
+
+Disconnect from mongodb server: exit

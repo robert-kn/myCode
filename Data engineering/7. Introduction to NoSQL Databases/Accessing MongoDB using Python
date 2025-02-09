@@ -1,0 +1,167 @@
+After completing this lab you will be able to:
+
+Access the MongoDB database from Python with the pymongo driver
+Perform basic operations such as selecting, inserting and listing using Python
+Create a Python program to run the MongoDB operations
+
+Install the pymongo driver
+
+We need the pymongo driver to be installed in order to access the mongodb database from Python.
+
+Run the below command on the terminal.
+
+python3 -m pip install pymongo
+
+Start the server
+
+Connect to mongodb server using Python
+
+Copy and paste the below code into a newly opened file mongo_connect.py.
+
+from pymongo import MongoClient
+user = 'root'
+password = 'MjQwOTgtcnNhbm5h' # CHANGE THIS TO THE PASSWORD YOU NOTED IN THE EARLIER EXCERCISE - 2
+host='mongo'
+#create the connection url
+connecturl = "mongodb://{}:{}@{}:27017/?authSource=admin".format(user,password,host)
+
+# connect to mongodb server
+print("Connecting to mongodb server")
+connection = MongoClient(connecturl)
+
+# get database list
+print("Getting list of databases")
+dbs = connection.list_database_names()
+
+# print the database names
+
+for db in dbs:
+    print(db)
+print("Closing the connection to the mongodb server")
+
+# close the server connecton
+connection.close()
+
+Copy and paste the below code on the terminal to execute this file.
+
+python3 mongo_connect.py
+
+Working with documents
+
+In this exercise we will make the Python program do the following tasks:
+
+connect to the mongodb server.
+select a database named training.
+select a collection named python.
+insert a sample document.
+query all the documents in the training database and python collection.
+close the connection to the server.
+Open a new file named mongo_query.py.
+
+Copy and paste the below code into mongo_query.py.
+
+from pymongo import MongoClient
+user = 'root'
+password = 'MjQwOTgtcnNhbm5h' # CHANGE THIS TO THE PASSWORD YOU NOTED IN THE EARLIER EXCERCISE - 2
+host='mongo'
+#create the connection url
+connecturl = "mongodb://{}:{}@{}:27017/?authSource=admin".format(user,password,host)
+
+# connect to mongodb server
+print("Connecting to mongodb server")
+connection = MongoClient(connecturl)
+
+# select the 'training' database 
+
+db = connection.training
+
+# select the 'python' collection 
+
+collection = db.python
+
+# create a sample document
+
+doc = {"lab":"Accessing mongodb using python", "Subject":"No SQL Databases"}
+
+# insert a sample document
+
+print("Inserting a document into collection.")
+db.collection.insert_one(doc)
+
+# query for all documents in 'training' database and 'python' collection
+
+docs = db.collection.find()
+
+print("Printing the documents in the collection.")
+
+for document in docs:
+    print(document)
+
+# close the server connecton
+print("Closing the connection.")
+connection.close()
+
+Run the file using the below command.
+
+python3 mongo_query.py
+
+Practice exercise
+Write a Python program that can:
+
+connect to the mongodb server.
+select a database named training.
+select a collection named mongodb_glossary.
+insert the following documents into the collection mongodb_glossary.
+{“database”:”a database contains collections”}
+
+{“collection”:”a collection stores the documents”}
+
+{“document”:”a document contains the data in the form of key value pairs.”}
+
+query and print all the documents in the training database and mongodb_glossary collection.
+close the connection to the server.
+
+from pymongo import MongoClient
+user = 'root'
+password = 'MjQwOTgtcnNhbm5h' # CHANGE THIS TO THE PASSWORD YOU NOTED IN THE EARLIER EXCERCISE - 2
+host='mongo'
+#create the connection url
+connecturl = "mongodb://{}:{}@{}:27017/?authSource=admin".format(user,password,host)
+
+# connect to mongodb server
+print("Connecting to mongodb server")
+connection = MongoClient(connecturl)
+
+# select the 'training' database 
+
+db = connection.training
+
+# select the 'python' collection 
+
+collection = db.mongodb_glossary
+
+# create documents
+
+doc1 = {"database":"a database contains collections"}
+doc2 = {"collection":"a collection stores the documents"}
+doc3 = {"document":"a document contains the data in the form or key value pairs."}
+
+# insert documents
+print("Inserting documents into collection.")
+
+db.collection.insert_one(doc1)
+db.collection.insert_one(doc2)
+db.collection.insert_one(doc3)
+
+# query for all documents in 'training' database and 'python' collection
+
+docs = db.collection.find()
+
+print("Printing the documents in the collection.")
+
+for document in docs:
+    print(document)
+
+# close the server connecton
+print("Closing the connection.")
+connection.close()

@@ -551,3 +551,93 @@ Vector data consists of a series of numbers known as dimensions.
 Vector databases store Items with similar or "like" vector numbers closely together within the database
 Chroma, Pinecone, and Weaviate are three popular vector databases
 
+mongodb: see mongpdb-1 mongodb-2 mongodb-3 mongodb-4 mongodb-5 mongodb-6 mongodb-7 mongodb-8 mongodb-9 
+
+advantages of using mongodb: mongodb-10 mongodb-11 mongodb-12 mongodb-13 mongodb-14 mongodb-15 mongodb-16
+
+use cases for mongo-db: mongodb-17 mongodb-18 mongodb-19 mongodb-20 mongodb-21 mongodb-22
+
+see Getting Started with MongoDB
+
+Glossary: Basics of MongoDB
+
+Aggregation pipeline: The aggregation pipeline in MongoDB allows for data transformation and processing using a series of stages, including filtering, grouping, sorting, and projecting. The aggregation pipeline is a powerful tool for expressive data manipulation.
+
+Code-first: Code-first refers to a development approach where developers create the application code first and let the code define the database schema. In MongoDB, this means that the schema is flexible and adapts to evolving application needs.
+
+Collection: In MongoDB, a collection is a group of MongoDB documents. Collections are analogous to tables in a relational database and store related data documents in a schema-free, JSON-like format.
+
+Expressive querying: Expressive querying refers to the ability to write complex and flexible queries that address data retrieval and manipulation needs, often facilitated by MongoDB's query language and aggregation framework.
+
+High availability (HA): High availability (HA) in MongoDB refers to the ability of the database system to maintain near-continuous operation and data accessibility, even in the face of hardware failures or other issues. High availability is often achieved through features like replication and failover.
+
+JSON: JSON is an acronym for JavaScript Object Notation, a lightweight data-interchange format used in NoSQL databases and other data systems. JSON is human-readable and easy for machines to parse.
+
+MQL: MongoDB Query Language is a query language specific to MongoDB used to retrieve and manipulate data in the database.
+
+Operational data: Operational data in MongoDB refers to the data that the application actively uses and manipulates, as opposed to historical or archived data.
+
+Unstructured data: Unstructured data in MongoDB is data that does not adhere to a fixed schema. MongoDB allows for flexible and unstructured data storage, making MongoDB suitable for semi-structured or rapidly changing data.
+
+CRUD operations: the mongo shell is an interactive JavaScript interface and you can use it to perform data and administrative operations on MongoDB. mongodb-23 mongodb-24 mongodb-25. Mongo shell is a JavaScript interpreter, meaning you can define variables and perform other functions in it too. mongodb-26 mongodb-27 (This will return the first document in natural order, which is the order in which the database refers to documents on disk.) mongodb-28 (In this second read operation, we want to find the first student with a specific email address.) mongodb-29 (retrieve all students with the last name of Doe.) mongodb-30 (count how many students have the last name Doe) mongodb-31 mongodb-32 (a changes document which in our case only has two assignments which come under $set, then we would call the updateOne function. To update all of the students to online only due to lockdown, we can run updateMany function without any filter criteria and a change document.) mongodb-33
+
+see MongoDB CRUD
+
+indexes: mongodb-34 mongodb-35 mongodb-36 In the Campus Management Database, for the course enrollment collection, we find students using ‘courseId’. Instead of scanning the whole collection, we create an index on the field ‘courseId’ in the course enrollment collection. ‘courseId : 1’ means store the index in ascending order. Our index on ‘courseId’ will help find those documents more efficiently. But to organize the students by ‘studentId’ in ascending order, MongoDB will need to perform in-memory sort, which will not be efficient. In this situation, we can change our index to be a compound index, which means indexing more than one field. Because the items in the index are organized in ascending order, once we find all documents with a matching ‘courseId’ of ‘1547’, they will all be already sorted by ‘studentId’ because of this index. mongodb-37. MongoDB stores indexes in a tree form: a balanced tree to be precise. Imagine our last example: ‘courseId,’ being the first field in our compound index, is in ascending order. Under each tree node, you will have students in ascending order too. This makes finding documents much more efficient, whether it’s an equality or a range search. And if you are sorting on a field which is already indexed, MongoDB doesn’t need to sort it again. mongodb-38
+
+see MongoDb indexing
+
+aggregation framework: also sometimes referred to as an aggregation pipeline, is a series of operations that you apply on your data to obtain a sought after outcome. For example, to understand whether students are really developing their knowledge, you want to see the average student scores in 2020 organized by courseid. To obtain this information, you will need to filter the 2020 documents, then group those documents by course, then calculate the average score i.e. see agg-framework-1 agg-framework-2 agg-framework-3 
+agg-framework-4 agg-framework-5 agg-framework-6 agg-framework-7 agg-framework-8 agg-framework-9 agg-framework-10
+
+see MongoDB Aggregation
+
+replication:  A typical MongoDB cluster is made of three data-bearing nodes. All three nodes have the same data, hence the name Replica Set. Data is written to the primary node which then gets replicated to the secondary nodes see mongodb-replication-1. Having multiple copies of the data means that replication creates redundancy. So if one piece of server hardware fails, you still have multiple copies of the data. This capability provides you with a highly available database during such failures or plan maintenance periods. Such planned maintenance should be done in a rolling fashion, taking one node out for operating system, security, hardware, or software updates, or for upgrading MongoDB itself. A common misconception about replication is that replication can save you from disasters, such as accidentally deleting your database. Because the database is a replica set, what happens on the primary node is replicated on the secondary nodes. For disaster recovery scenarios, you'll rely on backups and restoration processes mongodb-replication-2.
+
+Here's an overview of the MongoDB replication process. The application writes changes to the primary node. The primary node records those changes including timestamps in its operations log known as the Oplog. All of the other data-bearing nodes, the secondary nodes, observe the primary node Oplog for new changes. The secondary nodes copy and apply the new changes by first recording those changes in their respective Oplogs with the time stamp that indicates when they receive the change and reference the primary Oplog timestamps to record only the most recent changes mongodb-replication-3.
+
+see mongodb-replication-4 mongodb-replication-5 
+
+sharding: After using MongoDB for some time, you will probably outgrow your hardware. For example, if you need to store even more data or you want to improve your read and write performance, naturally, you will invest in bigger and faster hardware to increase capacity, but sometimes that is not feasible. In those situations, you can scale horizontally by implementing sharding, which is the partitioning of your biggest collections mongodb-sharding-1. Sharding your biggest or most demanding collections has many benefits. When partitioning your data across shards, you increase your throughput by directing your queries only to relevant shards. You can also store more data which previously you couldn't fit on a single node. You can also split data across shards based on regions. Data for US customers will only live on shards running in the US, while European customers have their data on European base shards. As a global application, you get one view of your database to manage mongodb-sharding-2. The primary node is the only node that can accept write operations including inserts, updates, and deletes from client applications mongodb-sharding-3. An election is the process of selecting a new primary node. As MongoDB is a highly available system, MongoDB can automatically elect one of the secondary nodes as the new primary node. The election of a new primary node happens when; the current primary node becomes unavailable, a new replica set is initialized and needs to choose its initial primary node, or when a database administrator initiates a manual failover for maintenance or upgrades mongodb-sharding-4. MongoDB's voting system ensures only one member becomes a primary, so to speak, there is no split brain. Database replica members who are eligible and have the most recent data and minimal replication lag are eligible to become the primary node. The choice of which node becomes the primary node is based on which node member receives the most votes.
+
+accessing mongodb from python: see mongodb-python-1 The MongoClient is a class that helps you interact with MongoDB. First, we import MongoClient from pymongo, which is an official MongoDB driver for Python. The ‘uri’ tells us the address where MongoDB is. Then we create MongoClient, which we should only do once in our code. The next part gets the object pointing to the campus management database, And finally, from the campus management database object, we point to the ‘students’ collection. mongodb-python-2 Let’s create a student document. For this, we call the ‘insert_one’ function, which takes the document we are trying to insert as its input. mongodb-python-3 mongodb-python-4 mongodb-python-5 When we do a ‘find’ on a collection in MongoDB, we get a cursor back. This cursor points to our documents in MongoDB. If you have run this using mongo shell, the shell retrieves those documents for you behind the scenes. To retrieve documents from our cursor, we call python ‘dumps’, which will exhaust our cursor to retrieve all the documents. mongodb-python-6 mongodb-python-7 In the Replace example, we were sending the whole document back with the new changes. For larger documents, this will take a lot of transfer time between the client and the database. We can use MongoDB’s in-place updates for small changes. We do this by constructing a change document, which in our case only has two assignments, which come under ‘$set’, And with this in-place update, we don’t even need to retrieve the student document. To update all of the students to online only due to lockdown, we can run the ‘update_many’ function without any filter criteria, and change all documents. mongodb-python-8
+
+see Accessing MongoDB using Python
+
+Best Practices of MongoDB
+
+In this reading, you'll learn about the definition of MongoDB and describe the best practices for MongoDB.
+
+What is MongoDB?
+MongoDB is an open source document-oriented database designed to store large data sets for industries. It enables efficient work with data and falls under not only structured query language (NoSQL) database because data storage and retrieval do not form tables.
+
+MongoDB. Inc., under a server-side public license (SSPL), manages and develops the MongoDB database. It provides driver support for various programming languages, such as C, C++, C #, .Net, Go, Java, Node.js, Perl, PHP, Python, Motor, Ruby, Scala, Swift, and Mongoid.
+
+Best practices: MongoDB
+MongoDB offers flexibility and scalability to harness its full potential. Let's understand the best practices for optimizing performance and designing efficient schemas in MongoDB.
+
+Data Modelling
+MongoDB offers a flexible document-based model for representing complex, hierarchical data structures. Therefore, it is important to thoroughly understand the application's data requirements to design a MongoDB schema. However, various factors such as data relationships, read patterns, and scalability are also important.
+
+Indexing
+Indexing the fields that are frequently queried or used for sorting helps to improve query execution times. However, ensuring that the queries support appropriate indexes and avoid creating extra indexes is vital. This helps to impact the right performance and save storage space. Also, keep in mind that indexing is a continuous process; however, queries need to be monitored and updated based on the business requirements.
+
+Aggregation framework
+The MongoDB aggregation framework provides powerful tools for performing data transformations, analytics, and computations within the database. Instead of fetching large datasets and processing them in application code, the aggregation pipeline can be used to perform complex operations directly within MongoDB. However, you should familiarize yourself with aggregation operators and stages, such as $match, $group, $project, and $lookup, to manipulate and aggregate data efficiently.
+
+Scaling horizontally
+Scaling horizontally is one of the key points of MongoDB. Sharding helps distribute data across servers or shards to handle large volumes of data and high throughput workloads. However, consider the scalability requirements and plans for early sharding when designing MongoDB deployment. Further, select an appropriate shard key to distribute data equally across the shards by regularly monitoring their distribution and performance based on application growth.
+Preventing unauthorized access
+
+Databases often contain valuable and sensitive information, such as personal data, financial records, intellectual property, and proprietary business information. To achieve this, follow security best practices such as enabling authentication, using role-based access control (RBAC) to define user permissions, and configuring network encryption with transport layer security/secure sockets layer (TLS/SSL). Regularly update MongoDB to the latest version to patch security vulnerabilities and maintain a robust security posture.
+
+Summary
+In this reading, you've learned about what MongoDB is. MongoDB is an open source document-oriented database designed to store large data sets for industries. It supports various programming languages such as C, C++, C#, .Net, Go, Java, Node.js, Perl, PHP, Python, Motor, Ruby, Scala, Swift, and Mongoid.
+
+To use the full potential of MongoDB, one should follow several best practices, such as:
+
+Data Modelling
+Indexing
+Aggregation framework
+Scaling horizontally
+Preventing unauthorized access

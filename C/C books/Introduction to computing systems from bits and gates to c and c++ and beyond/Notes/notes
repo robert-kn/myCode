@@ -4038,22 +4038,12 @@ a problem. Attempting to pop items that have not been previously pushed results 
 test for underﬂow by comparing the stack pointer with x4000, which would be the contents of R6 if there were nothing left on the 
 stack to pop. If UNDERFLOW is the label of a routine that handles the underﬂow condition, our resulting POP sequence would be
 
-POP
-LD
-ADD
-BRz
-R1,EMPTY
-R2,R6,R1
-UNDERFLOW
-;  Compare  stack
-; pointer with x4000.
+POP      LD     R1,EMPTY
+         ADD    R2,R6,R1     ;  Compare  stack
+         BRz    UNDERFLOW    ; pointer with x4000.
 ;
+         LDR    R0,R6,#0
+         ADD    R6,R6,#1
 ;
-LDR
-ADD
-RET
-R0,R6,#0
-R6,R6,#1
-EMPTY         .FILL
-xC000
-;  EMPTY  <--  negative  of  x4000
+         RET
+EMPTY    .FILL  xC000         ;  EMPTY  <--  negative  of  x4000

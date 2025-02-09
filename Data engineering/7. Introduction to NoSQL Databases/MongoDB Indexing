@@ -1,0 +1,75 @@
+Objectives
+
+After completing this lab you will be able to:
+
+Measure the time it takes to execute a query with the explain function
+Describe the process of creating, listing and deleting indexes
+Evaluate the effectiveness of an index
+
+Prerequisites
+Before starting this lab, it’ll be helpful to have knowledge about accessing and performing basic operations with MongoDB.
+
+create training database: use training 
+
+create a collection named big data: db.createCollection("bigdata")
+
+Insert documents
+
+Let us insert a lot of documents into the newly created collection.
+This should take around 3 minutes, so please be patient.
+The code given below will insert 200000 documents into the ‘bigdata’ collection.
+Each document would have a field named account_no which is a simple auto increment number.
+And a field named balance which is a randomly generated number, to simulate the bank balance for the account.
+
+use training
+for (i=1;i<=200000;i++){print(i);db.bigdata.insert({"account_no":i,"balance":Math.round(Math.random()*1000000)})}
+
+Verify that 200000 documents got inserted by running the below command:
+
+db.bigdata.countDocuments()
+
+Measure the time taken by a query
+
+Let us run a query and find out how much time it takes to complete.
+
+Let us query for the details of account number 58982.
+
+We will make use of the explain function to find the time taken to run the query in milliseconds.
+
+Run the below command.
+
+db.bigdata.find({"account_no":58982}).explain("executionStats").executionStats.executionTimeMillis
+
+Make a note of the milliseconds it took to run the query. We will need this at a later stage.
+
+Working with indexes
+
+Before you create an index, choose the field you wish to create an index on. It is usually the field that you query most.
+
+Run the below command to create an index on the field account_no.
+
+db.bigdata.createIndex({"account_no":1})
+
+Run the below command to get a list of indexes on the ‘bigdata’ collection.
+
+db.bigdata.getIndexes()
+
+You should see an index named account_no_1
+
+Find out how effective an index is
+
+Let us run a query and find out how much time it takes to complete, using an index.
+
+Let us query for the details of account number 69271.
+
+Run the below command.
+
+db.bigdata.find({"account_no": 69271}).explain("executionStats").executionStats.executionTimeMillis
+
+Make a note of the milliseconds it took to run the query. Compare this with the time you recored during Exercise-3. This should be a lot less than that.
+
+Delete an index
+
+Use the below command to delete the index we created earlier.
+
+db.bigdata.dropIndex({"account_no":1})
