@@ -141,7 +141,9 @@ it runs on, and hardware people ignoring the software that will run on it? abstr
 23. why is being clueless about the underlying layers not advisable? because you will not be able to take advantage of the nuances of 
 underlying layers when it is important to be able to do so
 
-24. what do the authors suggest about the your study and practice of computing? 
+24. what do the authors suggest about the your study and practice of computing? that hardware and software are names for components of
+two parts of a computing system that work best when they are designed by people who take into account the capabilities and limitations
+of both
 
 12. definition of a computer? system consisting of software that directs and specifies the processing of information and the hardware that 
 performs the actual processing of information in response to what the software specifies
