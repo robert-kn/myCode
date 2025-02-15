@@ -1,23 +1,29 @@
-what does the value we derive from data depend on? see value.png
+What is the core purpose of data engineering? see value.png (Working with accurate data to make to make it accessible when it is needed.)
 
 what topics does a data engineer need to be familiar with? see familiar-concepts.png
 
-what does a modern data ecosystem consist of? see constituent-parts.png type-of-data.png first-step1.png first-step2.png 
-challenges1.png 
+what does a modern data ecosystem consist of? see constituent-parts.png 
 
-the next steps? see next-steps.png
+what are the different types of data? type-of-data.png 
 
-challenges that need to be met when storing data in enterprise data repositories (EDR)? see challenges2.png
+what are the initial steps? first-step1.png first-step2.png 
+
+what are the challenges faced when taking the initial steps? challenges1.png 
+
+what are the next steps after the data has been acquired? see next-steps.png
+
+challenges that need to be met when storing data in enterprise data repositories (EDR) for data engineers? see challenges2.png
 
 challenges faced when determining how to get data to end users from EDR? see challenges3.png
 
-business stakeholders may need dashboards, data analysts may need access to the raw data, applications may need custom api's to pull the data
+business stakeholders may need dashboards, data analysts may need access to the raw data, applications may need custom apis to pull the data
 
 what are the emerging technologies that are shaping the modern data ecosystem? see emerging-tech.png
 
 thanks to cloud technologies every enterprise has access to what? see cloud-tech.png
 
-what do data engineers do? see data-engineer-role1.png data-engineer-role2.png data-engineer-role3.png
+what do data engineers do? see data-engineer-role1.png data-engineer-role2.png data-engineer-role3.png. They develop and maintain data 
+architectures and make data available for business operations and analysis. 
 
 what does a data analyst do? data-analyst-role1.png data-analyst-role2.png data-analyst-role3.png
 
@@ -32,16 +38,19 @@ data-engineering-concern3.png data-engineering-concern4.png data-engineering-con
 data-engineering-concern6.png data-engineering-concern7.png data-engineering-concern8.png 
 data-engineering-concern9.png 
 
-responsibilities of a data engineer? responsibilities-data-engineer1.png responsibilities-data-engineer2.png responsibilities-data-engineer3.png
+responsibilities of a data engineer? responsibilities-data-engineer1.png responsibilities-data-engineer2.png 
+responsibilities-data-engineer3.png
 
 what knowledge do data engineers need to have? knowledge1.png knowledge2.png knowledge3.png knowledge4.png 
 knowledge5.png knowledge6.png knowledge7.png
 
-functional skills? see functional-skills1.png functional-skills2.png
+functional skills that data engineers need to have? see functional-skills1.png functional-skills2.png functional-skills3
+functional-skills4
 
 Data engineers ecosystem includes: see ecosystem1.png ecosystem2.png
 
-categories of data: see catgories1.png
+categories of data: see categories1.png. The type of data drives the kind of data repositories that the data can be collected and 
+stored in, and also the tools that can be used to query or process the data. 
 
 the type of data drives the kind of data repositories that can be chosen to store the data and also the queries that 
 can be used to store the data 
@@ -50,32 +59,46 @@ what are the different file-formats? see file-formats.png
 
 what are the different types of data repositories? see repository-type1.png repository-type2.png
 
-what is the data integration process? see data-integration-process.png
+what is the data integration process (occurs when data has been collected from disparate sources)? see data-integration-process.png
 
-see data-pipeline-process.png
+What are data pipelines? see data-pipeline-process.png
+
+see BI-reporting-tools.png
+
+what is data comprised of? Data is unorganized information that is processed to make it meaningful. it is comprised of 
+see data-comprised-of.png. data can be categorised into structured (stored in well defined schemas, can be represented in a tabular
+manner with rows and columns - usually facts and numbers), semi-structured (has some organisational properties but lacks a fixed or
+rigid schema and cannot be stored in the form of rows and columns as in databases) and unstructured (does not have an easily 
+identifiable structure and hence cannot be organised in the form of rows and columns). 
+
+what do you need to understand when working with files as a data engineer? see formats1.png formats2.png formats3.png
+formats4.png formats5.png formats6.png formats7.png
+
+whaat are the common sources of data? common-sources-1.png common-sources-2 (stored structured data can be leveraged for analysis)
+common-sources-3 (e.g. government releasing demographic and economic data. some companies may sell financial data or weather data
+which businesses can use to e.g. predict demand or make forecasts). Such data sets are typically made available as flat files, 
+spreadsheet files, or XML documents. common-sources-4 common-sources-5 common-sources-6. Many data providers and websites provide 
+APIs, or Application Program Interfaces, and Web Services, which multiple users or applications can interact with and obtain data 
+for processing or analysis. APIs and Web Services typically listen for incoming requests, which can be in the form of web requests 
+from users or network requests from applications, and return data in plain text, XML, HTML, JSON, or media files. common-sources-7
+common-sources-8 common-sources-9 common-sources-10 (This data is generally timestamped and also geo-taggedfor geographical 
+identification.) common-sources-11 common-sources-12 common-sources-13
 
 for languages used in data analyst ecosystem see languages1.png languages2.png languages3.png languages4.png
 langauges5.png languages6.png languages7.png languages8.png languages9.png languages10.png languages11.png
 languages12.png languages13.png languages14.png languages15.png languages16.png
- 
-see BI-reporting-tools.png
-
-what is data comprised of? see data-comprised-of.png
-
-what do you need to understand when working with files as a data engineer? see formats1.png formats2.png formats3.png
-formats4.png formats5.png formats6.png formats7.png
 
 what is metadata? metadata is data that provides information about other data
 
 Here we will consider the concept of metadata within the context of databases, data warehousing, business intelligence
 systems, and all kinds of data repositories and platforms.
 
-we'll consider the following three main types of metadata:
+we will consider the following three main types of metadata:
 
 (a) technical metadata: is metadata which defines the data structures in data repositories or platforms, primarily 
 from a technical perspective. For example, technical metadata in a data warehouse includes assets such as:
 
-Tables that record information about the tables stored in a database, like: each table's name, the number of columns
+Tables that record information about the tables stored in a database, like: each table name, the number of columns
 and rows each table has
 
 A data catalog, which is an inventory of tables that contain information, like: the name of each database in the 
@@ -122,29 +145,35 @@ and moved, and thus it facilitates tracing of data errors back to their root cau
 management concept concerning the capability that enables an organization to ensure that high data quality exists 
 throughout the complete lifecycle of the data, and data controls are implemented that support business objectives.
 
-The key focus areas of data governance include availability, usability, consistency, data integrity and data security and includes establishing processes to ensure effective data management throughout the enterprise such as 
-accountability for the adverse effects of poor data quality and ensuring that the data which an enterprise has can 
-be used by the entire organization.
+The key focus areas of data governance include availability, usability, consistency, data integrity and data security and includes 
+establishing processes to ensure effective data management throughout the enterprise such as accountability for the adverse effects 
+of poor data quality and ensuring that the data which an enterprise has can be used by the entire organization.
 
-what is a data repository? see repository1.png repository2.png repository3.png repository4.png repository5.png
-repository6.png repository7.png repository8.png repository9.png repository10.png repository11.png repository12.png
+what is a data repository? see repository1.png repository2.png repository3.png. what is a DBMS? see repository4.png.
+repository5.png repository6.png repository7.png repository8.png repository9.png repository10.png repository11.png repository12.png
+repository13.png repository14.png
 
-what is a relational database? relational1.png relational2.png relational3.png relational4.png relational5.png
-relational6.png relational7.png relationa8.png relational9.png relational10.png relational11.png
+what is a relational database? relational1.png relational2.png (Along with the customer table, the company also maintains 
+transaction tables that contain data describing multiple individual transactions pertaining to each customer). This capability of 
+relating tables based on common data enables you to retrieve an entirely new table from data in one or more tables with a single 
+query. It also allows you to understand the relationships among all available data and gain new insights for making better 
+decisions. relational3.png relational4.png relational5.png relational6.png relational7.png relationa8.png relational9.png 
+relational10.png 
 
-what is a nosql database? see nosql1.png nosql2.png nosql3.png nosql4.png nosql5.png nosql6.png nosql7.png nosql8.png nosql9.png nosql10.png nosql11.png nosql12.png nosql13.png nosql14.png nosql15.png nosql16.png nosql17.png
-nosql18.png nosql19.png nosql20.png nosql21.png nosql22.png
+what is a nosql database? see nosql1.png nosql2.png nosql3.png nosql4.png nosql5.png nosql6.png nosql7.png nosql8.png nosql9.png 
+nosql10.png nosql11.png nosql12.png nosql13.png nosql14.png nosql15.png nosql16.png nosql17.png nosql18.png nosql19.png nosql20.png \
+nosql21.png nosql22.png
 
 characteristics of data warehouses, data marts and data lakes see characteristics1.png characteristics2.png 
 characteristics3.png characteristics4.png characteristics5.png characteristics6.png characteristics7.png 
-characteristics8.png characteristics9.png characteristics10.png characteristics11.png characteristics12.png 
-characteristics13.png characteristics14.png characteristics15.png characteristics16.png 
+characteristics8.png characteristics9.png characteristics10.png characteristics11.png The difference also lies in how data is 
+extracted from the source systems, the transformations that need to be applied, and how the data is transported into the mart. 
+Dependent data marts, for example, pull data from an enterprise data warehouse, where data has already been cleaned and transformed. Independent data marts need to carry out the transformation process on the source data since it is coming directly from operational systems and external sources. characteristics12.png characteristics13.png characteristics14.png characteristics15.png characteristics16.png 
 
-The difference also lies in how data is extracted from the source systems, the transformations that need to be 
-applied, and how the data is transported into the mart. Dependent data marts, for example, pull data from an 
-enterprise data warehouse, where data has already been cleaned and transformed. Independent data marts need to carry
-out the transformation process on the source data since it is coming directly from operational systems and external 
-sources. 
+The difference between dependent, independent, and hybrid data marts also lies in how data is extracted from the source systems, 
+the transformations that need to be applied, and how the data is transported into the mart. Dependent data marts, for example, 
+pull data from an enterprise data warehouse, where data has already been cleaned and transformed. Independent data marts need to 
+carry out the transformation process on the source data since it is coming directly from operational systems and external sources. 
 
 what is ETL? see etl1.png etl2.png etl3.png etl4.png etl5.png etl6.png etl7.png etl8.png
 
@@ -158,8 +187,7 @@ integration, while ETL is a process within data integration. There is no one app
 
 data-integration4.png data-integration5.png data-integration6.png data-integration7.png data-integration8.png 
 
-elements that are common in big data definitions see big-data1.png big-data2.png big-data3.png big-data4.png
-big-data5.png big-data6.png big-data7.png
+foundations of big data: see big-data1.png big-data2.png big-data3.png big-data4.png big-data5.png big-data6.png big-data7.png
 
 what big data processing tools currently exist? see big-data-tools1.png big-data-tools2.png big-data-tools3.png 
 big-data-tools4.png big-data-tools5.png big-data-tools6.png big-data-tools7.png big-data-tools8.png big-data-tools9.png
@@ -188,6 +216,8 @@ wrangling14.png wrangling15.png wrangling16.png wrangling17.png
 
 data wrangling tools see tools1.png tools2.png tools3.png tools4.png tools5.png tools6.png tools7.png tools8.png
 tools9.png tools10.png tools11.png tools12.png 
+
+basic querying techniques for analysing data: see query-technique1 query-technique2 query-technique3 query-technique4 query-technique5 query-technique6 query-technique7 query-technique8 query-technique9 query-technique10
 
 performance, tuning and troubleshooting see tuning1.png tuning2.png tuning3.png tuning4.png tuning5.png tuning6.png
 tuning7.png tuning8.png tuning9.png tuning10.png tuning11.png tuning12.png tuning13.png tuning14.png tuning15.png
@@ -276,6 +306,8 @@ career opportunities see opportunities1.png opportunities2.png opportunities3.pn
 opportunities6.png
 
 Data engineering learning path see path1.png path2.png path3.png path4.png path5.png 
+
+Data Warehousing Specialist
 
 Description of the Data Warehousing Specialist role: Data Warehousing Specialists design, model, and implement 
 corporate data warehousing activities, program and configure warehouses of databases, and provide support to data 
@@ -395,3 +427,43 @@ Computational or Information Technology discipline. Combining this educational b
 experience with application development and use of software for managing databases and metadata is a good way to 
 prepare for the role.
 
+Data Manager
+
+Objectives
+Explain typical data-related roles in enterprise organizations
+Map the level, placement, and relationships between roles within a typical company’s organizational structure
+Categorize the roles into technical, analysis and insight, governance, and leadership
+Describe the expected impacts AI may have on these roles
+Technical roles
+Data-related technical roles focus on infrastructure, architecture, and machine learning. They typically require programming skills, knowledge of databases, and adept handling of large datasets. These roles include data engineer, machine learning engineer, database administrator (DBA), and data engineer.
+
+To get started in these roles, you should consider an entry-level role in data engineering. This will familiarize you with the data ecosystem, where you work with data pipelines and maintain infrastructure under the direction of a more senior-level data engineer.
+
+Machine learning engineers develop machine learning algorithms and models, assessing the most appropriate models for your data. A database administrator’s responsibilities include managing and maintaining a database to ensure performance and security.
+
+AI impact on technical roles
+Regarding how AI may affect technical data roles, you can expect AI will automate routine tasks and AI tools will assist in optimizing code. AI will allow you to focus on higher-level tasks such as designing and integrating AI components into infrastructures to ensure components work as expected.
+
+Analytical roles
+Another category of data-related roles includes analyzing data and providing insights based on your analysis. In these roles, you will explore collected data to identify insights from your data.
+
+Data analysts and data scientists play roles in analysis. Analysts usually report to a data scientist and create visualizations, dashboards, and reports under the scientist’s direction. As a data scientist, you will bear the responsibility of leading the team and its direction by applying statistical techniques and crafting the stories they find in the data. Data scientists bear the responsibility of effectively championing their recommendations of their team’s findings to others in the organization.
+
+AI impact on analytical roles
+You can expect AI will certainly automate many aspects, but the role will need to craft and tell coherent, compelling stories with that data and how to utilize these insights best.
+
+Governance and privacy roles
+Regarding data governance and privacy, these related roles ensure that data collection, storage, and comply with legal, ethical, and organizational standards. Roles include data governance associate, data steward, compliance specialist, governance manager, data ethics steward, and data privacy officer. For an entry-level role, you should target a data governance associate who supports governance by developing documentation and ensuring data quality.
+
+Data governance entails establishing and complying with the regulations and standards that direct how the business uses and manages its data, including legal issues. It ensures data integrity and security by developing and enforcing policies. Roles in data governance include the governance manager, data governance associate, and compliance specialist.
+
+Data stewards ensure data quality, integrity, and proper management. They ensure their data is secure and handled in accordance with company policies related to data. Data stewards ensure AI models do not introduce bias or encourage misuse and promote responsible data use. Data ethics stewards ensure that the business handles its data ethically for transparency and accountability beyond compliance. Data stewardship tends toward more technical issues, whereas an ethics steward ensures that data practices align with societal values and ethical principles.
+
+AI impact on governance and privacy roles
+As AI adoption and integration mature, the data governance field will likely grow rapidly as industries endeavor to understand the quickly changing laws, policies, and the data landscape. AI itself can likely help monitor established policies and flag issues, freeing humans to focus on strategy alignment with business objectives, ethics, and regulations.
+
+Leadership roles and AI impact on leadership roles
+Data leadership roles include data architect, chief data officer, and data ethics officer. All of these roles help establish the vision and missions with respect to their particular area of expertise. These thought leaders set data policy for the business and ensure alignment with these directives throughout the organization. They will be the ones making decisions about how, where, and why AI should be used in their organizations. Ultimately, these leadership roles will determine the impact AI will have on their businesses.
+
+Data-related roles relationships
+Regarding the organizational structure of these roles within an organization, the exact positioning of them within the org chart may vary, but typically you will see something similar to the following diagram:

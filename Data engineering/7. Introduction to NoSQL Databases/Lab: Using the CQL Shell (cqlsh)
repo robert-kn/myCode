@@ -1,0 +1,29 @@
+Objectives
+
+After completing this lab you will be able to:
+
+Access the Cassandra server with cqlsh, the command-line interface for using the Cassandra Query Language (CQL)
+Run commands to learn more about the server and session, such as server version and host details
+Determine the available keyspaces, which are objects similar to databases, on the server
+
+Assumes you have a cassandra cluster up and running and are using the cassandra CLI
+
+show host
+
+This will show the details of the server you have connected to.
+
+show version
+
+This will show the version of the cassandra server.
+
+describe keyspaces
+
+This will print a list of the keyspaces present on the server.
+
+cls
+
+This will clear the cqlsh screen.
+
+exit
+
+Disconnect from cassandra server

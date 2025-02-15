@@ -1,0 +1,69 @@
+After completing this lab, you will be able to:
+
+Create, update, and remove a keyspace in Cassandra
+Identify the keyspace for the current session with the USE command
+Describe a keyspace by listing all the tables in it
+
+Assumes you have a cassandra server running and have launched the cassandra CLI to communicate with the cluster.
+
+Create a keyspace
+
+The below command creates a keyspace called training, using SimpleStrategy and a replication_factor of 3.
+
+SimpleStrategy is used when all the nodes in your cassandra cluster exist in a single data center.
+
+On cqlsh run the below command.
+
+CREATE KEYSPACE training WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 3};
+
+List all keyspaces.
+
+describe keyspaces
+
+Describe a keyspace
+
+In the previous exercise you have created a keyspace named training.
+Let us print more details of it using the describe command.
+
+Describe a keyspace.
+
+describe training
+
+Alter a keyspace
+
+In a previous exercise, you created a keyspace named training using SimpleStrategy.
+Let's change that to use NetworkTopologyStrategy.
+
+NetworkTopologyStrategy is used when all the nodes in your cassandra cluster are spread across multiple data centers.
+
+Alter a keyspace.
+
+ALTER KEYSPACE training WITH replication = {'class': 'NetworkTopologyStrategy'};
+
+Verify the changes using the describe command.
+
+describe training
+
+Use a keyspace
+
+To use a keyspace run the below command.
+
+use training;
+
+List all tables in this keyspace.
+
+describe tables
+
+You will get an empty list because we do not have any tables yet.
+
+Drop a keyspace
+
+To drop a keyspace, run the below command.
+
+drop keyspace training;
+
+Verify the changes using the describe command.
+
+use system;
+describe keyspaces
+

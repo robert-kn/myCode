@@ -1,0 +1,68 @@
+Objectives
+
+After completing this lab you will be able to:
+
+Create a table in a keyspace by defining a column name and data type
+Extract the details of a table with the DESCRIBE command
+Alter a table by adding columns
+Drop a table by removing it from the keyspace
+
+Getting the environment ready
+
+Create a keyspace named training using SimpleStrategy and replication factor of 3.
+
+CREATE KEYSPACE training WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 3};
+
+Create a table
+
+The below command creates a table named movies, in the training keyspace.
+The movies table has three columns:
+
+‘movie_id’ is an integer and is the primary key.
+‘movie_name’ is a text column.
+‘year_of_release’ is an integer.
+On the cassandra client run the below command.
+
+use training;
+CREATE TABLE movies(
+movie_id int PRIMARY KEY,
+movie_name text,
+year_of_release int
+);
+
+Verify that the table got created by listing all tables.
+
+describe tables;
+
+Describe a table
+
+In the previous exercise you created a table named movies.
+Let us print more details of it using the describe command.
+
+Describe the table.
+
+describe movies
+
+Alter a table
+
+In a previous exercise you created a table named movies.
+Let us modify it by adding a column named ‘genre’ which is of type ‘text’.
+
+Alter the table.
+
+ALTER TABLE movies
+ADD genre text;
+
+Verify the changes using the below command
+
+describe movies;
+
+Drop a table
+
+To drop the movies table run the below command.
+
+drop table movies;
+
+Verify using the below command. You should get an error.
+
+describe movies;

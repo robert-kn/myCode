@@ -641,3 +641,205 @@ Indexing
 Aggregation framework
 Scaling horizontally
 Preventing unauthorized access
+
+apache cassandra overview: see cassandra-1, cassandra-2, cassandra-3 cassandra-4 cassandra-5 cassandra-6
+
+Architecture of Cassandra
+
+Cassandra is a popular open-source distributed NoSQL database system known for its scalability, high performance, and fault tolerance. While it doesn't have a traditional architectural structure like a building, it does have a robust design that allows it to handle large amounts of data across multiple nodes. After reading this document, you will have a basic understanding of the components.
+
+Apache Cassandra topology
+
+Cassandra is a distributed system architecture. The basic component of Cassandra's architecture is the standalone unit, node. It is also known as a single Cassandra. Nodes can be added or removed without affecting the system's availability. Each node operates independently and communicates with other nodes through a peer-to-peer protocol. see cassandra-7
+
+As well as being a distributed system, Cassandra is designed to be a peer-to-peer architecture, with each node connected to all other nodes. Every Cassandra node can run all database operations and handle client requests independently, eliminating the need for a primary node. see cassandra-8
+
+How do the nodes in this peer-to-peer architecture know to which node to route a request without a primary node? What if a certain node is down or up? Through the gossip protocol.
+
+The gossip protocol enables nodes to exchange details and information, updating each node about the status of all other nodes. A node performs gossip communications with up to three other nodes every second. The gossip messages follow a specific format and use version numbers to communicate efficiently. So, each node can build the entire metadata of the cluster (which nodes are up/down, what the tokens allocated to each node are, and so on).
+
+Components of a Cassandra node
+
+Several components in Cassandra nodes are involved in the write and read operations. Some of them are listed next:
+
+Memtable
+Memtables serve as in-memory structures within Cassandra, buffering write operations before being written onto disk. Typically, each table has an active Memtable. Eventually, these Memtables are flushed to disk, transforming into immutable SSTables (Sorted String Tables).
+
+The triggering of Memtable flushes can occur through various methods:
+
+Exceeding a predefined threshold for Memtable memory usage.
+Approaching the maximum size of the CommitLog, which prompts Memtable flushes to free up CommitLog segments.
+Setting specific time intervals to trigger flushes on a per-table basis.
+
+These triggers initiate the process where the buffered data in Memtables is persisted onto disk as SSTables, ensuring data durability and efficient retrieval in the Cassandra database system.
+
+Commit log
+
+Commit logs in Cassandra function as append-only logs, capturing all local mutations on a specific Cassandra node. Before you write data to a Memtable, you must record it in a commit log. This process ensures durability in the event of an unexpected shutdown. Upon restarting, any mutations in the commit log are applied to the Memtables, guaranteeing data consistency and recovery in the Cassandra database system.
+
+SSTables
+
+SSTables (Sorted String Tables) are the immutable data files in Cassandra, storing data persistently on disk. These files are created by flushing memtables or streaming from other nodes. When you generate SSTables, Cassandra initiates the compaction processes to merge multiple SSTables into one. You should be able to see the new SSTable while the older SSTables become eligible for removal.
+
+An SSTable comprises various distinct components stored in separate files, some of which include:
+
+Data.db: This file contains the actual data stored by Cassandra.
+Index.db: An index file that maps partition keys to specific positions within the Data.db file, aiding in efficient data retrieval.
+Summary.db: This file provides a sample subset (typically every 128th entry) of the information contained in the Index.db file, offering an overview for quicker data access.
+Filter.db: Cassandra employs a Bloom Filter in this file, which serves as a probabilistic data structure, assisting in determining if a partition key exists in the SSTable without requiring a disk seek.
+CompressionInfo.db: This file holds metadata regarding the offsets and lengths of compressed chunks within the Data.db file, facilitating the decompression of stored data.
+
+These distinct files within an SSTable collectively form an organized structure that enables efficient data storage, indexing, retrieval, and compression within the Cassandra database system.
+
+Write process at node level
+
+Writes are distributed across nodes in the cluster, utilizing a coordinator node that manages the operation and replicates data to appropriate replicas based on the configured consistency level.
+
+Logging data in the commit log
+Writing data to the Memtable
+Flushing data from the Memtable
+Storing data on disk in SSTables
+
+see cassandra-9
+
+Read at node level
+
+While writes in Cassandra are very simple and fast operations done in memory, the read is a bit more complicated since it needs to consolidate data from memory (Memtable) and disk (SSTables). Since you can fragment data on disk into several SSTables, the reading process needs to identify which SSTables most likely contain info about the querying partitions. The Bloom Filter information makes this selection through the following steps:
+
+1. Checks the Memtable
+2. Checks Bloom filter
+3. Checks partition key cache, if enabled
+4. If the partition is not in the cache, the partition summary is checked
+5. Then, the partition index is accessed
+6. Locates the data on the disk
+7. Fetches the data from the SSTable on disk
+8. Data is consolidated from Memtable and SSTables before being sent to the coordinator
+
+see cassandra-11
+
+Data distribution
+
+Partitioner: Cassandra uses a partitioner to distribute data across nodes. This consistent hashing algorithm ensures an even data distribution across the cluster, preventing hotspots and facilitating horizontal scaling.
+
+see cassandra-12
+
+Data model
+Column family data model: Cassandra follows a column-family-based data model, organizing data into rows and columns. It stores data in tables composed of rows indexed by a unique key. Each row contains columns with different attributes.
+
+see cassandra-13
+
+Replication and consistency
+Replication: Data replication is configurable in Cassandra. Each piece of data is replicated across multiple nodes (replication factor) to ensure fault tolerance and high availability, even in node failures.
+
+Consistency levels: Cassandra offers tunable consistency levels for read and write operations. Users can choose between different consistency levels, balancing consistency and performance based on application requirements.
+
+Read and Write Operations
+Distributed writes: Writes are distributed across nodes in the cluster, utilizing a coordinator node that manages the operation and replicates data to appropriate replicas based on the configured consistency level.
+
+Read optimization: Cassandra supports efficient reads by allowing read operations from multiple replicas. It uses the "hinted handoff" mechanism to ensure consistency in case some replicas are temporarily unavailable.
+
+Architecture Components
+Gossip protocol: Cassandra uses the gossip protocol for inter-node communication. Nodes exchange information about the cluster's state, such as membership changes or node failures, ensuring each node stays updated.
+
+Compaction and compression: Cassandra periodically performs compaction to merge and organize data files, optimizing storage and improving performance. It also supports data compression to reduce disk usage.
+
+Snitches and load balancing: Snitches determine network topology, optimizing data replication and routing. Load balancing ensures that queries are evenly distributed across nodes to prevent uneven distribution.
+
+Security
+Security features: Cassandra offers security features like authentication, encryption, and access control mechanisms to ensure data integrity, confidentiality, and protection against unauthorized access.
+
+Summary
+Cassandra's architecture is designed for high availability, fault tolerance, scalability, and efficient data management across distributed environments, making it a powerful choice for handling large-scale data-intensive applications.
+
+key features of apache cassandra: cassandra-14 While all NoSQL databases are distributed, you will not find many NoSQL databases that are both distributed and decentralized. Distributed means that Cassandra clusters can be run on multiple machines, while to the users and applications, everything appears as a unified whole. The architecture is built in such a way that the combination of Cassandra application client and server will provide sufficient information to route the user request optimally in the cluster. As an end user, you can write data to any of the Cassandra nodes in the cluster, and Cassandra will understand and serve your request. Decentralized means that every node in the Cassandra cluster is identical. That is, there are no primary or secondary nodes. Cassandra uses peer-to-peer communication protocol and keeps all the nodes in sync through a protocol called gossip.
+
+cassandra-15 How does data end up in this distributed architecture? It all starts with the queries that are planned to be performed. Just to take a very simple example, you have some initial data containing user info and the state. If your queries are similar to, I would like to know about all users in a state, in this case, you need to group your data on the state column, and this is done by declaring a table that has the state column as the partition key. Just remember that Cassandra groups data based on your declared partition key and then distributes the data in the cluster by hashing each partition key called tokens. Each Cassandra node has a predefined list of supported token intervals, and data is routed to the appropriate node based on the key value hash and this predefined token allocation in the cluster. 
+
+cassandra-16 After data is initially distributed in the cluster, Cassandra proceeds with replicating the data. The number of replicas refer to how many nodes contain a certain piece of data at a particular time. Data replication is done clockwise in the cluster, taking into consideration the rack and the data center's placement of the nodes. Data replication is done according to the set replication factor, which specifies the number of nodes that will hold the replicas for each partition. Let's take the data from the previous screen and try to distribute the California state data, partition CA, in an eight-node cluster, distributed in two data centers, DC1 with replication factor 3 and DC2 with replication factor 2. You can see in the diagram that some nodes are placed in the same rack. Cassandra will try to distribute data as much as possible between racks. 
+
+cassandra-17 One of the most important Cassandra features is its availability. Also, Cassandra is frequently referred to as eventual or tunable consistency in the sense that, by default, Cassandra trades consistency in order to achieve availability. But the good news is that developers can control exactly how much consistency they would like to have strong or eventual. As you may recall from the NoSQL introduction video earlier in the course, distributed systems cannot, according to CAP theorem, be consistent and available at the same time. Cassandra has been designed to always be available, meaning that if you lose a part of your cluster, there will still be nodes available to answer the service request, though the return data might be inconsistent. Consistency of the data can be controlled at the operation level, and it is tuned between strong consistency and eventual consistency. If data inconsistencies exist, these conflicts will be resolved during read operations. This is another unique Cassandra feature.
+
+cassandra-18 Fault tolerance is an inherent feature of the distributed and decentralized characteristic of Cassandra. The fact that all nodes have the same functions, communicate in a peer-to-peer manner, are distributed, and the data is replicated makes Cassandra a very tolerant and adaptable solution when nodes fail. The user contacts one node of the cluster. If the node is not responding, then the user will receive an error and contact another node.
+
+cassandra-19 The same architectural flexibility is visible in the way Cassandra scales the capability of the clusters. A cluster is scaled by simply adding nodes, and performance increases linearly with the number of added nodes. New nodes that are added immediately start serving traffic, while existing nodes move some of their responsibilities towards the new added nodes. Both adding and removing nodes is done seamlessly without interrupting cluster operations.
+
+cassandra-20 Cassandra gracefully handles large numbers of writes first by parallelizing writes to all nodes holding a replica of your data.
+
+cassandra-21 One important Cassandra fact; by default, there's no read before write. At the node level, writes are performed in memory, meaning no read before and then flushed on disk. On disk, data is appended in a sequential manner with the data being reconciled later through compaction.
+
+cassandra-22 Be aware that while syntax-wise, there are similarities between CQL and SQL, the resemblance stops here. The ways write and read operations are executed in Cassandra are different than how these are executed in relational databases. 
+
+apache cassandra data model: cassandra-23 Cassandra stores data in tables whose schema defines the storage of the data at cluster and node level. Tables are grouped in key spaces. A keyspace is a logical entity that contains one or more tables. A keyspace also defines a number of options that applies to all the tables it contains, most prominent of which is the replication strategy used by the key space. It is generally encouraged to use one keyspace per application. 
+
+cassandra-24 So tables are the logical entities that organize data storage at cluster and node level. They contain rows of columns. You can create, drop, and alter your tables without impacting the running updates on your data or the running queries. In order to create a table, we need to declare using Cassandra query language a schema. A table schema comprises at least a definition of the table's primary key and the regular columns of the table. Table groups store information regarding several groups, such as groupid, group_name, and for each group, the username and age of their members. You can see that the primary key is composed of two columns, groupid and username. In Cassandra denomination, the groupid column is called the partition key and the username column is called the clustering key.
+
+see cassandra-25 cassandra-26 When data is inserted into the cluster in a table, the data is grouped per partition key into partitions, and the first step is to apply a hash function to the partition key. The partition key hash is used to determine what node and subsequent replicas will get the data. In simpler terms, a partition key determines the data locality in the cluster. The partition is the atom of storage in Cassandra, meaning that one partition's data will always be found on a node and its replicas in the case of a replication factor greater than one. So if we want to answer the query all users in group 12, then the query can address only the fourth node and will get the answer. In big clusters, those consisting of hundreds or thousands of nodes, limiting the number of nodes required to be contacted in order to answer the query is crucial for query performance.
+
+cassandra-27 cassandra-28 cassandra-29 While the partition key is important for data locality, the clustering column specifies the order that the data is arranged in inside the partition that is, ascending or descending, and optimizes the retrieval of similar values column data inside a partition. The clustering key can be a single or multiple column key. In our case, our clustering key contains only one column username, which means that the data inside the group partition is going to be stored by username by default in an ascending order. So when we query all users in a specific group, data will be ordered by default in ascending order by the user's username. In this example, the clustering key was used for one main reason, to add uniqueness to each entry. But actually the clustering key is also very important for improving the read query performance.
+
+cassandra-30 Thus, a query such as give me all users in a certain group by group ID that are aged 32 will just locate the node that contains the partition for group 12 and read from that node just the two sequential records. Reducing the amount of data to be read from a partition is crucial for query time, especially in the case of large partitions in which Cassandra would have to read hundreds of megabytes of data in order to provide an answer from just a few kilobytes of data. 
+
+cassandra-31 Inserting new data in our table will just direct the write to the location of the partition and will increase the partition size from two to three entries. In dynamic tables, partitions grow dynamically with the number of distinct entries due to the presence of the clustering key in the primary key. It's important to note that in this diagram, replication is not taken into account, so only one node holds the partition for group 45 for example. Every write or read for group 45 will be routed to the second node of the cluster. As long as the cluster is not changed, this node will hold the data for group 45. A change such as nodes added or leaving would trigger a new token allocation and subsequently data distribution. 
+
+cassandra-32  When building a primary key for a table, you should take into consideration the following simple rules. First, choose a partition key that starts answering your query, but that also spreads the data uniformly around the cluster. For example, group ID might be a good partition key if there are many groups. Many distinct values for group id and group sizes are similar. And secondly, build a primary key that allows you to minimize the number of partitions read in order to answer a certain query. Remember that data is distributed throughout the cluster. If we would need to read more partitions to answer the query, then we would need to potentially access several nodes in order to answer our query. This would affect the query time and even induce timeouts. Thus, the primary key needs to be designed so that optimally we read one partition in order to answer our query. And one note before we summarize, besides the basic rules discussed here, make sure you build a clustering key that helps you reduce the amount of data that needs to be read even further by ordering your clustering key columns according to your query.
+
+into to cassandra query shell: cql-1 cql-2 cql-3 cql-4 cql-5 cql-6 cql-7 cql-8 cql-9 cql-11 for example, if we have a Cassandra cluster of 8 nodes and 2 Data Centers, one data center with replication factor 2 and the other one with replication factor 3, then overall, replication is 5. If we set CONSISTENCY QUORUM on a write operation: first of all, QUORUM means a majority of nodes out of the replicas, so a majority here would be 3 Write operations will go to all 5 replicas but a minimum 3 nodes (from both data centers) out of the 5 replicas need to answer in order for the operation to be successful.
+
+cql-12 While bulk copy in Cassandra should be done through special procedures, if you would like to just test your model or you're working with a smaller, text delimited dataset, then you can use COPY FROM or COPY TO operations to bring data in, and export data out, of Cassandra. COPY TO exports data from a table into a CSV file. Each row is written to a line in the target file with fields separated by the delimiter. COPY FROM imports data from a CSV file into an existing table. Each line in the source file is imported as a row. All rows in the dataset must contain the same number of fields and have values in the PRIMARY KEY fields. The process verifies the PRIMARY KEY and imports data accordingly. 
+
+see Lab: Using the CQL Shell (cqlsh)
+
+CQL data types: see cql-data-types-1 cql-data-types-2 cql-data-types-3 cql-data-types-4 cql-data-types-5 cql-data-types-6
+cql-data-types-7 cql-data-types-8 cql-data-types-9
+
+apache cassandra keyspace operations: keyspace-1 keyspace-3 In CQL, when we create a keyspace, we need to specify the class as being network topology strategy, the only option recommended for production systems, and specify the replication at datacenter level keyspace-4
+keyspace-5 keyspace-6 keyspace-7  
+
+Cassandra Data Modeling and Querying Best Practices
+
+This reading will teach you the best practices for Cassandra data modeling and querying.
+
+Cassandra is an open-source, non-relational, or NoSQL distributed database that is continuously available across multiple data centers and cloud availability zones. It provides a reliable data storage engine for applications with a broad range.
+
+Understanding Cassandra's distributed architecture and data storage principles is crucial for designing data models and crafting efficient queries. Let's examine the best practices for achieving high performance, scalability, and efficiency in Cassandra.
+
+Improved read and write performance
+
+An efficient data model enables data to be requested as a single request, reducing complex joins. However, it also enables Cassandra to retrieve data quickly from distributed storage.
+
+Partition correctly
+
+A good partition key restricts hotspots and disproportionately stores the amount of data on a few nodes. It also avoids selecting high-cardinality or frequently updated fields as partition keys and restricts large partitions.
+
+Data duplication
+
+Data duplication supports query patterns and uses primary keys across multiple tables to optimize queries without compromising performance.
+
+Avoid full table scans
+
+Avoiding full table scans minimizes them and range queries without specifying a partition key. Full table scans are resource-intensive, compromising performance for large datasets.
+
+Specify required columns
+
+The data query from Cassandra specifies the SELECT statement's columns. Obtaining only the required columns reduces the usage of the network bandwidth and minimizes the amount of data transferred between nodes.
+
+Prefer batch updates
+
+The batch update achieves atomicity and consistency for a group of write operations. However, it minimizes the overhead associated with network communication and coordination between nodes in the Cassandra cluster.
+
+table operations: Remember that in Cassandra, prior to declaring a table, you first need to create a keyspace. A table will always be created in an existing keyspace. table-1 table-2 table-3 table-4 table-5 table-6 table-7
+
+CRUD operations: crud-1 At cluster level, when a write occurs, the node receiving the write becomes the coordinator of the operation. This means that it will make sure to complete the operation and send the result of the write back to the user. Write operations are directed towards all replicas of the partition into which they are writing, but for the operation to be successful, acknowledgement is expected from at least the minimum number of nodes specified for consistency. Let’s take the example of a keyspace with replication factor 3 and a write operation with consistency set to 2. We assume our partition is located in nodes 1, 2, and 3. In this case the write operation arrives in node 4, and node 4 sends the write to nodes 1, 2, and 3 according to the replication factor. However, node 2 is not available, so the write acknowledgement is sent only by nodes 1 and 3. Coordinator node 4 checks the number of answers and compares it to the expected consistency value, and then returns an okay. crud-2 At the node level there are a few important facts to remember: One important reminder regarding writes in Cassandra: by default, there's no read before the write operation. At the node level, writes are stored in memory and then flushed on disk in files called SSTables. The more writes we perform, the faster the Memtable gets filled and flushes the data on disk. Every flush operation creates a new file called SSTable. On disk data is appended in subsequent SSTables – later on the data will be optimized on disk through a process called compaction. Cassandra attaches a Timestamp to every write operation. Timestamps are used for data reconciliation. The most recent data wins. crud-3 crud-4 crud-5 crud-6 crud-7
+
+crud-8 When a read operation is directed to a node in the cluster, that node becomes the coordinator of the read operation and is responsible for its completion. In our example, node 4 is the coordinator for this read. Reads are sent only to the number of replicas specified by the consistency setting. For example, a consistency of two means that only two nodes of the three replicas will be contacted. The coordinator will reconcile the responses received from the contacted nodes. If there are any inconsistencies, they will be resolved based on the operations time stamps, then the result will be sent back.
+
+crud-9 Syntax-wise, in Cassandra, just like in many databases, reads are performed using the select operation. There are a few rules when it comes to select operations in Cassandra. Always start your query with the partition key to limit your read to only the replicas for your partition. Follow your primary key fields order in your query to get the best performance. For example, if you have a primary key formed of one partition key and two clustering keys, filtering a specific value of the partition key is okay. Note that partition key supports only equal and in operations. Filtering a list of possible values for the partition key is also okay. Filtering the partition key and the first clustering key is okay. Filtering the partition key and the first and second clustering keys will just read one record, which is okay. However, selecting all data from your table is not okay in production systems because this will send the request to all nodes in the cluster. Imagine having a 1,000 node cluster, would you be happy with the performance of your query? Your query will work, but the performance will be really bad, even if no timeout occurs. Filtering a regular column is not okay and will not work. Finally, filtering the clustering keys without the partition key is not okay and will not work.
+
+crud-10 Let's look at some examples based on our groups table where the primary key is composed of group ID and username columns. Filtering the group ID or group ID and username will work and yield a very good performance. Filtering the age column, which is a regular one, will not work, Cassandra will return an error. What you could do in this case is either remodel your table or create an index on column H, and then the select query will work. But while the previous query will work, optimal performance will be obtained by filtering the age column together with a specific partition key group ID. When you do this, you limit your query to only the nodes that host that particular partition key. This brings us again to this very important Cassandra rule: always start your queries with the partition key. 
+
+crud-11 crud-12 crud-13 From the moment an item has been marked with a tombstone, its data is not visible any longer to queries. However, the actual data will still reside on disk for a period of time. 
+
+crud-14 What are tombstones? In Cassandra, a delete is just a write operation that also has a special value appended to indicate that the data has been deleted and the time of the delete. This value is called a tombstone. Here, as you can see in the diagram, our delete was acknowledged by nodes 1 and 3, and now we have a tombstone indicating that our specific primary key data was deleted at T1. Node 2 data is the initial one, the insert done at T0 since the delete operation did not succeed on node 2. Now, when a read operation arrives, the data will be returned by nodes 1 and 2. Node 1 will return no data with time T1 and node 2 will return requested data with time T0. T1 is more recent than T0. So the coordinator node, node 1, will decide that the newest data is the one from node 1 and return no data as part of the read. One other thing to remember is that tombstones are deleted only when a configurable period has elapsed. This is called gc_grace_seconds, which is set to 10 days by default and is set at the table level.
+
+see Cassandra CRUD Operations
+

@@ -1,32 +1,147 @@
+what should you know about fundamentals? they do not change very often
+
+what will mastery of the fundamentals yield? there is no limit to how high I will soar provided I continue to put in the
+work 
+
+what is this book about? mastering the fundamentals of computing
+
+what is the conventional wisdom when it comes to teaching computer science? start  with a high level programming language
+which leads to the memorisation of technical details without an understanding of basic underpinnings
+
+how does the book approach mastering computing fundamentals? a bottom up approach where it continually builds on what is 
+covered (scaffolding)
+
+what is technique is widely pervasive when it comes to teaching students any subject? information hiding approach
+
+why is it used? because it is a useful productivity enhancer and allows the student to hit the ground running
+
+what are its drawbacks? information hiding gets in the way of understanding which leads to problems when students have to
+think from first principles about for example why a particular error is happening (understanding not memorising)
+
+information hiding is only useful once one has an understanding of the fundamentals. bottom up approach is best for learning
+in order to acquire an understanding
+
+does that mean that the top down design approach is flawed?
+
+what was their  concern about including C++ in their instructional approach? many of the languages features are too far 
+abstracted from the underlying layers to make for an easy fit to their instructional approach. Additionally C++ is a vast 
+language that would have necessiated more pages to be added to the book. 
+
+why do they still use C in the book? serves as the defacto development language for systems aand hardware oriented projects
+
+what are the two major segments that the book can be broken down into? (a) the underlying structure of a computer (b) programming
+in a high level language
+
+why does the C programming language fit very nicely with the bottom up approach? its low level nature allows students to see
+clearly the connection between software and the underlying hardware 
+
+why lc-3 ISA and not ARM or RISCV? because commercial ISAs have no place in an introductory course but still have to be
+understood in order to be used effectively. They wanted an ISA that was clean with no special cases to deal with, with as few
+opcodes as necessary so that you the student spends all your time on the fundamental concepts of the course and very little 
+time on the nuaances of the instruction set
+
+the lc-3 instruction set with only 15 four-bit opcodes, is small enough that the students can absorb the ISA without struggling
+too much
+
+what are the stand out observations of the approach taken in the book?
+
+(a) understanding and not memorising: bottom up learning approach leads to less memorisation of seemingly arbitrary rules
+which is prevalent in traditional programming courses. by the time a topic is taught, you will have an understanding of how
+the topic is implemented at the levels below it. this approach is good for design courses where understanding of and insights
+gained from fundamentals are essential to making the required design trade offs.
+(b) you get to debug your own programs
+(c) preparation for the future: cutting through protective layers; as a professional, if you are ignorant of what is going
+on inside computers you will likely discover the hard way that the effectiveness of your solutions is impacted adversely by
+things other than the actual programs you write. serious programmers will write more efficient code if they understand what
+is going on beyond the statements in their high level language. high level programming language courses where the compiler 
+protects the student from everything ugly underneath does not serve most engineering students well
+(d) rippling effects through the curriculum: the material taught in the book has a rippling effect on what can be taught in 
+subsequent courses. subsequent programming courses cannot only assume the students know the syntax of C/C++ but also understand
+how it relates to the underlying architecture. ergo, the focus can be on problem solving and more sophisticated data structures
+
+how to install the simulator debugger written by the authors for the lc-3 ISA:
+
+download link for the material can be found here: https://highered.mheducation.com/sites/1260150534/student_view0/lc-3_simulator.html
+
+LC3Tools is a cross-platform set of tools to build code for and simulate the LC-3 system described in the book.
+
+The latest version of LC3Tools for all platforms can be found at https://github.com/chiragsakhuja/lc3tools/releases
+
+Windows Users: lc3tools-setup-VERSION.exe
+macOS Users: LC3Tools-VERSION.dmg
+Linux Users: lc3tools-VERSION-x86_64.AppImage
+
+There are several other resources, including more documentation and instructions on the command line tools, at https://github.com/chiragsakhuja/lc3tools.git 
+
 chapter 1
 
-1. what do you think of when you hear that a computer is a deterministic system?
+1. what is the intent of the book? there is no magic to computing as computers are deterministic systems; computers are not 
+electronic geniues infact they are electronic idiots that do exactly as they are told 
 
-2. a computer is a complex system made up of what? systematically interconnected simple parts; like building a house, it is
+2. a computer is a complex system made up of? systematically interconnected collection of very simple parts; it is
 these simple parts that the book will introduce, explain and tie together to show how they make up a computer
 
-3. what is the main goal of the book? by the time you are finished, you will be able to write programs using a language like C and be able 
-to understand what is going on underneath the computer
+3. what is the main goal of the book? by the time you are finished, you will be able to write programs using a language like C 
+and be able to understand what is going on underneath the computer
 
-4. what do high level languages enable programmers to do? effectively develop complex sofware by abstracting away the details of the 
+4. how will we get there? you will see that all information processed by computers is in the form of 0's and 1's. therefors, all 
+information processed by computers is therefore encoded as 0's and 1's. you will learn how to process such information
+
+5. what is meant by all information processed by computers is encoded in 0's and 1's? each piece of information has a code point made up
+of 1's and 0's
+
+6. what is the lc-3? it is a microprocessor that has all the important characteristics of real microprocessors without being so complicated
+that it gets in the way of my understanding. so it is a piece of hardware excet that it doesn't exist hence when you write code in assembly
+language or machine language for the lc3 processor, you will need a simulator to see what would happen in the registers and memoy of a 
+real lc3 during the execution of a program. all that exists is the ISA and microarchitecture which would implement the ISA
+
+7. what do high level languages enable programmers to do? effectively develop complex sofware by abstracting away the details of the 
 underlying hardware
 
-5. what are the two recurring themes in the book? abstraction and not separating hardware and software layers of a computer
+8. what are the two recurring themes in the book? abstraction and not separating hardware and software layers of a computer
 
-6. define abstraction? technique of establishing a simpler way to interact with a system
+9. define abstraction? technique of establishing a simpler way to interact with a system
 
-7. what is the premise that allows us to use abstraction effectively? allows not getting bogged down in the details of a system when 
-everything is working fine
+10. what is the premise that allows us to use abstraction effectively? allows not getting bogged down in the details of a system when 
+everything is working fine; establishes a simpler way for a person to interect with a system
 
-8. when the detail is not working fine, what must you be able to do? unabstract i.e. go from the abstraction back to its component parts
+11. why is abstraction favoured? it is a productivity enhancer as i can deal with a situation at a higher level focusing on the essential
+apects whilst keeping component ideas in the background
 
-9. why should you strive to keep the level of abstraction as high as possible? allows me to be much more efficient in dealing with systems
+12. when the detail is not working fine, what must you be able to do? unabstract i.e. go from the abstraction back to its component parts
 
-10. why should you be careful about letting abstractions be the deepest level of my understanding? because you will be at the mercy of the 
-component parts working together without your intervention
+13. what are modern processors comprised of? transistors
 
-11. what should you keep in mind during your study and practice of computing? hardware and software are component parts of a computing 
+14. what do transistors combine to form? logic gates 
+
+15. what do opportunity do logic gates provide? the ability to think in 1's and 0's instead of varying voltages across the transistor 
+wires
+
+16. what does a combination of logic gates produce? a logic circuit - a further abstraction
+
+17. what putting together logic circuits, should a designer be thinking of the internals of each individual gate or treat each gate as A
+component? treat each gate as a component as thinking of the internals of each gate would slow down the process of designing the logic
+circuit
+
+18. how can the above thinking be applied to the design of an application program? each component should be thought of as an abstraction
+(thinking about the internals of each component would be detrimental to progress)
+
+19. why should you be careful about letting abstractions be the deepest level of my understanding? because you will be at the mercy of the 
+component parts working together; if one of them breaks then you won't be able to intervene to get the system up and running again
+
+20. how will the material in the book be presented in terms of abstraction? the level of abstraction will be continually raised i.e. from
+individual transistors to gates to logic circuits to even larger abstractions
+
+21. what should you keep in mind during your study and practice of computing? hardware and software are component parts of a computing 
 system that work best when they are designed by people who take into account the capabilities and limitations of both
+
+22. what allows engineers to be able to work on computing systems whilst ignoring the other side i.e. software people ignoring the hardware
+it runs on, and hardware people ignoring the software that will run on it? abstraction
+
+23. why is being clueless about the underlying layers not advisable? because you will not be able to take advantage of the nuances of 
+underlying layers when it is important to be able to do so
+
+24. what do the authors suggest about the your study and practice of computing? 
 
 12. definition of a computer? system consisting of software that directs and specifies the processing of information and the hardware that 
 performs the actual processing of information in response to what the software specifies
@@ -1085,8 +1200,10 @@ on the stack physically move? no
 31. in the LC-3, what is process of pushing a value onto a stack? first load the value into R0, then decrement the value in R6 
 (which contains the memory address of the stack pointer) 
 
-32. in the LC-3, what is the process of popping a value from the stack? the value is read and the staack pointer is incremented
+32. in the LC-3, what is the process of popping a value from the stack? the value is read and the stack pointer is incremented
 
 33. what is the fancy name given to the rules that the stack follows? stack protocol
 
 34. what does attempting to pop items that have not been previously pushed result in? underflow
+
+35. What happens when we run out of available space and we try to push a value onto the stack? result in an overflow

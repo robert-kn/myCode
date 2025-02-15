@@ -1,18 +1,3 @@
-Why read the book?
-1. to understand fundamentals as they do not change very often
-2. if fundamentals are mastered clearly, there is no limit to how high I will soar provided I continue to put in the
-   work
-3. a lot of problems arise from memorising technical details without understanding basic underpinnings
-4. when it comes to learning, information hiding approach is prevalent. It is a useful productivity enhancer once 
-   fundamentals are clearly understood. But until one gets to that point, information hiding gets in the way of
-   understanding.
-5. understanding not memorising
-6. cutting through the layers: Professionals who use computers in systems today but remain ignorant of what is going
-   on underneath are likely to discover the hard way that the eﬀectiveness of their solutions is impacted adversely 
-   by things other than the actual programs they write. Serious programmers will write more eﬃcient code if they 
-   understand what is going on beyond the statements in their high-level language. Consequently, the high-level 
-   programming language course, where the compiler protects the student from everything “ugly” underneath, does not 
-   serve most engineering students well, and it certainly does not prepare them for the future.
 
 CHAPTER 1
 
@@ -4033,7 +4018,7 @@ Note that the values 12 and 5 are still stored in memory locations x3FFD and x3F
 that we push by executing the PUSH sequence and pop by executing the POP sequence, we cannot read the values 12 and 5 if we obey the 
 rules. The fancy name for “the rules” is the stack protocol.
 
-Underﬂow What happens if we now attempt to pop three values from the stack? Since only two values remain on the stack, we would have 
+Underﬂow: What happens if we now attempt to pop three values from the stack? Since only two values remain on the stack, we would have 
 a problem. Attempting to pop items that have not been previously pushed results in an underﬂow situation. In our example, we can 
 test for underﬂow by comparing the stack pointer with x4000, which would be the contents of R6 if there were nothing left on the 
 stack to pop. If UNDERFLOW is the label of a routine that handles the underﬂow condition, our resulting POP sequence would be
@@ -4047,3 +4032,326 @@ POP      LD     R1,EMPTY
 ;
          RET
 EMPTY    .FILL  xC000         ;  EMPTY  <--  negative  of  x4000
+
+Rather than have the POP routine immediately jump to the UNDERFLOW routine if the POP is unsuccessful, it is often 
+useful to have the POP routine return to the calling program with the underﬂow information contained in a register. 
+We will use R5 to provide success/failure information. Figure 8.10 is a ﬂowchart showing how the POP routine could 
+be augmented, using R5 to report this success/failure information.
+
+Upon return from the POP routine, the calling program would examine R5 to determine whether the POP completed 
+successfully (R5 = 0), or not (R5 = 1).
+
+Note that since the POP routine reports success or failure in R5, whatever was stored in R5 before the POP routine 
+was called is lost. Thus, it is the job of the calling program to save the contents of R5 before the JSR instruction 
+is executed if the value stored there will be needed later. Recall from Section 8.1.3 that this is an example of a 
+caller-save situation.
+
+The resulting POP routine is shown in the following instruction sequence.
+
+POP              AND           R5,R5,#0
+                 LD            R1,EMPTY
+                 ADD           R2,R6,R1
+                 BRz           Failure
+                 LDR           R0,R6,#0
+                 ADD           R6,R6,#1
+                 RET
+Failure          ADD           R5,R5,#1
+                 RET
+EMPTY            .FILL         xC000      ;  EMPTY  <--  -x4000
+
+Overﬂow: What happens when we run out of available space and we try to push a value onto the stack? Since we cannot store 
+values where there is no space, we have an overﬂow situation. We can test for overﬂow by comparing the stack pointer with 
+(in the example of Figure 8.9) x3FFB. If they are equal, we have no place to push another value onto the stack. If OVERFLOW 
+is the label of a routine that handles the overﬂow condition, our resulting PUSH sequence would be
+
+PUSH        LD      R1,MAX
+            ADD     R2,R6,R1
+            BRz     OVERFLOW
+;
+            ADD     R6,R6,#-1
+            STR     R0,R6,#0
+;
+            RET                
+MAX         .FILL   xC005        ;  MAX  <--  negative  of  x3FFB
+
+In the same way that it is useful to have the POP routine return to the calling program with success/failure information, 
+rather than immediately jumping to the UNDERFLOW routine, it is useful to have the PUSH routine act similarly.
+
+We augment the PUSH routine with instructions to store 0 (success) or 1 (failure) in R5, depending on whether or not the push 
+completed successfully. Upon return from the PUSH routine, the calling program would examine R5 to determine whether the 
+PUSH completed successfully (R5 = 0) or not (R5 = 1).
+
+Note again that since the PUSH routine reports success or failure in R5, we have another example of a caller-save situation. 
+That is, since whatever was stored in R5 before the PUSH routine was called is lost, it is the job of the calling program to 
+save the contents of R5 before the JSR instruction is executed if the value stored in R5 will be needed later.
+
+The resulting PUSH routine is shown in the following instruction sequence.
+
+PUSH        AND      R5,R5,#0
+            LD       R1,MAX
+            ADD      R2,R6,R1
+            BRz      Failure
+            ADD      R6,R6,#-1
+            STR      R0,R6,#0
+            RET
+Failure     ADD      R5,R5,#1      
+            RET
+MAX         .FILL    xC005        ;  MAX  <--  -x3FFB
+
+The Complete Picture
+
+The POP and PUSH routines allow us to use memory locations x3FFF through x3FFB as a ﬁve-entry stack. If we wish to push a 
+value onto the stack, we simply load that value into R0 and execute JSR PUSH. To pop a value from the stack into R0, we 
+simply execute JSR POP. If we wish to change the location or the size of the stack, we adjust BASE and MAX accordingly.
+
+Before leaving this topic, we should be careful to clean up an important detail that we discussed in Section 8.1.3. The 
+subroutines PUSH and POP make use of R1 and R2, and there is no reason why the calling program would know that.
+
+Therefore, it is the job of the subroutine (callee save) to save R1 and R2 before using them, and to restore them before 
+returning to the calling program.
+
+The PUSH and POP routines also write to R5. But, as we have already pointed out, he calling program knows that the subroutine 
+will report success or failure in R5, so it is the job of the calling program to save R5 before executing the JSR instruction 
+if the value stored in R5 will be needed later. As discussed in Section 8.1.3, this is an example of caller save.
+
+The ﬁnal code for our PUSH and POP operations is shown in Figure 8.11.
+
+Recursion, a Powerful Technique When Used Appropriately
+
+Recursion is a mechanism for expressing a function in terms of itself.Somehave referred to it as picking oneself up by one’s 
+bootstraps, since at ﬁrst blush, it looks like magic—which, of course, it isn’t.
+
+When used appropriately, the expressive power of recursion is going to save us a lot of headaches. When used whimsically, 
+recursion is going to require unnecessary activity, resulting in longer execution time and wasted energy.
+
+The mechanism is so important that we will study it in greater detail later in the book after we have raised the level of 
+abstraction to programming in a high-level language. However, since a critical concept needed to understand the implementation 
+of recursion is the stack, which we have just studied, it is useful to show by means of examples just when using recursion 
+is warranted and when using it is not a good idea.
+
+We will examine two ill-advised uses of recursion. We will also examine a problem where using the expressive power of 
+recursion is very helpful.
+
+Bad Example Number 1: Factorial
+
+The simplest example to illustrate recursion is the function factorial. The equation
+
+n! = n * (n-1)!
+
+Assume the subroutine FACT (Factorial) is supplied with a positive integer n in R0 and returns with the value n! in R0. (We 
+will save 0! for an exercise at the end of the chapter.)
+
+Figure 8.12 shows a pictorial view of the recursive subroutine. We represent the subroutine FACT as a hexagon, and inside the 
+hexagon is another instance of the hexagon! We call the subroutine recursive because inside the FACT subroutine is an 
+instruction JSR FACT.
+
+The subroutine ﬁrst tests to see if n = 1. If so, we are done, since (1)! = 1. It is important to emphasize that every 
+recursive subroutine must have such an initial test to see if we should execute the recursive call. Without this test, the 
+subroutine would call itself (JSR FACT) an inﬁnite number of times! Clearly, that cannot be correct. The answer is to provide 
+a test before the recursive JSR instruction. In the case of the subroutine FACT, if R0 is 1, we are done, since 1! = 1.
+
+If n does not equal 1, we save the value in R1, so we can store n in R1, load R0 with n-1 and JSR FACT. When FACT returns 
+with (n-1)! in R0, we multiply it by n (which was stored in R1), producing n!, which we load into R0, restore R1 to the value 
+expected by the calling program, and RET.
+
+If we assume the LC-3 has a MUL instruction, the basic structure of the FACT subroutine takes the following form:
+
+FACT          ST      R1, Save1    ;  Callee  save  R1
+              ADD     R1,R0,#-1    ;  Test  if  R0=1
+              BRz     DONE         ;  If  R0=1,  R0  also  contains  (1)!,  so  we  are  done
+              ADD     R1,R0,#0     ;  Save  n  in  R1,  to  be  used  after  we  compute  (n-1)!
+              ADD     R0,R1,#-1    ;  Set  R0  to  n-1,  and  then  call  FACT
+B             JSR     FACT         ;  On  RET,  R0  will  contain  (n-1)!
+              MUL     R0,R0,R1     ;  Multiply  n  times  (n-1)!,  yielding  n!  in  R0
+DONE          LD      R1, Save1    ;  Callee  restore  R1
+              RET
+Save1         .BLKW 1
+
+Since the LC-3 does not have a MUL instruction, this will require another subroutine call, but we are ignoring that here in 
+order to focus on the essence of recursion.
+
+Unfortunately, the code we have written will not work. To see why it will not work, Figure 8.13 shows the ﬂow of instruction 
+execution as we would like it to be. The main program calls the subroutine with a JSR instruction at address A. This causes 
+the code labeled #1 to execute. At address B, the subroutine FACT calls itself with the instruction JSR FACT. This causes the 
+code labeled #2 to execute, and so forth.
+
+Note that when the main program executes the instruction JSR FACT, the return linkage A+1 is saved in R7. In the block of 
+code labeled #1, the instruction at address B (JSR FACT) stores its return linkage B+1 in R7, destroying A+1, so there is no 
+way to get back to the main program. Bad! In fact, very, very bad!
+
+We can solve this problem by pushing the address A+1 onto a stack before executing JSR FACT at address B. After we subsequently 
+return to address B+1, we can then pop the stack and load the address A+1 into R7 before we execute the instruction RET back 
+to the main program.
+  
+Also, note that the instruction ADD R1,R0,#0 in #1 loads the value n into R1, and in #2, the instruction ADD R1,R0,#0 loads 
+the value n-1 into R1, thereby wiping out the value n that had been put there by the code in #1. Thus, when the instruction 
+ﬂow gets back to #1), where the value n is needed by the instruction MUL R0,R0,R1, it is no longer there. It was previously 
+wiped out. Again, very, very bad!
+
+We can solve this problem with a stack also. That is, instead of moving the value n to R1 before loading n-1 into R0, we push 
+n onto the stack and then pop it when we need it after returning from the subroutine with (n-1)! in R0.
+
+Finally, we note that the ﬁrst instruction in our subroutine saves R1 in Save1 and the last instruction before the RET 
+restores it to R1. We do this so that from the standpoint of the calling program, the value in R1 before the subroutine is 
+the same as the value in R1 after the subroutine, even though the subroutine used R1 in performing its job. However, since 
+our subroutine is recursive, when FACT is called by the JSR instruction at address B, R1 does not contain the value it had in 
+the main program, but instead it has the value last stored in R1 by the ADD R1,R0,#0 instruction. Thus after the JSR FACT 
+instruction is executed, the ﬁrst instruction of the recursively called subroutine FACT will save that value, wiping out the 
+value that the main program had stored in R1 when it called FACT.
+
+We can solve this problem with a stack also. We simply replace the ST R1,Save1 with a push and LD R1,Save1 with a pop.
+
+If we make these changes (and if the LC-3 had a MUL opcode), the recursive subroutine works as we would like it to. The 
+resulting subroutine is shown in Figure 8.14 (with almost all instructions explained via comments):
+  
+The main program calls FACT with R0 = n. The code in #1 executes, with JSR FACT being called with R0 = n-1. At this point, 
+the stack contains the three entries pushed, as shown in Figure 8.15a. When the JSR FACT instruction in #3 executes, with 
+R0 = n-3, the stack contains the nine entries as shown in Figure 8.15b.
+
+The obvious question you should ask at this point is, “Why is this such a bad use of recursion, particularly when its 
+representation n! =n*(n-1)!is so elegant?” To answer this question, we ﬁrst note how many instructions are executed and how 
+much time is wasted pushing and popping elements oﬀ the stack. AND, the second question you should ask is, “Is there a better 
+way to compute n!?”
+
+Consider the alternative shown in Figure 8.16:
+
+Fibonacci, an Even Worse Example
+
+Another bad use of recursion is to evaluate the Fibonacci number FIB(n). The Fibonacci numbers are deﬁned for all 
+non-negative integers as follows: FIB(0)=0, FIB(1)=1, and if n > 1, FIB(n) = FIB(n-1) + FIB(n-2). The expression is 
+beautifully elegant, but the execution time is horrendous.
+
+Figure 8.17 shows a pictorial view of the recursive subroutine FIB. Note that the subroutine FIB is represented as a 
+“capital F,” and inside the capital F there are two more instances of the capital F.
+
+The recursive subroutine in Figure 8.18 computes FIB(n).
+
+As with all recursive subroutines, we ﬁrst need to test for the base cases. In this case, we AND n with xFFFE, which 
+produces a non-zero result for all n except n = 1 and n = 0. If n = 0 or 1, we are eﬀectively done. We move n into R1, 
+restore R2, R0, and R7 (actually, only R2 needs to be restored), and return.
+
+If n is not 0 or 1, we need to recursively call FIB twice, once with argument n-1 and once with argument n-2. Finally we add 
+FIB(n-1) to FIB(n-2), put the result in R1, restore R2, R0, and R7, and return.
+
+Note that the recursive subroutine FIB(n) calls FIB twice: once for FIB(n-1) and once for FIB(n-2). FIB(n-1) must call 
+FIB(n-2) and FIB(n-3), and FIB(n-2) must call FIB(n-3) and FIB(n-4). That means FIB(n-2) must be evaluated twice and FIB(n-3) 
+will have to be evaluated three times.
+
+Question: Suppose n = 10. How many times must this recursive algorithm compute the same function FIB(5)?
+
+Compare the recursive algorithm for Fibonacci (Figure 8.18) with a non- recursive algorithm, as shown in Figure 8.19. Much, 
+much faster execution time!
+
+The Maze, a Good Example
+
+The reason for shying away from using recursion to compute factorial or Fibonacci is simply that the iterative algorithms are 
+simple enough to understand without the horrendous execution time penalty of recursion. However, it is important to point out 
+that there are times when the expressive beauty of recursion is useful to attack a complicated problem. Such is the case with 
+the following problem, involving a maze: Given a maze and a starting position within the maze, write a program that determines 
+whether or not there is a way out of the maze from your starting position.
+
+A Maze: A maze can be any size, n by m. For example, Figure 8.20 illustrates a 6x6 maze.
+
+Each of the 36 cells of the maze can be characterized by whether there is a door to the north, east, south, or west, and 
+whether there is a door from the cell to the outside world. Each cell is represented by one word of memory (Figure 8.21), as 
+follows: see figure821
+
+The words are stored in what we call row major order; that is, row 1 is stored, then row 2, then row 3, etc. The complete 
+speciﬁcation of the 6 by 6 maze is shown in Figure 8.22.
+
+A Recursive Subroutine to Exit the Maze Our job is to develop an algorithm to determine whether we can exit a maze from a 
+given starting position within the maze. With all the intricate paths that our attempts can take, keeping track of all that 
+bookkeeping looks daunting. Recursion allows us to not have to keep track of the paths at all! Figure 8.23 shows a pictorial 
+view of a recursive sub- routine FIND EXIT, an algorithm for determining whether or not we can exit the maze. Note that the 
+subroutine FIND EXIT is shown as an octagon, and inside the octagon there are four more instances of octagons, indicating 
+recursive calls to FIND EXIT. If we can exit the maze, we will return from the subroutine with R1=1; if not, we will return 
+with R1=0.
+
+The algorithm works as follows: In each cell, we ﬁrst ask if there is an exit from this cell to the outside world. If yes, 
+we return the value 1 and return. If not, we ask whether we should try the cell to the north, the east, the south, or the 
+west. In order to try a cell in any direction, clearly there must be a door to the cell in that direction. Furthermore, we 
+want to be sure we do not end up in an inﬁnite loop where for example, there are doors that allow us to go north one cell, 
+and from there east one cell, and from there south one cell, and from there west one cell, putting us right back where we 
+started. To prevent situations like that from happening, we put a “breadcrumb” in each cell we visit, and we only go to a 
+cell and JSR FIND EXIT if we have not visited that cell before.
+
+Thus, our algorithm:
+a.  From our cell, we ask if we can exit. If yes, we are done. We exit with R1=1.
+b.  If not, we put a breadcrumb in our cell. Our breadcrumb is bit [15] of the word corresponding to our current cell. We set 
+    it to 1.
+c.  We ask two questions: Is there a door to the north, and have we never visited the cell to the north before? If the answer 
+    to both is yes, we set the address to the cell to the north, and JSR FIND EXIT. We set the address to the cell to the 
+    north by simply subtracting 6 from the address of the current cell. Why 6? Because the cells are stored in row major 
+    order, and the number of columns in the maze is 6.
+d.  If the answer to either question is no, or if going north resulted in failure, we ask: Is there a door to the east, and 
+    have we never visited that cell before? If the answer to both is yes, we set the address to the address of the cell to 
+    the east (by adding 1 to the address) and JSR FIND EXIT.
+e.  If going east does not get us out, we repeat the question for south, and if that does not work, then for west.
+f.  If we end up with no door to the west to a cell we have not visited, or if there is a door and we haven’t visited, but 
+    it results in failure, we are done. We cannot exit the maze from our starting position. We set R1=0 and return.
+
+Figure 8.24 shows a recursive algorithm that determines if we can exit the maze, given our starting address.
+
+The Queue
+
+Our next data structure is the queue. Recall that the property that deﬁned the concept of “stack” was LIFO, the last thing 
+we pushed onto the stack is the ﬁrst thing we pop oﬀ the stack. The deﬁning property of the abstract data type queue is FIFO. 
+FIFO stands for “First in First out.” The data structure “queue” is like a queue in a polite supermarket, or a polite ticket 
+counter. That is, the ﬁrst person in line is the ﬁrst person serviced. In the context of the data structure, this means we 
+need to keep track of two ends of the storage structure: a FRONT pointer for servicing (i.e., removing elements from the 
+front of the queue) and a REAR pointer for entering (i.e., inserting into the rear of the queue).
+
+Figure 8.25 shows a block of six sequential memory locations that have been allocated for storing elements in the queue. The 
+queue grows from x8000 to x8005. We arbitrarily assign the FRONT pointer to the location just before the ﬁrst element of the 
+queue. We assign the REAR pointer to the location containing the most recent element that was added to the queue. Let’s use 
+R3 as our FRONT pointer and R4 as our REAR pointer.
+
+Figure 8.25a shows a queue in which ﬁve values were entered into the queue. Since FRONT = x8001, the values 45 in memory 
+location x8000 and 17 in x8001 must have been removed, and the front element of the queue is 23, the value contained in x8002.
+
+Note that the values 45 and 17 are still contained in memory locations x8000 and x8001, even though they have been removed. 
+Like the stack, studied already, that is the nature of load instructions. When a value is removed by means of a load 
+instruction, what is stored in the memory location is not erased. The contents of the memory location is simply copied into 
+the destination register. However, since FRONT contains the address x8001, there is no way to load from locations x8000 and 
+x8001 as long as locations x8000 to x8005 behave like a queue—i.e., as long as the accesses are FIFO.
+
+The Basic Operations: Remove from Front, Insert at Rear
+
+Since FRONT points to the location just in front of the ﬁrst element in the queue, we remove a value by ﬁrst incrementing 
+FRONT and then loading the value stored at that incremented address. In our example, the next value to be removed is the 
+value 23, which is at the front of the queue, in memory location x8002. The following code removes 23 from the queue:
+
+ADD R3,R3,#1
+LDR R0,R3,#0
+
+Since REAR = x8004, the last value to enter the queue is 74. The values in the queue in Figure 8.25b are 2 and 74. To insert 
+another element (e.g., 10) at the back of the queue, the following code is executed:
+
+ADD       R4,R4,#1
+STR       R0,R4,#0
+
+resulting in Figure 8.25c.
+
+Wrap-Around
+
+At ﬁrst blush, it looks like we cannot insert any more elements into the queue. Not so! When we remove a value from the queue, 
+that location becomes available for storing another element. We do that by allowing the available storage locations to wrap 
+around. For example, suppose we want to add 20 to the queue. Since there is nothing stored in x8000 (recall 45 had been 
+previously removed), we can store 20 in x8000. The result is shown in Figure 8.25d.
+
+“Wrap-around” works by having our removal and insertion algorithms test the contents of FRONT and REAR for the value x8005. 
+If we wish to insert, and REAR contains x8005, we know we have reached the end of our available storage and we must see if 
+x8000 is available. If we wish to remove, we must ﬁrst see if FRONT contains the address x8005. If it does, the front of 
+the queue is in x8000.
+
+Thus, our code for remove and insert has to include a test for wrap-around. The code for remove becomes:
+
+            LD       R2,  LAST ADD    R2,R3,R2 BRnp  SKIP_1 LD       R3,FIRST
+BR
+SKIP_2
+SKIP_1       ADD    R3,R3,#1
+SKIP_2 LDR R0,R3,#0 ; R0 gets the front of the queue
+LAST
+RET
+.FILL x7FFB ; LAST contains the negative of 8005
+FIRST         .FILL  x8000
