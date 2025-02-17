@@ -145,108 +145,114 @@ underlying layers when it is important to be able to do so
 two parts of a computing system that work best when they are designed by people who take into account the capabilities and limitations
 of both
 
-12. definition of a computer? system consisting of software that directs and specifies the processing of information and the hardware that 
-performs the actual processing of information in response to what the software specifies
+25. what path will the book set you on? the path to mastery of computer hardware or computer software which will make you more capable as
+a software engineer i.e. you will be able to come up with better solutions to computing problems when you have the capability of both at your finger tips
 
-13. what piece of hardware actually does the processing in a computer? CPU
+26. what is the definition of a computer? system consisting of software that directs and specifies the processing of information and the hardware that performs the actual processing of information in response to what the software specifies
 
-14. when did the first computers show their face on planet earth? 1940s
+27. what piece of hardware actually does the processing in a computer? CPU
 
-15. what was the name of the first computer? ENIAC
+28. when did the first computers show their face on planet earth? 1940s
 
-16. what is marked about the computing devices of today and those of yesteryear? the weights have decreased tremendously, so has the power 
-consumption. the computing power has increased by many orders of magnitude
+29. what was the name of one the the first computers? ENIAC
 
-17. what has brought about this increase in computational power? integrated circuit packages have seen phenomenal improvement e.g first 
-intel microprocessor (intel 4004) contained 2300 transistors and operated at 106 KHz; one of the latest intel microprocessors Core 
-i9-13900K contains a reported 25.9 billion transistors and and can operate at a frequency of 5.8 GHz
+30. what is marked about the computing devices of today and those of yesteryear? the weights have decreased tremendously, so has the power consumption all the whilst the computing power has increased by many orders of magnitude
 
-18. what does this mean? that a computer running on on intels latest CPU today can do many more things in the time it took the first intel 
-pc to do one thing 
+31. If you want to see a picture of the ENIAC see figure1.1 (17,000 vacuum tubes, 2.4 metres high, 30 metres wide, 30 tons weight, 140kw to operate)
 
-19. what does this mean? we have computers today that seem able to understand languages people speak, recognise peoples faces which many
-seeas the magin of artificial intelligence. however, these feats are only possible because the electronic idiots are able to run simple 
-operations blazingly fast concurrently 
+32. 40 years later (in the 1980s) and many computing companies later, the burroughs A series was created. you can see a picture of it in figure 1.2 (one of the dozen or so boards 18 inch boards that comprised the machine). each board contained 50 or more integrated circuit packages. weighed about 1 ton, and required approximately 25 kw to operate 
 
-20. what two ideas are at the core of computing? all computers (fastest, slowest, cheapest, most expensive) are capable of computing 
-exactly the same things if they are given enough time and memory and problems are expressed in human language but are solved by electrons 
-moving due to voltage potentials inside the computer. this means a series of systematic transformations have to be made from a problem 
-expressed in a human language in order for the electrons to do our bidding inside a computer
+33. fast forward to today and the relative weight and power consumption of computing devices has decreased massively. the speed at which they process information has also increased enormously. they estimate that the computing power in a smartphone today is more than 4 million times the computing power of the ENIAC
 
-21. what has happened to these sequence of transformations over the last 70 years? they have been developed, refined and improved 
+34. what has brought about this increase in computational power? integrated circuit packages have seen phenomenal improvement e.g first 
+intel microprocessor in 1971 (intel 4004) contained 2300 transistors and operated at 106 KHz; one of the latest intel microprocessors Core i9-13900K contains a reported 25.9 billion transistors and and can operate at a frequency of 5.8 GHz. this factor of one million 
+since 1971 in both the number of transistors and the frequency of microprocessors has had important implications
 
-22. how do analogue machines work? produce an answer by measuring some physical quantity such as distance or voltage
+35. what are these implications? the fact that each operation can be performed in one millionth of the time it took in 1971 means that the processor can do one million things today in the time it took to do one thing in 1971. the fact that there are more than a million times as many transistors on a chip means we can do a lot more things at the same time today than we could do in 1971
 
-23. why are analogue machines difficult to work with? it is very hard to increase their accuracy 
+36. what does this result in? we have computers today that seem able to understand languages people speak, recognise peoples faces which many see as the magic of artificial intelligence. however, these magical feats are are really due to fact that electronic idiots are able to run simple operations blazingly fast concurrently 
 
-24. why did digital machines come to dominate computing? it is easy to increase their accuracy
+37. figure 1.6 shows a modern day microprocessor 
 
-25. definition of a digital machine? machines that perform computations by manipulating a fixed finite set of digits or letters 
+38. what two core ideas are presented at the end of the first chapter of the book? (a) all computers (fastest, slowest, cheapest, most expensive) are capable of computing exactly the same things if they are given enough time and memory (b) problems are expressed in human language but are solved by electrons moving due to voltage potentials inside the computer. this means a series of systematic transformations have to be made to convert a problem expressed in a human language in order for the electrons to do our bidding inside a computer
 
-26. what limitations did digital machines of yesteryear have? the mechanical or electro-mechanical devices could only perform a specific 
-type of computation
+39. what has happened to these sequence of transformations over the last 70 years? they have been developed, refined and improved 
 
-27. how are digital computers different from machines of yesteryear? when you think of a new computation, you do not have to buy or design 
-a new computer, you just give the same computer a new set of instructions to carry out the new computation
+40. Before modern computers there were many kind of calculating machines. Give an example? analog machines 
 
-28. why do we call digital computers universal computational devices? because of the point made above
+41. how do analogue machines work? produce an answer by measuring some physical quantity such as distance or voltage
 
-29. what does the study of computing involve? study the fundamentals of all computing along with learning what computation is and what can 
-be computed
+42. why are analogue machines difficult to work with? it is very hard to increase their accuracy 
 
-30. who is attributed with the idea of a universal computation device?
+43. why did digital machines (machines that perform computations by manipulating a fixed finite set of digits or letters) come to dominate computing by ? it is easy to increase their accuracy
 
-31. what did alan turing propose? that all computations could be carried out by a particular kind of machine - a turing machine
+44. what limitations did digital machines of yesteryear (adding machines or abacus) have? the mechanical or electro-mechanical devices could only perform a specific type of computation
 
-32. what do computers and turing machines have in common? they are programmable
+45. why are computers referred to as universal computation devices? when you think of a new computation, you do not have to buy or design a new computer, you just give the same computer a new set of instructions to carry out the new computation
 
-33. what implication does the answer to question 32 have? big or expensive computers cannot do anything that a small cheap computer can't
-more money will buy you an faster computer but if you have a small inexpensive laptop then you already have a universal computation device
+46. what does the study of computing involve? study the fundamentals of all computing along with learning what computation is and what can be computed
 
-34. how do we get the electrons to do our bidding inside of a computer? work through the levels of transformation for a particular problem
+47. who is attributed with the idea of a universal computation device?
 
-35. what is the first level of transformation? describe a problem in a natural language whilst avoiding ambiguity because the electronic 
-idiot would not know what to do
+48. what did alan turing propose? that all computations could be carried out by a particular kind of machine - a turing machine. he gave a mathematical description of the machine but never built one
 
-36. what is the second level of transformation? convert the problem expressed in natural language into an algorithm thereby getting rid of 
-the ambiguity inherent in natural language
+49. what was he more interested in? defining computation
 
-37. what are the three characteristics of an algorithm?
+50. Figure 1.7 shows what we call “black box” models of Turing machines that add and multiply. In each case, the operation to be performed is described in the box. The data elements on which to operate are shown as inputs to the box. The result of the operation is shown as output from the box. A black box model provides no information as to exactly how the operation is performed
 
-38. what is the 3rd level of transformation? transform the algorithm into source code using a chosen programming language
+51. what did turing propose? that every computation can be performed by some Turing machine. We call this Turing’s thesis. Although Turing’s thesis has never been proved, there does exist a lot of evidence to suggest it is true. 
 
-39. what are the two kinds of programming language that exist? high level and low level
+52. what argument did he give to support his thesis? that one way to try to construct a machine more powerful than any particular 
+turing machine was to make a machine U that could simulate all turing machines. you would simply describe to U the particular turing machine you wanted it to simulate, give U the input data, and U would compute the appropriate output. Turing then showed that there was, in fact, a Turing machine that could do this
 
-40. provide a definition for a high level language? independent of the computer from which they will execute on i.e. they are machine 
+53. what do computers and turing machines have in common? they are programmable hence can compute anything that can be computed
+
+54. what implication do the immediately above points have? big or expensive computers cannot do anything that a small cheap computer can't; more money will buy you a faster computer but if you have a small inexpensive laptop then you already have a universal computation device
+
+55. how do we get the electrons to do our bidding inside of a computer? work through the levels of transformation for a particular problem see figure 1.9
+
+56. what is the first level of transformation? describe a problem in a natural language whilst avoiding ambiguity because the electronic idiot would not know what to do
+
+57. what is the second level of transformation? convert the problem expressed in natural language into an algorithm thereby getting rid of the ambiguity inherent in natural language. an algorithm is a step by step procedure that is guaranteed to terminate
+
+58. what are the three characteristics of an algorithm? finiteness (guaranteed to terminate), definteness (each step is precisely stated), and effective computability (can be carried out by a computer)
+
+59. For every problem there are usually many diﬀerent algorithms for solving that problem. One algorithm may require the fewest steps. Another algorithm may allow some steps to be performed concurrently. A computer that allows more than one thing to be done at a time can often solve the problem in less time, even though it is likely that the total number of steps to be performed has increased.
+
+60. what is the 3rd level of transformation? transform the algorithm into source code using a chosen programming language. programming languages are mechanical languages (lacking the ambiguity of natural languages) that were invented to specify instructions to a computer
+
+61. what are the two kinds of programming language that exist? high level and low level
+
+62. Give a definition for a high level language? independent of the computer from which they will execute on i.e. they are machine 
 independent
 
-41. provide a definition for a low level langauge? tied to the computer on which the programs will execute i.e. assembly language
+63. give a definition for a low level langauge? tied to the computer on which the programs will execute i.e. assembly language
 
-42. what is the fourth level of transformation? translating the source code into the ISA of the computer that will be used to
+64. what is the fourth level of transformation? translating the source code into the ISA of the computer that will be used to
 execute the program.
 
-43. what does ISA specify? the interface between the source code and the hardware of the machine that will be used to execute the program
+65. what does ISA specify? the interface between the source code and the hardware of the machine that will be used to execute the program
 
-44. using the automobile and driver analogy, what is represents the source code, the ISA and the hardware?
+66. with regards to ISA, use the automobile and driver analogy to help better understand the concept? the human driver of a car represents the computer program represented as 0's and 1's in the computer; the car corresponds to the microprocessor hardware. the ISA of the automobile is the specification of everything the human needs to know in order to get the car to move and everything the car needs to know to carry out the tasks specified by the human driver
 
-45. what do opcode and operand mean? operand is the data value
+67. what do opcode and operand mean in relation to ISA of a computer? opcode refers to and operation the computer can perform whilst operand is an individual data value
 
-46. ISA specifies the acceptable representations for operands, what are the operands called? 
+68. ISA specifies the acceptable representations for operands, what are the operands called? data types (is a representation of an operand such that the computer can perform operations on that representation)
 
-47. ISA specifies the mechanisms that the computer can use to figure out where operands are located. what are these mechanisms called? 
+69. ISA specifies the mechanisms that the computer can use to figure out where operands are located. what are these mechanisms called? addressing modes
 
-48. are the number of opcodes, operands and addressing modes unique to each ISA?
+70. are the number of opcodes, operands and addressing modes unique to each ISA? yes
+
+71. name a few ISAs in use today? x86 by intel (currently also developed by AMD an other companies), SPARC oracle, power (IBM), arm and thumb (ARM)
+
+72. what is the name of the program that is used to translate source code into the ISA of the machine that will be responsible for 
+executing it? compiler
+
+73. what is the name of the program that translates assembly language of a computer to its ISA? assembler
+
 
 49. what else does ISA specify (apart from opcodes, operands, and addressing modes)? number of unique locations that comprise the computers 
 memory (address space) and the number of bits contained in each location (addressability)
-
-50. name a few ISAs in use today? x86 by intel (currently also developed by AMD an other companies), SPARC oracle, power (IBM), arm and 
-thumb (ARM)
-
-51. what is the name of the program that is used to translate source code into the ISA of the machine that will be responsible for 
-executing it? 
-
-52. what is the name of the program that translates assembly languaage of a computer to its ISA? assembler
 
 53. what is the 5th level of transformation? micro-architecture i.e. using the automobile analagy from earlier, it refers to what goes on 
 under the hood of a car this micro-architecture is dependent on the performance, cost and energy trade offs made by designers 

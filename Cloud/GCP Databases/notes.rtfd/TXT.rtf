@@ -9,7 +9,7 @@
 {\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid101\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}
 {\list\listtemplateid3\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid201\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid3}}
 {\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}}
-\paperw11900\paperh16840\margl1440\margr1440\vieww33400\viewh16960\viewkind0
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh16960\viewkind0
 \deftab720
 \pard\tx18529\pardeftab720\partightenfactor0
 
@@ -35,7 +35,7 @@ Ways to run databases on GCP:\
 
 \f0\b0 What are the most common enterprise databases? Microsoft sql server and oracle\
 \
-Databases can be the hardest part of an application to move as moving it may break active connections mean data can no longer be updated or written. There are also security concerns. Databases should be designed such that they are protected from unauthorised access. For some applications, defining a maintenance window and bringing the database down during that window is acceptable. For mission critical applications, downtime needs to be minimised and sometimes completely avoided.\
+Databases can be the hardest part of an application to move as moving it may break active connections meaning data can no longer be updated or written. There are also security concerns. Databases should be designed such that they are protected from unauthorised access. For some applications, defining a maintenance window and bringing the database down during that window is acceptable. For mission critical applications, downtime needs to be minimised and sometimes completely avoided.\
 \
 Between hardware, maintenance, licensing, and administration, the database tier is likely the most expensive part of an application. Moving to the cloud can reduce these costs.\
 \
@@ -64,7 +64,7 @@ Examples of database architectures:\
 \
 \pard\pardeftab720\partightenfactor0
 
-\f0\b0 \cf4 \cb1 As the internet has grown and more and more different types of clients have appeared, there has been a trend toward a service-oriented architecture. \cb3 Databases sit behind a firewall, and their functionality is encapsulated or hidden behind a service that is made available over the network. Clients don't need to know anything about the details of the database. Applications only connect to the service via HTTP and pass data back and forth using a text-based format like XML or JSON.\
+\f0\b0 \cf4 \cb1 As the internet has grown and more and different types of clients have appeared, there has been a trend toward a service-oriented architecture. \cb3 Databases sit behind a firewall, and their functionality is encapsulated or hidden behind a service that is made available over the network. Clients don't need to know anything about the details of the database. Applications only connect to the service via HTTP and pass data back and forth using a text-based format like XML or JSON.\
 
 \f1\b \cf2 \
 \pard\tx720\pardeftab720\partightenfactor0
@@ -866,21 +866,29 @@ Without effective testing, there is no way to know if your database has been mig
 \
 \pard\pardeftab720\partightenfactor0
 \cf2 {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic.png \width17780 \height8320 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 1.png \width17780 \height7600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 2.png \width17780 \height8040 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 3.png \width17780 \height6600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 4.png \width17780 \height6000 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\pard\pardeftab720\partightenfactor0
+}¬}\pard\pardeftab720\partightenfactor0
 \cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 1.png \width17780 \height7600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 2.png \width17780 \height8040 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 3.png \width17780 \height6600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 4.png \width17780 \height6000 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
 After a database server is upon and running, you want to monitor its activity to make sure there are no surprises. Google provides a web based monitoring tool with a default console for each service. There is basic vm monitoring by default, cpu usage, network traffic, and disk I/o. But these just show big picture stats. To really understand what is going on inside of a database server, you typically need to look at more metrics such as memory usage, swap usage etc.\
 \
 \pard\pardeftab720\partightenfactor0
@@ -888,109 +896,164 @@ After a database server is upon and running, you want to monitor its activity to
 }¬}\pard\pardeftab720\partightenfactor0
 \cf2 \
 \
-The ops agents collect data from the relevant service and stores it in the google cloud logging service. Once there it can be searched, filtered, nd analysed.\
+The ops agents collect data from the relevant service and stores it in the google cloud logging service. Once there it can be searched, filtered, and analysed.\
 \
  {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 6.png \width17780 \height6380 \appleattachmentpadding0 \appleembedtype0 \appleaqc
 }¬}\
 \
-{{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 7.png \width17780 \height7120 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 7.png \width17780 \height7120 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
 \
 The logs viewer provides a convenient web based interface to filter the logged data or you can export it and explore it using any other tools.\
 \
-{{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 8.png \width17780 \height8180 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 8.png \width17780 \height8180 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
 \
-{{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 9.png \width17780 \height7680 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 9.png \width17780 \height7680 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
 \
-{{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 10.png \width17780 \height8820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 10.png \width17780 \height8820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
 \
 The monitoring system analyses what resources have been created in a project and builds dashboards accordingly.\
 \
 When you have a small amount of data, you can load it directly from your environment into the target database. For large amounts of data, you should use cloud storage as a staging area. \
 \
-{{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 11.png \width17780 \height8820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 11.png \width17780 \height8820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
 \
-{{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 12.png \width17780 \height8820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 12.png \width17780 \height8820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
 \
 Transferring data into a cloud environment is not a trivial job. Multiple factors must be considered, including cost, time, offline versus online transfer options, transfer tools and technologies, and security and privacy.\
 \
 You have to decide whether to transfer the data over a network or use a hardware appliance. Several tools are available to support network transfer, when only low bandwidth is available, such as storage transfer service. Google also offers a hardware solution known as transfer appliance. Company policies may invalidate transferring data over a public internet. In that case, direct peering or cloud interconnect are possible solutions.\
 \
-{{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 13.png \width17780 \height7920 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 13.png \width17780 \height7920 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
 \
-{{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 14.png \width17780 \height6600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 14.png \width17780 \height6600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
 \
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 15.png \width17780 \height8320 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 15.png \width17780 \height8320 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
 \
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 17.png \width17780 \height8880 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 17.png \width17780 \height8880 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
 \
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 18.png \width17780 \height8880 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 18.png \width17780 \height8880 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
 \
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 19.png \width17780 \height8160 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 19.png \width17780 \height8160 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
 \
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 20.png \width17780 \height8840 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 20.png \width17780 \height8840 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
 \
 Data processing pipelines allow you to grab data from a source, alter it, and then save it to a sink or target. This is also known as an ETL job. Data processing pipelines can be written in your favourite programming language, but there are also tools that help make it easier. Cloud data fusion is one of these tools.\
 \
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 21.png \width17780 \height8840 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 22.png \width17780 \height7800 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 23.png \width17780 \height8720 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 24.png \width17780 \height8720 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 25.png \width17780 \height8720 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 26.png \width17780 \height8820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 27.png \width17780 \height8820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 28.png \width17780 \height8840 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 29.png \width17780 \height8840 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 30.png \width17780 \height8840 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 31.png \width17780 \height8840 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 32.png \width17780 \height8840 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 33.png \width17780 \height8840 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 34.png \width17780 \height8220 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 35.png \width17780 \height8220 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 21.png \width17780 \height8840 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
 \
 \pard\pardeftab720\partightenfactor0
-\cf2 Migrating a database via\'a0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 22.png \width17780 \height7800 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 23.png \width17780 \height8720 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 24.png \width17780 \height8720 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 25.png \width17780 \height8720 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 26.png \width17780 \height8820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 27.png \width17780 \height8820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 28.png \width17780 \height8840 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 29.png \width17780 \height8840 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 30.png \width17780 \height8840 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 31.png \width17780 \height8840 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 32.png \width17780 \height8840 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 33.png \width17780 \height8840 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 34.png \width17780 \height8220 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 35.png \width17780 \height8220 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+Migrating a database via\'a0
 \f1\b Database Migration Service
 \f0\b0 \'a0requires some preparation of the source database, including creating a dedicated user with replication rights, adding the\'a0\cb5 pglogical\cb3 \'a0database extension to the source database and granting rights to the schemata and tables in the database to be migrated, as well as the postgres database, to that user. Database Migration API has to be enabled before undertaking activity. Service networking API also needs to be enabled; it is required in order to be able to configure Cloud SQL to support VPC Peering and connections over a private ip-address.\
 \

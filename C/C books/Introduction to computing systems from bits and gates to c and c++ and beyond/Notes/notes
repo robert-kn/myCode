@@ -1,15 +1,5 @@
 
-CHAPTER 1
 
-There is no magic to computing. A computer is a determinisstic system. Everytime we hit it over the head in the same
-way and in the same place (provided of course we give it the same starting conditions), we get the same response. A 
-computer is not an electronic genius, infact it is an electronic idiot doing exactly what we tell it to do.
-
-What appears to be a very complex organism is really just a very large, systematically interconnected collections of
-very simple parts. This book will introduce those simple parts in a step by step manner and build the interconnected
-structure that is known by the name computer.
-
-Two themes permeate this book:
 
 (a) the notion of abstraction: it is a technique of establishing a simpler way for a person to interact with a system
     removing details that are unnecessary for interaction with the system. To be successful with the notion of abstraction
