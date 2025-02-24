@@ -1,4 +1,4 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2761
+{\rtf1\ansi\ansicpg1252\cocoartf2821
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
 {\colortbl;\red255\green255\blue255;\red63\green63\blue63;\red255\green255\blue255;}
 {\*\expandedcolortbl;;\cssrgb\c31373\c31373\c31373;\cssrgb\c100000\c100000\c100000;}
@@ -14,17 +14,17 @@
 \pard\pardeftab720\partightenfactor0
 
 \f0\fs32 \cf2 \cb3 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 1. Your organization has a busy transactional Cloud SQL for MySQL instance. Your analytics team needs access to the data so they can build monthly sales reports. You need to provide data access to the analytics team without adversely affecting performance. What should you do?\
+1. Your organization has a busy transactional Cloud SQL for MySQL instance. Your analytics team needs access to the data so they can build monthly sales reports. You need to provide data access to the analytics team without adversely affecting performance. What should you do?\
 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls1\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Create a read replica of the database, provide the database IP address, username, and password to the analytics team, and grant read access to required tables to the team.\cb1 \
-\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Create a read replica of the database, enable the cloudsql.iam_authentication flag on the replica, and grant read access to required tables to the analytics team.\cb1 \
-\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Enable the cloudsql.iam_authentication flag on the primary database instance, and grant read access to required tables to the analytics team.\cb1 \
-\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Provide the database IP address, username, and password of the primary database instance to the analytics, team, and grant read access to required tables to the team.\cb1 \
+\ls1\ilvl0\cf2 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+A.\'a0Create a read replica of the database, provide the database IP address, username, and password to the analytics team, and grant read access to required tables to the team.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Create a read replica of the database, enable the cloudsql.iam_authentication flag on the replica, and grant read access to required tables to the analytics team.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Enable the cloudsql.iam_authentication flag on the primary database instance, and grant read access to required tables to the analytics team.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Provide the database IP address, username, and password of the primary database instance to the analytics, team, and grant read access to required tables to the team.\cb1 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \cf2 \
 Answer B\
@@ -191,7 +191,7 @@ D Migrate the MySQL, Microsoft SQL Server, and PostgreSQL databases to Cloud SQL
 Answer D\
 \
 \
-16. You use Python scripts to generate weekly SQL reports to assess the state of your databases and determine whether you need to reorganize tables or run statistics. You want to automate this report but need to minimize \
+16. You use Python scripts to generate weekly SQL reports to assess the state of your databases and determine whether you need to reorganise tables or run statistics. You want to automate this report but need to minimise \
 operational costs and overhead. What should you do?\
 \
 A. Create a Cloud Function, and call the Cloud Function using Cloud Scheduler. \
@@ -202,20 +202,20 @@ D Create a Cloud Composer instance, and create a directed acyclic graph (DAG).\
 Answer A\
 \
 \
-17. \cf2 \cb3 \strokec2 You are writing an application that will run on Cloud Run and require a database running in the Cloud SQL managed service. You want to secure this instance so that it only receives connections from applications running in your \
+17. \cb3 You are writing an application that will run on Cloud Run and require a database running in the Cloud SQL managed service. You want to secure this instance so that it only receives connections from applications running in your \
 VPC environment in Google Cloud. What should you do?\
 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls2\ilvl0\cf2 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a01. Create your instance with a specified external (public) IP address.\cb1 \uc0\u8232 \cb3 2. Choose the VPC and create firewall rules to allow only connections from Cloud Run into your instance.\cb1 \uc0\u8232 \cb3 3. Use Cloud SQL Auth proxy to connect to the instance.\cb1 \
-\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a01. Create your instance with a specified external (public) IP address.\cb1 \uc0\u8232 \cb3 2. Choose the VPC and create firewall rules to allow only connections from Cloud Run into your instance.\cb1 \uc0\u8232 \cb3 3. Connect to the instance using a connection pool to best manage connections to the instance.\cb1 \
-\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a01. Create your instance with a specified internal (private) IP address.\cb1 \uc0\u8232 \cb3 2. Choose the VPC with private service connection configured.\cb1 \uc0\u8232 \cb3 3. Configure the Serverless VPC Access connector in the same VPC network as your Cloud SQL instance.\cb1 \uc0\u8232 \cb3 4. Use Cloud SQL Auth proxy to connect to the instance.\cb1 \
-\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a01. Create your instance with a specified internal (private) IP address.\cb1 \uc0\u8232 \cb3 2. Choose the VPC with private service connection configured.\cb1 \uc0\u8232 \cb3 3. Configure the Serverless VPC Access connector in the same VPC network as your Cloud SQL instance.\cb1 \uc0\u8232 \cb3 4. Connect to the instance using a connection pool to best manage connections to the instance.\cb1 \
+\ls2\ilvl0\cf2 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+A.\'a01. Create your instance with a specified external (public) IP address.\cb1 \uc0\u8232 \cb3 2. Choose the VPC and create firewall rules to allow only connections from Cloud Run into your instance.\cb1 \uc0\u8232 \cb3 3. Use Cloud SQL Auth proxy to connect to the instance.\cb1 \
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a01. Create your instance with a specified external (public) IP address.\cb1 \uc0\u8232 \cb3 2. Choose the VPC and create firewall rules to allow only connections from Cloud Run into your instance.\cb1 \uc0\u8232 \cb3 3. Connect to the instance using a connection pool to best manage connections to the instance.\cb1 \
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a01. Create your instance with a specified internal (private) IP address.\cb1 \uc0\u8232 \cb3 2. Choose the VPC with private service connection configured.\cb1 \uc0\u8232 \cb3 3. Configure the Serverless VPC Access connector in the same VPC network as your Cloud SQL instance.\cb1 \uc0\u8232 \cb3 4. Use Cloud SQL Auth proxy to connect to the instance.\cb1 \
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a01. Create your instance with a specified internal (private) IP address.\cb1 \uc0\u8232 \cb3 2. Choose the VPC with private service connection configured.\cb1 \uc0\u8232 \cb3 3. Configure the Serverless VPC Access connector in the same VPC network as your Cloud SQL instance.\cb1 \uc0\u8232 \cb3 4. Connect to the instance using a connection pool to best manage connections to the instance.\cb1 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\cf2 \strokec2 \
+\cf2 \
 \
 Answer D\
 \
@@ -230,7 +230,7 @@ D Use Datastream to complete the migration.\
 Answer A\
 \
 \
-19.  You are working on a new centralized inventory management system to track items available in 200 stores, which each have 500 GB of data. You are planning a gradual rollout of the system to a few stores each week. You need to design an SQL database architecture that minimizes costs and user disruption during each regional rollout and can scale up or down on nights and holidays. What should you do?\
+19.  You are working on a new centralised inventory management system to track items available in 200 stores, which each have 500 GB of data. You are planning a gradual rollout of the system to a few stores each week. You need to design an SQL database architecture that minimises costs and user disruption during each regional rollout and can scale up or down on nights and holidays. What should you do?\
 \
 A. Use sharded Cloud SQL instances with one or more stores per database instance. \
 B Use Oracle Real Application Cluster (RAC) databases on Bare Metal Solution for Oracle. \
@@ -239,9 +239,9 @@ D Use Cloud Spanner with a custom autoscaling solution.\
 \
 Answer D\
 \
-20.  Your organization stores marketing data such as customer preferences and purchase history on Bigtable. The consumers of this database are predominantly data analysts and operations users. You receive a service ticket from the database operations department citing poor database performance between 9 AM-10 AM every day. The application team has confirmed no latency from their logs. A new cohort of pilot users that is testing a dataset loaded from a third-party data provider is experiencing poor database performance. Other users are not affected. You need to troubleshoot the issue. What should you do?\
+20.  Your organisation stores marketing data such as customer preferences and purchase history on Bigtable. The consumers of this database are predominantly data analysts and operations users. You receive a service ticket from the database operations department citing poor database performance between 9 AM-10 AM every day. The application team has confirmed no latency from their logs. A new cohort of pilot users that is testing a dataset loaded from a third-party data provider is experiencing poor database performance. Other users are not affected. You need to troubleshoot the issue. What should you do?\
 \
-A. Use Key Visualizer for Bigtable. \
+A. Use Key Visualiser for Bigtable. \
 B Isolate the data analysts and operations user groups to use different Bigtable instances. \
 C Check the Cloud Monitoring table/bytes_used metric from Bigtable. \
 D Add more nodes to the Bigtable cluster.\
@@ -261,7 +261,7 @@ D Create the instances using the Google Cloud Console UI.\
 Answer A\
 \
 \
-22. You are migrating a telehealth care company's on-premises data center to Google Cloud. The migration plan specifies: PostgreSQL databases must be migrated to a multi-region backup configuration with cross-region replicas to allow restore and failover in multiple scenarios. MySQL databases handle personally identifiable information (PII) and require data residency compliance at the regional level. You want to set up the environment with minimal administrative effort. What should you do?\
+22. You are migrating a Telehealth care company's on-premises data center to Google Cloud. The migration plan specifies: PostgreSQL databases must be migrated to a multi-region backup configuration with cross-region replicas to allow restore and failover in multiple scenarios. MySQL databases handle personally identifiable information (PII) and require data residency compliance at the regional level. You want to set up the environment with minimal administrative effort. What should you do?\
 \
 \
 A. Set up Pub/Sub to ingest data from Cloud Logging, send an alert every time a new database instance is created, and manually validate the region. \
@@ -411,18 +411,18 @@ https://cloud.google.com/spanner/docs/instance-configurations#multi-region-best-
 35. Your organization has an existing app that just went viral. The app uses a Cloud SQL for MySQL backend database that is experiencing slow disk performance while using hard disk drives (HDDs). You need to improve performance and reduce disk I/O wait times. What should you do?\
 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls3\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Export the data from the existing instance, and import the data into a new instance with solid-state drives (SSDs).\cb1 \
-\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Edit the instance to change the storage type from HDD to SSD.\cb1 \
-\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Create a high availability (HA) failover instance with SSDs, and perform a failover to the new instance.\cb1 \
-\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Create a read replica of the instance with SSDs, and perform a failover to the new instanc\
-\ls3\ilvl0\kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\
+\ls3\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+A.\'a0Export the data from the existing instance, and import the data into a new instance with solid-state drives (SSDs).\cb1 \
+\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Edit the instance to change the storage type from HDD to SSD.\cb1 \
+\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Create a high availability (HA) failover instance with SSDs, and perform a failover to the new instance.\cb1 \
+\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Create a read replica of the instance with SSDs, and perform a failover to the new instanc\
+\ls3\ilvl0\kerning1\expnd0\expndtw0 		\
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \cf2 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Answer A\
+Answer A\
 \
 \
 36. Your hotel booking company is expanding into Country A, where personally identifiable information (PII) must comply with regional data residency requirements and audits. You need to isolate customer data in Country A from the rest of the customer data. You want to design a multi-tenancy strategy to efficiently manage costs and operations. What should you do?\
@@ -431,8 +431,7 @@ A. Apply a schema data management pattern. \
 B Apply a table data management pattern. \
 C Apply an instance data management pattern. \
 D Apply a database data management pattern.\cb1 \
-\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\cf2 \strokec2 \
+\
 Answer C\
 \
 https://cloud.google.com/solutions/implementing-multi-tenancy-cloud-spanner#multi-tenancy-%20%20data-management-patterns\
@@ -466,18 +465,18 @@ https://cloud.google.com/sql/docs/mysql/connect-auth-proxy#troubleshooting%20C%2
 \
 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls4\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Identify whether the database has over 512 tables.\cb1 \
-\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Identify all tables that do not have a primary key.\cb1 \
-\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Identity all tables that do not have at least one foreign key.\cb1 \
-\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Identify whether the source database is encrypted using pgcrypto extension.\cb1 \
-\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 E.\'a0Identify whether the source database uses customer-managed encryption keys (CMEK).\cb1 \
+\ls4\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+A.\'a0Identify whether the database has over 512 tables.\cb1 \
+\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Identify all tables that do not have a primary key.\cb1 \
+\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Identity all tables that do not have at least one foreign key.\cb1 \
+\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Identify whether the source database is encrypted using pgcrypto extension.\cb1 \
+\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+E.\'a0Identify whether the source database uses customer-managed encryption keys (CMEK).\cb1 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\cf2 \strokec2 \
+\cf2 \
 Answer B and E\
 \
 \
@@ -520,34 +519,34 @@ https://firebase.google.com/docs/firestore/manage-data/enable-offline\
 43. An analytics team needs to read data out of Cloud SQL for SQL Server and update a table in Cloud Spanner. You need to create a service account and grant least privilege access using predefined roles. What roles should you assign to the service account?\
 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls5\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0roles/cloudsql.viewer and roles/spanner.databaseUser\cb1 \
-\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0roles/cloudsql.editor and roles/spanner.admin\cb1 \
-\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0roles/cloudsql.client and roles/spanner.databaseReader\cb1 \
-\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0roles/cloudsql.instanceUser and roles/spanner.databaseUser\cb1 \
+\ls5\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+A.\'a0roles/cloudsql.viewer and roles/spanner.databaseUser\cb1 \
+\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0roles/cloudsql.editor and roles/spanner.admin\cb1 \
+\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0roles/cloudsql.client and roles/spanner.databaseReader\cb1 \
+\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0roles/cloudsql.instanceUser and roles/spanner.databaseUser\cb1 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\cf2 \strokec2 \
+\cf2 \
 Answer A\
 \
 \
 44. You want to migrate an on-premises 100 TB Microsoft SQL Server database to Google Cloud over a 1 Gbps network link. You have 48 hours allowed downtime to migrate this database. What should you do? (Choose two.)\
 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls6\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Use a change data capture (CDC) migration strategy.\cb1 \
-\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Move the physical database servers from on-premises to Google Cloud.\cb1 \
-\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Keep the network bandwidth at 1 Gbps, and then perform an offline data migration.\cb1 \
-\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Increase the network bandwidth to 2 Gbps, and then perform an offline data migration.\cb1 \
-\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 E.\'a0Increase the network bandwidth to 10 Gbps, and then perform an offline data migration.\cb1 \
+\ls6\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+A.\'a0Use a change data capture (CDC) migration strategy.\cb1 \
+\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Move the physical database servers from on-premises to Google Cloud.\cb1 \
+\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Keep the network bandwidth at 1 Gbps, and then perform an offline data migration.\cb1 \
+\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Increase the network bandwidth to 2 Gbps, and then perform an offline data migration.\cb1 \
+\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+E.\'a0Increase the network bandwidth to 10 Gbps, and then perform an offline data migration.\cb1 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\cf2 \strokec2 \
+\cf2 \
 Answer A and E\
 \
 \

@@ -1,4 +1,4 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2761
+{\rtf1\ansi\ansicpg1252\cocoartf2821
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;\f1\fswiss\fcharset0 Helvetica;\f2\fswiss\fcharset0 Helvetica-Bold;
 }
 {\colortbl;\red255\green255\blue255;\red63\green63\blue63;\red255\green255\blue255;\red37\green154\blue53;
@@ -13,10 +13,10 @@
 {\list\listtemplateid6\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{none\}}{\leveltext\leveltemplateid501\'00;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid6}
 {\list\listtemplateid7\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{none\}}{\leveltext\leveltemplateid601\'00;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid7}}
 {\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}{\listoverride\listid4\listoverridecount0\ls4}{\listoverride\listid5\listoverridecount0\ls5}{\listoverride\listid6\listoverridecount0\ls6}{\listoverride\listid7\listoverridecount0\ls7}}
-\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh18520\viewkind0
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh16960\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f0\fs48 \cf0 1. You work in the logistics department. Your data analysis team needs daily extracts from Cloud SQL for MySQL to train a machine learning model. The model will be used to optimize next-day routes. You need to export the data in CSV format. You want to follow Google-recommended practices. What should you do?\
+\f0\fs48 \cf0 1. You work in the logistics department. Your data analysis team needs daily extracts from Cloud SQL for MySQL to train a machine learning model. The model will be used to optimise next-day routes. You need to export the data in CSV format. You want to follow Google-recommended practices. What should you do?\
 \
 A. Use Cloud Scheduler to trigger a Cloud Function that will run a select * from table(s) query to call the cloudsql.instances.export API. \
 B Use Cloud Scheduler to trigger a Cloud Function through Pub/Sub to call the cloudsql.instances.export API. \
@@ -41,16 +41,16 @@ Answer A and B\
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \ls1\ilvl0
 \f1\fs32 \cf2 \cb3 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Take no backups, and turn off transaction log retention.\cb1 \
-\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Take one manual backup per day, and turn off transaction log retention.\cb1 \
-\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Turn on automated backup, and turn off transaction log retention.\cb1 \
-\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Turn on automated backup, and turn on transaction log retention.\cb1 \
+A.\'a0Take no backups, and turn off transaction log retention.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Take one manual backup per day, and turn off transaction log retention.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Turn on automated backup, and turn off transaction log retention.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Turn on automated backup, and turn on transaction log retention.\cb1 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f0\fs48 \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+\f0\fs48 \cf0 \kerning1\expnd0\expndtw0 \
 Answer C\
 \
 https://cloud.google.com/sql/docs/mysql/backup-recovery/backups\
@@ -60,16 +60,16 @@ https://cloud.google.com/sql/docs/mysql/backup-recovery/backups\
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \ls2\ilvl0
 \f1\fs32 \cf2 \cb3 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Configure Firestore, and modify your application to offload queries.\cb1 \
-\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Configure Bigtable, and modify your application to offload queries.\cb1 \
-\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Configure Cloud SQL for PostgreSQL read replicas to offload queries.\cb1 \
-\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Configure Memorystore, and modify your application to offload queries.\cb1 \
+A.\'a0Configure Firestore, and modify your application to offload queries.\cb1 \
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Configure Bigtable, and modify your application to offload queries.\cb1 \
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Configure Cloud SQL for PostgreSQL read replicas to offload queries.\cb1 \
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Configure Memorystore, and modify your application to offload queries.\cb1 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f0\fs48 \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+\f0\fs48 \cf0 \kerning1\expnd0\expndtw0 \
 Answer D\
 \
 \
@@ -78,19 +78,19 @@ Answer D\
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \ls3\ilvl0
 \f1\fs32 \cf2 \cb3 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Recommend solid-state drives (SSD).\cb1 \
-\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Recommend splitting the Bigtable instance into two instances in order to load balance the concurrent reads.\cb1 \
-\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Recommend hard disk drives (HDD).\cb1 \
-\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Recommend mixed storage types.\cb1 \
+A.\'a0Recommend solid-state drives (SSD).\cb1 \
+\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Recommend splitting the Bigtable instance into two instances in order to load balance the concurrent reads.\cb1 \
+\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Recommend hard disk drives (HDD).\cb1 \
+\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Recommend mixed storage types.\cb1 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f0\fs48 \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+\f0\fs48 \cf0 \kerning1\expnd0\expndtw0 \
 Answer A\
 \
-6. You need to migrate existing databases from Microsoft SQL Server 2016 Standard Edition on a single Windows Server 2019 Datacenter Edition to a single Cloud SQL for SQL Server instance. During the discovery phase of your project, you notice that your on-premises server peaks at around 25,000 read IOPS. You need to ensure that your Cloud SQL instance is sized appropriately to maximize read performance. What should you do?\
+6. You need to migrate existing databases from Microsoft SQL Server 2016 Standard Edition on a single Windows Server 2019 Datacenter Edition to a single Cloud SQL for SQL Server instance. During the discovery phase of your project, you notice that your on-premises server peaks at around 25,000 read IOPS. You need to ensure that your Cloud SQL instance is sized appropriately to maximise read performance. What should you do?\
 \
 A. Create a SQL Server 2019 Standard on Standard machine type with 4 vCPUs, 15 GB of RAM, and 800 GB of solid-state drive (SSD). \
 B Create a SQL Server 2019 Standard on High Memory machine type with 16 vCPUs, 104 GB of RAM, and 4 TB of SSD. \
@@ -101,7 +101,7 @@ Answer B\
 \
 https://cloud.google.com/compute/docs/disks/performance#pd-balanced\
 \
-7. Your application follows a microservices architecture and uses a single large Cloud SQL instance, which is starting to have performance issues as your application grows. in the Cloud Monitoring dashboard, the CPU utilization looks normal You want to follow Google-recommended practices to resolve and prevent these performance issues while avoiding any major refactoring. What should you do?\
+7. Your application follows a micro-services architecture and uses a single large Cloud SQL instance, which is starting to have performance issues as your application grows. in the Cloud Monitoring dashboard, the CPU utilisation looks normal You want to follow Google-recommended practices to resolve and prevent these performance issues while avoiding any major refactoring. What should you do?\
 \
 A. Use many smaller Cloud SQL instances. \
 B Use Cloud Spanner instead of Cloud SQL. \
@@ -153,7 +153,7 @@ D Use Bigtable with default encryption.\
 \
 Answer B\
 \
-12. Your organization has a critical business app that is running with a Cloud SQL for MySQL backend database. Your company wants to build the most fault-tolerant and highly available solution possible. You need to ensure that the application database can survive a zonal and regional failure with a primary region of us-central1 and the backup region of us-east1. What should you do?\
+12. Your organisation has a critical business app that is running with a Cloud SQL for MySQL backend database. Your company wants to build the most fault-tolerant and highly available solution possible. You need to ensure that the application database can survive a zonal and regional failure with a primary region of us-central1 and the backup region of us-east1. What should you do?\
 \
 A. Provision a Cloud SQL for MySQL instance in us-central1-a. \
 Create a multiple-zone instance in us-west1-b. \
@@ -180,16 +180,16 @@ https://cloud.google.com/sql/docs/sqlserver/intro-to-cloud-sql-disaster-recovery
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \ls4\ilvl0
 \f1\fs32 \cf2 \cb3 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Create a Google Kubernetes Engine (GKE) cluster, install MySQL on the cluster, and then import the dump file.\cb1 \
-\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Use the mysqldump utility to take a backup of the existing on-premises database, and then import it into Cloud SQL.\cb1 \
-\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Create a Compute Engine VM, install MySQL on the VM, and then import the dump file.\cb1 \
-\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Create an external replica, and use Cloud SQL to synchronize the data to the replica.\cb1 \
+A.\'a0Create a Google Kubernetes Engine (GKE) cluster, install MySQL on the cluster, and then import the dump file.\cb1 \
+\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Use the mysqldump utility to take a backup of the existing on-premises database, and then import it into Cloud SQL.\cb1 \
+\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Create a Compute Engine VM, install MySQL on the VM, and then import the dump file.\cb1 \
+\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Create an external replica, and use Cloud SQL to synchronize the data to the replica.\cb1 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f0\fs48 \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+\f0\fs48 \cf0 \kerning1\expnd0\expndtw0 \
 Answer D\
 \
 https://cloud.google.com/sql/docs/mysql/replication/configure-replication-from-external\
@@ -199,16 +199,16 @@ https://cloud.google.com/sql/docs/mysql/replication/configure-replication-from-e
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \ls5\ilvl0
 \f1\fs32 \cf2 \cb3 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Close idle connections or restart the instance before beginning the import operation.\cb1 \
-\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Increase the amount of memory allocated to your instance.\cb1 \
-\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Ensure that the service account has the Storage Admin role.\cb1 \
-\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Increase the number of CPUs for the instance to ensure that it can handle the additional import operation.\cb1 \
+A.\'a0Close idle connections or restart the instance before beginning the import operation.\cb1 \
+\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Increase the amount of memory allocated to your instance.\cb1 \
+\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Ensure that the service account has the Storage Admin role.\cb1 \
+\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Increase the number of CPUs for the instance to ensure that it can handle the additional import operation.\cb1 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f0\fs48 \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+\f0\fs48 \cf0 \kerning1\expnd0\expndtw0 \
 Answer A\
 \
 https://cloud.google.com/sql/docs/mysql/import-export#troubleshooting\
@@ -426,7 +426,7 @@ Answer A\
 https://cloud.google.com/memorystore/docs/redis/memorystore-for-redis-overview\
 \
 \
-33. You are building an Android game that needs to store data on a Google Cloud serverless database. The database will log user activity, store user preferences, and receive in-game updates. The target audience resides in developing countries that have intermittent internet connectivity. You need to ensure that the game can synchronize game data to the backend database whenever an internet network is available. What should you do?\
+33. You are building an Android game that needs to store data on a Google Cloud serverless database. The database will log user activity, store user preferences, and receive in-game updates. The target audience resides in developing countries that have intermittent internet connectivity. You need to ensure that the game can synchronise game data to the backend database whenever an internet network is available. What should you do?\
 \
 A. Use Cloud SQL with an external (public) IP address. \
 B Use an in-app embedded database. \
@@ -519,19 +519,19 @@ https://cloud.google.com/bigtable/docs/replication-settings#regional-failover\
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \ls6\ilvl0
 \f1\fs32 \cf2 \cb3 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Use external server replication.\cb1 \
-\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Use Data Migration Service.\cb1 \
-\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Use Cloud SQL for MySQL external replica.\'a0
-\f2\b\fs24 \cf3 \cb4 \strokec3 Most Voted
-\f1\b0\fs32 \cf2 \cb1 \strokec2 \
-\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Use the mysqldump utility and binary logs.\cb1 \
+A.\'a0Use external server replication.\cb1 \
+\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Use Data Migration Service.\cb1 \
+\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Use Cloud SQL for MySQL external replica
+\f2\b\fs24 \cf3 \cb4 d
+\f1\b0\fs32 \cf2 \cb1 \
+\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Use the mysqldump utility and binary logs.\cb1 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f0\fs48 \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
-Answer B\
+\f0\fs48 \cf0 \kerning1\expnd0\expndtw0 \
+Answer C\
 \
 \
 \
@@ -540,16 +540,16 @@ Answer B\
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \ls7\ilvl0
 \f1\fs32 \cf2 \cb3 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Use Cloud SQL serverless exports.\cb1 \
-\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Create a read replica, and then use the mysqldump utility to export each table.\cb1 \
-\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Clone the Cloud SQL instance, and then use the mysqldump utlity to export the data.\cb1 \
-\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Use the mysqldump utility on the primary database instance to export the backup.\cb1 \
+A.\'a0Use Cloud SQL serverless exports.\cb1 \
+\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Create a read replica, and then use the mysqldump utility to export each table.\cb1 \
+\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Clone the Cloud SQL instance, and then use the mysqldump utlity to export the data.\cb1 \
+\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Use the mysqldump utility on the primary database instance to export the backup.\cb1 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f0\fs48 \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+\f0\fs48 \cf0 \kerning1\expnd0\expndtw0 \
 Answer A\
 \
 https://cloud.google.com/blog/products/databases/introducing-cloud-sql-serverless-exports\

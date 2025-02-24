@@ -1,0 +1,72 @@
+chapter 1
+
+1.1   Explain the ﬁrst of the two important ideas stated in Section 1.5.
+
+all computers regardless of size and cost are capable of computing the same things if they are given enough time and memory
+
+1.2 Can a higher-level programming language instruct a computer to compute more than a lower-level programming language? no
+
+1.3 What diﬃculty with analog computers encourages computer designers to use digital designs? very hard to improve accuracy of analog
+machines
+
+1.4 Name one characteristic of natural languages that prevents them from being used as programming languages. filled with ambiguity
+
+1.6 Write a statement in a natural language, and oﬀer two diﬀerent interpretations of that statement.
+
+time flies like an arrow
+
+a. time literally flying like an arrow does when it is released from an archers bow
+b. time passes by so quickly without being noticeable
+
+1.9 Are natural languages capable of expressing algorithms? they can if phrased in a way that is definite and lacks ambiguity
+
+1.10 Name three characteristics of algorithms. Brieﬂy explain each of these three characteristics. effective computability, 
+definiteness, finiteness
+
+1.13 Two computers, A and B, are identical except for the fact that A has a subtract instruction and B does not. Both have add instructions. Both have instructions that can take a value and produce the negative of that value. Which computer is able to solve more problems, A or B? Prove your result.
+
+neither; both can solve the same problems because B can do subtraction by producing the negative of a number to be subtracted and 
+then proceed to add it to the second number thereby yielding the same result as A
+
+1.15 Identify one advantage of programming in a higher-level language compared to a lower-level language. Identify one disadvantage.
+
+since higher level languages abstract the hardware details at a higher level, building of software is much quicker. they are also easier to read and deduce what is going on. require fewer instructions to do the same amount of work
+
+Disadvantages of a higher level language: Each instruction has less control over the underlying hardware that actually performs the computation that the program frequently executes less efficiently.
+
+1.16 Name at least three things speciﬁed by an ISA.
+
+opcodes, operands, address modes (how to find the operands in memory), addressability (how many bits per memory space), address
+space
+
+1.17 Brieﬂy describe the diﬀerence between an ISA and a microarchitecture.
+
+An ISA describes the interface to the computer from the perspective of the 0s and 1s of the program. For example, it describes the operations, data types, and addressing modes a programmer can use on that particular computer. It doesn’t specify the actual physical implementation. The microarchitecture does that. Using the car analogy, the ISA is what the driver sees, and the microarchitecture is what goes on under the hood. 
+
+1.18 How many ISAs are normally implemented by a single microarchitecture? one 
+
+Conversely, how many microarchitectures could exist for a single ISA? many
+
+1.19 List the levels of transformation and name an example for each level.
+
+(a)  Problem: For example, what is the sum of the ten smallest positive integers.
+(b)  Algorithm: Any procedure is fine as long as it has definiteness, effective computability, and finiteness.
+(c)  Language: For example, C, C++, Fortran, IA-32 Assembly Language.
+(d)  ISA: For example, IA-32, PowerPC, Alpha, SPARC.
+(e)  Microarchitecture: For example, Pentium III, Compaq 21064.
+(f)  Circuits: For example, a circuit to add two numbers together.
+(g)  Devices: For example, CMOS, NMOS, gallium arsenide.
+
+1.20  The levels of transformation in Figure 1.9 are often referred to as levels of abstraction. Is that a reasonable characterization? If yes, give an example. If no, why not? yes because each level represents a higher degree of abstraction from the physical hardware to the more conceptual software layers, allowing for a clearer understanding of how information is processed and transformed at different stages
+
+1.21 Say you go to the store and buy some word processing software. What form is the software actually in? Is it in a high-level programming language? Is it in assembly language? Is it in the ISA of the computer on which you’ll run it? Justify your answer.
+
+It is in the ISA of the computer that will run it. We know this because if the word procesing software were in a high- or low-level programming language, then the user would need to compile it or assemble it before using it. This never happens. The user just needs to copy the files to run the program, so it must already be in the correct machine language, or ISA.
+
+1.22 Suppose you were given a task at one of the transformation levels shown in Figure 1.9, and required to transform it to the level just below. At which level would it be most diﬃcult to perform the transformation to the next lower level? Why?
+
+probably from the ISA -> microarchitecture because I would need to physically implement the ISA in order to be able to run the program on the hardware
+
+1.23 Why is an ISA unlikely to change between successive generations of microarchitectures that implement it? For example, why would Intel want to make certain that the ISA implemented by the Pentium III is the same as the one implemented by the Pentium II? Hint: When you upgrade your computer (or buy one with a newer CPU), do you need to throw out all your old software?
+
+ISA’s don’t change much between successive generations, because of the need for backward compatibility. You’d like your new computer to still run all your old software.

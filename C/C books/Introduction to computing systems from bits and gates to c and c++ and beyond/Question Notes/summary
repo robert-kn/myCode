@@ -90,23 +90,17 @@ information processed by computers is therefore encoded as 0's and 1's. you will
 5. what is meant by all information processed by computers is encoded in 0's and 1's? each piece of information has a code point made up
 of 1's and 0's
 
-6. what is the lc-3? it is a microprocessor that has all the important characteristics of real microprocessors without being so complicated
-that it gets in the way of my understanding. so it is a piece of hardware excet that it doesn't exist hence when you write code in assembly
-language or machine language for the lc3 processor, you will need a simulator to see what would happen in the registers and memoy of a 
-real lc3 during the execution of a program. all that exists is the ISA and microarchitecture which would implement the ISA
+6. what is the lc-3? it is a microprocessor that has all the important characteristics of real microprocessors without being so complicated that it gets in the way of my understanding. so it is a piece of hardware except that it doesn't exist hence when you write code in assembly language or machine language for the lc3 processor, you will need a simulator to see what would happen in the registers and memory of a real lc3 during the execution of a program. all that exists is the ISA and microarchitecture which would implement the ISA
 
-7. what do high level languages enable programmers to do? effectively develop complex sofware by abstracting away the details of the 
-underlying hardware
+7. what do high level languages enable programmers to do? effectively develop complex sofware by abstracting away the details of the underlying hardware
 
 8. what are the two recurring themes in the book? abstraction and not separating hardware and software layers of a computer
 
 9. define abstraction? technique of establishing a simpler way to interact with a system
 
-10. what is the premise that allows us to use abstraction effectively? allows not getting bogged down in the details of a system when 
-everything is working fine; establishes a simpler way for a person to interect with a system
+10. what is the premise that allows us to use abstraction effectively? allows not getting bogged down in the details of a system when everything is working fine; establishes a simpler way for a person to interect with a system
 
-11. why is abstraction favoured? it is a productivity enhancer as i can deal with a situation at a higher level focusing on the essential
-apects whilst keeping component ideas in the background
+11. why is abstraction favoured? it is a productivity enhancer as i can deal with a situation at a higher level focusing on the essential aspects whilst keeping component ideas in the background
 
 12. when the detail is not working fine, what must you be able to do? unabstract i.e. go from the abstraction back to its component parts
 
@@ -114,39 +108,27 @@ apects whilst keeping component ideas in the background
 
 14. what do transistors combine to form? logic gates 
 
-15. what do opportunity do logic gates provide? the ability to think in 1's and 0's instead of varying voltages across the transistor 
-wires
+15. what do opportunity do logic gates provide? the ability to think in 1's and 0's instead of varying voltages across the transistor wires
 
 16. what does a combination of logic gates produce? a logic circuit - a further abstraction
 
-17. what putting together logic circuits, should a designer be thinking of the internals of each individual gate or treat each gate as A
-component? treat each gate as a component as thinking of the internals of each gate would slow down the process of designing the logic
-circuit
+17. when putting together logic circuits, should a designer be thinking of the internals of each individual gate or treat each gate as a component? treat each gate as a component as thinking of the internals of each gate would slow down the process of designing the logic circuit
 
-18. how can the above thinking be applied to the design of an application program? each component should be thought of as an abstraction
-(thinking about the internals of each component would be detrimental to progress)
+18. how can the above thinking be applied to the design of an application program? each component should be thought of as an abstraction (thinking about the internals of each component would be detrimental to progress)
 
-19. why should you be careful about letting abstractions be the deepest level of my understanding? because you will be at the mercy of the 
-component parts working together; if one of them breaks then you won't be able to intervene to get the system up and running again
+19. why should you be careful about letting abstractions be the deepest level of my understanding? because you will be at the mercy of the component parts working together; if one of them breaks then you won't be able to intervene to get the system up and running again
 
-20. how will the material in the book be presented in terms of abstraction? the level of abstraction will be continually raised i.e. from
-individual transistors to gates to logic circuits to even larger abstractions
+20. how will the material in the book be presented in terms of abstraction? the level of abstraction will be continually raised i.e. from individual transistors to gates to logic circuits to even larger abstractions
 
-21. what should you keep in mind during your study and practice of computing? hardware and software are component parts of a computing 
-system that work best when they are designed by people who take into account the capabilities and limitations of both
+21. what should you keep in mind during your study and practice of computing? hardware and software are component parts of a computing system that work best when they are designed by people who take into account the capabilities and limitations of both
 
-22. what allows engineers to be able to work on computing systems whilst ignoring the other side i.e. software people ignoring the hardware
-it runs on, and hardware people ignoring the software that will run on it? abstraction
+22. what allows engineers to be able to work on computing systems whilst ignoring the other side i.e. software people ignoring the hardware it runs on, and hardware people ignoring the software that will run on it? abstraction
 
-23. why is being clueless about the underlying layers not advisable? because you will not be able to take advantage of the nuances of 
-underlying layers when it is important to be able to do so
+23. why is being clueless about the underlying layers not advisable? because you will not be able to take advantage of the nuances of underlying layers when it is important to be able to do so
 
-24. what do the authors suggest about the your study and practice of computing? that hardware and software are names for components of
-two parts of a computing system that work best when they are designed by people who take into account the capabilities and limitations
-of both
+24. what do the authors suggest about the your study and practice of computing? that hardware and software are names for components of two parts of a computing system that work best when they are designed by people who take into account the capabilities and limitations of both
 
-25. what path will the book set you on? the path to mastery of computer hardware or computer software which will make you more capable as
-a software engineer i.e. you will be able to come up with better solutions to computing problems when you have the capability of both at your finger tips
+25. what path will the book set you on? the path to mastery of computer hardware and computer software which will make you more capable as a software engineer i.e. you will be able to come up with better solutions to computing problems when you have the capability of both at your finger tips
 
 26. what is the definition of a computer? system consisting of software that directs and specifies the processing of information and the hardware that performs the actual processing of information in response to what the software specifies
 
@@ -162,11 +144,9 @@ a software engineer i.e. you will be able to come up with better solutions to co
 
 32. 40 years later (in the 1980s) and many computing companies later, the burroughs A series was created. you can see a picture of it in figure 1.2 (one of the dozen or so boards 18 inch boards that comprised the machine). each board contained 50 or more integrated circuit packages. weighed about 1 ton, and required approximately 25 kw to operate 
 
-33. fast forward to today and the relative weight and power consumption of computing devices has decreased massively. the speed at which they process information has also increased enormously. they estimate that the computing power in a smartphone today is more than 4 million times the computing power of the ENIAC
+33. fast forward to today and the relative weights and power consumption of computing devices has decreased massively. the speed at which they process information has also increased enormously. they estimate that the computing power in a smartphone today is more than 4 million times the computing power of the ENIAC
 
-34. what has brought about this increase in computational power? integrated circuit packages have seen phenomenal improvement e.g first 
-intel microprocessor in 1971 (intel 4004) contained 2300 transistors and operated at 106 KHz; one of the latest intel microprocessors Core i9-13900K contains a reported 25.9 billion transistors and and can operate at a frequency of 5.8 GHz. this factor of one million 
-since 1971 in both the number of transistors and the frequency of microprocessors has had important implications
+34. what has brought about this increase in computational power? integrated circuit packages have seen phenomenal improvement e.g first  intel microprocessor in 1971 (intel 4004) contained 2300 transistors and operated at 106 KHz; one of the latest intel microprocessors Core i9-13900K contains a reported 25.9 billion transistors and and can operate at a frequency of 5.8 GHz. this factor of one million since 1971 in both the number of transistors and the frequency of microprocessors has had important implications
 
 35. what are these implications? the fact that each operation can be performed in one millionth of the time it took in 1971 means that the processor can do one million things today in the time it took to do one thing in 1971. the fact that there are more than a million times as many transistors on a chip means we can do a lot more things at the same time today than we could do in 1971
 
@@ -250,17 +230,25 @@ executing it? compiler
 
 73. what is the name of the program that translates assembly language of a computer to its ISA? assembler
 
+74. what is the 5th level of transformation? the implementation of the ISA referred to as its micro-architecture which is about what goes on underneath the hood
 
-49. what else does ISA specify (apart from opcodes, operands, and addressing modes)? number of unique locations that comprise the computers 
-memory (address space) and the number of bits contained in each location (addressability)
+75. using the automobile analogy from earlier where the automobile ISA describes what the driver needs to know as he/she sits inside
+the automobile to make the automobile carry out the driver's wishes, how can you use it to describe the microarchitecture that implements the ISA? since microarchitecture is about what goes on underneath the hood, here all automobile models can be different depending on the cost  and performance tradeoffs made by the designer of the car
 
-53. what is the 5th level of transformation? micro-architecture i.e. using the automobile analagy from earlier, it refers to what goes on 
-under the hood of a car this micro-architecture is dependent on the performance, cost and energy trade offs made by designers 
+76. previously you were introduced to a number of ISAs (x86 intel, powerpc IBM and motorola, thumb arm), what can you say about the implementation of these ISAs? each has been implemented by many different microarchitectures e.g. x86 original implementation was in 1979 was the 8086 followed by 80286, 80386 amongst others in the 1980s. more recently in 2015, intel introduced skylake. each of these x86 microprocessors has its own microarchitecture
 
-54. what is the 6th level of transformation? logic circuits i.e. the micro-architecture is implemented out of simple logic circuits
+77. Each microarchitecture is an opportunity for computer designers to make different tradeoﬀs between the cost of the microprocessor, the performance that the microprocessor will provide, and the energy that is required to power the micro- processor. Computer design is always an exercise in tradeoﬀs, as the designer opts for higher (or lower) performance, more (or less) energy required, at greater (or lesser) cost.
 
-55. what is 7th level of transformation? logic circuits can be implemented different device technologies e.g. CMOS circuits, 
-NMOS circuits or gallium arsenide circuits
+78. what is the 6th level of transformation? logic circuits i.e. implement each component of the microarchitecture out of simple logic circuits
+
+79. are there choices to be made in the 6th level? yes, the logic designer decides how to best make the tradeoffs between cost and performance so for example even for operation as simple as addition, there are several choices of logic circuits to perform the operation at differing speeds and energy costs.
+
+80. what is 7th level of transformation? each logic circuits is implemented in accordance with the requirements of the particular  device technologies used e.g. CMOS circuits, NMOS circuits, and gallium arsenide circuits all differ from each other
+
+81. what else does ISA specify (apart from opcodes, operands, and addressing modes)? number of unique locations that comprise the computers memory (address space) and the number of bits contained in each location (addressability)
+
+82. At each level of transformation, there are choices as to how to proceed. Our handling of those choices determines the resulting cost and performance of our computer. this book describe each of these transformations. We show how tran- sistors combine to form logic circuits, how logic circuits combine to form the microarchitecture, and how the microarchitecture implements a particular ISA.
+In our case, the ISA is the LC-3. We complete the process by going from the English-language description of a problem to a C or C++ program that solves the problem, and we show how that C or C++ program is translated (i.e., compiled) to the ISA of the LC-3.
 
 
 chapter 2

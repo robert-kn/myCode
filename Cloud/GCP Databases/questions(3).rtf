@@ -1,4 +1,4 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2761
+{\rtf1\ansi\ansicpg1252\cocoartf2821
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;\f1\fswiss\fcharset0 Helvetica;\f2\fnil\fcharset0 HelveticaNeue;
 }
 {\colortbl;\red255\green255\blue255;\red63\green63\blue63;\red255\green255\blue255;}
@@ -31,13 +31,14 @@ https://cloud.google.com/iam/docs/workload-identity-federation\
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \ls1\ilvl0
 \f1\fs32 \cf2 \cb3 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Export data periodically to a Cloud Storage bucket protected by Customer-Supplied Encryption Keys.\cb1 \
-\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Use Cloud SQL Auth proxy.\cb1 \
-\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Connect to Cloud SQL using a connection that has SSL encryption.\cb1 \
-\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Use customer-managed encryption keys with Cloud SQL.\cb1 	\
+A.\'a0Export data periodically to a Cloud Storage bucket protected by Customer-Supplied Encryption Keys.\cb1 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls1\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Use Cloud SQL Auth proxy.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Connect to Cloud SQL using a connection that has SSL encryption.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Use customer-managed encryption keys with Cloud SQL.\cb1 	\
 \pard\tx720\pardeftab720\partightenfactor0
 \cf2 \
 Answer D\
@@ -52,7 +53,7 @@ D Use the default networks, and leverage Cloud VPN to connect the two together.\
 \
 Answer A\
 \
-4. You are managing two different applications: Order Management and Sales Reporting. Both applications interact with the same Cloud SQL for MySQL database. The Order Management application reads and writes to the database 24/7, but the Sales Reporting application is read-only. Both applications need the latest dat a. You need to ensure that the Performance of the Order Management application is not affected by the Sales Reporting application. What should you do?\
+4. You are managing two different applications: Order Management and Sales Reporting. Both applications interact with the same Cloud SQL for MySQL database. The Order Management application reads and writes to the database 24/7, but the Sales Reporting application is read-only. Both applications need the latest data. You need to ensure that the Performance of the Order Management application is not affected by the Sales Reporting application. What should you do?\
 \
 A. Create two separate databases in the instance, and perform dual writes from the Order Management application. \
 B Use a Cloud SQL federated query for the Sales Reporting application. \
@@ -64,21 +65,21 @@ Answer C\
 5. Your organization has hundreds of Cloud SQL for MySQL instances. You want to follow Google- recommended practices to optimize platform costs. What should you do?\
 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls2\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Use Query Insights to identify idle instances.\cb1 \
-\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Remove inactive user accounts.\cb1 \
-\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Run the Recommender API to identify overprovisioned instances.\cb1 \
-\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Build indexes on heavily accessed tables.\cb1 \
+\ls2\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+A.\'a0Use Query Insights to identify idle instances.\cb1 \
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Remove inactive user accounts.\cb1 \
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Run the Recommender API to identify overprovisioned instances.\cb1 \
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Build indexes on heavily accessed tables.\cb1 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \cf2 \
 Answer C\
 \
 \pard\pardeftab720\partightenfactor0
 
-\f2\fs29\fsmilli14720 \cf2 \cb3 \strokec2 https://cloud.google.com/sql/docs/mysql/recommender-sql-overprovisioned\
+\f2\fs29\fsmilli14720 \cf2 \cb3 https://cloud.google.com/sql/docs/mysql/recommender-sql-overprovisioned\
 \
 6. You are a DBA of Cloud SQL for PostgreSQL. You want the applications to have password-less authentication for read and write access to the database. Which authentication mechanism should you use?\
 \
@@ -86,7 +87,7 @@ A. Use Managed Active Directory authentication. \
 B Use Cloud SQL federated queries. \
 C Use Identity and Access Management (IAM) authentication. \
 D Use PostgreSQL database's built-in authentication.
-\f1\fs32 \cf2 \cb1 \strokec2 \
+\f1\fs32 \cb1 \
 \
 Answer C\
 \
@@ -96,16 +97,16 @@ https://cloud.google.com/sql/docs/postgres/iam-authentication\
 7. You are designing a new gaming application that uses a highly transactional relational database to store player authentication and inventory data in Google Cloud. You want to launch the game in multiple regions. What should you do?\
 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls3\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Use Cloud Spanner to deploy the database.\cb1 \
-\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Use Bigtable with clusters in multiple regions to deploy the database\cb1 \
-\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Use BigQuery to deploy the database\cb1 \
-\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Use Cloud SQL with a regional read replica to deploy the database.\cb1 \
+\ls3\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+A.\'a0Use Cloud Spanner to deploy the database.\cb1 \
+\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Use Bigtable with clusters in multiple regions to deploy the database\cb1 \
+\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Use BigQuery to deploy the database\cb1 \
+\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Use Cloud SQL with a regional read replica to deploy the database.\cb1 \
 \pard\pardeftab720\partightenfactor0
-\cf2 \strokec2 \
+\cf2 \
 \
 Answer A\
 \
@@ -130,7 +131,7 @@ D Deploy the database using Cloud SQL.\
 Answer A\
 \
 \
-10. Your team is building an application that stores and analyzes streaming time series financial dat a. You need a database solution that can perform time series-based scans with sub-second latency. The solution must scale into the hundreds of terabytes and be able to write up to 10k records per second and read up to 200 MB per second. What should you do?\
+10. Your team is building an application that stores and analyzes streaming time series financial data. You need a database solution that can perform time series-based scans with sub-second latency. The solution must scale into the hundreds of terabytes and be able to write up to 10k records per second and read up to 200 MB per second. What should you do?\
 \
 A. Use Cloud Spanner. \
 B Use Firestore. \
@@ -169,36 +170,36 @@ Answer B\
 13. You want to migrate an on-premises mission-critical PostgreSQL database to Cloud SQL. The database must be able to withstand a zonal failure with less than five minutes of downtime and still not lose any transactions. You want to follow Google-recommended practices for the migration. What should you do?\
 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls4\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Take nightly snapshots of the primary database instance, and restore them in a secondary zone.\cb1 \
-\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Build a change data capture (CDC) pipeline to read transactions from the primary instance, and replicate them to a secondary instance.\cb1 \
-\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Create a read replica in another region, and promote the read replica if a failure occurs.\cb1 \
-\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Enable high availability (HA) for the database to make it regional.\cb1 \
+\ls4\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+A.\'a0Take nightly snapshots of the primary database instance, and restore them in a secondary zone.\cb1 \
+\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Build a change data capture (CDC) pipeline to read transactions from the primary instance, and replicate them to a secondary instance.\cb1 \
+\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Create a read replica in another region, and promote the read replica if a failure occurs.\cb1 \
+\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Enable high availability (HA) for the database to make it regional.\cb1 \
 \pard\pardeftab720\partightenfactor0
-\cf2 \strokec2 \
+\cf2 \
 Answer D\
 \
 \
 14.  You finished migrating an on-premises MySQL database to Cloud SQL. You want to ensure that the daily export of a table, which was previously a cron job running on the database server, continues. You want the solution to minimize cost and operations overhead. What should you do?\
 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls5\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Use Cloud Scheduler and Cloud Functions to run the daily export.\cb1 \
-\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Create a streaming Datatlow job to export the table.\cb1 \
-\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Set up Cloud Composer, and create a task to export the table daily.\cb1 \
-\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Run the cron job on a Compute Engine instance to continue the export.\cb1 \
+\ls5\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+A.\'a0Use Cloud Scheduler and Cloud Functions to run the daily export.\cb1 \
+\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Create a streaming Datatlow job to export the table.\cb1 \
+\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Set up Cloud Composer, and create a task to export the table daily.\cb1 \
+\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Run the cron job on a Compute Engine instance to continue the export.\cb1 \
 \pard\pardeftab720\partightenfactor0
-\cf2 \strokec2 \
+\cf2 \
 Answer A\
 \
 
-\f2\fs29\fsmilli14720 \cf2 \cb3 \strokec2 https://cloud.google.com/blog/topics/developers-practitioners/scheduling-cloud-sql-exports-using-cloud-functions-and-cloud-scheduler\
+\f2\fs29\fsmilli14720 \cb3 https://cloud.google.com/blog/topics/developers-practitioners/scheduling-cloud-sql-exports-using-cloud-functions-and-cloud-scheduler\
 \
 15. Your company's mission-critical, globally available application is supported by a Cloud Spanner database. Experienced users of the application have read and write access to the database, but new users are assigned read-only access to the database. You need to assign the appropriate Cloud Spanner Identity and Access Management (IAM) role to new users being onboarded soon. What roles should you set up?\
 \
@@ -206,7 +207,7 @@ A. roles/spanner.databaseUser \
 B roles/spanner.backupWriter \
 C roles/spanner.databaseReader \
 D roles/spanner.viewer
-\f1\fs32 \cf2 \cb1 \strokec2 \
+\f1\fs32 \cb1 \
 \
 Answer C\
 \
@@ -235,20 +236,20 @@ Answer A\
 18. You are managing a set of Cloud SQL databases in Google Cloud. Regulations require that database backups reside in the region where the database is created. You want to minimize operational costs and administrative effort. What should you do?\
 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls6\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Configure the automated backups to use a regional Cloud Storage bucket as a custom location.\cb1 \
-\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Use the default configuration for the automated backups location.\cb1 \
-\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Disable automated backups, and create an on-demand backup routine to a regional Cloud Storage bucket.\cb1 \
-\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Disable automated backups, and configure serverless exports to a regional Cloud Storage bucket.\cb1 \
+\ls6\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+A.\'a0Configure the automated backups to use a regional Cloud Storage bucket as a custom location.\cb1 \
+\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Use the default configuration for the automated backups location.\cb1 \
+\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Disable automated backups, and create an on-demand backup routine to a regional Cloud Storage bucket.\cb1 \
+\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Disable automated backups, and configure serverless exports to a regional Cloud Storage bucket.\cb1 \
 \pard\pardeftab720\partightenfactor0
-\cf2 \strokec2 \
+\cf2 \
 Answer A\
 \
 
-\f2\fs29\fsmilli14720 \cf2 \cb3 \strokec2 https://cloud.google.com/sql/docs/mysql/backup-recovery/backing-up#locationbackups\
+\f2\fs29\fsmilli14720 \cb3 https://cloud.google.com/sql/docs/mysql/backup-recovery/backing-up#locationbackups\
 \
 \
 19. You have deployed a Cloud SQL for SQL Server instance. In addition, you created a cross-region read replica for disaster recovery (DR) purposes. Your company requires you to maintain and monitor a recovery point objective (RPO) of less than 5 minutes. You need to verify that your cross-region read replica meets the allowed RPO. What should you do?\
@@ -257,14 +258,14 @@ A. Use the Cloud Monitoring dashboard with available metrics from Cloud SQL. \
 B Use the SQL Server Always On Availability Group dashboard. \
 C Use Cloud SQL logs. \
 D Use Cloud SQL instance monitoring.
-\f1\fs32 \cf2 \cb1 \strokec2 \
+\f1\fs32 \cb1 \
 \
 Answer B\
 \
 \
 
-\f2\fs29\fsmilli14720 \cf2 \cb3 \strokec2 https://cloud.google.com/sql/docs/sqlserver/replication/manage-replicas#promote-replica
-\f1\fs32 \cf2 \cb1 \strokec2 \
+\f2\fs29\fsmilli14720 \cb3 https://cloud.google.com/sql/docs/sqlserver/replication/manage-replicas#promote-replica
+\f1\fs32 \cb1 \
 \
 \
 20. Your ecommerce application connecting to your Cloud SQL for SQL Server is expected to have additional traffic due to the holiday weekend. You want to follow Google-recommended practices to set up alerts for CPU and memory metrics so you can be notified by text message at the first sign of potential issues. What should you do?\
@@ -291,16 +292,16 @@ Answer D\
 22. You are designing a database strategy for a new web application in one region. You need to minimize write latency. What should you do?\
 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls7\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0Use Cloud SQL with cross-region replicas.\cb1 \
-\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0Use high availability (HA) Cloud SQL with multiple zones.\cb1 \
-\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0Use zonal Cloud SQL without high availability (HA).\cb1 \
-\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0Use Cloud Spanner in a regional configuration.\cb1 \
+\ls7\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+A.\'a0Use Cloud SQL with cross-region replicas.\cb1 \
+\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0Use high availability (HA) Cloud SQL with multiple zones.\cb1 \
+\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0Use zonal Cloud SQL without high availability (HA).\cb1 \
+\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0Use Cloud Spanner in a regional configuration.\cb1 \
 \pard\pardeftab720\partightenfactor0
-\cf2 \strokec2 \
+\cf2 \
 Answer D\
 \
 \
@@ -388,16 +389,16 @@ Answer C\
 31.  Your organization is running a critical production database on a virtual machine (VM) on Compute Engine. The VM has an ext4-formatted persistent disk for data files. The database will soon run out of storage space. You need to implement a solution that avoids downtime. What should you do?\
 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls8\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 A.\'a0In the Google Cloud Console, increase the size of the persistent disk, and use the resize2fs command to extend the disk.\cb1 \
-\ls8\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 B.\'a0In the Google Cloud Console, increase the size of the persistent disk, and use the fdisk command to verify that the new space is ready to use\cb1 \
-\ls8\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 C.\'a0In the Google Cloud Console, create a snapshot of the persistent disk, restore the snapshot to a new larger disk, unmount the old disk, mount the new disk, and restart the database service.\cb1 \
-\ls8\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 D.\'a0In the Google Cloud Console, create a new persistent disk attached to the VM, and configure the database service to move the files to the new disk.\cb1 \
+\ls8\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+A.\'a0In the Google Cloud Console, increase the size of the persistent disk, and use the resize2fs command to extend the disk.\cb1 \
+\ls8\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+B.\'a0In the Google Cloud Console, increase the size of the persistent disk, and use the fdisk command to verify that the new space is ready to use\cb1 \
+\ls8\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+C.\'a0In the Google Cloud Console, create a snapshot of the persistent disk, restore the snapshot to a new larger disk, unmount the old disk, mount the new disk, and restart the database service.\cb1 \
+\ls8\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+D.\'a0In the Google Cloud Console, create a new persistent disk attached to the VM, and configure the database service to move the files to the new disk.\cb1 \
 \pard\pardeftab720\partightenfactor0
-\cf2 \strokec2 \
+\cf2 \
 Answer B\
 \
 https://cloud.google.com/compute/docs/disks/resize-persistent-disk#resize_partitions\
