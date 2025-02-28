@@ -345,12 +345,30 @@ ASCII and floating point representation
 
 41. how are the 32 bits of the float data apportioned? 1 bit (the msb) for the sign (positive or negative), 8 bits for the range (exponent), 23 bits for the precision (the fraction field) see figure23
 
-23. what is the equation of the normalised form of float numbers? 
+42. what types of numbers are represented by floating data type? numbers expressed in scientific notation as follows
 
-24. what is special about the 8 bit exponent? for normalised numbers it must be restricted to 254 unsigned values i.e. between 1 (00000001) 
-and 254 (11111110) for the two remaining values 0 and 255, the data type does not represent normalised numbers
+N = (-1)^S x 1.fraction x 2^(exponent-127), where the exponent is greater than or equal to 1 and less than or equal to 254
 
-25. if the exponent field contains 255 (11111111), what number is represented by the floating point data type?
+here S, fraction, and exponent are the binary numbers in the fields of figure 2.3
+
+43. what form is the equation noted in point 42 in? normalised form
+
+44. why is the equation referred to as being in normalised form? because the data represents a floating point number only if the 8 bit exponent is restricted to 254 unsigned integer values, 1 (00000001) through 254 (11111110)
+
+45. how many values can be represented uniquely with 8 bits? 256 values
+
+46. which two integer values does the exponent not represent normalised values? 00000000 and 11111111
+
+47. what values does the sign bit take? it is a single binary digit; 0 for positive numbers and 1 for negative numbers. it evaluates to +1 if S=0 and -1 if S=1
+
+48. what do the 23 fraction bits form a part of in normalised form? a 24 bit quantity represnted by 1.fraction as the normalised form demands exactly one none zero binary digit to the left of the binary point. this one non zero bit does not need to be explicitly stored in the 32 bit floating point format. This is infact how we get 24 bits of precision
+
+49. how are the 8 exponent bits (the range) in the format? in excess code
+
+50. why is it referred to as an excess code? because one can get the *real* exponent by treating the code as an unsigned integer and subtracting the bias/excess 
+
+51. what is the range of the exponent field in normalised form? exponent ﬁeld gives us numbers as large as 2^(127) for an exponent field containing 254 and as small as 2(-126) for an exponent ﬁeld containing 1.
+
 
 26. what is the smallest number that can be represented in normalised form?
 
