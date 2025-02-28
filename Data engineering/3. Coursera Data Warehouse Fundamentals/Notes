@@ -1,10 +1,16 @@
-what will you learn about in the course? how to design, deploy, load, manage, and query data warehouses and data marts. you will begin by understanding the different analytics repositories including data marts, data warehouses,
-data lakes, data lakehouses and their functions and uses. they are designed to enable rapid decision making through
-accurate and flexible reporting and data analysis.
+what is a data warehouse? a large repository of data where the data is organised and optimised for analysis and reporting.
 
-you will design, model, and implement data warehouses and explore data warehousing architectures such as star and snowflake schemas. finally, you will learn how to populate data warehouses using ETL and ELT processes, verify data, query data, and use cubes, rollups, and materialised views/tables. 
+data management is a career choice that would have users manage data warehouses as part of their tasks.
 
-what is a data warehouse? see datawarehouse1.png datawarehouse2 datawarehouse3
+what does a data warehouse specialist do? design schema structures for data warehouses.
+
+what will you learn about in the course? data warehouses, data marts, and data lakes. you will explore them based on their architecture, and features. you will develop skills to identify why organisations select a specific data warehouse platform, how to design a data warehouse, model the data using star and snowflake schemas, and query the warehouse utilising cube, rollup, and materialised views. you will perform various data warehousing tasks such as designing a database, populating staging environments, loading the warehouse, and querying the warehouse using SQL.
+
+what do you need to succeed in this course? fundamental knowledge of relational database management systems and a working knowledge of SQL. 
+
+a data warehouse is one of the most fundamental business intelligence tools in use today, and one that successful dataa engineers must understand. 
+
+what is a data warehouse? see datawarehouse1.png 
 
 what do data warehouse systems support? see support.png 
 
@@ -15,11 +21,15 @@ what are the benefits of a data warehouse? see benefits.png
 what are the categories of data warehouse systems? see categories1.png categories2.png categories3.png categories4.png 
 categories5.png categories6.png categories7.png categories8.png categories9.png categories10.png categories11.png
 
-How to select data warehouse systems? see selecting1.png selecting2.png selecting3.png selecting4.png selecting5.png
+How to select data warehouse systems? see selecting0.png selecting1.png selecting2.png selecting3.png selecting4.png selecting5.png
 selecting6.png selecting7.png
+
+what is a data mart? is an isolated part of the larger enterprise data warehouse that is specifically built to serve a particular business function, purpose, or community of users. see dataMart0 dataMart00
 
 structure of a data mart and types? see dataMart1.png dataMart2.png dataMart3.png dataMart4.png dataMart5.png
 dataMart6.png dataMart7.png dataMart8.png
+
+what is a data lake? is a storage repository that can store large amounts of structured, semi-structured, and unstructured data in their native format, classified and tagged with metadata. While a data warehouse stores data processed for a specific need, a data lake is a pool of raw data where each data element is given a unique identifier and is tagged with metatags for further use. Data lakes are sometimes also used as a staging area for transforming data prior to loading into a data warehouse or a data mart.
 
 what are data lakes? see dataLakes1.png dataLakes2.png dataLakes3.png dataLakes4.png dataLakes5.png dataLakes6.png
 dataLakes7.png dataLakes8.png

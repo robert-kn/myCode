@@ -253,55 +253,97 @@ In our case, the ISA is the LC-3. We complete the process by going from the Engl
 
 chapter 2
 
-1. what do you call the tiny little devices inside computer that control the movement of electrons by reacting to the presence or absence 
-of voltages?
+1. how is a computer organised? as a system with several levels of transformation i.e. a problem stated in a natural language is
+actually solved by electrons moving around inside the components of a computer
 
-2. could these tiny devices be designed to detect actual value of voltages instead of the presence or absence of them?
+2. what do you call the tiny little devices inside computer that control the movement of said electrons by reacting to the presence or absence of voltages in electronic circuits?
 
-3. why is this not done? it would make the control and detection circuits more complex than they need to be
+3. could these tiny devices be designed to detect actual value of voltages instead of the presence or absence of them? yes
 
-4. do these tiny devices actually detect the absence of a voltage i.e. 0 and the presence of a voltage?
+4. why is this not done? it would make the control and detection circuits more complex than they need to be; it is much easier to
+detect whether or not a voltage exists at a point in a circuit than it is to measure exactly what that voltage is
 
-5. how do we symbollicaly represent the presence of a voltage?
+5. how do we symbollicaly represent the presence of a voltage? 1
 
-6. how do we symbollically represent the absence of a voltage?
+6. how do we symbollically represent the absence of a voltage? 0
 
-7. how many things can we differentiate with one wire and what values are assigned to them?
+7. what word is used to refer to each 0 and each 1? bit which is a shortened form binary digit
 
-8. in order to get useful work done by a computer, it is necessary to be able to distinguish a large number of distinct values and assign 
-each of them a unique representation. what is done in order to achieve this?
+8. is it the case that computers differentiate the absolute presence of a voltage (i.e. 1) from the absolute absence of a voltage
+(i.e. 0)? no, electronic circuits in the computer differentiate voltages very close to 0 from voltages very far from 0
 
-9. what is the word "bit" a short hand of? 
+9. how many things can we differentiate with one wire and what values are assigned to them? two things; one of them can be assigned
+the value 0 and the other can be assigned a value of 1
 
-10. what qualifies a representation as a data type? if there are operations in the computer that can operate on information encoded in that 
-representation
+10. in order to get useful work done by a computer, it is necessary to be able to distinguish a large number of distinct values and assign each of them a unique representation. what is done in order to achieve this? combining many wires, that is, many bits. for
+example, if we use eight bits (corresponding to the voltage present on each of eight wires), we can represent one particular value as 01001110, and another value as 11100111. In fact, if we are limited to eight bits, we can differentiate at most only 256 (i.e.
+2^8) different things 
 
-11. describe the unsigned integer representation?
+11. what qualifies a representation of information as a data type? if there are operations in the computer that can operate on information encoded in that representation
 
-12. describe the signed integer number representation (how many bits are assigned to positive numbers and how many bits to negative 
-numbers)?
+12. Each instruction set architecture (ISA) has its own set of data types and its own set of instructions that can operate on those data types. 
 
-13. define signed magnitude representation of data? if a leading 0 signifies a positive integer then a leading 1 signifies a negative 
-integer
+13. what data types will be used in the book? 2’s complement integers for representing positive and negative integers that we wish to perform arithmetic on, and ASCII codes for representing characters that we wish to input to a computer via the keyboard or output from the computer via a monitor. 
 
-14. define the 1s complement representation of data? a negative number is represented by taking the representation of the positive number
-that has the same magnitude and flipping all the bits
+14. describe the unsigned integer representation?
 
-15. can a computer designer assign any bit pattern he wants to represent any integer he wants?
+15. describe the signed integer number representation (how many bits are assigned to positive numbers and how many bits to negative 
+numbers)? each takes half the amount of bits available
 
-16. why would this not be a good idea? it would complicate matters when they try to build electronic circuits capable of adding the numbers
+16. how do signed magnitude, 1's complement, and 2's complement encode information? see figure 2.1
 
-17. define 2's complement integer representation?
+17. The ﬁrst thought that usually comes to mind is: If a leading 0 signiﬁes a positive integer, how about letting a leading 1 signify a negative integer? The result is the signed-magnitude data type. A second thought (which was actually used on some early computers such as the Control Data Corpora- tion 6600) was the following: Let a negative number be represented by taking the representation of the positive number having the same magnitude, and “ﬂipping” all the bits. That is, if the original representation had a 0, replace it with a 1; if it originally had a 1, replace it with a 0. This data type is referred to in the computer engineering community as 1’s complement 
 
-18. almost all computers use the same mechanism to perform addition, what is it called?
+18. can a computer designer assign any bit pattern he wants to represent any integer he wants? yes
 
-19. if you know the bit representation of integer A, what is a short cut you can use to work out -A? 
+19. why would this not be a good idea? it would complicate matters when they try to build electronic circuits capable of adding the numbers. In fact, the signed-magnitude and 1’s complement data types both require unnecessarily cumbersome hardware to do addition. 
 
-20. how many floating point data types do most ISAs specify?
+20. how are negative integers represented in 2's complement encoding? choice of representations for the negative integers is based on the wish to keep the logic circuits as simple as possible. all computers use the same basic mechanism to perform addition. It is called an arithmetic and logic unit, usually known by its acronym ALU. It performs addition by adding the binary bit patterns at its inputs, producing a bit pattern at its output that is the sum of the two input bit patterns. What is particularly relevant is that the binary ALU does not know (and does not care) what the two patterns it is adding represent. the 2’s complement data type speciﬁes the representation for each negative integer so that when the ALU adds it to the representation of the positive integer of the same magnitude, the result will be the representation for 0. Moreover, and actually more importantly, as we sequence through representations of say −15 to +15 (as seen in figure 2.1), the ALU is adding 00001 to each successive representation. using this system, any carries are always ignored
 
-21. how many bits does the float data type use?
+21. almost all computers use the same mechanism to perform addition, what is it called? ALU
 
-22. how are the bits allocated?
+22. if you know the bit representation of integer A, what is a short cut you can use to work out -A? flip all of the bits and add 1
+see example21.png 
+
+23. algorithm for binary to decimal conversion see binaryToDecimal.png example22.png
+
+24. algorith for the conversion of decimal to binary see decimalToBinary
+
+25. algorithm to convert fractional binary to fractional decimal see binaryFractionToDecimal.png 
+
+26. operations on bits: addition and subtraction see example23 example24 example25
+
+27. why is sign extension used? in order to be able to operate on representations of different lengths
+
+28. what happens if the sum of two integers is not small enough to be represented by the available bits? overflow of the msb occurs
+
+29. what must you watch out for when dealing with overflow in signed encoding e.g. 2's complement? addition of positive numbers that
+result in overflow into msb which indicate the sign of the value. since the result is negative, this is easy to detect. likewise when adding two negative numbers and the msb overflows and becomes zero, detection would be easy since the result of the ALU operation would positive
+
+30. what are the basic logical operations performed by the ALU? binary logical AND function that requires two source operands see example26 and example27, binary logical OR function that aalso requires two source operands see example28, unary logical function NOT which operates on only one source operand (also known as the complement operation), the binary logical XOR function that requires two source operands see example29 and example210
+
+31. what do you call an m-bit pattern where each bit has a logical value (0 or 1) independent of the other bits? a bit vector. It is a convenient mechanism for identifying a property such that some of the bits identify the presence of the property and other bits identify the absence of the property.
+
+32. There are many uses for bit vectors. The most common use is a bit mask. The bit mask is a bit vector, where our choice of 0 or 1 for each bit allows us to isolate the bits we are interested in focusing on and ignore the bits that don’t matter. Another common use of bit vectors involves managing a complex system made up of several units, each of which is individually and independently either busy or available. The system could be a manufacturing plant where each unit is a particular machine. Or the system could be a taxicab network where each unit is a particular taxicab. In both cases, it is important to identify which units are busy and which are available so that work can be properly assigned. Say we have m such units. We can keep track of these m units with a bit vector, where a bit is 1 if the unit is free and 0 if the unit is busy. see example211
+
+33. There are many other representations of information that are used in computers. can you name two that are among the most useful?
+ASCII and floating point representation
+
+34. what encoding format does the lc-3 use to represent integers? 16 bit 2's complement where the msb (most significant bit) identifies whether the number is positive or negative and the rest of the bits represent the magnitude of the value. with 16 bits used this way, we can express integer values between -32768 and 32767, that is between -2^(15) and (2^15) - 1.
+
+35. what do we say about the precision of the value and its range? precision of the value is 15 bits and the range is 2^(16)
+
+36. what if you need to represent fractional decimals (such as avogadros constant) inside of a computer? can you do it with the 16 bit 2's complement encoding format used to represent integers? no, because the range of avogadros constant 10^(23) is far too great to be expressed in the range available 2^(15) - 1. on the other hand, the 15 bits of precision is overkill for expressing the four significant decimal digits (6022) 
+
+37. what data type can solve this problem? floating point data type
+
+38. how does it solve this problem? instead of using most of the bits to represent the precision of a value, the floating point data type allocates some of the bits to the range of values that can be expressed. the rest of the bits (except for the sign bit) are used for precision
+
+39. most ISA's today specify more than one floating point data type; float and double
+
+40. how many bits does the float data type have? 32 bits
+
+41. how are the 32 bits of the float data apportioned? 1 bit (the msb) for the sign (positive or negative), 8 bits for the range (exponent), 23 bits for the precision (the fraction field) see figure23
 
 23. what is the equation of the normalised form of float numbers? 
 
