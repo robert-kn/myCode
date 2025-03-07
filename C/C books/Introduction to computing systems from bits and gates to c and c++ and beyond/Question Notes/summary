@@ -367,170 +367,257 @@ here S, fraction, and exponent are the binary numbers in the fields of figure 2.
 
 50. why is it referred to as an excess code? because one can get the *real* exponent by treating the code as an unsigned integer and subtracting the bias/excess 
 
-51. what is the range of the exponent field in normalised form? exponent ﬁeld gives us numbers as large as 2^(127) for an exponent field containing 254 and as small as 2(-126) for an exponent ﬁeld containing 1.
+51. what is the range of the exponent field in normalised form? exponent ﬁeld gives us numbers as large as 2^(127) for an exponent field containing 254 and as small as 2^(-126) for an exponent ﬁeld containing 1. see example212, example213, example214
 
+52. what numbers are represented by the floating point data type when the exponent contains all 1's i.e. 11111111? the notion of infinity
 
-26. what is the smallest number that can be represented in normalised form?
+53. what must the fractional field contain when infinity is being represented? all zeros
 
-27. what are subnormal numbers?
+54. how are positive infinity and negative infinity distinguished? positive infinity is distinguished by the sign bit being 0 and negative infinity is distinguished by the sign bit being set to 1
 
-28. what equation is used to represent subnormal numbers?
+55. what is the smallest number that can be represented in normalised form? 1.00000000000000000000000 × 2^(-126)
 
-29. wht are ASCII codes used for? transferring characters between main computer processing unit and the input and output devices
+56. what are subnormal numbers? numbers smaller than 2^(-126) but larger than 0. they are given this name because they cannot be represented in normalised form.
 
-30. define encoding? converting data into a format that is required for processing including transmission, storage and retrieval
+57. what is the largest subnormal number? 0.11111111111111111111111 × 2^(-126)
+
+58. what is the smallest subnormal number? 0.00000000000000000000001 × 2^(-126)
+
+59. what equation is used to represent subnormal numbers? (-1)^S x 0.fraction x 2^(-126)
+
+60. how is the exponent field represented for subnormal numbers? 00000000. see example215
+
+61. why are subnormal numbers used? allows very, very tiny numbers to be represented
+
+62. wht are ASCII codes used for? transferring characters between main computer processing unit and the input and output devices
+
+63. how many bits is the ASCII code made up of? 8 bits
+
+64. how does ascii work? Each key on the keyboard is identiﬁed by its unique ASCII code. When you type a key on the keyboard, the corresponding eight-bit code is stored and made available to the computer (PC?). Most keys are associated with more than one code. For example, the ASCII code for the letter E is 01000101, and the ASCII code for the letter e is 01100101.
 
 
 chapter 3
 
-1. what are most semiconductors used in processors today manufactured from? 
+1. what are most computer processors today constructed out of? out of MOS transistors
 
-2. what are the two type of MOS transistors? 
+2. what does MOS stand for? metal oxide semiconductor
 
-3. how do n type transistors work? when the gate is supplied with 1.2v, the transistor acts like a piece of wire; when supplied
-with 0 volts it acts like an open wire
+3. what are the two type of MOS transistors? p-type and n-type
 
-4. what of the p type transistor?
+4. how many terminals does a transistor have? 3
 
-5. name the 5 types of logic gates that can be constructed from n type and p type transistors?
+5. what are they called? gate, source, and drain see figure32
 
-6. what did you notice about the configuration of both transistors when they are used to construct logic gates? the n type is always 
-connected to ground; the ptype is never connected to ground
+6. how do n type transistors work? when the gate is supplied with 1.2v, the transistor acts like a piece of wire (short circuit); when supplied with 0 volts it acts like an open wire (open circuit) see figure32
 
-7. what happens when you connect a p type transistor to 1.2 volts or an n type to the ground? there is no voltage across the transistors
+7. what of the p type transistor - how does it work? When the gate is supplied with 0 volts, the P-type transistor acts (more or less) like a piece of wire, closing the circuit. When the gate is supplied with 1.2 volts, the P-type transistor acts like an open circuit. see figure33
 
-8. what happens when you connect a p type transistor to the ground and an n type transistor to 1.2 volts? because of 
-the electrical characteristics of the transistors, we get what is usually referred to as a transmission voltage of 
-approximately 0.5 volts across the transistor. 
+8. because the p-type and n-type transistors work in a complimentary manner, what do we refer to circuits that contain both of them? CMOS circuits
 
-9. there are two types of logic structures, what are they called and what do? those that include storage of information and those that do 
-not. those that do not store information are called decision elements or combinational logic structures. those that store information and 
-make decisions as well are called sequential logic circuits
+9. what is the next step up from logic elements? logic gate ie transistor circuits (comprising of a combination of the logic elements) that implement the logical values of AND, OR, NOT
 
-10. name three decision elements? decoder, mux (multiplexer), full adder 
+10. how is the NOT gate (inverter) constructed? from two MOS transistors; n-type and p-type see figure34
 
-11. how does the decoder work? only one of its output value is asserted (i.e. has a value of 1) that corresponds to the input pattern that 
-it is expected to detect. it basically interprets a bit pattern
+11. how does the inverter work? when supplied with 0 volts, P-type transistor acts like a short circuit and the N-type transistor acts like an open circuit. The output is, therefore, connected to 1.2 volts. On the other hand, if the input is supplied with 1.2 volts, the P-type transistor acts like an open circuit, but the N-type transistor acts like a short circuit. The output in this case is connected to ground (i.e., 0 volts). 
 
-12. what logic gates is the decoder made of? NAND and AND gates
+12. how is the NOR contructed? made out of 2 p-type and 2 n-type transistors see figure35
 
-13. how does the mux work? the select signal selects one of the inputs (the source) and connects it to the output   
+13. how does the NOR gate work? if A is supplied with 0 volts and B is supplied with 1.2 volts. In this case, the lower of the two P-type transistors produces an open circuit, and the output C is disconnected from the 1.2-volt power supply. However, the leftmost N-type transistor acts like a piece of wire, connecting the output C to 0 volts.
 
-14. what gates is the mux constructed out of? NAND, AND and OR gates
+Note that if both A and B are supplied with 0 volts, the two P-type transistors conduct, and the output C is connected to 1.2 volts. Note further that there is no ambiguity here, since both N-type transistors act as open circuits, and so C is disconnected from ground.
 
-15. how does the full adder work? it adds two binary numbers 
+If either A or B is supplied with 1.2 volts, the corresponding P-type transistor results in an open circuit. That is suﬃcient to break the connection from C to the 1.2-volt source. However, 1.2 volts supplied to the gate of one of the N-type transistors is suﬃcient to cause that transistor to conduct, resulting in C being connected to ground (i.e., 0 volts).
 
-16. what logic gates is the one bit adder made up of? NAND, AND, and OR gates
+14. how is the OR gate constructed? made out of 2 p-type and 2 n-type transistors (similar to NOR gate) but augmented by adding an inverter at its output, as shown in Figure 3.6a
 
-17. if you wish to implement a logic circuit for adding two 16 bit numbers, how many one bit adders will you require? 16 one bit adders
+15. how is the AND gate contructed? made out of 2 p-type and 2 n-type transistors along with an inverter see figure38
 
-18. what is the name of the building block that is used to implement any collection of logic functions? 
+16. how does it work? if either A or B is supplied with 0 volts, there is a direct connection from C to the 1.2-volt power supply. The fact that C is at 1.2 volts means the N-type transistor whose gate is connected to C provides a path from D to ground. Therefore, if either A or B is supplied with 0 volts, the output D of the circuit of Figure 3.8 is 0 volts.
 
-19. what logic gates is the PLA made up of? collection of AND gates (called AND arrays) followed by an array of OR gates
+On the other hand, if both A and B are supplied with 1.2 volts, then both of their corresponding P-type transistors are open. However, their corresponding N-type transistors act like pieces of wire, providing a direct connection from C to ground. Because C is at ground, the rightmost P-type transistor acts like a closed circuit, forcing D to 1.2 volts.
 
-20. what does the number of OR gates correspond to in the PLA? the number of logic functions that we wish to implement i.e. the number of 
-output columns in the truth table
+17. The gates just discussed are very common in digital logic circuits and in digital computers. There are billions of inverters (NOT gates) in Intel’s Skylake microprocessor. As a convenience, we can represent each of these gates by stan- dard symbols, as shown in Figure 3.9. The bubble shown in the inverter, NAND, and NOR gates signiﬁes the complement (i.e., NOT) function.
 
-21. name 2 logic structures that do include storage information? R-S latch and gated D latch
+18. Gates with More Than Two Inputs: the notion of AND, OR, NAND, and NOR gates extends to larger numbers of inputs. One could build a three-input AND gate or a four-input OR gate, for example. An n-input AND gate has an output value of 1 only if ALL n input variables have values of 1. If anyofthen inputs has a value of 0, the output of the n-input AND gate is 0. An n-input OR gate has an output value of 1 if ANY of the n input variables has a value of 1. That is, an n-input OR gate has an output value of 0 only if ALL n input variables have values of 0. see figure310
 
-22. how does the R-S latch work? stores 1 bit of information, a 0 or a 1. can be implemented in many ways; inputs S and R are normally held 
-at a logic level 1.
+19. Now that we understand the workings of the basic logic gates, what is the next step? build some of the logic structures that are important components of the microarchitecture of a computer.
 
-23. what is meant when we state that the R-S latch is in a quiescent state? when the latch is storing a bit and nothing is trying to change 
-that value
+20. there are two types of logic structures, what are they called and what do? those that include storage of information and those that do not. those that do not store information are called decision elements or combinational logic structures. those that store information and make decisions as well are called sequential logic circuits
 
-24. what contributes to this quiescent state? the fact that both R and S are held at a logic level of 1
+21. why are combinational logic structures called so? because their outputs are strictly dependent on the combination of input values that are being applied to the structure right now. Their outputs are not at all dependent on any past history of information that is stored internally, since no information can be stored internally in a combinational logic circuit.
 
-25. in order for the R-S latch to work properly, what must be done to R and S? must never be set to 0 at the same time
+22. name three decision elements? decoder, mux (multiplexer), full adder 
 
-26. how can you set the latch to a 1 or a 0? you an set the latch to a 1 by temporarily setting s to 0 and having R remain at logic level 
-1; the latch can be set to 0 by temporarily setting R to 0 and having S remain at logic level 1
+23. how does the decoder work? has the property that exactly one of its outputs is 1 and all the rest are 0s. The one output that is logically 1 is the output corresponding to the input pattern that it is expected to detect. In general, decoders have n inputs and 2^n outputs. We say the output line that detects the input pattern is asserted. That is, that output line has the value 1, rather than 0 as is the case for all the other output lines. see figure311. The decoder is useful in determining how to interpret a bit pattern. 
 
-27 what happens if both S and R are set to 0 at the same time? outputs a and b would both be 1 and the final state of the latch would 
-depend on the electrical properties of the transistors making up the gates
+24. how does the mux work? multiplexer, more commonly referred to as a mux is used to select one of the inputs (A or B) and connect it to the output. The select signal (S in Figure 3.12) determines which input is connected to the output.
 
-28. what logic gates make up he R-S latch? NAND gates
+The mux of Figure 3.12 works as follows: Suppose S  =  0, as shown in Figure 3.12b. Since the output of an AND gate is 0 unless all inputs are 1, the out- put of the rightmost AND gate is 0. Also, the output of the leftmost AND gate is whatever the input A is. That is, if A = 0, then the output of the leftmost AND gate is 0, and if A = 1, then the output of the leftmost AND gate is 1. Since the output of the rightmost AND gate is 0, it has no eﬀect on the OR gate. Consequently, the output at C is exactly the same as the output of the leftmost AND gate. The net result of all this is that if S = 0, the output C is identical to the input A.
 
-29. how does a gated d latch work? controls when the R-S latch is set to the value of D when write enable is asserted. in this case exactly 
-one of the outputs S and radio is set to 0 depending on the value of D
+On the other hand, if S = 1, it is B that is ANDed with 1, resulting in the output of the OR gate having the value of B. We say S selects the source of the mux (either A or B) to be routed through to the output C. In general, a mux consists of 2^n  inputs and n select lines. see figure313
 
-30. what happens when WE is not asserted? the outputs of S and R are both equal to a 1
+25. how does the One-Bit Adder (a.k.a. a Full Adder) work? Figure 3.14 is a truth table that describes the result of binary addition on one column of bits within two n-bit operands. At each column, there are three values that must be added: one bit from each of the two operands A and B and the carry from the previous column. Note that if only one of the three bits equals 1, we get a sum of 1, and no carry (i.e., Ci+1 = 0). If two of the three bits equal 1, we get a sum of 0, and a carry of 1. If all three bits equal 1, the sum is 3, which in binary corresponds to a sum of 1 and a carry of 1.
 
-31. what do we call the unique identiﬁer associated with each memory location?
+Figure 3.15 shows a logic gate implementation of a one-bit adder. Note that each AND gate in Figure 3.15 produces an output 1 for exactly one of the eight input combinations. The output of the OR gate for Ci+1 must be 1 in exactly those cases where the corresponding input combinations in Figure 3.14 produce an output 1. Therefore, the inputs to the OR gate that generates Ci+1 are the outputs of the AND gates corresponding to those input combinations. Similarly, the inputs to the OR gate that generates Si are the outputs of the AND gates corresponding to the input combinations that require an output 1 for Si in the truth table of Figure 3.14. Note that since the input combination 000 does not result in an output 1 for either Ci+1 or Si, its corresponding AND gate is not an input to either of the two OR gates.
 
-32. what name do we give to the number of bits of information stored in each location?
+26. what does Figure 3.16 show? a circuit for adding two 4-bit binary numbers, using four of the one-bit adder circuits of Figure 3.15. Note that the carry out of column i is an input to the addition performed in column i + 1. 
 
-33. what do we call the total number of uniquely identiﬁable memory locations?
+27. if you wish to implement a logic circuit for adding two 16 bit numbers, how many one bit adders will you require? 16 one bit adders
 
-34. what do we mean by stating that a computing device has a 2GB memory? colloquially we say the computing device has 2 billion memory 
-locations, however, the address space is actually 1024x1024x1024x2 which yields 2,147,483,648 locations
+28. describe the half adder? Note that the carry into the rightmost column in Figure 3.16 is 0. That is, in the rightmost circuit, S0 and C1 depend only on two inputs, A and B . Since that circuit depends on only two inputs, it has been referred to as a half adder. Since the other circuits depend on all three inputs, they are referred to as full adders. 
 
-35. why 1024? because 1024 bytes make a kb and 1024 kb make a mb and 1024 mb make a GB
+29. what is the name of the building block that is used to implement any collection of logic functions? a programmable logic array (PLA)
 
-36. why are most memories byte-adddressable? most computers got their start processing data where one character on the keyboard corresponds 
-to one 8-bit ASCII code
+30. what does the PLA consist of? an array of AND gates (called an AND array) followed by an array of OR gates (called an OR array). The number of AND gates corresponds to the number of input combinations (rows) in the truth table. For n-input logic functions, we need a PLA with 2^n n-input AND gates. In Figure 3.17, we have 2^3 three-input AND gates, corresponding to three logical input variables. 
 
-37. summarise how sequential logic circuits operate? they base their decisions on the input values present but also on what has happened 
-before; they  contain storage elements that allow them to keep track of prior history information
+31. what does the number of OR gates correspond to in the PLA? the number of logic functions that we wish to implement i.e. the number of output columns in the truth table. The implementation algorithm is simply to connect the output of an AND gate to the input of an OR gate if the corresponding row of the truth table produces an output 1 for that output column. Hence the notion of programmable.
 
-38. what machines are sequential logic circuits used to implement? 
+Figure 3.15 shows seven AND gates connected to two OR gates since our requirement was to implement two functions (sum and carry) of three input variables. Figure 3.17 shows a PLA that can implement any four functions of three variables by appropriately connecting AND gate outputs to OR gate inputs. That is, any function of three variables can be implemented by connecting the outputs of all AND gates corresponding to input combinations for which the output is 1 to inputs of one of the OR gates. Thus, we could implement the one-bit adder by programming the two OR gates in Figure 3.17 whose outputs are W and X by connecting or not connecting the outputs of the AND gates to the inputs of those two OR gates as speciﬁed by the two output columns of Figure 3.14.
 
-39. can you give two examples; one for a combination decision element and the other for a sequential logic element?
+32. describe the concept of logical completeness: set of gates {AND, OR, and NOT} (provided by the PLA) is logically complete because a barrel of AND gates, a barrel of OR gates, and a barrel of NOT gates are suﬃcient to build a logic circuit that carries out the speciﬁcation of any desired truth table. 
 
-40. define what is meant by the state of a mechanism/system? snapshot of a system with all relevant items explicitly expressed.
+33. name 2 logic structures that do include the storage information? R-S latch and gated D latch
 
-41. how many elements does a finite state machine consist of?
+34. how does the R-S latch work? stores 1 bit of information, a 0 or a 1. can be implemented in many ways simplest one is shown in figure318 where two 2-input NAND gates are connected such that the output of each is connected to one of the inputs of the other; inputs S and R are normally held at a logic level 1.
 
-42. can you state all 5? a finite number of states, a finite number of external inputs, a finite number of external outputs, 
+35. where does the RS latch get its name? because setting the latch to store a 1 was referred to as setting the latch, and setting the latch to store a 0 was referred to as resetting the latch. Ergo, R-S
+
+36. what is meant when we state that the R-S latch is in a quiescent state? when the latch is storing a value, either 0 or 1, and nothing is trying to change that value. 
+
+37. what contributes to this quiescent state? the fact that both R and S are held at a logic level of 1
+
+38. what letter in figure318 designates the value that is currently stored in the latch? letter a; also referred to as the output of the latch.
+
+39. Consider ﬁrst the case where the value stored and therefore the output a is 1. Since that means the value A is 1 (and since we know the input R is 1 because we are in the quiescent state), the NAND gate’s output b must be 0. That, in turn, means B must be 0, which results in the output a equal to 1. As long as the inputs S and R remain 1, the state of the circuit will not change. That is, the R-S latch will continue to store the value 1 (the value of the output a).
+
+40. If, on the other hand, we assume the output a is 0, then A must be 0, and the output b must be 1. That, in turn, results in B equal to 1, and combined with the input S equal to 1 (again due to quiescence), results in the output a equal to 0. Again, as long as the inputs S and R remain 1, the state of the circuit will not change. In this case, we say the R-S latch stores the value 0.
+
+41. how can you set the latch to a 1 or a 0? you an set the latch to a 1 by temporarily setting s to 0 and having R remain at logic level 1; the latch can be set to 0 by temporarily setting R to 0 and having S remain at logic level 1
+
+42. in order for the R-S latch to work properly, what must be done to R and S? must never be set to 0 at the same time
+
+43. If we set S to 0 for a very brief period of time, this causes a to equal 1, which in turn causes A to equal 1. Since R is also 1, the output at b must be 0. This causes B to be 0, which in turn makes a equal to 1. If, after that very brief period of time, we now return S to 1, it does not aﬀect a. Why? Answer: Since B is also 0, and since only one input 0 to a NAND gate is enough to guarantee that the output of the NAND gate is 1, the latch will continue to store a 1 long after S returns to 1.
+
+44. what can you do to clear the latch? we can clear the latch (set the latch to 0) by setting R to 0 for a very short period of time.
+
+45. what happens if both S and R are set to 0 at the same time? outputs a and b would both be 1 and the final state of the latch would depend on the electrical properties of the transistors making up the gates and not on the logic being performed.
+
+46. we should note that when a digital circuit is powered on, the latch can be in either of its two states, 0 or 1. It does not matter which state since we never use that information until after we have set it to 1 or 0.
+
+47. how is the gated d latch implemented? It consists of the R-S latch of Figure 3.18, plus two additional NAND gates that allow the latch to be set to the value of D, but only when WE is asserted (i.e., when WE equals 1). WE stands for write enable. see figure319
+
+48. what happens when WE is not asserted (i.e., when WE equals 0)? the outputs of S and R are both equal to a 1. Since S and R are inputs to the R-S latch, if they are kept at 1, the value stored in the latch remains unchanged
+
+49. what happens when WE is momentarily set to 1? exactly one of the outputs S or R is set to 0, depending on the value of D.IfD equals 1, then S is set to 0. If D equals 0, then both inputs to the lower NAND gate are 1, resulting in R being set to 0. As we saw earlier, if S is set to 0, the R-S latch is set to 1. If R is set to 0, the R-S latch is set to 0. Thus, the R-S latch is set to 1 or 0 according to whether D is 1 or 0. When WE returns to 0, S and R return to 1, and the value stored in the R-S latch persists.
+
+50. what is memory made up of? a (usually large) number of locations, each uniquely identiﬁable and each having the ability to store a value. 
+
+51. what do we call the unique identiﬁer associated with each memory location? address
+
+52. what name do we give to the number of bits of information stored in each location? addressability
+
+53. what do we call the total number of uniquely identiﬁable memory locations? address space
+
+54. what do we mean by stating that a computing device has a 2GB memory? colloquially we say the computing device has 2 billion memory locations, however, the address space is actually 1024x1024x1024x2 which yields 2,147,483,648 locations
+
+55. why 1024? because 1024 bytes make a kb and 1024 kb make a mb and 1024 mb make a GB
+
+56. Actually, the number two billion is only an approximation, due to the way we specify memory locations. Since everything else in the computer is represented by sequences of 0s and 1s, it should not be surprising that memory locations are identiﬁed by binary addresses as well. With n bits of address, we can uniquely identify 2^n locations. Ten bits provide 1024 locations, which is approximately 1000. If we have 20 bits to represent each address, we have 2^(20) uniquely identiﬁable locations, which is approximately one million. With 30 bits, we have 2^(30) locations, which is approximately one billion. In the same way we use the preﬁxes “kilo” to represent 2^(10) (approximately 1000) and “mega” to represent 2^(20) (approximately one million), we use the preﬁx “giga” to represent 2^(30) (approximately one billion). Thus, 2 giga really corresponds to the number of uniquely iden- tiﬁable locations that can be speciﬁed with 31 address bits. We say the address space is 2^(31), which is exactly 2,147,483,648 locations, rather than 2,000,000,000, although we colloquially refer to it as two billion. 
+
+57. A 2-gigabyte memory (written 2GB) is a memory consisting of 2,147,483,648 memory locations, each containing one byte (i.e., eight bits) of storage. 
+
+58. why are most memories byte-adddressable? most computers got their start processing data where one character stroke on the keyboard corresponds to one 8-bit ASCII code. If the memory is byte-addressable, then each ASCII character occupies one location in memory. Uniquely identifying each byte of memory allows individual bytes of stored information to be changed easily.
+
+59. Many computers that have been designed speciﬁcally to perform large scientiﬁc calculations are 64-bit addressable. This is due to the fact that numbers used in scientiﬁc calculations are often represented as 64-bit ﬂoating-point quantities. Since scientiﬁc calculations are likely to use numbers that require 64 bits to represent them, it is reasonable to design a memory for such a computer that stores one such number in each uniquely identiﬁable memory location.
+
+60. Figure 3.20 illustrates a memory of size 2^2 by 3 bits. That is, the memory has an address space of four locations and an addressability of three bits. A memory of size 2^2 requires two bits to specify the address. We describe the two-bit address as A[1:0]. A memory of addressability three stores three bits of information in each memory location. We describe the three bits of data as D[2:0]. In both cases, our notation A[high:low] and D[high:low] reﬂects the fact that we have numbered the bits of address and data from right to left, in order, starting with the rightmost bit, which is numbered 0. The notation [high:low] means a sequence of high − low + 1 bits such that “high” is the bit number of the leftmost (or high) bit number in the sequence and “low” is the bit number of the rightmost (or low) bit number in the sequence.
+
+Accesses of memory require decoding the address bits. Note that the address decoder takes as input the address bits A[1:0] and asserts exactly one of its four outputs, corresponding to the word line being addressed. In Figure 3.20, each row of the memory corresponds to a unique three-bit word, thus the term word line. Memory can be read by applying the address A[1:0], which asserts the word line to be read. Note that each bit of the memory is ANDed with its word line and then ORed with the corresponding bits of the other words. Since only one word line can be asserted at a time, this is eﬀectively a mux with the output of the decoder providing the select function to each bit line. Thus, the appropriate word is read at D[2:0].
+
+Figure 3.21 shows the process of reading location 3. The code for 3 is 11. The address A[1:0]=11 is decoded, and the bottom word line is asserted. Note that the three other decoder outputs are not asserted. That is, they have the value 0. The value stored in location 3 is 101. These three bits are each ANDed with their word line producing the bits 101, which are supplied to the three output OR gates. Note that all other inputs to the OR gates are 0, since they have been produced by ANDing with their unasserted word lines. The result is that D[2:0] = 101. That is, the value stored in location 3 is output by the OR gates.
+
+Memory can be written in a similar fashion. The address speciﬁed by A[1:0] is presented to the address decoder, resulting in the correct word line being asserted. With write enable (WE) also asserted, the three bits D[2:0] can be written into the three gated latches corresponding to that word line.
+
+61. summarise how sequential logic circuits operate? they base their decisions not only on the input values now present but also on what has happened before; they contain storage elements that allow them to keep track of prior history information (what distinguishes from combinational logic circuits) see figure322 (Note the storage elements. Note also that the output can be dependent on both the inputs now and the values stored in the storage elements. The values stored in the storage elements reﬂect the history of what has happened before)
+
+62. what machines are sequential logic circuits used to implement? finite state machines
+
+63. can you give two examples; one for a combination decision element and the other for a sequential logic element? combination lock and sequential locks respectively see figure323
+
+64. define what is meant by the state of a mechanism/system? snapshot of a system with all relevant items explicitly expressed.
+
+65. how many elements does a finite state machine consist of? 5
+
+66. can you state all 5? a finite number of states, a finite number of external inputs, a finite number of external outputs, 
 an explicit specification of all state transitions, an explicit specification of what determines each external output value
 
-43. what is a characteristic of asynchronous machines? there is nothing that synchronises when each state transition occurs
+67. what does the set of states of a system represent? all possible snapshots/configurations that the system can be in. Each state transition describes what it takes to get from one state to another. 
 
-44. are computers synchronous or aynchronous systems? synchronous because state transitions take place one after another at identical fixed 
-units of time
+68. A state diagram is a convenient representation of a ﬁnite state machine. see figure326. The explicit speciﬁcations of all state transitions are shown by the arrows in the state diagram. The arrowhead on each arc speciﬁes which state the system is coming from and which state it is going to. We refer to the state the system is coming from as the current state, and the state it is going to as the next state. The combination lock has eight state transitions. Associated with each transition is the input that causes the transition from the current state to the next state.
 
-45. what is the common characteristic of synchronous and asynchronous finite state machines? they carry out work, one state transition at 
-a time, moving closer to a goal
+A couple of things are worth noting. First, it is usually the case that from a current state there are multiple transitions to next states. The state transition that occurs depends on both the current state and the value of the external input. In short, the next state is determined by the combination of the current state and the current external input.
 
-46. what controls the synchronous behaviour of finite state machines? a clock circuit which produces a signal whose value alternates 
-between 0 volts and 1 volt
+The output values of a system can also be determined by the combination of the current state and the value of the current external input. However, as is the case for the combination lock, where states A, B, and C specify the lock is “locked,” and state D speciﬁes the lock is “unlocked,” the output can also be determined solely by the current state of the system. In all the systems we will study in this book, the output values will be speciﬁed solely by the current state of the system.
 
-47. what is a clock cycle? an identical interval that is repeated in the value of the clock signal as a function of time. it starts when 
-the clock signal transitions from 0 to 1 and ends the next time the clock signal transitions from 0 to 1
+69. what is a characteristic of asynchronous finite state machines? there is nothing that synchronises when each state transition occurs; a transition from a current state to a next state in our ﬁnite state machine happened when it happened
 
-48. what is meant by a laptop running at a frequency of 2GHz? it can perform 2 billion pieces of work each second since 2 GHz means 2 
-billion clock cycles each second the synchronous finite state machine makes one state transition each cycle
+70. are computers synchronous or aynchronous systems? synchronous because state transitions take place one after another at identical fixed units of time.
 
-49. what does a state diagram show? all of the 5 characteristics of finite state system
+71. what is the important common characteristic shared between synchronous and asynchronous finite state machines? they carry out work, one state transition at a time, moving closer to a goal
 
-50 what is the problem with gated D latches as storage elements? when WE is asserted (i.e. the clock signal value is 1), the value of the 
-storage elements would immediately change which in turn would trigger new inputs to the logic gates they are connected to. This cycle would 
-repeat thereby making it impossible to for the current state to remain unchanged
+72. what controls the behaviour of a synchronous finite state machine as it transitions from a current state to its next state after an identical fixed interval of time? a clock circuit produces a signal, called THE clock, whose value alternates between 0 volts and some specified fixed voltage. In digital logic terms, the clock is a signal whose value alternates between 0 and 1. figure328 shows the value of the clock signal as a function of time. Each of the repeated sequence of identical intervals is referred to as a clock cycle. 
 
-51. how do flip flops work? they are storage elements that allow the reading of the current state throughout the current clock cycle and 
-not write the next state into the storage elements until the beginning of the next clock cycle. reading must be allowed throughout the 
-current clock cycle and writing must occur at the end of the clock cycle
+73. what is meant by a laptop running at a frequency of 2GHz? it can perform 2 billion pieces of work each second since 2 GHz means 2 billion clock cycles each second 
 
-52. what is a flip flop made of? two gated D latches in a master/slave relationship
+74. how many state transitions does a synchronous finite state machine make each clock cycle? one state transition
 
-53. how do flip flops work when used as storage elements? at the start of each clock cycle, the output of the storage elements i.e. the 
-slave latch are input to the logic gates which produce the next state for the storage elements. in the timing diagram, there is a 
-propagation delay as the combinational logic takes place to achieve this. despite the next state values being produced
-sometime during half cycle A, the WE signal (i.e. the clock) to the master latches is 0 hence the next state cannot be written. at the 
-start of half cycle b, the WE to the slave latches becomes 0 which means the clock signal for the mster latches is 1 - hence the master 
-latches can be written. however, since the WE signal for the slave latches is 0, they cannot yet write the new information stored in the 
-master latches. at the start of the next clock cycle, the WE signal to the slave latches becomes 1 and hence they can now be written into 
-by the master latches thereby storing the next state that was created using combinational logic in the previous clock cycle. this becomes 
-the current state of the next clock cycle. this process is repeated as long as the switch is on and the clock signal value alternates 
-between 1v and 0v
+75. In electronic circuit implementations of a synchronous ﬁnite state machine, the transition from one state to the next occurs at the start of each clock cycle.
 
-54. what does the data path of a computer consist of? all of the logic structures that combine to process information in the core of the 
-computer
+76. A Danger Sign: Figure 3.29 shows the danger sign; it contains 5 lights labelled 1 to 5. The synchronous ﬁnite state machine will be used to control it. The purpose of the synchronous finite state machine (a.k.a. a controller) is to direct the behaviour of the system i.e. the set of lights. The controller is equipped with a switch. When the switch is in the ON position, the controller directs the lights as follows: During one unit of time, all lights will be oﬀ. In the next unit of time, lights 1 and 2 will be on. The next unit of time, lights 1, 2, 3, and 4 will be on. Then all ﬁve lights will be on. Then the sequence repeats. The lights continue to sequence through these four states as long as the switch is on. If the switch is turned oﬀ, all the lights are turned oﬀ and remain oﬀ. Figure 3.30 is a state diagram for the synchronous ﬁnite state machine that controls the lights. There are four states, one for each of the four conditions corresponding to which lights are on. Note that the outputs (whether each light is on or oﬀ) are determined by the current state of the system. If the switch is on (input  =  1), the transition from each state to the next state happens at one-second intervals, causing the lights to ﬂash in the sequence described. If the switch is turned oﬀ (input = 0), the state always transitions to state A, the “all oﬀ” state.
 
-55. what is a register made of? flip flops i.e. gated D latches where one bit of information can be stored in one flip flop hence a 16 bit 
-register is composed of 16 flip flops
+77. Figure 3.31 is a block diagram of the speciﬁc sequential logic circuit we need to control the lights. Several things are important to note in this ﬁgure. First, the two external inputs: the switch and the clock. The switch determines whether the ﬁnite state machine will transition through the four states or whether it will transition to state A, where all lights are oﬀ. The other input (the clock) controls the transition from state A to B, B to C, C to D, and D to A by controlling the state of the storage elements. 
 
-56. can a register be any size you need?
+78. Second, there are two storage elements for storing state information. Since there are four states, and since each storage element can store one bit of informa- tion, the four states are identiﬁed by the contents of the two storage elements: A (00), B (01), C (10), and D (11). Storage element 2 contains the high bit; storage element 1 contains the low bit.
+
+79. Third, combinational logic circuit 1 shows that the on/oﬀ behavior of the lights is controlled by the storage elements. That is, the input to the combinational logic circuit is from the two storage elements, that is, the current state of the ﬁnite state machine.
+
+80. Finally, combinational logic circuit 2 shows that the transition from the cur- rent state to the next state depends on the two storage elements and the switch. If the switch is on, the output of combinational logic circuit 2 depends on the state of the two storage elements.
+
+81. Figure 3.32 shows the logic that implements combinational logic circuits 1 and 2. Two sets of outputs are required for the controller to work properly: a set of external outputs for the lights and a set of internal outputs for the inputs to the two storage elements that keep track of the state. Light 5 is controlled by the output of the AND gate labeled V, since the only time light 5 is on is when the controller is in state 11. Lights 3 and 4 are controlled by the output of the OR gate labeled X, since there are two states in which those lights are on, those labeled 10 and 11.
+
+82. Why are lights 1 and 2 controlled by the output of the OR gate labeled W? because input to OR gate W comes from the top NAND gate whose output is 1 when the storage elements are set to 01
+
+83. Storage element 2 should be set to 1 for the next clock cycle if the next state is 10 or 11. This is true only if the switch is on and the current state is either 01 or 10. Therefore, the output signal that will make storage element 2 be 1 in the next clock cycle is the output of the OR gate labeled Y. if you look at the diagram you should be able to deduce why
+
+84. Why is the next state of storage element 1 controlled by the output of the OR gate labeled Z? storage element 1 should be set to 1 in the next clock cycle if the switch is on and the current state is either 00 or 10
+
+85. In order for the danger sign controller to work, the state transitions must occur once per second when the switch is on.
+
+86. what is the problem with having gated D latches as the storage elements? when WE is asserted (i.e. the clock signal value is 1), the the output of OR gates Y and Z would immediately change the bits stored in the two gated D latches. This would produce new input values to the three AND gates that are input to OR gates Y and Z, producing new outputs that would be applied to the inputs of the gated latches, which would in turn change the bits stored in the gated latches, which would in turn mean new inputs to the three AND gates and new outputs of OR gates Y and Z. This would happen again and again, continually changing the bits stored in the two storage elements as long as the Write Enable signal to the gated D latches was asserted. The result: We have no idea what the state of the ﬁnite state machine would be for the next clock cycle. And, even in the current clock cycle, the state of the storage elements would change so fast that the ﬁve lights would behave erratically.
+
+87. what is the problem is the gated D latch? We want the output of OR gates Y and Z to transition to the next state at the end of the current clock cycle and allow the current state to remain unchanged until then. That is, we do not want the input to the storage elements to take eﬀect until the end of the current clock cycle. We need storage elements that allow us to read the current state throughout the current clock cycle, and not write the next state values into the storage elements until the beginning of the next clock cycle.
+
+88. how do flip flops work? they are storage elements that allow the reading of the current state throughout the current clock cycle and not write the next state into the storage elements until the beginning of the next clock cycle. reading must be allowed throughout the current clock cycle and writing must only occur at the end of the clock cycle
+
+89. what is a flip flop made of? two gated D latches in a master/slave relationship; the write enable signal of the master is 1 when the clock is 0, and the write enable signal of the slave is 1 when the clock is 1. see figure333
+
+90. how do flip flops work when used as storage elements? see Figure 3.34 (timing diagram for the master/slave ﬂip-ﬂop). A timing diagram shows time passing from left to right. Note that clock cycle n starts at the time labeled 1 and ends at the time labeled 4. Clock cycle n+1 starts at the time labeled 4. at the start of each clock cycle, the output of the storage elements are the outputs of the two slave latches. These outputs (starting at time 1) are input to the AND gates, resulting in OR gates Y and Z producing the next state values for the storage elements (at time 2). The timing diagram shows the propagation delay of the combinational logic, that is, the time it takes for the combinational logic to produce outputs of OR gates Y and Z. Although OR gates Y and Z produce the Next State value sometime during half-cycle A, the write enable signal to the master latches is 0, so the next state cannot be written into the master latches.
+
+91. what happens in half cycle b? At the start of half-cycle B (at time 3), the clock signal is 0, which means the write enable signal to the master latches is 1, and the master latches can be written. However, during the half-cycle B, the write enable to the slave latches is 0, so the slave latches cannot write the new information now stored in the master latches. At the start of clock cycle n+1 (at time 4), the write enable signal to the slave latches is 1, so the slave latches can store the next state value that was created by the combinational logic during clock cycle n. This becomes the current state for clock cycle n+1.
+
+Since the write enable signal to the master latches is now 0, the state of the master latches cannot change. Thus, although the write enable signal to the slave latches is 1, those latches do not change because the master latches cannot change.
+
+92. In short, the output of the slave latches contains the current state of the system for the duration of the clock cycle and produces the inputs to the six AND gates in the combinational logic circuits. Their state changes at the start of the clock cycle by storing the next state information created by the combinational logic during the previous cycle but does not change again during the clock cycle.
+
+93. why don't they change? During half-cycle A, the master latches cannot change, so the slave latches continue to see the state information that is the current state for the new clock cycle. During half-cycle B, the slave latches cannot change because the clock signal is 0. Meanwhile, during half-cycle B, the master latches can store the next state information produced by the combinational logic, but they cannot write it into the slave latches until the start of the next clock cycle, when it becomes the state information for the next clock cycle.
+
+94. what does the data path of a computer consist of? all of the logic structures that combine to process information in the core of the computer see Figure 3.35 you should be able to spot 5 muxes, adder (ALU with +), ALU, PC, IR, MAR, and MDR are all 16-bit registers that store 16 bits of information each, three 1-bit registers, N, Z, and P
+
+The arrows in Figure 3.35 represent wires that transmit values from one struc- ture to another. Most of the arrows include a cross-hatch with a number next to it. The number represents the number of wires, corresponding to the number of bits being transmitted. 
+
+95. what is a register made of? a set of n flip flops that collectively are used to store one n-bit value. i.e. gated D latches where one bit of information can be stored in one flip flop hence a 16 bit register is composed of 16 flip flops see figure336
+
+96. why use flip flops to make registers instead of latches? because it is usually important to be able to both read the contents of a register throughout a clock cycle and also store a new value
 
 chapter 4
 

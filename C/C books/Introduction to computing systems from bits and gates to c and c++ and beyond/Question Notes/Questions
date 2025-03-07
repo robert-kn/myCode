@@ -70,3 +70,31 @@ probably from the ISA -> microarchitecture because I would need to physically im
 1.23 Why is an ISA unlikely to change between successive generations of microarchitectures that implement it? For example, why would Intel want to make certain that the ISA implemented by the Pentium III is the same as the one implemented by the Pentium II? Hint: When you upgrade your computer (or buy one with a newer CPU), do you need to throw out all your old software?
 
 ISA’s don’t change much between successive generations, because of the need for backward compatibility. You’d like your new computer to still run all your old software.
+
+chapter 2.
+
+2.1  Given n bits, how many distinct combinations of the n bits exist?
+
+2^n
+
+2.2  There are 26 characters in the alphabet we use for writing English. What is the least number of bits needed to give each character a unique bit pattern? 5
+
+How many bits would we need to distinguish between upper and lowercase versions of all 26 characters? 6
+
+2.3  a.  Assume that there are about 400 students in your class. If every student is to be assigned a unique bit pattern, what is the minimum number of bits required to do this? 9
+
+b.  How many more students can be admitted to the class without requiring additional bits for each student’s unique bit pattern? 112
+
+2.4  Given n bits, how many unsigned integers can be represented with the n bits? 2^n 
+
+What is the range of these integers? 0 to 2(^n) - 1
+
+2.5  Using ﬁve bits to represent each number, write the representations of 7 and −7 in 1’s complement, signed magnitude, and 2’s complement integers.
+
+2.15 It was demonstrated in Example 2.5 that shifting a binary number one bit to the left is equivalent to multiplying the number by 2. What operation is performed when a binary number is shifted one bit to the right? Dividing the number by two.
+
+2.21 Describe what conditions indicate overﬂow has occurred when two 2’s complement numbers are added. Overflow has occurred if both operands are positive and the result is negative, or if both operands are negative and the result is positive.
+
+2.23 Describe what conditions indicate overﬂow has occurred when two unsigned numbers are added. Overflow has occurred in an unsigned addition when you get a carry out of the leftmost bits.
+
+2.25 Why does the sum of a negative 2’s complement number and a positive 2’s complement number never generate an overﬂow? Because their sum will be a number which if positive, will have a lower magnitude (less positive) than the original positive number (because a negative number is being added to it), and vice versa.

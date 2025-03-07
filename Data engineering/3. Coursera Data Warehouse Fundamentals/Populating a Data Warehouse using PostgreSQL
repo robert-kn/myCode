@@ -1,0 +1,118 @@
+Purpose of the Lab:
+
+The lab is designed to provide hands-on experience in creating and managing a production database using PostgreSQL within the IBM Skills Network Labs (SN Labs) Cloud IDE. You will learn how to launch a PostgreSQL server instance, utilize the pgAdmin graphical user interface (GUI) for database operations, and execute essential tasks like creating a database, designing tables, and loading data. The lab focuses on building a foundation in database management by guiding learners through the process of setting up a 'Production' database and populating it with data following a star schema design.
+
+Benefits of Learning the Lab:
+
+Engaging in this lab offers significant benefits for learners seeking to deepen their understanding of database management systems, particularly PostgreSQL. By working through the lab, you will gain practical skills in SQL, database creation, table design, and data manipulation, which are crucial for roles in data engineering, database administration, and data science. The hands-on approach helps in consolidating knowledge of database schemas and SQL queries, thereby enhancing the learner's ability to manage and analyze data effectively in real-world scenarios. Additionally, familiarity with tools like pgAdmin and the Cloud IDE environment adds valuable experience to your skill set, preparing you for advanced database projects and tasks.
+
+Database Used in this Lab
+
+Production database is used in this lab.
+The production database contains:
+
+DimCustomer
+DimMonth
+FactBilling
+
+Objectives
+In this lab you will:
+
+Create production related database and tables in a PostgreSQL instance.
+Populate the production data warehouse byloading the tables from Scripts.
+
+Lab Structure
+
+In this lab, you will complete several tasks in which you will learn how to create tables and load data in the PostgreSQL database service using the pgAdmin graphical user interface (GUI) tool.
+
+Data Used in this Lab
+The following are the SQL data files used in this lab.
+
+The production database contains:
+
+DimCustomer
+DimMonth
+FactBilling
+Star Schema
+
+Task A: Create a database
+
+First, to create a database on a PostgreSQL server instance, you'll first want to actually launch a PostgreSQL server instance on Cloud IDE and open up the pgAdmin Graphical User Interface.
+
+Click on the Skills Network extension button on the left side of the window.
+
+Open the DATABASES drop down menu.
+
+Click on PostgreSQL
+
+Click on the Start button. PostgreSQL may take a few moments to start.
+
+Next, open the pgAdmin Graphical User Interface by clicking the pgAdmin button in the Cloud IDE interface.
+
+Once the pgAdmin GUI opens, click on the Servers tab on the left side of the page. You will be prompted to enter a password.
+
+To retrieve your password, click on the PostgreSQL tab near the top of the interface.
+
+Click on the Copy icon to the right of your password to copy the session password onto your clipboard.
+
+Navigate back to the pgAdmin tab and paste in your password, then click OK.
+
+You will then be able to access the pgAdmin GUI tool.
+
+In the left tree-view, right-click on Databases> Create > Database.
+
+In the Database box, type Production as the name for your new database, and then click Save. Proceed to Task B.
+
+Task B: Create tables
+
+Now, that you have your PostgreSQL service active and have created the Production database using pgAdmin, let's go ahead and create a few tables to populate the database and store the data that we wish to eventually upload into it.
+
+Click on the Production database and in the top of the page go to Query tool and then click on Open File. Next a new page pops up called Select File. Click on Upload icon as shown in the screenshot.
+Note: Ensure that you upload the files to this path: /var/lib/pgadmin/
+
+In the new blank page that appears drag and drop the star-schema.sql file inside the blank page. Once the star-schema.sql file is successfully loaded, click on the X icon on the right hand side of the page as shown in the screenshot.
+
+Once you click on the X icon a new page appears with the file star-schema.sql. Select the star-schema.sql file from the list and click the Select tab.
+
+Once the file opens up click on the Run option to execute the star-schema.sql file.
+
+Next, right-click on the Production database and click on the Refresh option from the dropdown.
+
+After the database is refreshed the 3 tables (DimCustomer, DimMonth,FactBilling) are created under the Databases > Production > Schemas > Public > Tables.
+
+Task C: Load tables
+
+Click on Query tool and then click Open file and click on Upload icon.
+
+In the new blank page that appears drag and drop the DimCustomer.sql file inside the blank page. Once the DimCustomer.sql file is successfully loaded.
+
+Once you click on the X icon a new page appears with the file DimCustomer.sql. Select the DimCustomer.sql file from the list and click on Select tab.
+
+Once the file opens up, click on the Run option to execute the DimCustomer.sql file.
+
+Note: Repeat the steps as given in Task C to upload the remaining sql files to insert data in DimMonth and FactBilling.
+
+Let's run the command below on the PostgreSQL Tool.
+
+select count(*) from public."DimMonth";
+
+Practice exercises
+
+Problem 1: Using the PostgreSQL tool, find the count of rows in the table FactBilling
+
+select count(*) from public."FactBilling";
+
+Problem 2: Using the PostgreSQL tool, create a simple Materialized views named avg_customer_bill with fields customerid and averagebillamount.
+
+CREATE MATERIALIZED VIEW  avg_customer_bill (customerid, averagebillamount) AS
+(select customerid, avg(billedamount)
+from public."FactBilling"
+group by customerid);
+
+Problem 3: Refresh the newly created Materialized views
+
+REFRESH MATERIALIZED VIEW avg_customer_bill;
+
+Problem 4: Using the newly created Materialized views find the customers whose average billing is more than 11000.
+
+select * from avg_customer_bill where averagebillamount > 11000;

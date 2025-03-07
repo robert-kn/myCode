@@ -1,0 +1,90 @@
+Purpose of the Lab:
+
+The purpose of the lab is to equip you with practical skills in setting up and managing a staging server for a data warehouse, specifically using PostgreSQL. The lab focuses on teaching how to design and implement a database schema, load data into tables, and run sample queries to interact with the data. This is aimed at providing you with a hands-on understanding of the intricacies involved in preparing and managing a data warehouse environment.
+
+Benefits of Learning the Lab:
+
+The key benefit of this lab is the hands-on experience it offers in data warehousing concepts and practices. By working in the Skills Network Cloud IDE, an interactive environment, you can practice and hone your database management skills. This practical exposure is crucial for developing a solid foundation in data management and analysis, skills that are highly valued in real-world business scenarios. The lab helps you to understand the operational aspects of data warehouses, making you better prepared for challenges in data management and analysis in professional settings.
+
+Objectives
+In this lab you will:
+
+Setup a staging server for a data warehouse
+Create the schema to store the data
+Load the data into the tables
+Run a sample query
+
+Exercise 1 - Start the PostgreSQL server
+
+Start the PostgreSQL server
+
+Exercise 2 - Create Database
+
+Create the database on the data warehouse.
+
+Now, open a new terminal, by clicking on the menu bar and selecting Terminal->New Terminal. This will open a new terminal at the bottom of the screen.
+
+Run the commands below on the newly opened terminal. (You can copy the code by clicking on the little copy button on the bottom right of the codeblock below and then paste it, wherever you wish.)
+
+Using the createdb command of the PostgreSQL server, we can directly create the database from the terminal. Before that, export your password by replacing <your_password> with your PostgreSQL server password(that can be found under the connection information tab) in the below command and execute it.
+
+export PGPASSWORD=AJ4tXLsz8duCYLJEk0w9Xdk1;
+
+Then run the below command which will create a database named billingDW.
+
+createdb -h 172.21.247.37 -U postgres -p 5432 billingDW
+
+In the above command
+
+-h mentions that the database server is accessible using the hostname “postgres”
+-U mentions that we are using the user name postgres to log into the database
+-p mentions that the database server is running on port number 5432
+
+Exercise 3 - Create data warehouse schema
+
+Download the schema files.
+
+The commands to create the schema are available in the file below.
+
+https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0260EN-SkillsNetwork/labs/Setting%20up%20a%20staging%20area/billing-datawarehouse.tgz
+
+wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0260EN-SkillsNetwork/labs/Setting%20up%20a%20staging%20area/billing-datawarehouse.tgz
+
+tar -xvzf billing-datawarehouse.tgz
+ls *.sql
+
+You should see 4 .sql files listed in the output
+
+Run the command below to create the schema in the billingDW database.
+
+psql  -h 172.21.247.37 -U postgres -p 5432 billingDW < star-schema.sql
+
+Exercise 4 - Load data into Dimension tables
+
+When we load data into the tables, it is a good practice to load the data into dimension tables first.
+
+Step 1: Load data into DimCustomer table
+
+Run the command below to load the data into DimCustomer table in billingDW database.
+
+psql  -h 172.21.247.37 -U postgres -p 5432 billingDW < DimCustomer.sql
+
+Step 2: Load data into DimMonth table
+
+Run the command below to load the data into DimMonth table in billingDW database.
+
+psql  -h 172.21.247.37 -U postgres -p 5432 billingDW < DimMonth.sql
+
+Exercise 5 - Load data into Fact table
+
+Load data into FactBilling table
+
+Run the command below to load the data into FactBilling table in billingDW database.
+
+psql  -h 172.21.247.37 -U postgres -p 5432 billingDW < FactBilling.sql
+
+Exercise 6 - Run a sample query
+
+Run the command below to check the number of rows in all the tables in the billingDW database.
+
+psql  -h 172.21.247.37 -U postgres -p 5432 billingDW < verify.sql
