@@ -1,0 +1,142 @@
+In this lab, you will use the MySQL Command Line Interface (CLI) to carry out a variety of functions related to selecting 
+and understanding some of the alternative storage engines available in MySQL. You will then continue on to explore the 
+system tables in MySQL which contain meta data about the objects in the server.
+
+Objectives
+After completing this lab, you will be able to use the MySQL command line interface to:
+
+Create tables using alternative storage engines.
+Query MySQL system tables to retrieve meta data about objects in the database.
+
+Database Used in this Lab
+
+The World database used in this lab comes from the following source: https://dev.mysql.com/doc/world-setup/en/ under CC BY 4.0 License with Copyright 2021 - Statistics Finland.
+
+You will use a modified version of the database for the lab, so to follow the lab instructions successfully please use the database provided with the lab, rather than the database from the original source.
+
+The following ERD diagram shows the schema of the World database: see World_ERD.png 
+
+The first row is the table name, the second is the primary key, and the remaining items are any additional attributes.
+
+download the data
+
+wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0231EN-SkillsNetwork/datasets/World/world_mysql_script.sql
+
+Create a new database world using the command below in the terminal:
+
+CREATE DATABASE world;
+
+To use the newly created world database, use the command below in the terminal:
+
+USE world;
+
+Execute the world mysql script (world_mysql.sql) to complete the world database creation process using the command below in the terminal:
+
+SOURCE world_mysql_script.sql;
+
+To list all the table names from the world database, use the command below in the terminal:
+
+SHOW TABLES;
+
+Exercise 2: Manage MySQL Storage Engines
+
+In MySQL, Storage Engines are components that handle SQL operations for different table types. The default and most general purpose storage engine in MySQL is InnoDB. When you create a new table in MySQL using the CREATE TABLE command in the Command Line Interface, it creates a InnoDB table by default. This is the most widely useful one and is recommended for most general applications except for a few specialized cases.
+
+As detailed in the MySQL documentation, MySQL is built with a pluggable storage engine architecture that allows storage engines to be easily loaded into and unloaded from a running MySQL server.
+
+To see a list of the Storage Engines supported on your MySQL server, enter the following command into the MySQL Command Line Interface:
+
+SHOW ENGINES;
+
+As you can see, there are several columns. The first column gives the name of the Storage Engine and the next column tells us whether that engine is supported on your MySQL server. As you can see, the InnoDB engine is listed as the DEFAULT.
+
+The CSV Storage Engine
+From the SHOW ENGINES; command you ran earlier, you can see that the CSV Engine is supported on the current running MySQL server. CSV files, short for Comma Separated Values, are delimited text files that uses a comma to separate values.
+
+Let’s go ahead and try making a table in our database using the CSV storage engine.
+
+To create a new table with a storage engine other than the default InnoDB database, we specify the storage engine we wish to use inside the CREATE TABLE command. Let’s create a new table called “test_csv” using the CSV engine by entering the following command into the CLI:
+
+CREATE TABLE csv_test (i INT NOT NULL, c CHAR(10) NOT NULL) ENGINE = CSV;
+
+Let’s confirm that the table was successfully created with the following command:
+
+SHOW TABLES;
+
+let’s add some sample data into our table. We will add three entries with the following command:
+
+INSERT INTO csv_test VALUES(1,'data one'),(2,'data two'),(2,'data three');
+
+Take a look at the new values you entered with the CLI:
+
+As you can see, CSV storage engines function in many of the same ways as the default InnoDB engines, however, there are a few limitations. These include not supporting indexing or partitioning.
+
+As you saw for yourself from the output of the SHOW ENGINES; command there are many different storage engines. We encourage you to explore and experiment with them yourself! You can read more about their specific use cases and limitations in the MySQL documentation.
+
+Exercise 3: Navigate the MySQL System Tables
+
+The MySQL server contains a database called mysql. This is the system database that contains information required for the server to run, such as meta data on all the other tables in the database. This database is one of the special cases where the default InnoDB storage engine is not used. Instead, the tables in the mysql database used the MyISAM storage engine. In general, we mostly query the system tables and rarely modify them directly.
+
+The tables in the mysql database fall into several categories, some of which include:
+
+Grant System Tables
+Object Information System Tables
+Log System Tables
+Server-Side Help System Tables
+
+For your reference, an exhaustive list of the categories can be found in Section 5.7 of the MySQL documentation.
+
+
+Grant System Table Category
+Let’s take a deeper look at the Grant System Table category. They contain information about the user accounts and the privileges granted to them.
+
+First, let’s see all the databases on the MySQL server by entering the following command into the CLI:
+
+SHOW DATABASES;
+
+Now connect to the mysql data by entering:
+
+USE mysql;
+
+Take a look at all the tables in the database by entering the following in the CLI:
+
+SHOW TABLES;
+
+The user table contains user accounts, global privileges, and other nonprivilege columns. There are many columns in this table and is a little unwieldy to look at so let’s take a look at just the first column which lists the names of the users in the database. Enter the following into the CLI:
+
+SELECT User from user;
+
+Let’s add a new user to the database and see if the change is reflected in the user table. We will go into depth about adding users to a database later in the course in the Hands-on Lab: MySQL User Management, Access Control, and Encryption but for now, we’ll just execute a simple command in the CLI that will create a new user named “test_user”:
+
+CREATE USER test_user;
+
+Try it yourself: Confirm that the user table in the mysql database was automatically updated to reflect the addition of the new user you created. Enter the appropriate command into the CLI to show the the User column in the user table.
+
+Query the INFORMATION_SCHEMA Database Tables
+The INFORMATION_SCHEMA is a database found inside every MySQL server. It contains meta data about the MySQL server such as the name of a database or table, the data type of a column, or access privileges. Note that this database contains read-only tables, so you cannot directly use any INSERT, UPDATE, or DELETE commands on them. Let’s go ahead and connect to the database.
+
+Using the MySQL CLI, view all the databases on the server.
+
+show databases;
+
+Enter the relevant command in the CLI to connect to the information_schema database.
+
+USE information_schema;
+
+In the information_schema database, there exists a table called COLUMNS which contains meta data about the columns for all tables and views in the server. One of the columns in this table contains the names of all the other columns in every table. Let’s go ahead and look at the names of the columns in the country table in the world database by entering the following command in the CLI:
+
+SELECT COLUMN_NAME FROM COLUMNS WHERE TABLE_NAME = 'country';
+
+Another point of interest in the information_schema database is the TABLES table which contains meta data about all the tables in the server. One of the columns in this table contains information about a table’s storage engine type. To tie this back to our earlier discussion about storage engines, run the following command in the CLI to view the storage engine type for the ‘country’, ‘city’, ‘countrylanguage’, and finally the ‘csv_test’ table you created:
+
+SELECT table_name, engine FROM INFORMATION_SCHEMA.TABLES 
+WHERE table_name = 'country' OR table_name = 'city' 
+OR table_name = 'countrylanguage' OR table_name = 'csv_test';
+
+As expected, the first three tables mentioned use the default InnoDB storage engine, while the ‘csv_test’ table uses the CSV storage engine.
+
+Finally, the TABLES table in the information_schema database contains information on the the size of a given table in bytes. This information is stored in two columns: data_length and index_length which stores the size of the data in the table and the size of the index file for that table, respectively. Therefore, the total size of the table is the sum of the values in these two columns. This value would be given in bytes, however, if you wish to use a more convenient unit, the sum can be converted to kB by dividing by 1024. You can find the size of the tables (in kB) you queried in the previous step with the following command in the CLI:
+
+SELECT table_name, (data_length + index_length)/1024 FROM INFORMATION_SCHEMA.TABLES 
+WHERE table_name = 'country' OR table_name = 'city' 
+OR table_name = 'countrylanguage' OR table_name = 'csv_test';

@@ -1,7 +1,7 @@
 {\rtf1\ansi\ansicpg1252\cocoartf2821
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;}
-{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
-{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
 {\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}
 {\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid101\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid2}
 {\list\listtemplateid3\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid201\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid3}
@@ -226,50 +226,69 @@ There are 3 main stages to the ML workflow when using vertex ai\
 \
 \pard\pardeftab720\partightenfactor0
 \cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic.png \width33560 \height12740 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
 \
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 1.png \width26880 \height12120 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 1.png \width26880 \height12120 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
 The data can be sourced from cloud storage, big query or a local machine. Feature engineering entails processing data (cleaning?) before a model starts to be trained. A feature refers to a factor that contributes to the prediction. Think of it as a column in a table. Vertex AI feature store is provided to act as a centralised repository to manage, serve and share features. It aggregates features from different tables in big query and makes them available for real time and batch serving. Feature store can also be used to manage and serve embeddings which are crucial data type in gen ai. Benefits of using feature store: are shareable for training and serving, are reusable, are scalable, easy to use\
 \
 \
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 2.png \width25000 \height10720 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 2.png \width25000 \height10720 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
 This stage involves training the model and evaluating it. Vertex ai provides extensive evaluation metrics to help determine a models performance. Some of the metrics include recall and precision (you may need to optimise for one or the other) and feature importance (i.e. how much each feature contributes to a prediction).\
 \
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 6.png \width34260 \height14120 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 6.png \width34260 \height14120 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 7.png \width34260 \height15920 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 7.png \width34260 \height15920 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 8.png \width32400 \height15920 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 8.png \width32400 \height15920 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
 \
-{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 3.png \width25420 \height10720 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 3.png \width25420 \height10720 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
 Model serving consists of 2 steps:\
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \ls4\ilvl0\cf0 \kerning1\expnd0\expndtw0 {\listtext	1.	}\expnd0\expndtw0\kerning0
 model deployment; here you have 2 options\
-\ls4\ilvl0{{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 9.png \width18180 \height11200 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\ls4\ilvl0\
-\ls4\ilvl0\kerning1\expnd0\expndtw0  2. \expnd0\expndtw0\kerning0
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls4\ilvl0\cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 9.png \width18180 \height11200 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls4\ilvl0\cf0 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls4\ilvl0\cf0 \kerning1\expnd0\expndtw0  2. \expnd0\expndtw0\kerning0
 model monitoring\
 \pard\tx720\pardeftab720\partightenfactor0
 \cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 10.png \width28700 \height8200 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+}¬}\pard\tx720\pardeftab720\partightenfactor0
+\cf0 \
 \pard\pardeftab720\partightenfactor0
 \cf0 \
 Although the 3 main stages above will always remain the same, you have two options to set up the workflow with vertex ai:\
 \
-\kerning1\expnd0\expndtw0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 4.png \width27220 \height15520 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 \kerning1\expnd0\expndtw0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 4.png \width27220 \height15520 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
 Auto ML supports the following types of data (and solves different types of problems with each):\
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
@@ -305,31 +324,232 @@ As seen above the process runs in two different environment: test environment an
 \
 Each of the above processes can be a pipeline component which is a self contained set of code that performs one task of a workflow.\
 \
-{{\NeXTGraphic Pasted Graphic 14.png \width33540 \height12600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic 14.png \width33540 \height12600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
 \
 You can either build a custom component on your own or leverage the pre built components provided by google.\
 \
-{{\NeXTGraphic Pasted Graphic 15.png \width29300 \height15720 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic 15.png \width29300 \height15720 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
 All of these components need to be assembled to create and automate the end to end workflow\
 \
-{{\NeXTGraphic Pasted Graphic 16.png \width32480 \height10240 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic 16.png \width32480 \height10240 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic 17.png \width32480 \height10240 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic 18.png \width34060 \height15740 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\
+Generative AI\
+\
+What is generative AI? A type of artificial intelligence that generates content for you\
+\
+What kind of content can be generated? Multimodal I.e.\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic.png \width31780 \height6580 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 1.png \width33880 \height12140 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+How does AI generate new content? It learns from a massive amount of existing content such as text, image, and video. The process from learning from existing content is called training which results in the creation of a foundation model.\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 2.png \width30600 \height13440 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 3.png \width35320 \height15400 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\
+At present the primary foundation model created by google include:\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 4.png \width29600 \height13460 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\
+\
+The list above is likely to change as foundational models continue to evolve.\
+\
+A foundational model can then be used to generate content and solve general problems such as content extraction and document summarisation. The foundational model can be further trained by new datasets in your field and then used to solve specific problems such as healthcare consulting and financial model generation. This results in the creation of a new model that is tailored to your specific needs.\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 5.png \width31660 \height13880 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+Pre-trained vs fine tuned: means to pre train a foundational model for a general purpose with a large dataset and then fine tune it for a specific aim with a much smaller dataset.\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 6.png \width34800 \height14080 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 7.png \width34560 \height14120 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+How can you access gen AI models and create a gen AI project on google cloud? \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 8.png \width33100 \height12680 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 9.png \width32700 \height14480 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+Gen AI workflow\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 10.png \width34780 \height16280 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+What can the gemini LLM do?\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 11.png \width35800 \height12180 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0  \
+\
+How to interact with gemini multimodal?\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 12.png \width35800 \height5100 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+Regardless of the method used to interact with gemini multimodal, you always start with a prompt. A prompt is a natural language request to a model to receive a response. The answers you get depend on the questions you ask.\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 13.png \width32300 \height12620 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 14.png \width22980 \height13760 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+What is prompt design? The process of designing the input text to get the desired response back from the model.\
+\
+Generally, there are 3 methods that can be used to shape a models response in a way that is desired:\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 15.png \width35760 \height5160 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 16.png \width16020 \height11180 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 17.png \width19300 \height11980 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+Are there ways to enhance the quality of responses beyond just prompt design? Yes model tuning methods\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 18.png \width34760 \height14220 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic 19.png \width35820 \height9780 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic 20.png \width14780 \height10220 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic 21.png \width17980 \height8500 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic 22.png \width34640 \height17160 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+Model garden is a model library to search, discover, and interact with google\'92s and open source gen AI models.\
+\
+When you want to build, train, and fine tune gen AI models in a comprehensive environment supported by both UI and coding, vertex AI studio can be a good start point. However, if you want to quickly find and apply the right model \
+to solve a problem, model garden is a good choice.\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic 24.png \width34080 \height15800 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic 25.png \width33060 \height16400 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic 26.png \width34080 \height16400 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic 27.png \width33060 \height16400 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic 28.png \width34080 \height15740 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+To find a model that best suits your use case then you can use:\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic 29.png \width26960 \height5820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic.png \width33080 \height19340 \appleattachmentpadding0 \appleembedtype0 \appleaqc
 }¬}\
 \
-{{\NeXTGraphic Pasted Graphic 17.png \width32480 \height10240 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
 \
-{{\NeXTGraphic Pasted Graphic 18.png \width34060 \height15740 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\
-\
-\
-\
-\
-\
-\
-\
+\pard\pardeftab720\partightenfactor0
+\cf0 \
 }

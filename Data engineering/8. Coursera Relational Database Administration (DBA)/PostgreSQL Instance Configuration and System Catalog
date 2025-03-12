@@ -1,0 +1,90 @@
+In this lab, you will obtains hands-on experience in customizing the configuration of a PostgreSQL server instance, both through the command line interface (CLI) and by editing the configuration files. Furthermore, you will learn to navigate and query the PostgreSQL system catalog, which is a series of tables that store metadata about objects in the database.
+
+Objectives
+After completing this lab, you will be able to:
+
+Customize the configuration parameters of your PostgreSQL server instance
+Query the system catalog to retrieve metadata about database objects
+
+Database Used in This Lab
+In this lab, you will use a database from https://postgrespro.com/education/demodb distributed under the PostgreSQL licence. It stores a month of data about airline flights in Russia and is organized according to the following schema: see DB_schema.png 
+
+Run the following command in the terminal:
+
+wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/example-guided-project/flights_RUSSIA_small.sql
+
+In the PostgreSQL CLI, enter the command \i <file_name>. In your case, the file name will be the name of the file you downloaded, flights_RUSSIA_small.sql. This will restore the data into a new database called demo.
+
+\i flights_RUSSIA_small.sql
+
+The restorations may take a few moments to complete.
+
+Verify that the database was properly created by entering the following command:
+
+\dt
+
+You should see the following output showing all the tables that are part of the bookings schema in the demo database.
+
+Exercise 1: Configure Your PostgreSQL Server Instance
+
+A PostgreSQL server instance has a corresponding file named postgresql.conf that contains the configuration parameters for the server. By modifying this file, you can enable, disable, or otherwise customize the settings of your PostgreSQL server instance to best suit your needs as a database administrator. While you can manually modify this postgresql.conf file and restart the server for the changes to take effect, you can also edit some configuration parameters directly from the command line interface (CLI).
+
+In this exercise, you will customize the configuration settings for the PostgreSQL instance using the CLI.
+
+First, let’s take a look at the current setting of the wal_level parameter. You can do so by entering the following command into the CLI:
+
+SHOW wal_level;
+
+Without going into too much detail, the wal_level parameter dictates how much information is written to the write-ahead log (WAL), which can be used for continuous archiving. If you’re interested, you can find further information in the PostgreSQL official documentation.
+
+The ALTER SYSTEM command is a way to modify the global defaults of a PostgreSQL instance without having to manually edit the configuration file. Let’s give it a try and change the wal_level parameter to logical. To change the parameter, enter the following command into the CLI:
+
+ALTER SYSTEM SET wal_level = 'logical';
+
+Use the CLI to check the current setting of wal_level
+
+In Step 2, you changed the wal_level parameter from replica to logical yet the command you just entered shows that the parameter is still set to replica. Why would this be? It turns out that some configuration parameters require a server restart before any changes take effect - the wal_level is one such parameter.
+
+Stop the PostgreSQL server 
+
+Now restart the PostgreSQL server
+
+When you executed the ALTER SYSTEM command in Step 2 of this exercise, a new file named postgres.auto.conf was created. You can open the file by first opening the file explorer on Cloud IDE then clicking postgres > data > pgdata> postgresql.conf.
+
+Finally, and for the last time in this lab, let’s confirm the current setting of the wal_level parameter. Enter the following into the CLI:
+
+SHOW wal_level;
+
+You can see that the parameter was changed successfully after the restart.
+
+For more advanced instance configuration where many parameter changes are required, using a series of ALTER SYSTEM commands may be cumbersome. Instead, you can edit the postgresql.conf file directly. You can once again use the Cloud IDE file explorer to open postgres > data > pgdata> postgresql.conf
+
+You can edit the configuration file right in the Cloud IDE file explorer.
+
+Exercise 2: Navigate the System Catalog
+
+The system catalog stores schema metadata, such as information about tables and columns and internal bookkeeping information. In PostgreSQL, the system catalogs are regular tables in which you can add columns and insert and update values. In directly modifying the system catalogs, you can cause severe problems in your system, so it is generally recommended to avoid doing so. Instead, the system catalogs are updated automatically when performing other SQL commands. For example, if you run a CREATE DATABASE command, a new database is created on the disk and a new row is automatically inserted into the pg_database system catalog table, storing metadata about that database.
+
+First, you need to connect to the database by entering the following command:
+
+\connect demo
+
+Let’s explore some of the system catalog tables in PostgreSQL.
+
+Start with a simple query of pg_tables, which is a system catalog containing metadata about each table in the database. Let’s query it to display metadata about all the tables belonging to the bookings schema in the demo database by entering the following command into the CLI:
+
+SELECT * FROM pg_tables WHERE schemaname = 'bookings';
+
+As you can see, the 8 tables belonging to the bookings schema are displayed with various pieces of metadata, such as the table owner and other parameters.
+
+Suppose as the database administrator, you would like to enable row-level security for the boarding_passes table in the demo database. When row security is enabled on a table, all normal access to the table for selecting or modifying rows must be specified by a row security policy. Since row security policies are not the focus of this lab, we will not go in depth about specifying a policy but will simply enable it for demonstration purposes. However, if you wish to learn more about this topic, you can check out the PostgreSQL documentation. To enable row security on the boarding_passes table, enter the following command in the CLI:
+
+ALTER TABLE boarding_passes ENABLE ROW LEVEL SECURITY;
+
+Use the CLI to query the pg_tables to display metadata about the tables belonging to the bookings schema and confirm that the row security for the boarding_passes was successfully enabled.
+
+Let’s connect your work in the previous section about PostgreSQL instance configuration to the system catalogs. Earlier, you used SHOW statements to display configuration parameters. There’s also a system catalog called pg_settings that stores data about configuration parameters of the PostgreSQL server. Let’s query with the following command:
+
+SELECT name, setting, short_desc FROM pg_settings WHERE name = 'wal_level';
+
+From the query, you see the same results from the SHOW statement in Exercise 1 and more. In fact, pg_tables contains much more data about a given parameter than is available from the SHOW statement (a full list can be found in the documentation) so, the somewhat more complicated SQL query has its benefits.
