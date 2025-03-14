@@ -1,0 +1,17 @@
+; our goal is to take the ten numbers which are stored in memory locations x3100 through x3109
+; and add them together leaving the result in register 1
+
+0011 0000 0000 0000    ; start the program at location x3000
+0101 001 001 1 00000   ; load #0 into register 1
+0101 100 100 1 00000   ; load #0 into register 4
+0001 100 100 1 01010   ; load #10 into register 4
+1110 010 011111100     ; load starting address of the data into register 2
+0110 011 010 000000    ; load number in register 2 into register 3
+0001 010 010 1 00001   ; add #1 to the address stored in register 2 
+0001 001 001 0 00 011  ; add values in register 1 and register 3 and store result in register 1
+0001 100 100 111111    ; decrement value stored in register 4 by 1
+0000 001 111111011     ; if the counter is still positive load a new address in the PC
+1111 000 000100101     ; halt
+
+; this code is not real binary, hence it will need to be converted to actual binary and saved in a file
+; named addnums.obj

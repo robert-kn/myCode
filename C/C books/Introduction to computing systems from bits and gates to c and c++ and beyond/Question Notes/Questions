@@ -98,3 +98,12 @@ What is the range of these integers? 0 to 2(^n) - 1
 2.23 Describe what conditions indicate overﬂow has occurred when two unsigned numbers are added. Overflow has occurred in an unsigned addition when you get a carry out of the leftmost bits.
 
 2.25 Why does the sum of a negative 2’s complement number and a positive 2’s complement number never generate an overﬂow? Because their sum will be a number which if positive, will have a lower magnitude (less positive) than the original positive number (because a negative number is being added to it), and vice versa.
+
+chapter 4
+
+What is the word length of a computer? How does the word length of a
+computer aﬀect what the computer is able to compute? That is, is it a
+valid argument, in light of what you learned in Chapter 1, to say that a
+computer with a larger word size can process more information and
+therefore is capable of computing more than a computer with a smaller
+word size? refers to the number of bits processed by a computer's CPU in one go, typically 32 bits or 64 bits today.
