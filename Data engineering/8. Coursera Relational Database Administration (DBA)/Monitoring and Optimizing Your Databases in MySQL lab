@@ -1,0 +1,168 @@
+In this lab, you’ll learn how to monitor and optimize your database in MySQL with the help of phpMyAdmin.
+
+Objectives
+After completing this lab, you will be able to:
+
+Maintain the health and performance of your database with phpMyAdmin
+Identify the difference between an unoptimized and optimized database
+Optimize your database with phpMyAdmin by applying best practices
+
+Database Used in this Lab
+The World database used in this lab comes from the following source: https://dev.mysql.com/doc/world-setup/en/ under CC BY 4.0 License with Copyright 2021 - Statistics Finland.
+
+You will use a modified version of the database for the lab, so to follow the lab instructions successfully please use the database provided with the lab, rather than the database from the original source.
+
+The following ERD diagram shows the schema of the World database: see World_ERD
+
+The first row is the table name, the second is the primary key, and the remaining items are any additional attributes.
+
+Exercise 1: Create Your Database
+
+download the zip file containing the .sql file for the World database, copy and paste the following into the Terminal:
+
+wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0231EN-SkillsNetwork/datasets/World/world_mysql_script.sql
+
+Next, initiate a MySQL command-line session 
+
+In the Terminal, create a new database called world.
+
+CREATE DATABASE world;
+
+USE world;
+
+To execute the SQL script file that we downloaded, we can use the following command:
+
+SOURCE world_mysql_script.sql;
+
+SHOW TABLES;
+
+Exercise 2: Monitor Your Database
+
+access phpMyAdmin
+
+Select Status.
+
+There are several subpages on the Status page: Server, Processes, Query Statistics, All Status Variables, Monitor and Advisor. These subpages will give you an inside look at the current processes on your server.
+
+we’ll be taking a look at the Monitor subpage.
+
+When you first arrive at this page, you may only have three charts: Questions, Connections / Processes and Traffic. We can add a few more graphs to help track important metrics.
+
+Select Settings then Add chart.
+
+In the dialog box, you can choose a chart based on a status variable or select Preset chart. In this case, we’ll be adding two preset charts.
+
+First, let’s select System CPU Usage.
+
+Press Add chart to grid.
+
+Now, you should see the System CPU Usage following chart.
+
+Notice how there was a spike in your charts. Recall that Questions includes any queries run in the background by phpMyAdmin. In this case, the interaction was MySQL bringing up the System CPU Usage chart.
+
+Repeat this process to add the System memory chart.
+
+On the left sidebar, press the + sign next to the database world. Then, right-click city and slect Open link in new tab.
+
+Doing this will run a SELECT * FROM city query. Notice the spike in the charts. Hovering over the number will provide you more insight into the number of questions, or queries, that are run.
+
+To confirm that we ran the query, we can navigate to the new tab we opened and take a look at the success message:
+
+Since phpMyAdmin limits queries to displaying the first 25 rows (similar to the LIMIT clause), the query did not take long to load.
+
+The Status page is helpful in monitoring the health and performance of your server and database. Particularly with the Monitor page’s charts, you’ll be able to see real-time information on how your databases are doing. If there are unexpected irregularities, such as a sudden spike in queries or a high volume of incoming traffic, then that may point to a problem that needs to be attended to.
+
+Exercise 3: Optimize Your Database
+Database optimization refers to maximizing the speed and efficiency of retrieving data from your database. When you optimize your database, you are improving its performance, which can also improve the performance of slow queries. By optimizing your database, you’ll improve the experience for both yourself and your users.
+
+We can see this in practice with the following scenario:
+
+Imagine that you are the organizer of a sports tournament with a total of 120 participating teams. There’s three pieces of information that you’ve collected from each team: their (unique) team number, their three-letter team code for the system, and the date of the team’s creation.
+
+How can we go about optimizing a database containing that information? Let’s take a look!
+
+Task A: Create Your Table
+To start, we’ll create a database in phpMyAdmin.
+
+On the left sidebar, select the New button to create a new database.
+
+On the Databases page, you can enter a Database name and leave it as the UTF-8 encoding. UTF-8 is the most commonly used character encoding for content or data.
+
+Let’s call our database tournament_teams.
+
+Press Create.
+
+Now, we can make a table. Let’s call it teams.
+
+Recall the information we want to store in this database: team number, team code and team creation date. We can make three columns for that.
+
+Press Go.
+
+We can now add in the column names and data types.
+
+We’ll enter the following information into the table. Below are only the values that you’ll need to fill out. Anything else can be left as is:
+
+Since the team number is unique, with each of the 120 teams having their own number ranging from 1 to 120, that will be our primary key. We will set that later. It is a numeric data type, so we use INT for now.
+
+The team code and creation date are both set as the CHAR data type. Notice that for the CHAR type, we must include the length of the value. To be safe, we’ve set that to 100.
+
+You might be thinking that these data types aren’t the best choices for this database. You’d be correct! Given what we know, there are better choices for each of the entries, but let’s first take a look at an unoptimized database and how we can optimize it.
+
+When all the values are entered, press Save.
+
+On the Structure page, select the checkbox next to team_no and click Primary.
+
+This will set team_no as the primary key of the table. If you were successful in doing so, you’ll receive a success message, like the following:
+
+Notice that team_no was automatically added as a PRIMARY index as well.
+
+Let’s import the data! This sample teams data has been prepared specifically for this lab and is composed of team numbers, team code names, and the creation date of these teams.
+
+You can download the file by clicking the following link: tournament_teams_data.sql.
+
+To import it, navigate to Import, then select Browse and find the file you just downloaded.
+
+Press Go.
+
+When your import is successful, you’ll see the following message:
+
+Now, we can take a look at the imported data by navigating back to Browse. This automatically loads a SELECT * FROM teams statement, which will load the first 25 rows from the teams table.
+
+The limit is implemented by phpMyAdmin, but you can easily show all rows by checking the Show all checkbox.
+
+You will receive a warning asking if you’d like to see all rows. Since there’s only 120 rows in this example, you can click OK. In larger datasets, loading all the rows will likely crash your browser.
+
+We can now confirm that all 120 rows have been loaded.
+
+On the left sidebar, select the tournament_teams database.
+
+With this view, you can see all the tables in the database, including the teams table that we just created. As you can see, the size of the database is currently 64 KiB, that is, 64 kilobytes. While this is a small size, do remember that this would not be the case with larger datasets as this sample table only has 120 entries.
+
+Keep this number in mind as we start optimizing this table.
+
+Task B: Optimize Your Data Types
+Under Action for the teams table, select Structure. This will bring you back to the Structure page.
+
+Next to team_no, click Change. This function is helpful when you need to make adjustments to a column, for any reason.
+
+in this editor, let’s change the Type to one that would be better suited for this column.
+
+Change the data type for team_code!
+
+Finally, let’s change the creation_date.
+
+After updating your data types, your Structure page should look like the following:
+
+We can look at our rows by clicking Browse.
+
+As you can see, we still have all 120 entries. Great! So, let’s take a look at the size of this table.
+
+Return to the tournament_teams database in the left sidebar.
+
+Upon first glance, we can see that the size of the database has reduced to 16 KiB, four times smaller than the original unoptimized database!
+
+We can take optimization a step further by selecting the teams table and, in the dropbox, selecting optimize table. This is equivalent to performing the OPTIMIZE TABLE function in the command-line interface. This command reorganizes the table data and indexes to reduce storage and make accessing the table more efficient. The exact changes made to the table depend on the storage engine in use.
+
+With the InnoDB engine, which is what we are currently using, the table is actually rebuilt, with the index statistics updated to free unused space.
+
+That is what the returned table tells us: InnoDB “optimizes” tables by recreating and analyzing them, and that the optimization had been completed.

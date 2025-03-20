@@ -1,0 +1,94 @@
+In this lab, you will learn how to use the MySQL command line interface (CLI) to create different types of backups of a database and restore the structure and data of a database with your created backups when needed.
+
+Objectives
+After completing this lab, you will be able to use the MySQL command line to:
+
+Perform a Logical Backup and Restore
+
+In this lab, you will use MySQL. MySQL is a Relational Database Management System (RDBMS) designed to efficiently store, manipulate, and retrieve data.
+
+Database Used in this Lab
+The World database used in this lab comes from the following source: https://dev.mysql.com/doc/world-setup/en/ under CC BY 4.0 License with Copyright 2021 - Statistics Finland.
+
+You will use a modified version of the database for the lab, so to follow the lab instructions successfully please use the database provided with the lab, rather than the database from the original source.
+
+The following ERD diagram shows the schema of the World database:
+
+Database Used in this Lab
+The World database used in this lab comes from the following source: https://dev.mysql.com/doc/world-setup/en/ under CC BY 4.0 License with Copyright 2021 - Statistics Finland.
+
+You will use a modified version of the database for the lab, so to follow the lab instructions successfully please use the database provided with the lab, rather than the database from the original source.
+
+The following ERD diagram shows the schema of the World database: see world_erd.png
+
+The first row is the table name, the second is the primary key, and the remaining items are any additional attributes.
+
+Example Exercise A: Perform a Logical Backup and Restore
+
+In this example exercise, you will go through an example covering how to perform a logical backup and restoration of a database table.
+
+A logical backup creates a file containing DDL (such as create table) and DML commands (such as insert) that recreate the objects and data in the database.  As such, you can use this file to recreate the database on the same or on another system. Generally, when you perform a logical backup and restore, you reclaim any wasted space from the original database since the restoration process creates a clean version of the tables. Logical backups enable you to backup granular objects. For example, you can back up an individual database table, however, you cannot use it to backup log files or database configuration settings. Suppose you are in a situation where you dropped one or more tables of a database accidentally. This is where you make use of the logical backup of a database table to restore the structure and data of the table.
+
+wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0231EN-SkillsNetwork/datasets/World/world_mysql_script.sql
+
+wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0231EN-SkillsNetwork/datasets/World/world_mysql_update_A.sql
+
+Initiate a mysql command prompt session
+
+Create a new database world using the command below in the terminal:
+
+CREATE DATABASE world;
+
+To use the newly created world database, use the command below in the terminal:
+
+USE world;
+
+Execute the world mysql script (world_mysql.sql) to complete the world database creation process using the command below in the terminal:
+
+SOURCE world_mysql_script.sql;
+
+To list all the table names from the world database, use the command below in the terminal:
+
+SHOW TABLES;
+
+Retrieve all the Canada (countrycode=’CAN’) related records from the countrylanguage table using the command below in the terminal:
+
+SELECT * FROM countrylanguage WHERE countrycode='CAN';
+
+You will observe the returned result set is empty set. This means Canada related records are currently absent from the table. Run the update script (world_mysql_update_A.sql) to insert the records you were looking for.
+
+SOURCE world_mysql_update_A.sql;
+
+now run the below command again
+
+SELECT * FROM countrylanguage WHERE countrycode='CAN';
+
+Quit the MySQL command prompt session using the command below in the terminal:
+
+\q
+
+Now backup the countrylanguage table of the world database using the command below in the terminal (enter your MySQL service session password from the MySQL service session tab if necessary):
+
+mysqldump --host=172.21.173.159 --port=3306 --user=root --password world countrylanguage > world_countrylanguage_mysql_backup.sql
+
+Run the command below in the terminal (enter your MySQL service session password from the MySQL service session tab if necessary):
+
+mysql --host=172.21.173.159 --port=3306 --user=root --password --execute="DROP TABLE world.countrylanguage;"
+
+To list all the table names from the world database, use the command below in the terminal (enter your MySQL service session password from the MySQL service session tab if necessary):
+
+mysql --host=172.21.173.159 --port=3306 --user=root --password --execute="SHOW TABLES FROM world;"
+
+You will observe the table countrylanguage is missing from the world database. Now you are in the situation where you dropped a table of a database accidentally. This is where you will make use of the backup of the database table (you created backup world_countrylanguage_mysql_backup.sql) to restore the structure and data of the table.
+
+To restore the structure and data of the table countrylanguage, use the command below in the terminal (enter your MySQL service session password from the MySQL service session tab if necessary):
+
+mysql --host=172.21.173.159 --port=3306 --user=root --password world < world_countrylanguage_mysql_backup.sql
+
+verify the table was created and data loaded
+
+mysql --host=172.21.173.159 --port=3306 --user=root --password --execute="SHOW TABLES FROM world;"
+
+Again retrieve all the Canada (countrycode=’CAN’) related records from the countrylanguage table using the command below in the terminal (enter your MySQL service session password from the MySQL service session tab if necessary):
+
+mysql --host=172.21.173.159 --port=3306 --user=root --password --execute="SELECT * FROM world.countrylanguage WHERE countrycode='CAN';"

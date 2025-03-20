@@ -1,0 +1,107 @@
+Database used in this Lab
+
+In this lab, you will use a database from https://postgrespro.com/education/demodb distributed under the PostgreSQL licence. It stores a month of data about airline flights in Russia and is organized according to the following schema:
+see DB_schema_PG.png
+
+Objectives
+After completing this lab, you will be able to use the PostgreSQL CLI and pgAdmin to:
+
+Restore a full database from a backup
+Update a database and perform a full backup
+Drop a database and then restore it
+
+Exercise 1: Restore a Full Database from a Backup
+
+Run the following command in the terminal.
+
+wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/example-guided-project/flights_RUSSIA_small.sql
+
+The file which you downloaded is a full database backup of a month of flight data in Russia. Now, you can perform a full restoration of the dataset by first opening the PostgreSQL CLI.
+
+In the PostgreSQL CLI, type in the command \i <file_name>. In your case, the filename will be the name of the file you downloaded, flights_RUSSIA_small.sql. This will restore the data into a new database called demo.
+
+\i flights_RUSSIA_small.sql
+
+The restorations may take a few moments to complete.
+
+After the restoration completes, one way you can check that the database has been restored is with the following command, which lists all the tables in the current database schema.
+
+\dt
+
+Exercise 2: Modify the Database and Perform a Full Backup
+
+Task A: Modify the Database with the CLI
+
+One of the tables in the database schema is aircrafts_data. You can take a look at the contents of that table by executing the following command in the PostgreSQL CLI:
+
+SELECT * FROM aircrafts_data;
+
+Suppose a new model of aircraft is being added to the fleet, and you, as the database administrator, are responsible for updating the database to reflect this addition. The aircraft they wish to add is the Airbus A380, which has a range of 15,700 km and aircraft code “380”. You can do this by executing the following command in the PostgreSQL CLI:
+
+INSERT INTO aircrafts_data(aircraft_code, model, range) VALUES (380, '{"en": "Airbus A380-800"}', 15700);
+
+To confirm that the information was entered into the database correctly, you can read out the aircrafts_data table again using:
+
+SELECT * FROM aircrafts_data;
+
+Task B: Backup your Database using pgAdmin
+
+Now that you modified the database (minor modification for demonstration - in reality there would likely be far more additions) it is good practice to backup your database in case of accidental deletion.
+
+To back up the demo database, first exit the PostgreSQL CLI by either entering:
+
+\q
+
+Click on Postgres > Databases
+
+Right click on demo and click the Backup button.
+
+Enter a name for the backup (For example, “demo_backup”), set the Format to Tar, then click the “Backup” button.
+
+Exercise 3: Restore a Full Backup after Accidental Deletion
+
+In this exercise, suppose you find yourself in a situation where you accidentally dropped the entire database. Fortunately, you made a full backup of the database in the previous exercise, which you will use to restore the database.
+
+Task A: “Accidentally” Delete the Database
+
+In the pgAdmin GUI, right click on the demo database and then click the “Delete/Drop” button.
+
+When prompted, click “Yes” to confirm the deletion of the database.
+
+You will see that the demo database is no longer listed, which verifies that you have dropped it.
+
+Task B: Restore the Database using the Full Backup
+
+You will now use the full backup you created in Exercise 2 to restore the database which was deleted.
+
+First, you will need an empty database in which to restore the demo database. Create a new database in pgAdmin by right clicking “Databases” then clicking “Create” > “Database…”.
+
+Name the database into which you will restore the original demo database (For example, restored_demo), then click the “Save” button on the bottom right.
+
+Next, to restore the backup you created in Task A into this new database, right click on the database you created (For example, restored_demo). Then click on the “Restore…” button.
+
+Click on the button containing three dots by the Filename box.
+
+Near the bottom left of the window, open the “Format” drop down window and select “All files”.
+
+Select the backup you created in Task A (For example, demo_backup), then click the “Select” button near the bottom right of the window.
+
+Then click on the “Restore” button at the bottom right of the window to restore the database.
+
+You can now verify that the database was restored properly, including the addition you made to the aircrafts_data table. Open up the PostgreSQL CLI:
+
+In the CLI, enter the command:
+
+\connect restored_demo
+
+To set the proper search path for your database, enter the following into the CLI:
+
+SELECT pg_catalog.set_config('search_path', 'bookings', false);
+
+To see the restored tables in the database, enter:
+
+Recall that you added a new aircraft model (Airbus A380) to the original database. Verify that this addition was successfully backed up and restored by entering the following command:
+
+SELECT * FROM aircrafts_data;
+
+Notice that the Airbus A380 entry is there! Once again, you can enter \q to exit this view.
