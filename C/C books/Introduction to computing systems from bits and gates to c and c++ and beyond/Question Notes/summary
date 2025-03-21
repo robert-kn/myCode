@@ -1131,6 +1131,16 @@ R2 contains the value x6600, and the PC contains x4000, then the instruction at 
 
 121. When the end of the file is reached, all the characters have been examined, and the count is contained as a binary number in R2. In order to display the count on the monitor, it is first converted to an ASCII code. Since we have assumed the count is less than 10, we can do this by putting a leading 0011 in front of the four-bit binary representation of the count. Note in Figure E.2 the relationship between the binary value of each decimal digit between 0 and 9 and its corresponding ASCII code. Finally, the count is output to the monitor, and the program terminates. Figure 5.17 is a machine language program that implements the ﬂowchart of Figure 5.16.
 
+122. First the initialization steps. The instruction at x3000 clears R2 by ANDing it with x0000. The instruction at x3001 loads the starting address of the ﬁle to be examined into R3. Again, we note that this ﬁle can be anywhere in memory. Prior to starting execution at x3000, some sequence of instructions must have stored the ﬁrst address of this ﬁle in x3012. Location x3002 contains the TRAP instruction, which requests the operating system to perform a service call on behalf of this program. The function requested, as identiﬁed by the eight-bit trapvector 00100011 (i.e., x23), is to load into R0 the ASCII code of the next character typed on the keyboard. The instruction at x3003 loads the character pointed to by R3 into R1.
+
+123. Then the process of examining characters begins. We start (x3004) by subtracting 4 (the ASCII code for EOT) from R1 and storing it in R4. If the result is zero, the end of the ﬁle has been reached, and it is time to output the count. The instruction at x3005 conditionally branches to x300E, where the process of outputting the count begins.
+
+124. If R4 is not equal to zero, the character in R1 is legitimate and must be examined. The sequence of instructions at locations x3006, x3007, and x3008 determines whether the contents of R1 and R0 are identical. Taken together, the three instructions compute R0 − R1 This produces all zeros only if the bit patterns of R1 and R0 are identical. If the bit patterns are not identical, the conditional branch at x3009 branches to x300B; that is, it skips the instruction at x300A, which increments the counter (R2).
+
+125. The instruction at x300B increments R3, so it will point to the next character in the ﬁle being examined, the instruction at x300C loads that character into R1, and the instruction at x300D unconditionally takes us back to x3004 to start processing that character.
+
+126. When the sentinel (EOT) is ﬁnally detected, the process of outputting the count begins (at x300E). The instruction at x300E loads 00110000 into R0, and the instruction at x300F adds the count to R0. This converts the binary representation of the count (in R2) to the ASCII representation of the count (in R0). The instruction at x3010 invokes a TRAP to the operating system to output the contents of R0 to the monitor. When that is done and the program resumes execution, the instruction at x3011 invokes a TRAP instruction to terminate the program.
+
 85. what are the basic components of the data path? the global bus, memory, the alu and the register file, the pc and the pcmux,
 and the marmux
 
