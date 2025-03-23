@@ -1141,8 +1141,49 @@ R2 contains the value x6600, and the PC contains x4000, then the instruction at 
 
 126. When the sentinel (EOT) is ﬁnally detected, the process of outputting the count begins (at x300E). The instruction at x300E loads 00110000 into R0, and the instruction at x300F adds the count to R0. This converts the binary representation of the count (in R2) to the ASCII representation of the count (in R0). The instruction at x3010 invokes a TRAP to the operating system to output the contents of R0 to the monitor. When that is done and the program resumes execution, the instruction at x3011 invokes a TRAP instruction to terminate the program.
 
-85. what are the basic components of the data path? the global bus, memory, the alu and the register file, the pc and the pcmux,
-and the marmux
+127. Figure 5.18 shows a data path diagram of the many structures we have encountered so far. Note at the outset that there are two kinds of arrows in the data path, those with arrowheads ﬁlled in and those with arrowheads not ﬁlled in. Filled-in arrowheads designate information that is processed. Unﬁlled-in arrowheads designate control signals. Control signals emanate from the block labeled “Finite State Machine.” The connections from the ﬁnite state machine to most control signals have been left oﬀ Figure 5.18 to reduce unnecessary clutter in the diagram.
+
+128. global bus: The most obvious item on the data path diagram is the heavy black structure with arrowheads at both ends. This represents the data path’s global bus. The LC-3 global bus consists of 16 wires and associated electronics. It allows one structure to transfer up to 16 bits of information to another structure by making the necessary electronic connections on the bus. Exactly one value can be transferred on the bus at one time.
+
+129. Note that each structure that supplies values to the bus has a triangle just behind its input arrow to the bus. This triangle (called a tristate device) allows the computer’s control logic to enable exactly one supplier to provide information to the bus at any one time. The structure wishing to obtain the value being supplied can do so by asserting its LD.x (load enable) signal.Not all computers have a single global bus.
+
+130. memory: One of the most important parts of any computer is the memory that contains both instructions and data. Memory is accessed by loading the memory address register (MAR) with the address of the location to be accessed. To perform a load, control signals then read the contents of that memory location, and the result of that read is delivered by the memory to the memory data register (MDR). On the other hand, to perform a store, what is to be stored is loaded into the MDR. Then the control signals assert a write enable (WE) signal in order to store the value contained in MDR in the memory location speciﬁed by MAR.
+
+131. ALU and the Register File: The ALU is the processing element. It has two inputs, source 1 from a register and source 2 from either a register or the sign-extended immediate value provided by the instruction. The registers (R0 through R7) can provide two values: source 1, which is controlled by the three-bit register number SR1, and source 2, which is controlled by the three-bit register number SR2. SR1 and SR2 are ﬁelds in the LC-3 operate instructions. The selection of a second register operand or a sign-extended immediate operand is determined by bit [5] of the LC-3 instruction.
+Note the mux that provides source 2 to the ALU. The select line of that mux is bit [5] of the LC-3 operate instruction.
+
+132. The results of an ALU operation are (a) a result that is stored in one of the registers, and (b) the three single-bit condition codes. Note that the ALU can supply 16 bits to the bus, and that value can then be written into the register specified by the three-bit register number DR. Also, note that the 16 bits supplied to the bus are also input to logic that determines whether that 16-bit value is negative, zero, or positive. The three one-bit condition code registers N, Z, and P are set accordingly.
+
+133. The PC and the PCMUX: At the start of each instruction cycle, the PC supplies to the MAR over the
+global bus the address of the instruction to be fetched. In addition, the PC, in turn, is supplied via the three-to-one PCMUX. During the FETCH phase of the instruction cycle, the PC is incremented and written into the PC. That is shown as the rightmost input to the PCMUX.
+
+134. If the current instruction is a control instruction, then the relevant source of the PCMUX depends on which control instruction is currently being processed. If the current instruction is a conditional branch and the branch is taken, then the PC is loaded with the incremented PC + PCoﬀset (the 16-bit value obtained by sign-extending IR [8:0]). Note that this addition takes place in the special adder and not in the ALU. The output of the adder is the middle input to PCMUX. The third input to PCMUX is obtained from the global bus.
+
+135. The MARMUX: As you know, memory is accessed by supplying the address to the MAR. The MARMUX controls which of two sources will supply the MAR with the appropriate address during the execution of a load, a store, or a TRAP instruction. The right input to the MARMUX is obtained by adding either the incremented PC or a base register to zero or a literal value supplied by the IR. Whether the PC or a base register and what literal value depends on which opcode is being processed. The control signal ADDR1MUX speciﬁes the PC or base register. The control signal ADDR2MUX speciﬁes which of four values is to be added. The left input to MARMUX provides the zero-extended trapvector, which is needed to invoke service calls, and will be discussed in detail later.
+
+136. Suppose the content of the PC is x3456 and the content of location x3456 is
+
+15  14  13  12  11  10  9   8  7  6   5  4  3  2  1  0
+0   1   1   0 | 0   1   1 | 0  1  0 | 0  0  0  1  0  0        
+     LDR            R3         R2            4
+
+Suppose the LC-3 has just completed processing the instruction at x3455, which happened to be an ADD instruction.
+
+137. FETCH: In the ﬁrst cycle, the contents of the PC is loaded via the global bus into the MAR,
+and the PC is incremented and loaded into the PC. At the end of this cycle, the PC contains x3457. In the next cycle (if memory can provide information in one cycle), the memory is read, and the instruction 0110011010000100 is loaded into the MDR. In the next cycle, the contents of the MDR is loaded into the instruction register (IR), completing the FETCH phase.
+
+138. DECODE: In the next cycle, the contents of the IR is decoded, resulting in the control logic providing the correct control signals (unﬁlled arrowheads) to control the processing of the rest of this instruction. The opcode is 0110, identifying the LDR instruction. This means that the Base+oﬀset addressing mode is to be used to determine the address of data to be loaded into the destination register R3.
+
+139. EVALUATE ADDRESS: In the next cycle, the contents of R2 (the base register) and the sign-extended
+bits [5:0] of the IR are added and supplied via the MARMUX to the MAR. The SR1 ﬁeld speciﬁes 010, the register to be read to obtain the base address. ADDR1MUX selects SR1OUT, and ADDR2MUX selects the second from the right source.
+
+140. OPERAND FETCH: In the next cycle (or more than one, if memory access takes more than one cycle),
+the value at that address is loaded into the MDR.
+
+141. EXECUTE: The LDR instruction does not require an EXECUTE phase, so this phase takes zero cycles.
+
+142. STORE RESULT: In the last cycle, the contents of the MDR is gated onto the global bus, from which
+it is loaded into R3 and supplied to the condition code logic in order to set the NZP condition codes.
 
 86. what does the LC-3 global bus consist of? 16 wires and associated electronics
 
