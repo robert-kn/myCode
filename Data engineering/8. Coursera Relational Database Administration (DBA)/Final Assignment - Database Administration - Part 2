@@ -1,0 +1,24 @@
+You have assumed the role of database administrator for the MySQL server and will perform the tasks like configuration check, recovery of data. You will use indexing to improve the database performance. You will identify which storage engines are supported by the server and which table uses which storage engine. Optionally You will also automate backup tasks.
+
+Objectives
+In part 2 of this assignment you will be working on the following aspects of Database Administration.
+
+Installing/Provisioning
+Configuration
+Recovery
+Indexing
+Storage Engines
+Automation of routine tasks
+
+start the MySQL Server.
+
+Download the backup file 
+
+wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0231EN-SkillsNetwork/labs/Final%20Assignment/billingdata.sql
+
+Restore this file onto MySQL server.
+
+source billingdata.sql
+
+Find the table data size
+

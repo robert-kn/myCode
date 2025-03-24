@@ -1,0 +1,33 @@
+You have assumed the role of database administrator for the PostgreSQL server and you will perform the User Management tasks and handle the backup of the databases.
+
+Objectives
+In Part 1 of this assignment you will be working on the following aspects of Database Administration.
+
+Installation/Provisioning
+Configuration
+User Management
+Backup
+
+Exercise 1.1 - Set up the lab environment
+
+Start the PostgreSQL Server
+
+Download the lab setup bash file "postgres-setup.sh" from the following URL:
+
+wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/-o-CVNqamn9K4hGlSpFCYg/postgres-setup.sh
+
+Start the PostgreSQL server. Once it shows as active, switch to the credentials tab and copy the server password.
+
+Open the downloaded file
+
+Enter the password in the specified area.
+
+save the changes.
+
+Run the bash file.
+
+Find the settings in PostgreSQL
+
+What is the maximum number of connections allowed for the postgres server on theia lab? show max_connections;
+
+Create a user named backup_operator: create user backup_operator;

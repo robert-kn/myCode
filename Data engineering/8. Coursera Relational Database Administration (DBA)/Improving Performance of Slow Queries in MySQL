@@ -79,7 +79,7 @@ Notice how the execution time of the query is much faster compared to the when w
 Avoid Leading Wildcards
 Leading wildcards, which are wildcards ("%abc") that find values that end with specific characters, result in full table scans, even with indexes in place.
 
-If your query uses a leading wildcard and performs poorly, consider using a full-text index instead. This will improve the speed of your query while avoiding the need to search through every row.
+If your query uses a leading wildcard and performs poorly, consider using a full-text index inxstead. This will improve the speed of your query while avoiding the need to search through every row.
 
 Use the UNION ALL Clause
 When using the OR operator with LIKE statements, a UNION ALL clause can improve the speed of your query, especially if the columns on both sides of the operator are indexed.
