@@ -1185,90 +1185,27 @@ the value at that address is loaded into the MDR.
 142. STORE RESULT: In the last cycle, the contents of the MDR is gated onto the global bus, from which
 it is loaded into R3 and supplied to the condition code logic in order to set the NZP condition codes.
 
-86. what does the LC-3 global bus consist of? 16 wires and associated electronics
-
-87. what is the global bus used for? allows one structure to transfer upto 16 bits of information to another structure by making
-the necessary electronic connections on the bus. exactly one value can be transferred on the bus at one time. each structure that 
-supplies a signal to the bus has a triangle just behind its input arrow to the bus
-
-88. what is this triangle called? the tri-state device
-
-89. what is it used for? allows the computer's control logic to enable exactly one supplier to provide information
-to the bus at one time. the structure wishing to obtain the value being supplied can do so by asserting its ld.x (load enable)
-signal
-
-90. how does memory work? it contains both instructions and data. it is accessed by loading the MAR with the address of the 
-location to be accessed. control signals then read the contents of that memory location and the result of that read
-is stored in the MDR
-
-91. how does it work when it comes to storing? value to be stored in loaded into the MDR. the control signals then assert a WE signal
-in order to store the value contained in the MDR in the memory location specified by the MAR
-
-92. how does the ALU work? as the processing element, it has two inputs, source 1 from a register and source 2 from either
-a register or the sign-extended immediate value provided by the instruction
-
-93. what happens at the start of each instruction cycle? the PC supplies the MAR via the global bus the address of the instruction to be
-fetched 
-
-94. the PC is supplied via the three-to-one PCMUX. how is this three-to-one MUX configured? the rightmost input to the PCMUX is used to
-increment and write into the PC by one; when a control signal such as BR is executed and the sign-extended bits 8:0 are added to the incremented
-PC (addition takes place in a separate adder not the ALU), the output of this adder is the middle input to the PCMUX; the third input to the 
-PCMUX is obtained from the global bus
-
-95. what does the MARMUX component do? it controls which source out of two will supply the MAR with the appropriate address during
-the execution of a load, a store, or a TRAP instruction. The right input to the MARMUX is obtained by adding either the incremented PC or
-a base register to zero or a literal value supplied by the IR. Whether the PC or a base register and what literal value depends on which 
-opcode is being processed. The control signal ADDR1MUX speciﬁes the PC or base register. The control signal ADDR2MUX speciﬁes which of four 
-values is to be added.
-
-chapter 6
-
-1. what two things will you learn about in this chapter? develop a methodology for constructing
-programs to solve problems and develop a methodology for fixing said programs under the 
-likely condition that i did not get things right the first time
-
-2. what is structured programming? methodology developed in the 60s to dramatically improve
-the ability of average programmers to take a complex description of a problem and systematically
-decompose it into smaller manageable units so that they could ultimately write a program 
-that executed correctly
-
-3. what is the methodology also called? systematic decomposition
-
-4. define the systematic decomposition/ stepwise refinement process? process of taking A
-unit of work and breaking it into smaller units of work such that the collection of smaller
-units carries out the same task as the larger unit.
-
-5. what is the essential idea behind systematic decomposition or stepwise refinement?
-replace a larger unit of work with a construct that correctly decomposes it
-
-6. how many constructs are there for doing this? 3
-
-7. what are they called? sequential, conditional, and iterative
+chapter 6 (not needed)
 
 chapter 7
 
 1. mechanical languages are generally partitioned into two classes. what are they? high level and low level
 
-2. describe high level languaages? are more user friendly, almost resemble statements in natural languge such as english
+2. describe high level languages? are more user friendly, almost resemble statements in natural languge such as english, and are ISA independent
 
-3. what must happen before a program that is written in a high-level language can be executed? it must be translated into a program
-in the ISA of the computer on which it is expected to execute
+3. what must happen before a program that is written in a high-level language can be executed? it must be translated into a program in the ISA of the computer on which it is expected to execute
 
-4. is it often the case that each statement in a high level language specifies several instructions in the ISA of a computer? yes
+4. It is often the case that each statement in the high-level language speciﬁes several instructions in the ISA of the computer.
 
 5. what do you call the small step up from the ISA of a machine? the ISAs assembly language
 
-6. what is assembly language? a low level language which cannot be confused with a statement in english language. it is ISA dependent
-i.e. each ISA has only one assembly language 
+6. what is assembly language? a low level language which cannot be confused with a statement in english language. it is ISA dependent i.e. each ISA has only one assembly language. 
 
 7. does each assembly language instruction usually specify a single instruction in the ISA? yes
 
-8. what is the purpose of assembly language? to make the programming process more user friendly than programming in machine language
-i.e. in the ISA of the computer you are working on while providing the programmer with detailed control over the instructions the
-computer can execute
+8. what is the purpose of assembly language? to make the programming process more user friendly than programming in machine language (i.e. in the ISA of the computer you are working on) while providing the programmer with detailed control over the instructions the computer can execute
 
-9. what does assembly language do that help the program avoid minutae? let us use mnemonic devices for opcodes and give meaningful 
-symbolic names to memory locations (they are called symbolic addresses)
+9. what does assembly language do that help the programmer avoid minutae? let us use mnemonic devices for opcodes and give meaningful symbolic names to memory locations (they are called symbolic addresses)
 
 10. what do you lose when you use a high level language like C? whilst it is user friendly you relinquish control over which ISA instruction
 are to be used to carry out the work specified by the high level statement
