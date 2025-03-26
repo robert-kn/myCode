@@ -1205,80 +1205,153 @@ chapter 7
 
 8. what is the purpose of assembly language? to make the programming process more user friendly than programming in machine language (i.e. in the ISA of the computer you are working on) while providing the programmer with detailed control over the instructions the computer can execute
 
-9. what does assembly language do that help the programmer avoid minutae? let us use mnemonic devices for opcodes and give meaningful symbolic names to memory locations (they are called symbolic addresses)
+9. what does assembly language do that help the programmer avoid minutae? let us use mnemonic devices for opcodes, such as ADD for 0001 and NOT for 1001, and give meaningful symbolic names to memory locations, such as SUM or PRODUCT, rather than use the memory locations’ 16-bit addresses. 
 
-10. what do you lose when you use a high level language like C? whilst it is user friendly you relinquish control over which ISA instruction
-are to be used to carry out the work specified by the high level statement
+10. what do you lose when you use a high level language like C? whilst it is user friendly, you relinquish control over which ISA instruction are to be used to carry out the work specified by the high level statement
 
-11. what are pseudo ops (assembler directives)? message from the programmer to the translation program to help in the translation 
-process (translating a program represented by a string of characters in assembly language to machine language)
+11. The program in Figure 7.1 multiplies the integer initially stored in NUMBER by 6 by adding the integer to itself six times. The program consists of 21 lines of code. line numbers were added to
+each line of the program in order to be able to refer to individual lines easily. These line numbers are not part of the program. Ten lines start with a semicolon, designating that they are strictly for the beneﬁt of the human reader. Seven lines (06, 07, 08, 0C, 0D, 0E, and 10) specify assembly language instructions to be translated into machine language instructions of the LC-3, which will be executed when the program runs. The remaining four lines (05, 12, 13, and 15) contain pseudo-ops
 
-12. what is the translation program that is used to translate assembly programs to machine language? assembler
+12. what are pseudo ops (assembler directives)? message from the programmer to the translation program to help in the translation process 
 
-13. what is the translation process called? assembly
+13. what is the translation program that is used to translate assembly programs to machine language? assembler
 
-14. instead of an instruction being 16 0's and 1's as is the case of the LC-3 ISA, an instruction in assembly language consists of 
-four parts. what are they called? label, opcode, operands, comment
+14. what is the translation process called? assembly
 
-15. which two are optional? label and comment
+15. instead of an instruction being 16 0's and 1's as is the case of the LC-3 ISA, an instruction in assembly language consists of four parts. what are they called? label, opcode, operands, comment
 
-16. in LC-3 assembly language, why are symbolic names called labels are assigned to memory locations? so that we do not have to remember
-explicit 16 bit addresses
+16. which two are optional? label and comment
 
-17. for literal values in assembly language that are used as operands in assembly language, how will know a number is a decimal,
-hex, or a binary? decimal numbers will be preceeded by #, binary by b, and hex by X
+17. Two of the parts (Opcode and Operands) are mandatory. For an assembly language instruction to correspond to an instruction in the LC-3 ISA, it must have an Opcode (the thing the instruction is to do), and the appropriate number of Operands (the things it is supposed to do it to). The Opcode is a symbolic name for the opcode of the corresponding LC-3 instruction. The idea is that it is easier to remember an operation by the symbolic name ADD, AND, or LDR than by the four-bit quantity 0001, 0101, or 0110. The number of operands depends on the operation being performed. For example, the ADD instruction (line 0C in the program of Figure 7.1) requires three operands (two sources to obtain the numbers to be added, and one destination to designate where the result is to be stored). All three operands must be explicitly identiﬁed in the instruction. We represent each of the registers 0
+through 7 as R0, R1, R2, … , R7, rather than 000, 001, 010, … , 111.
 
-18. what are the two reasons for explicitly referring to a memory location using a label? the location is a target of a branch 
-instruction and the location contains a value that is loaded or stored
+18. in LC-3 assembly language, why are symbolic names, called labels, assigned to memory locations? so that we do not have to remember explicit 16 bit addresses. in Figure 7.1, the LD instruction requires two operands (the memory location from which the value is to be read and the destination register that is to contain the value after the instruction ﬁnishes execution). The location from which the value is to be read is given the label NUMBER. The destination (i.e., where the value is to be loaded) is register 2.
 
-19. how many pseudo-ops does the LC-3 assembly language contain? 5
+19. As discussed previously, operands can be obtained from registers, from memory, or they may be literal (i.e., immediate) values in the instruction. In the case of register operands, the registers are explicitly represented (such as R2 and R3 in line 0C). In the case of memory operands, the symbolic name of the memory location is explicitly represented (such as NUMBER in line 07 and SIX in line 06). In the case of immediate operands, the actual value is explicitly represented
+(such as the value 0 in line 08).
 
-20 what are they? .ORIG, .FILL, .BLKW, .STRINGZ, and .END.
+20. for literal values in assembly language that are used as operands, how will know a number is a decimal, hex, or a binary? decimal numbers will be preceeded by #, binary by b, and hex by X
 
-21. what does the .ORIG pseudo-op do? it tells the assembler where in memory to place the LC-3 program i.e. first instruction is placed
-in the memory addressed specified, whilst the rest of the instructions in the program are placed in subsequent sequential locations.
+21. Labels are symbolic names that are used to identify memory locations that are referred to explicitly in the program. In LC-3 assembly language, a label consists of from 1 to 20 alphanumeric characters (i.e., each character is a capital or lower-case letter of the English alphabet, or a decimal digit), starting with a letter of the alphabet. However, not all sequences of characters that follow these rules can be used as labels. Character strings that have speciﬁc meanings in an
+LC-3 program cannot be used as labels. Such not-allowed character strings are often referred to as reserved words.
 
-22. what does the .FILL pseudo-op do? tells the assembler to set aside the next location in the program and initialise it with the value
-of the operand. the value can either be a number or a label
+22. what are the two reasons for explicitly referring to a memory location using a label? the location is a target of a branch instruction (e.g., AGAIN in line 0C) and the location contains a value that is loaded or stored (e.g., NUMBER in line 12, and SIX in line 13).
 
-23. what does the .BLKW pseudo op do? tells the assembler to set aside some number of sequential memory locations in the program. The
-actual number is the operand of the .BLKW pseudo op
+23. The LC-3 assembler is a program that takes as input a string of characters representing a computer program written in LC-3 assembly language and translates it into a program in the ISA of the LC-3. Pseudo-ops help the assembler perform that task. The more formal name for a pseudo-op is assembler directive. It is called a pseudo-op because, like its Greek root “pseudes” (which means “false”), it does not refer to an operation that will be performed by the program during execution. Rather, the pseudo-op is strictly a message from the assembly language programmer to the assembler to help the assembler in the assembly process. Once the assembler handles the message, the pseudo-op is discarded.
 
-24. what does the .STRINGZ pseudo op do? tells the assembler to initialise a sequence of n+1 memory locations. The argument is a 
-sequence of n characters inside double quotation marks. first n words of memory are initialised with zero extended ascii codes of the
-corresponding characters in the string. final word of memory is initialised to 0
+24. how many pseudo-ops does the LC-3 assembly language contain? 5; .ORIG, .FILL, .BLKW, .STRINGZ, and .END.
 
-25. what does the .END pseudo op do? tells the assembler it has reached the end of the program and need not look at anything after it
+25. what does the .ORIG pseudo-op do? it tells the assembler where in memory to place the LC-3 program i.e. first instruction is placed in the memory addressed specified, whilst the rest of the instructions in the program are placed in subsequent sequential locations. In line 05, .ORIG x3050 says, place the ﬁrst LC-3 ISA instruction in location x3050. As a result, 0010001000001100 (the translated LD R1,SIX instruction) is put in location x3050, and the rest of the translated LC-3 program is placed in the subsequent sequential locations in memory.
 
-26. how does the assembly process unfold? it is done in two complete passes (from beginning to .END) through the entire assembly language
-program. the objective of the first pass is to identify the actual binary addresses corresponding to the symbolic names (or labels).
-this is set of correspondences is known as the symbol table. in pass 2, we translate the individual assembly language instructions
-into their corresponding machine language instructions
+26. what does the .FILL pseudo-op do? tells the assembler to set aside the next location in the program and initialise it with the value of the operand. the value can either be a number or a label. In line 13, the ninth location in the resulting LC-3 program is initialized to the value x0006.
 
-27. why are labels used in assembly language? to refer to memory locations either because it is a target of a branch instruction or because
-it contains data that must be loaded or stored
+27. what does the .BLKW pseudo op do? tells the assembler to set aside some number of sequential memory locations in the program. The actual number is the operand of the .BLKW pseudo op. In line 12, the pseudo-op instructs the assembler to set aside one location in memory (and, incidentally, to label it NUMBER).
 
-28. how does the lc-3 assembler keep track of the location assigned to  each instruction? by meaans of the location counter. it is 
-initialised to the address specified in .ORIG
+28. what does the .STRINGZ pseudo op do? tells the assembler to initialise a sequence of n+1 memory locations. The argument is a sequence of n characters inside double quotation marks. The first n words of memory are initialised with zero extended ascii codes of the corresponding characters in the string. final word of memory is initialised to 0. The last word, containing x0000, provides a convenient sentinel for processing the string of ASCII codes.
 
-29. when a computer begins execution of a program, what is the entity being executed called? executable image
+For example, the code fragment
+          .ORIG     x3010
+HELLO     .STRINGZ  "Hello, World!"
 
-30. what is the executable image created from? from modules created independently by individual pogrammers where each module is 
-translated separately into an object file
+would result in the assembler initializing locations x3010 through x301D to the following values:
 
-31. are all modules written by users? no, some are supplied as library routines by the operating system
+x3010: x0048
+x3011: x0065
+x3012: x006C
+x3013: x006C
+x3014: x006F
+x3015: x002C
+x3016: x0020
+x3017: x0057
+x3018: x006F
+x3019: x0072
+x301A: x006C
+x301B: x0064
+x301C: x0021
+x301D: x0000
 
-32. what does each object file consist of? instructions in the ISA of the computer being used along with its associated data
+29. what does the .END pseudo op do? tells the assembler it has reached the end of the program and need not look at anything after it. That is, any characters that come after .END will not be processed by the assembler. Note: .END does not stop the program during execution. In fact, .END does not even exist at the time of execution. It is simply a delimiter— it marks the end of the program. It is a message from the programmer, telling the assembler where the assembly language program ends.
 
-33. what is normally the final step? combining (linking) all of the object modules together into one executable image
+30. Figure 7.2 is the assembly version of the character count program you encountered earlier. A few comments about this program: Three times during this program, assistance in the form of a service call is required of the operating system. In each case, a TRAP instruction is used. TRAP x23 causes a character to be input from the keyboard and placed in R0 (line 0D). TRAP x21 causes the ASCII code in R0 to be displayed on the monitor (line 28). TRAP x25 causes the machine to be halted (line 29).
 
-34. what happens during the execution of the program? the fetch, decode... instruction cycle is applied to instructions in the executable
-image
+31. The ASCII codes for the decimal digits 0 to 9 (0000 to 1001) are x30 to x39. The conversion from binary to ASCII is done simply by adding x30 to the binary value of the decimal digit. Line 2D shows the label ASCII used to identify the memory location containing x0030. The LD instruction in line 26 uses it to load x30 into R0, so it can convert the count that is in R2 from a binary value to an
+ASCII code. That is done by the ADD instruction in line 27. TRAP x21 in line 28 prints the ASCII code to the monitor.
 
-35. what does the pseudo-op .EXTERNAL do? identifies the symbolic name of an address that is not known at the time a program is 
-assembled. it sends a message to the LC-3 assembler that the absence of a symbolic label is not an error in the program i.e. the 
-symbolic name is a label in another module that will be translated independently. it allows references by one module to symbolic 
-references in another module without a problem
+32. The ﬁle that is to be examined starts at address x4000 (see line 2E). Usually, this starting address would not be known to the programmer who is writing this program since we would want the program to work on many ﬁles, not just the one starting at x4000. To accomplish that, line 2E would be replaced with .BLKW 1 and be ﬁlled in by some other piece of code that knew the starting address of
+the desired ﬁle before executing the program of Figure 7.2
+
+33. If you have available an LC-3 assembler, you can cause it to translate your assembly language program into a machine language program by executing an appropriate command. In the LC-3 assembler that is generally available via the web, that command is assemble, and it requires as an argument the ﬁlename of your assembly language program.
+
+34. how does the assembly process unfold? it is done in two complete passes (from beginning to .END) through the entire assembly language program. the objective of the first pass is to identify the actual binary addresses corresponding to the symbolic names (or labels). this is set of correspondences is known as the symbol table. In pass 1, we construct the symbol table. in pass 2, we translate the individual assembly language instructions into their corresponding machine language instructions.
+
+35. Thus, when the assembler examines line 0C for the purpose of translating LD R3,PTR during the second pass, it already knows that PTR is the symbolic address of memory location x3013 (from the ﬁrst pass). Thus, it can easily translate line 0C to 
+
+     x3001: 0010 011 000010001
+
+The problem of not knowing the 16-bit address corresponding to PTR no longer exists.
+
+36. the symbol table is simply a correspondence of symbolic names with their 16-bit memory addresses. We obtain these correspondences by passing through the assembly language program once, noting which instruction is assigned to which memory location, and identifying each label with the memory address of its assigned entry.
+
+37. why are labels used in assembly language? to refer to memory locations either because it is a target of a branch instruction or because it contains data that must be loaded or stored. Consequently, if we have not made any programming mistakes, and if we identify all the labels, we will have identiﬁed all the symbolic addresses used in the program.
+
+38. The ﬁrst pass starts, after discarding the comments on lines 01 to 09, by noting (line 0A) that the ﬁrst instruction will be assigned to address x3000. We keep track of the location assigned to each instruction by means of a location counter(LC).The LC is initialized to the address speciﬁed in .ORIG, that is, x3000. The assembler examines each instruction in sequence and increments the LC once for each assembly language instruction. If the instruction examined contains a label, a symbol table entry is made for that label, specifying the current contents of LC as its address. The ﬁrst pass terminates when the .END pseudo-op is reached.
+
+39. The ﬁrst instruction that has a label is at line 13. Since it is the ﬁfth instruction in the program and since the LC at that point contains x3004, a symbol table entry is constructed thus:
+
+Symbol    Address
+TEST      x3004
+
+The second instruction that has a label is at line 20. At this point, the LC has been incremented to x300B. Thus, a symbol table entry is constructed, as follows:
+
+Symbol    Address
+GETCHAR   x300B
+
+At the conclusion of the ﬁrst pass, the symbol table has the following entries:
+
+Symbol    Address
+TEST      x3004
+GETCHAR   x300B
+OUTPUT    x300E
+ASCII     x3012
+PTR       x3013
+
+40. The second pass consists of going through the assembly language program a second time, line by line, this time with the help of the symbol table. At each line, the assembly language instruction is translated into an LC-3 machine language instruction. Starting again at the top, the assembler again discards lines 01 through 09 because they contain only comments. Line 0A is the .ORIG pseudo-op, which
+the assembler uses to initialize LC to x3000. The assembler moves on to line 0B and produces the machine language instruction 0101010010100000. Then the assembler moves on to line 0C.
+
+41. This time, when the assembler gets to line 0C, it can completely assemble the instruction since it knows that PTR corresponds to x3013. The instruction is LD, which has an opcode encoding of 0010. The destination register (DR) is R3, that is, 011.
+
+42. The only part of the LD instruction left to do is the PCoﬀset. It is computed as follows: The assembler knows that PTR is the label for address x3013 and that the incremented PC is LC+1, in this case x3002. Since PTR (x3013) must be the sum of the incremented PC (x3002) and the sign-extended PCoﬀset, PCoﬀset must be x0011. Putting this all together, the assembler sets x3001 to 0010011000010001
+and increments the LC to x3002.
+
+43. Note: In order to use the LD instruction, it is necessary that the source of the load, in this case the address whose label is PTR, is not more than +256 or −255 memory locations from the LD instruction itself. If the address of PTR had been greater than LC+1+255 or less than LC+1−256, then the oﬀset would not ﬁt in bits [8:0] of the instruction. In such a case, an assembly error would
+have occurred, preventing the assembly process from ﬁnishing successfully. Fortunately, PTR is close enough to the LD instruction, so the instruction assembled correctly.
+
+44. The second pass continues. At each step, the LC is incremented and the location speciﬁed by LC is assigned the translated LC-3 instruction or, in the case of .FILL, the value speciﬁed. When the second pass encounters the .END pseudo-op, assembly terminates. The resulting translated program is shown in Figure 7.3.
+
+45. when a computer begins execution of a program, what is the entity being executed called? executable image
+
+46. what is the executable image created from? from modules created independently by individual pogrammers where each module is translated separately into an object file or from library routines supplied by the OS
+
+47. are all modules written by users? no, some are supplied as library routines by the operating system
+
+48. what does each object file consist of? instructions in the ISA of the computer being used along with its associated data
+
+49. what is normally the final step? combining (linking) all of the object modules together into one executable image
+
+50. what happens during the execution of the program? the fetch, decode... instruction cycle is applied to instructions in the executable image
+
+51. It is very common to form an executable image from more than one object ﬁle. In fact, in the real world, where most programs invoke libraries provided by the operating system as well as modules generated by other programmers, it is much more common to have multiple object ﬁles than a single one.
+
+52. A case in point is our example character count program. The program counts the number of occurrences of a character in a ﬁle. A typical application could easily have the program as one module and the input data ﬁle as another. If this were the case, then the starting address of the ﬁle, shown as x4000 in line 2E of Figure 7.2, would not be known when the program was written. If we replace line
+2E with
+
+PTR  .FILL  STARTofFILE
+
+then the program of Figure 7.2 will not assemble because there will be no symbol table entry for STARTofFILE. What can we do? In the LC-3 assembly language, we could use the pseudo-op .EXTERNAL. This would be done by the following line
+
+.EXTERNAL STARTofFILE,
+
+53. what does the pseudo-op .EXTERNAL do? identifies the symbolic name of an address that is not known at the time a program of Figure 7.2 is assembled. it sends a message to the LC-3 assembler that the absence of a symbolic label is not an error in the program i.e. the symbolic name is a label in another module that will be translated independently. the LC-3 assembler would be able to create a symbol table entry for STARTofFILE, and instead of assigning it an address, it would mark the symbol as belonging to another module. At link time, when all the modules are combined, the linker (the program that manages the “combining” process) would use the symbol table entry for STARTofFILE in another module to complete the translation of our revised line 2E. In this way, the .EXTERNAL pseudo-op allows references by one module to symbolic references in another module without a problem. The proper translations are resolved by the linker.
 
 chapter 8
 
