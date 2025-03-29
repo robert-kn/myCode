@@ -1594,4 +1594,12 @@ Save1     .BLKW    1
 76. Fibonacci (an even worse example of when recursion is used): Another bad use of recursion is to evaluate the Fibonacci number FIB(n). The Fibonacci numbers are deﬁned for all non-negative integers as follows: FIB(0)=0, FIB(1)=1, and if n > 1, FIB(n) = FIB(n-1) + FIB(n-2). The expression is beautifully elegant, but the execution time is horrendous.
 Figure 8.17 shows a pictorial view of the recursive subroutine FIB. Note that the subroutine FIB is represented as a “capital F,” and inside the capital F there are two more instances of the capital F.
 
-77. The recursive subroutine in Figure 8.18 computes FIB(n).
+77. The recursive subroutine in Figure 8.18 computes FIB(n). As with all recursive subroutines, we ﬁrst need to test for the base cases. In this case, we AND n with xFFFE, which produces a non-zero result for all n except n = 1 and n = 0. If n = 0 or 1, we are eﬀectively done. We move n into R1, restore R2, R0, and R7 (actually, only R2 needs to be restored), and return. If n is not 0 or 1, we need to recursively call FIB twice, once with argument n-1 and once with argument n-2. Finally we add FIB(n-1) to FIB(n-2), put the result in R1, restore R2, R0, and R7, and return.
+
+78. Note that the recursive subroutine FIB(n) calls FIB twice: once for FIB(n-1) and once for FIB(n-2). FIB(n-1) must call FIB(n-2) and FIB(n-3), and FIB(n-2) must call FIB(n-3) and FIB(n-4). That means FIB(n-2) must be evaluated twice and FIB(n-3) will have to be evaluated three times.
+
+79. Suppose n = 10. How many times must this recursive algorithm compute the same function FIB(5)?
+
+80. Compare the recursive algorithm for Fibonacci (Figure 8.18) with a non-recursive algorithm, as shown in Figure 8.19. Much, much faster execution time!
+
+81. what is the reason for shying away from using recursion to compute factorial or Fibonacci? the iterative algorithms are simple enough to understand without the horrendous execution time penalty of recursion.
