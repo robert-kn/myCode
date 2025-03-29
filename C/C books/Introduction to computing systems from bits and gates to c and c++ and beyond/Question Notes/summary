@@ -1355,92 +1355,243 @@ then the program of Figure 7.2 will not assemble because there will be no symbol
 
 chapter 8
 
-1. how many instructions does the call/return mechanism consist of? two instructions
+1. what do you call complex items of information? abstract data types or more colloquially data structures.
 
-2. what is the first instruction? JSR(R) is in the caller program
+2. subroutines: Figure 8.1 provides a simple illustration of a part of a program—call it “piece- of-code-A”—containing fragments that must be executed multiple times within piece-of-code-A. Let’s ignore everything about it except the three-instruction sequences starting at symbolic addresses L1, L2, L3, and L4. Each of these four 3-instruction sequences does the following:
 
-3. what does the JSR(R) instruction do? it loads the PC with the starting address of the subroutine and it loads R7 with the address
-immediately after the address of the JSR(R) instruction. the address immediately after the address of the JSR(R) instruction is
-the address to come back to after executing the subroutine
+label       LDI     R3,DSR
+            BRzp    label 
+            STI     Reg,DDR
 
-4. what name is given to the address we come back to? return linkage
+Each of the four instances uses a diﬀerent label (L1, L2, L3, L4), but that is not a problem since in each instance the only purpose of the label is to branch back from the BRzp instruction to the LDI instruction.
 
-5. what is the second instruction? JMP R7; which happens to be the laast instruction in the subroutine
+Two of the four program fragments store the contents of R0 and the other two store the contents of R2, but that is easy to take care of, as we will see. The main point is that, aside from the small nuisance of which register is being used for the source of the STI instruction, the four program fragments do exactly the same thing, and it is wasteful to require the programmer to write the code four times. The subroutine call/return mechanism enables the programmer to write the code only once.
 
-6. what does this instruction do? it loads the PC with the contents of R7, the address just after the address of the JSR instruction
-thereby completing the round trip flow of control from the caller to the callee and back
+3. The call/return mechanism allows us to execute this one three-instruction sequence multiple times by requiring us to include it as a subroutine in our program only once. Figure 8.2 shows the instruction execution ﬂow for a program with and without subroutines. Note in Figure 8.2 that without subroutines, the programmer has to provide the same code A after X, after Y, and after Z. With subroutines, the programmer has to provide the code A only once. The programmer uses the call/return mechanism to direct the computer each time via the call instruction to the code A, and after the computer has executed the code A, to the return instruction to the proper next instruction to be executed in the program. 
 
-7. the LC-3 specifies one control instruction for calling subroutines; what is it called? JSR
+4. We refer to the program that contains the call as the caller, and the subroutine that contains the return as the callee.
 
-8. how many addressing modes does the JSR(R) control instruction have for computing the starting address of a subroutine? 2
+5. how many instructions does the call/return mechanism consist of? two instructions
 
-9. what are the addressing modes? PC-relative addressing and base register addressing
+6. what is the first instruction? JSR(R) in the caller program
 
-10. what are the two things that the JSR(R) instruction does? loads the PC hence overwriting the incremented PC that was loaded 
-during the fetch phase of the JSR(R) instruction and then it saves the return address in R7
+7. what does the JSR(R) instruction do? it loads the PC with the starting address of the subroutine and it loads R7 with the address immediately after the address of the JSR(R) instruction. the address immediately after the address of the JSR(R) instruction is the address to come back to after executing the subroutine
 
-11. what is the return address that is saved in R7? it is the incremented PC which is the address of the instruction following the
-JSR(R) instruction
+8. what name is given to the address we come back to immediately after execution of a subroutine? return linkage
 
-12. how many parts does the JSR(R) instruction consist of? 3 parts
+9. what is the second instruction of the call/return mechanism? JMP R7; which happens to be the last instruction in the subroutine (i.e., in the callee program).
 
-13. what are the 3 parts? bits 15:12 specify the opcode; bit 11 specifies what addressing mode will be used (1 for PC-relative); bits
-10:0 are the address evaluation bits
+10. what does this instruction do? it loads the PC with the contents of R7, the address just after the address of the JSR instruction thereby completing the round trip flow of control from the caller to the callee and back
 
-14. how does the JSR instruction compute the target address of a subroutine? by sign-extending the 11 bit offset (bits 10:0) of the
-instruction to 16 bits and adding it to the incremented PC
+11. the LC-3 specifies one control instruction for calling subroutines; what is it called? JSR(R); its opcode is 0100. 
 
-15. What other control instruction shares a addressing mode? the BR instruction except in this instruction 9 bits are sign extended 
-instead of 11 bits
+12. how many addressing modes does the JSR(R) control instruction have for computing the starting address of a subroutine? 2
 
-16. how does the JSRR instruction differ from the JSR instruction? the addressing mode used;  it obtains the starting address of A
-subroutine in exactly the same way that the JMP instruction  does i.e. bits 8:6 identify the base register that contains the address 
-to be loaded into the PC
+13. what are the addressing modes? PC-relative addressing and base register addressing
 
-17. what problems do  subroutines pose when it comes to registers? they overwrite the contents of a register and therefore if the 
-contents that were overwritten are needed by the caller program then you have a major problem at hand
+14. how many mnemonic names for the opcode are provided by the lc-3 assembly language? JSR and JSR(R); which one is used depends on the addressing mode in question
 
-18. how is the above problem aavoided? by having either the subroutine save the contents of the registers it will overwrite and restore
-them before it finishes executing or have the caller program save the contents of the registers it is using before it invokes a 
-subroutine and restore the contents when the subroutine has finished executing
+15. what are the two things that the JSR(R) instruction does? loads the PC hence overwriting the incremented PC that was loaded during the fetch phase of the JSR(R) instruction. In this case the starting address of the subroutine is computed and loaded into the PC. The second thing the JSR(R) instruction does is it saves the return address in R7
 
-19. of the two options, which is more efficient? having the callee program (the subroutine) save the contents of the registers is
-more efficient because it knows which registers it will overwrite. The caller program has no way of knowing this in advance
+16. what is the return address that is saved in R7? it is the incremented PC which is the address of the instruction following the JSR(R) instruction
 
-20. what is the technique called? callee save
+17. how many parts does the JSR(R) instruction consist of? 3 parts
 
-21. is the caller program or the callee program responsible for saving and restoring the contents of R7? the caller is responsible 
-since it alone is capable of overwriting the value in R7 after the subroutine returns
+18. what are the 3 parts? bits 15:12 specify the opcode (0100); bit 11 specifies what addressing mode will be used to obtain the starting address of the subroutine (1 for PC-relative); bits 10:0 are the address evaluation bits
 
-22. what do we call the above process? caller save
+19. how does the JSR instruction compute the target address of a subroutine? by sign-extending the 11 bit offset (bits 10:0) of the instruction to 16 bits and adding it to the incremented PC. almost identical to the addressing mode of the BR instruction, except eleven bits of PCoﬀset are used, rather than nine bits as is the case for BR.
 
-23. what are some of the uses of the call/return mechanism expanded on above? ability of a user program to call library routines
-that are part of the OS
+If the following JSR instruction is stored in location x4200, its execution will cause the PC to be loaded with x3E05 (i.e., xFC04 + x4201) and R7 to be loaded with x4201.
 
-24. can the stack (abstract data type), be implemented in many different ways? yes
+15   14   13   12    11    10   9    8    7    6    5    4    3    2    1    0
+0     1   0    0  |  1  |  1    0    0    0    0    0    0    0    1    0    0
+     JSRR            A                        PCoﬀset1
 
-25. what makes stack special? LIFO i.e. specification of how it is to be accessed that is the last thing that you stored in a stack 
-is the first thing that you remove from it
+20. how does the JSRR instruction differ from the JSR instruction? the addressing mode used;  it obtains the starting address of a subroutine in exactly the same way that the JMP instruction  does i.e. bits 8:6 identify the base register that contains the address to be loaded into the PC
 
-26. what is the definition of an abstract data type? a storage mechanism that is defined by the operations performed on it and not
-by the specific manner in which it is implemented
+If the following JSRR instruction is stored in location x420A, and if R5 contains x3002, the execution of the JSRR will cause R7 to be loaded with x420B and the PC to be loaded with x3002.
 
-27. how is a stack implemented in computer memory? consists of a sequence of memory locations along with a mechanism called a stack
-pointer which keeps track of the top of the stack
+15   14   13   12    11    10   9     8    7    6     5    4    3    2    1    0
+0     1   0    0  |  0  |  0    0  |  1    0    1  |  0    0    0    0    0    0
+     JSRR            A                   BaseR
 
-28. how are values inserted into the stack stored? they are stored in memory locations having decreasing addresses i.e. the stack 
-grows towards zero.
+What important feature does the JSRR instruction provide that the JSR instruction does not provide? allowing the subroutine (target) address to be anywhere in memory, as it specifies a register that holds the starting address of the subroutine
 
-30. when values are pushed and popped to and from the stack implemented in sequential memory locations, does the data already stored
-on the stack physically move? no
+21. We have known for a long time that every time an instruction loads a value into a register, the value that was previously in that register is lost. Thus, we need to save the value in a register
 
-31. in the LC-3, what is process of pushing a value onto a stack? first load the value into R0, then decrement the value in R6 
-(which contains the memory address of the stack pointer) 
+if that value will be destroyed by some subsequent instruction, and
+if we will need it after that subsequent instruction.
 
-32. in the LC-3, what is the process of popping a value from the stack? the value is read and the stack pointer is incremented
+22. what problems do subroutines pose when it comes to registers? they overwrite the contents of a register and therefore if the contents that were overwritten are needed by the caller program then you have a major problem at hand
 
-33. what is the fancy name given to the rules that the stack follows? stack protocol
+23. Let’s examine again the piece of code in Figure 8.1. Suppose this piece of code is a subroutine called by the instruction JSR START in some caller program, which we will call CALLER. Suppose before CALLER executes JSR START, it computes values that it loads into R1, R2, and R3. In our subroutine starting at START, the instruction on line 05 loads a value into R2, the instruction on line 06 loads a value into R3, and the instruction on line 0A loads a value into R1. What would happen if CALLER needed those values after returning from the subroutine that begins at START? Too bad! Since the subroutine destroyed the values in R1, R2, and R3 by executing the instructions in lines 05, 06, and 0A, those values are lost to CALLER when it resumes execution after the JMP R7 instruction on line 20 of the subroutine. Of course, this is unacceptable.
 
-34. what does attempting to pop items that have not been previously pushed result in? underflow
+24. We prevent it from happening during the ﬁrst part of our subroutine, that is, during initialization. In lines 01, 02, and 03, the contents of R1, R2, and R3 are stored in memory locations SaveR1, SaveR2, and SaveR3. Three locations in the subroutine (lines 22, 23, and 24) have been set aside for the purpose of saving those register values. And, in lines 1D, 1E, and 1F (just before the JMP R7 instruction), the values stored there are put back into R1, R2, and R3. That is, before the subroutine uses R1, R2, and R3 for its own use, the subroutine saves the values put there by the calling program. And, before the subroutine returns to the calling program, those values are put back (i.e., restored) where the calling program has a right to expect them.
 
-35. What happens when we run out of available space and we try to push a value onto the stack? result in an overflow
+25. what do we call this technique? callee save because the subroutine (i.e., the callee) saves and restores the registers. It makes sense to have the subroutine save the registers because the subroutine knows which registers it needs to do the work of the subroutine. There really is no reason to burden the person writing the caller program to know which registers the subroutine needs.
+
+26. how else could the above problem be avoided? by having have the caller program save the contents of the registers it is using before it invokes a subroutine (i.e. before JSR START) and restore the contents when the subroutine has finished executing. Some programs do that, and in fact, some ISAs have JSR instructions that do that as part of the execution of the JSR instruction.
+
+27. of the two options, which is more efficient? having the callee program (the subroutine) save the contents of the registers is more efficient because it knows which registers it will overwrite. The caller program has no way of knowing this in advance.
+
+28. We should also point out that since JMP START loads the return linkage in R7, whatever was in R7 is destroyed by the execution of the JMP START instruction. Therefore, if the calling program had stored a value in R7 before calling the subroutine at START, and it needed that value after returning from the subroutine, the caller program would have to save and restore R7. 
+
+29. is the caller program or the callee program responsible for saving and restoring the contents of R7? the caller is responsible since it alone is capable of overwriting the value in R7 after the subroutine returns. We save a register value by storing it in memory; we restore it by loading it back into the register.
+
+30. what do we call the above process? caller save
+
+31. what are some of the uses of the call/return mechanism expanded on above? ability of a user program to call library routines that are part of the OS. Libraries are provided as a convenience to the user programmer. They are legitimately advertised as productivity enhancers since they allow the application programmer to use them without having to know or learn much of their inner details. Figure 8.6 illustrates the process of combining multiple modules at link time to produce an executable image
+
+32. can the stack (abstract data type), be implemented in many different ways? yes
+
+33. what makes a stack special? a stack has nothing to do with how it is implemented. The concept of a stack is the speciﬁcation of how it is to be accessed; LIFO i.e. the last thing that you stored in a stack is the first thing that you remove from it
+
+34. the stack is an example of an abstract data type. what is the definition of an abstract data type? a storage mechanism that is defined by the operations performed on it and not by the specific manner in which it is implemented
+
+35. There are special terms for the insertion and removal of elements from a stack. We say we push an element onto the stack when we insert it. We say we pop an element from the stack when we remove it.
+
+36. how is a stack implemented in computer memory? the most common implementation of a stack in a computer is as shown in Figure 8.9. it consists of a sequence of memory locations along with a mechanism called a stack pointer which keeps track of the top of the stack. We use R6 to contain the address of the top of the stack. That is, in the LC-3, R6 is the stack pointer.
+
+37. In Figure 8.9, ﬁve memory locations (x3FFF to x3FFB) are provided for the stack. The actual locations comprising the stack at any single instant of time are the consecutive locations from x3FFF to the location speciﬁed in R6, that is, the top of the stack. For example, in Figure 8.9c, the stack consists of the contents of locations x3FFF, x3FFE, x3FFD, and x3FFC.
+
+38. Figure 8.9a shows an initially empty stack. Since there are no values on the stack, the stack pointer contains the address x4000, the address of the memory location just after the memory locations reserved for the stack. Why this makes sense will be clear after we show the actual code for pushing values onto and popping values off of the stack. Figure 8.9b shows the stack after pushing the value 18. Note that the stack pointer contains the address x3FFF, which is the new top of the stack.
+
+39. Figure 8.9c shows the stack after pushing the values 31, 5, and 12, in that order. Note that the values inserted into the stack are stored in memory loca- tions having decreasing addresses. We say the stack grows toward zero. Finally, Figure 8.9d shows the stack after popping the top two elements oﬀ the stack. Note that those two elements (the values 5 and 12) that were popped are still present in memory locations x3FFD and x3FFC. However, as we will see momentarily, those values 5 and 12 cannot be accessed from memory, as long as every access to memory is controlled by the stack mechanism.
+
+40. when values are pushed and popped to and from a stack implemented in sequential memory locations, the data already stored on the stack does not physically move.
+
+41. how are values inserted into the stack stored? they are stored in memory locations having decreasing addresses i.e. the stack grows towards zero.
+
+42. what operations are used to push a value onto the stack? We push a value onto the stack by executing the two-instruction sequence:
+
+PUSH      ADD       R6,R6,#-1
+          STR       R0,R6,#0
+
+43. In Figure 8.9a, R6 contains x4000, indicating that the stack is empty. To push the value 18 onto the stack, we decrement R6, the stack pointer, so the address in R6 (i.e., address x3FFF) corresponds to the location where we want to store the value we are pushing onto the stack. The actual push is done by ﬁrst loading 18 into R0, and then executing STR R0,R6,#0. This stores the contents of R0 into memory location x3FFF.
+
+44. summarise the process of pushing a value onto a stackin the LC-3: first load the value into R0, then decrement the value in R6 (which contained the previous top of the stack). Then we execute STR R0,R6,#0, which stores the contents of R0 into the memory location whose address is in R6.
+
+45. what operations are used to pop a value from the stack? the value is read and the stack pointer is incremented. The following two-instruction sequence
+
+POP       LDR       R0,R6,#0
+          ADD       R6,R6,#1
+
+pops the value contained in the top of the stack and loads it into R0. The stack pointer (R6) is incremented to indicate that the old value at the top of the stack has been popped and is no longer on the stack, and we have a new value at the top of the stack.
+
+46. If the stack were as shown in Figure 8.9c and we executed the sequence twice, we would pop two values from the stack. In this case, we would ﬁrst remove the 12, and then the 5. Assuming the purpose of popping two values is to use those two values, we would, of course, have to move the 12 from R0 to some other location before calling POP a second time.
+
+47. Note that after 12 and 5 are popped, R6 contains x3FFE, indicating that 12 and 5 are no longer on the stack and that the top of the stack is 31. Figure 8.9d shows the stack after that sequence of operations. Note that the values 12 and 5 are still stored in memory locations x3FFD and x3FFC, respectively. However, since the stack requires that we push by executing the PUSH sequence and pop by executing the POP sequence, we cannot read the values 12 and 5 if we obey the rules. The fancy name for “the rules” is the stack protocol.
+
+48. what is the fancy name given to the rules that the stack follows? stack protocol
+
+49. What happens if we now attempt to pop three values from the stack? Since only two values remain on the stack, we would have a problem. Attempting to pop items that have not been previously pushed results in an underﬂow situation.
+
+50. In our example, we can test for underﬂow by comparing the stack pointer with x4000, which would be the contents of R6 if there were nothing left on the stack to pop. If UNDERFLOW is the label of a routine that handles the underﬂow condition, our resulting POP sequence would be
+
+POP     LD     R1,EMPTY
+        ADD    R2,R6,R1   ;  Compare  stack
+        BRz    UNDERFLOW  ; pointer with x4000
+;
+        LDR    R0,R6,#0
+        ADD    R6,R6,#1
+;
+        RET
+EMPTY   .FILL  xC000      ;  EMPTY  <--  negative  of  x4000
+
+51. Rather than have the POP routine immediately jump to the UNDERFLOW routine if the POP is unsuccessful, it is often useful to have the POP routine return to the calling program with the underﬂow information contained in a register. We will use R5 to provide success/failure information. Figure 8.10 is a ﬂowchart showing how the POP routine could be augmented, using R5 to report this success/failure information.
+
+52. Upon return from the POP routine, the calling program would examine R5 to determine whether the POP completed successfully (R5 = 0), or not (R5 = 1).
+
+53. Note that since the POP routine reports success or failure in R5, whatever was stored in R5 before the POP routine was called is lost. Thus, it is the job of the calling program to save the contents of R5 before the JSR instruction is executed if the value stored there will be needed later. This is an example of a caller-save situation.
+
+54. The resulting POP routine is shown in the following instruction sequence.
+
+POP      AND    R5,R5,#0
+         LD     R1,EMPTY
+         ADD    R2,R6,R1
+         BRz    Failure
+         LDR    R0,R6,#0
+         ADD    R6,R6,#1
+         RET
+Failure  ADD    R5,R5,#1
+         RET
+EMPTY    .FILL  xC000            ;  EMPTY  <--- x4000
+
+55. What happens when we run out of available space and we try to push a value onto the stack? Since we cannot store values where there is no space, we have an overﬂow situation. We can test for overﬂow by comparing the stack pointer with (in the example of Figure 8.9) x3FFB. If they are equal, we have no place to push another value onto the stack. If OVERFLOW is the label of a routine that handles the overﬂow condition, our resulting PUSH sequence would be
+
+PUSH      LD      R1,MAX
+          ADD     R2,R6,R1
+          BRz     OVERFLOW
+;
+          ADD     R6,R6,#-1
+          STR     R0,R6,#0
+;
+          RET
+MAX       .FILL   xC005        ; MAX  <-- negative of x3FFB
+
+56. In the same way that it is useful to have the POP routine return to the calling program with success/failure information, rather than immediately jumping to the UNDERFLOW routine, it is useful to have the PUSH routine act similarly. We augment the PUSH routine with instructions to store 0 (success) or 1 (failure) in R5, depending on whether or not the push completed success- fully. Upon return from the PUSH routine, the calling program would examine R5 to determine whether the PUSH completed successfully (R5 = 0) or not (R5 = 1).
+
+57. Note again that since the PUSH routine reports success or failure in R5, we have another example of a caller-save situation. That is, since whatever was stored in R5 before the PUSH routine was called is lost, it is the job of the calling program to save the contents of R5 before the JSR instruction is executed if the value stored in R5 will be needed later.
+
+58. The resulting PUSH routine is shown in the following instruction sequence
+
+PUSH      AND     R5,R5,#0
+          LD      R1,MAX
+          ADD     R2,R6,R1
+          BRz     Failure
+          ADD     R6,R6,#-1
+          STR     R0,R6,#0
+          RET
+Failure   ADD     R5,R5,#1
+          RET
+MAX       .FILL   xC005      ;  MAX  <--- x3FFB
+
+59. The POP and PUSH routines allow us to use memory locations x3FFF through x3FFB as a ﬁve-entry stack. If we wish to push a value onto the stack, we simply load that value into R0 and execute JSR PUSH. To pop a value from the stack into R0, we simply execute JSR POP. If we wish to change the location or the size of the stack, we adjust BASE and MAX accordingly
+
+60. The subroutines PUSH and POP make use of R1 and R2, and there is no reason why the calling program would know that. Therefore, it is the job of the subroutine (callee save) to save R1 and R2 before using them, and to restore them before returning to the calling program. The PUSH and POP routines also write to R5. But, as we have already pointed out, the calling program knows that the subroutine will report success or failure in R5, so it is the job of the calling program to save R5 before executing the JSR instruction if the value stored in R5 will be needed later. The ﬁnal code for our PUSH and POP operations is shown in Figure 8.11.
+
+61. what is recursion? a mechanism for expressing a function in terms of itself. when used appropriately, the expressive power of recursion is going to save a lot of headaches. when used whimsically, recursion is going to require unnecessary inactivity, resulting in longer execution time and wasted energy.
+
+62. bad example of using factorial: The simplest example to illustrate recursion is the function factorial. n! = n * (n-1)! Assume the subroutine FACT (Factorial) is supplied with a positive integer n in R0 and returns with the value n! in R0. Figure 8.12 shows a pictorial view of the recursive subroutine. We represent the subroutine FACT as a hexagon, and inside the hexagon is another instance of the hexagon! We call the subroutine recursive because inside the FACT subroutine is an instruction JSR FACT. If we assume the LC-3 has a MUL instruction, the basic structure of the FACT subroutine takes the form shown in figure 8.12
+
+63. The subroutine ﬁrst tests to see if n = 1. If so, we are done, since (1)! = 1. It is important to emphasize that every recursive subroutine must have such an initial test to see if we should execute the recursive call. Without this test, the subroutine would call itself (JSR FACT) an inﬁnite number of times! Clearly, that cannot be correct. The answer is to provide a test before the recursive JSR instruction. In the case of the subroutine FACT, if R0 is 1, we are done, since 1! = 1.
+
+64. If n does not equal 1, we save the value in R1, so we can store n in R1, load R0 with n-1 and JSR FACT. When FACT returns with (n-1)! in R0, we multiply it by n (which was stored in R1), producing n!, which we load into R0, restore R1 to the value expected by the calling program, and RET.
+
+FACT      ST       R1, Save1       ; Callee  save  R1
+          ADD      R1,R0,#-1       ; Test  if  R0=1
+          BRz      DONE            ; If  R0=1, R0 also contains (1)!, so we are done
+          ADD      R1,R0,#0        ; Save n in R1, to be used after we compute (n-1)!
+          ADD      R0,R1,#-1       ; Set R0 to n-1, and then call FACT
+B         JSR      FACT            ; On RET, R0 will contain (n-1)!
+          MUL      R0,R0,R1        ; Multiply n times (n-1)!, yielding n! in R0
+DONE      LD       R1, Save1       ; Callee restore R1
+          RET
+Save1     .BLKW    1
+
+65. Since the LC-3 does not have a MUL instruction, this will require another subroutine call, but we are ignoring that here in order to focus on the essence of recursion.
+
+66. why will the above code not work? Figure 8.13 shows the ﬂow of instruction execution as we would like it to be. The main program calls the subroutine with a JSR instruction at address A. This causes the code labeled #1 to execute. At address B, the subroutine FACT calls itself with the instruction JSR FACT. This causes the code labeled #2 to execute, and so forth. When the main program executes the instruction JSR FACT, the return linkage A+1 is saved in R7. In the block of code labeled #1, the instruction at address B (JSR FACT) stores its return linkage B+1 in R7, destroying A+1, so there is no way to get back to the main program.
+
+67. how can we solve this problem? by pushing the address A+1 onto a stack before executing JSR FACT at address B. After we subsequently return to address B+1, we can then pop the stack and load the address A+1 into R7 before we execute the instruction RET back to the main program.
+
+68. what else is wrong with the assembly program in number 64? instruction ADD R1,R0,#0 in #1 loads the value n into R1, and in #2, the instruction ADD R1,R0,#0 loads the value n-1 into R1, thereby wiping out the value n that had been put there by the code in #1. Thus, when the instruction ﬂow gets back to #1, where the value n is needed by the instruction MUL R0,R0,R1, it is no longer there. It was previously wiped out. Again, very, very bad!
+
+69. how can we solve this problem? instead of moving the value n to R1 before loading n-1 into R0, we push n onto the stack and then pop it when we need it after returning from the subroutine with (n-1)! in R0.
+
+70. Finally, we note that the ﬁrst instruction in our subroutine saves R1 in Save1 and the last instruction before the RET restores it to R1. We do this so that from the standpoint of the calling program, the value in R1 before the subroutine is the same as the value in R1 after the subroutine, even though the subroutine used R1 in performing its job.
+
+71. However, since our subroutine is recursive, when FACT is called by the JSR instruction at address B, R1 does not contain the value it had in the main program, but instead it has the value last stored in R1 by the ADD R1,R0,#0 instruction. Thus after the JSR FACT instruction is executed, the ﬁrst instruction of the recursively called subroutine FACT will save that value, wiping out the value that the main program had stored in R1 when it called FACT.
+
+72. how can we solve this problem? using the stack; replace the ST R1,Save1 with a push and LD R1,Save1 with a pop. If we make these changes (and if the LC-3 had a MUL opcode), the recursive subroutine works as we would like it to. The resulting subroutine is shown in Figure 8.14
+
+73. The main program calls FACT with R0 = n. The code in #1 executes, with JSR FACT being called with R0 = n-1. At this point, the stack contains the three entries pushed, as shown in Figure 8.15a. When the JSR FACT instruction in #3 executes, with R0 = n-3, the stack contains the nine entries as shown in Figure 8.15b.
+
+74. The obvious question you should ask at this point is, “Why is this such a bad use of recursion, particularly when its representation n! =n*(n-1)! is so elegant?” To answer this question, we ﬁrst note how many instructions are executed and how much time is wasted pushing and popping elements oﬀ the stack. AND, the second question you should ask is, “Is there a better way to compute n!?”
+
+75. Consider the alternative shown in Figure 8.16 (using iteration to compute factorial)
+
+76. Fibonacci (an even worse example of when recursion is used): Another bad use of recursion is to evaluate the Fibonacci number FIB(n). The Fibonacci numbers are deﬁned for all non-negative integers as follows: FIB(0)=0, FIB(1)=1, and if n > 1, FIB(n) = FIB(n-1) + FIB(n-2). The expression is beautifully elegant, but the execution time is horrendous.
+Figure 8.17 shows a pictorial view of the recursive subroutine FIB. Note that the subroutine FIB is represented as a “capital F,” and inside the capital F there are two more instances of the capital F.
+
+77. The recursive subroutine in Figure 8.18 computes FIB(n).
