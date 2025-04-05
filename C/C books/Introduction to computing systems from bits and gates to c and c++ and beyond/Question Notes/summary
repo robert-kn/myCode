@@ -1603,3 +1603,262 @@ Figure 8.17 shows a pictorial view of the recursive subroutine FIB. Note that th
 80. Compare the recursive algorithm for Fibonacci (Figure 8.18) with a non-recursive algorithm, as shown in Figure 8.19. Much, much faster execution time!
 
 81. what is the reason for shying away from using recursion to compute factorial or Fibonacci? the iterative algorithms are simple enough to understand without the horrendous execution time penalty of recursion.
+
+82. However, it is important to point out that there are times when the expressive beauty of recursion is useful to attack a complicated problem. Such is the case with the following problem, involving a maze: Given a maze and a starting position within the maze, write a program that determines whether or not there is a way out of the maze from your starting position. A maze can be any size, n by m. For example, Figure 8.20 illustrates a 6x6 maze.
+
+83. Each of the 36 cells of the maze can be characterized by whether there is a door to the north, east, south, or west, and whether there is a door from the cell to the outside world. Each cell is represented by one word of memory (Figure 8.21). The words are stored in what we call row major order; that is, row 1 is stored, then row 2, then row 3, etc. The complete speciﬁcation of the 6 by 6 maze is shown in Figure 8.22.
+
+84. Our job is to develop an algorithm to determine whether we can exit a maze from a given starting position within the maze. With all the intricate paths that our attempts can take, keeping track of all that bookkeeping looks daunting. Recursion allows us to not have to keep track of the paths at all! Figure 8.23 shows a pictorial view of a recursive sub- routine FIND EXIT, an algorithm for determining whether or not we can exit the maze. Note that the subroutine FIND EXIT is shown as an octagon, and inside the octagon there are four more instances of octagons, indicating recursive calls to FIND EXIT. If we can exit the maze, we will return from the subroutine with R1=1; if not, we will return with R1=0.
+
+85. The algorithm works as follows: In each cell, we ﬁrst ask if there is an exit from this cell to the outside world. If yes, we return the value 1 and return. If not, we ask whether we should try the cell to the north, the east, the south, or the west. In order to try a cell in any direction, clearly there must be a door to the cell in that direction. Furthermore, we want to be sure we do not end up in an inﬁnite loop where for example, there are doors that allow us to go north one cell, and from there east one cell, and from there south one cell, and from there west one cell, putting us right back where we started. To prevent situations like that from happening, we put a “breadcrumb” in each cell we visit, and we only go to a cell and JSR FIND EXIT if we have not visited that cell before.
+
+86. Thus, our algorithm:
+
+From our cell, we ask if we can exit. If yes, we are done. We exit with R1=1.
+
+If not, we put a breadcrumb in our cell. Our breadcrumb is bit [15] of the word corresponding to our current cell. We set it to 1.
+
+We ask two questions: Is there a door to the north, and have we never visited the cell to the north before? If the answer to both is yes, we set the address to the cell to the north, and invoke JSR FIND EXIT. We set the address to the cell to the north by simply subtracting 6 from the address of the current cell. Why 6? Because the cells are stored in row major order, and the number of columns in the maze is 6.
+
+If the answer to either question is no, or if going north resulted in failure, we ask: Is there a door to the east, and have we never visited that cell before? If the answer to both is yes, we set the address to the address of the cell to the east (by adding 1 to the address) and invoke JSR FIND EXIT.
+
+If going east does not get us out, we repeat the question for south, and if that does not work, then for west.
+
+If we end up with no door to the west to a cell we have not visited, or if there is a door and we haven’t visited, but it results in failure, we are done. We cannot exit the maze from our starting position. We set R1=0 and return.
+
+Figure 8.24 shows a recursive algorithm that determines if we can exit the maze, given our starting address.
+
+87. what is the defining property of the abstract data type queue? FIFO which stands for first in, first out
+
+88. what implications does this have in the context of the data structure? we need to keep track of two ends of the storage structure; a front pointer for removing elements from the front of the queue and a rear pointer for inserting into the rear of the queue.
+
+89. Figure 8.25 shows a block of six sequential memory locations that have been allocated for storing elements in the queue. The queue grows from x8000 to x8005. We arbitrarily assign the FRONT pointer to the location just before the ﬁrst element of the queue. We assign the REAR pointer to the location containing the most recent element that was added to the queue. Let’s use R3 as our FRONT pointer and R4 as our REAR pointer.
+
+90. Figure 8.25a shows a queue in which ﬁve values were entered into the queue. Since FRONT = x8001, the values 45 in memory location x8000 and 17 in x8001 must have been removed, and the front element of the queue is 23, the value contained in x8002.
+
+91. Note that the values 45 and 17 are still contained in memory locations x8000 and x8001, even though they have been removed. Like the stack, studied already, that is the nature of load instructions. When a value is removed by means of a load instruction, what is stored in the memory location is not erased. The contents of the memory location is simply copied into the destination register. However, since FRONT contains the address x8001, there is no way to load from locations x8000 and x8001 as long as locations x8000 to x8005 behave like a queue—i.e., as long as the accesses are FIFO.
+
+92. how do we remove an item of data from the front of a queue? since FRONT points to the location just in front of the ﬁrst element in the queue, we remove a value by ﬁrst incrementing FRONT and then loading the value stored at that incremented address. 
+
+93. in our example, what is the next value to be removed? 23 which is at the front of the queue, in memory location x8002. 
+
+94. what is the assembly code responsible for achieving this? 
+
+ADD R3,R3,#1
+LDR R0,R3,#0
+
+yielding the structure in Figure 8.25b. Since REAR = x8004, the last value to enter the queue is 74. The values in the queue in Figure 8.25b are 2 and 74.
+
+95. what assembly code is used to insert data into the queue? 
+
+ADD       R4,R4,#1
+STR       R0,R4,#0
+
+resulting in Figure 8.25c.
+
+96. what is wrap around? where we allow the available storage locations in a queue to wrap around. For example, suppose we want to add 20 to the queue. Since there is nothing stored in x8000 (recall 45 had been previously removed), we can store 20 in x8000. The result is shown in Figure 8.25d.
+
+97. how does wrap around work? by having the removal and insertion algorithms test the contents of FRONT and REAR for the value x8005. If we wish to insert, and REAR contains x8005, we know we have reached the end of our available storage and we must see if x8000 is available. If we wish to remove, we must ﬁrst see if FRONT contains the address x8005. If it does, the front of the queue is in x8000.
+
+98. what implication does this have on the code to remove or insert data in the queue? both routines must include a test for wrap around. the code for remove is shown below
+
+          LD       R2, LAST
+          ADD      R2, R3, R2
+          BRnp     SKIP_1
+          LD       R3,FIRST
+          BR       SKIP_2
+SKIP_1    ADD      R3,R3,#1
+SKIP_2    LDR      R0,R3,#0  ; R0 gets the front of the queue
+          RET
+LAST      .FILL    x7FFB     ; LAST contains the negative of 8005
+FIRST     .FILL    x8000
+
+99. The code for insert is similar. If REAR contains x8005, we need to set R4 to x8000 before we can insert an element at the rear of the queue. The code to insert is as follows:
+
+          LD       R2, LAST
+          ADD      R2,R4,R2
+          BRnp     SKIP_1
+          LD       R4,FIRST
+          BR       SKIP_2
+SKIP_1    ADD      R4,R4,#1
+SKIP_2    STR      R0,R4,#0  ; R0 gets the front of the queue
+          RET
+LAST      .FILL    x7FFB     ; LAST contains the negative of 8005
+FIRST     .FILL    x8000
+
+100. How Many Elements Can We Store in a Queue? Let’s look again at Figure 8.25d. There are four values in the queue: 2, 74, 10, and 20. Suppose we insert 30 and 40 at the rear of the queue, producing Figure 8.25e. Both R3 and R4 contain the same address (x8002), and the queue is full. Now suppose we start removing elements from the front of the queue. If we remove 2, which is at the front of the queue, R3 will contain the address x8003. If we remove the remaining ﬁve elements in the queue, we will have what is shown in Figure 8.25f. Note that the FRONT and REAR pointers for e and f are identi- cal, yet Figure 8.25e describes a full queue and Figure 8.25f describes an empty queue! Clearly that is not acceptable.
+
+101. how do we prevent this from happening? allow a queue to store only n-1 elements if space for n ele- ments has been allocated. That is, if inserting an nth element into the queue would cause FRONT to equal REAR, we do not allow that insertion. We declare the queue full when there are n-1 elements in the queue.
+
+102. Let’s look again at the queue in Figure 8.25d. There are four elements in the queue, from front to rear: 2, 74, 10, and 20, and two empty slots, x8001 and x8002. We can insert 30 in x8001, producing Figure 8.26a. That is, 30 is the ﬁfth element inserted in the queue. Since six words have been allocated for the queue, and we now have ﬁve elements in the queue, we declare the queue full and do not allow a sixth element to be inserted. 
+
+103. Suppose we now start removing elements from the queue until the queue is empty, as shown in Figure 8.26b. Now there is no ambiguity between a full and an empty queue since if the queue is empty, FRONT = REAR.
+
+104. testing for underflow and overflow in queues: As was the case with the stack, we can only remove an element from a queue if there are elements in the queue. Likewise, we can only insert elements in the queue if it is not full. If the queue is empty and we try to remove an element, we have an underﬂow condition. If the queue is full and we try to insert an element, we have an overﬂow condition. In both cases, if we are using a subroutine to manage the queue, we need to report success or failure to the calling program. As with the stack, we will use R5 for this purpose.
+
+105. The test for underﬂow is straightforward. We saw from Figure 8.26 b that if FRONT = REAR, the queue is empty. Our code to test for underﬂow is therefore
+
+               AND       R5,R5,#0    ;  Initialize  R5  to  0
+               NOT       R2,R3
+               ADD       R2,R2,#1    ;  R2 contains negative of R3
+               ADD       R2,R2,R4
+               BRz       UNDERFLOW
+               ; code to remove the front of the queue and return success.
+UNDERFLOW      ADD       R5,R5,#1
+               RET
+
+That is, we ﬁrst check to see if the queue is empty, that is, if R3 = R4. If so, we branch to UNDERFLOW, where we set R5 to failure, restore R1, and return. If not, carry out the code to remove the front of the queue.
+
+106. The test for overﬂow is similar. To insert an element to the back of the queue, we ﬁrst increment the REAR pointer. If that causes FRONT = REAR, then the queue already contains n-1 elements, which means it is full so we can- not insert any more elements. We decrement the REAR pointer, set R5 to 1, and return.
+
+107. We conclude our attention to queues with a subroutine that allows elements to be removed from the front or inserted into the rear of the queue, wraps around when one of the pointers reaches the last element, and returns with a report of success (R5 = 0) or failure (R5 = 1) depending on whether the access succeeds or the access fails due to an underﬂow or overﬂow condition. To make this concrete, we will tie this subroutine to the queue of Figure 8.25, where we have allocated locations x8000 to x8005 for our queue, x8000 being the FIRST location and x8005 being the LAST location.
+
+108. To insert, we ﬁrst have to make sure the queue is not full. To do that, we increment the REAR pointer (R4) and then test REAR=FRONT. If the REAR pointer was initially x8005, we increment REAR by setting it to x8000; that is, we need to wrap around. If the queue is full, we need to set REAR back to its original value, and return, reporting failure (R5 = 1). If the queue is not full, we store the item we wish to insert (which is in R0) in REAR, and return, reporting success (R5 = 0).
+
+109. To remove, we ﬁrst make sure the queue is not empty by testing whether REAR=FRONT. If REAR=FRONT, the queue is empty, so we return, reporting failure. If REAR is not the same as FRONT, the queue is not empty, so we can remove the front element. To do this, we ﬁrst test to see if FRONT=x8005. If it is, we set FRONT=x8000. If it isn’t, we increment FRONT. In both cases, we then load the value from that memory location into R0, and return, reporting success.
+
+110. Figure 8.27 shows the complete subroutine.
+
+111. ﬁnal data structure: the character string. It is a sequence of keyboard characters (letters, digits, and other symbols) is organized as a one-dimensional array of ASCII codes, usually representing a person’s name, address, or some other alphanumeric string. Figure 8.28 shows a character string representing the name of the famous late Stanford professor Bill Linvill, stored in 13 consecutive words of memory, starting at location x5000. The ASCII code for each letter of his name is stored in a separate word of memory. Since an ASCII code consists of one byte of memory, we add a leading x00 to each location. For example, x5000 contains x0042 since the ASCII code for a capital B is x42. We need 13 memory locations, one word for each of the 11 letters in his name, one word for the ASCII code x20 representing the space between his ﬁrst and last names, and ﬁnally the null character x0000 to indicate that we have reached the end of the character string. Diﬀerent alphanumeric strings require character strings of diﬀerent lengths, but that is no problem since we allocate as many words of memory as are needed, followed by the null character x0000 to indicate the end of the character string.
+
+112. Figure 8.30 is a subroutine that compares two character strings to see if they are identical.
+
+113. Another Example: A Character String Representing an “Integer.” We can also represent arbitrarily long integers by means of character strings. For example, Figure 8.31 is a character string representing the integer 79,245. Figure 8.32 is a subroutine that examines such a character string to be sure that in fact all ASCII codes represent decimal digits. If all the entries in the character string are ASCII codes of decimal digits (between x30 and x39), the subroutine returns success (R = 0). If not, the subroutine returns failure (R5 = 1).
+
+chapter 9
+
+1. up to now, we have completely ignored the details of input and output, that is how the computer actually gets information from the keyboard, and how the computer actually delivers information to the monitor. 
+
+2. what have we relied on to accomplish both tasks? the TRAP instruction (e.g., TRAP x23 for input and TRAP x21 for output) to accomplish these tasks. The TRAP instruction enables us to tell the operating system what we need done by means of a trap vector, and we trust the operating system to do it for us.
+
+3. what is the more generic term for the TRAP instruction? system call because the TRAP instruction is calling on the operating system to do something for us while allowing us to remain completely clueless as to how it gets done.
+
+4. what is this chapter going to examine? how input and output actually work in the LC-3, what happens when the user program makes a system call by invoking the TRAP instruction, and how it all works under the control of the operating system. We will start with the actual physical structures that are required to cause input and output to occur.
+
+5. But before we do that, it is useful to say a few words about the operating system and understand a few basic concepts that have not been important so far but become very important when considering what the operating system needs to do its job.
+
+6. All OS's have the same goal: to optimize the use of all the resources of the computer system while making sure that no software does harmful things to any program or data that it has no right to mess with. To better understand their job, we need to understand the notions of privilege and priority and the layout of the memory address space (i.e., the regions of memory and the purpose of each).
+
+7. what is privilege all about? all about the right to do something, such as execute a particular instruction or access a particular memory location. Not all computer programs have the right to execute all instructions. For example, if a computer system is shared among many users and the ISA contains a HALT instruction, we would not want any random program to execute that HALT instruction and stop the computer. If we did, we would have some pretty disgruntled users on our hands.
+
+8. Similarly, some memory locations are only available to the operating system. We would not want some random program to interfere with the data structures or code that is part of the operating system, which would in all likelihood cause the entire system to crash. 
+
+9. what can we do to make sure neither of these two events occur? designate every computer program as either privileged or unprivileged. We often say supervisor privilege to indicate privileged. We say a program is executing in Supervisor mode to indicate privileged, or User mode to indicate unprivileged. If a program is executing in Supervisor mode, it can execute all instructions and access all of memory. If a program is executing in User mode, it cannot. If a program executing in User mode tries to execute an instruction or access a memory location that requires being in Supervisor mode, the computer will not allow it.
+
+10. what is priority all about? about the urgency of a program to execute. Every program is assigned a priority, specifying its urgency as compared to all other programs. This allows programs of greater urgency to interrupt programs of lesser urgency.
+
+11. why are privilege and priority said to be orthogonal? they have nothing to do with each other
+
+12. a computer program can have supervisor privilege but no priority because it has lower urgency than other programs that need access to the computer system when immediately. likewise, a computer program can have user privilege and higher priority due to its pressing need to use computer resources to execute a certain task.
+
+13. each program executing on the computer has associated with it two very important registers. what are they? the program counter (PC), which you are already familiar with, and the processor status register (PSR) which is shown in figure 9.1
+
+14. what does the PSR contain? the privilege and priority assigned to a program; Bit [15] speciﬁes the privilege, where PSR[15]=0 means supervisor privilege, and PSR[15]=1 means unprivileged. Bits [10:8] specify the priority level (PL) of the program. The highest priority level is 7 (PL7), the lowest is PL0.
+
+15. what else does the PSR contain? the current values of the condition codes
+
+16. Figure 9.2 shows the layout of the LC-3 memory. You know that the LC-3 has a 16-bit address space; ergo, memory locations from x0000 to xFFFF. Locations x0000 to x2FFF are privileged memory locations. They contain the various data structures and code of the operating system. They require supervisor privilege to access. what are they referred to as? system space.
+
+18. Locations x3000 to xFDFF are unprivileged memory locations. Supervisor privilege is not required to access these memory locations. All user programs and data use this region of memory. What is this region referred to as? user space
+
+19. Addresses xFE00 to xFFFF do not correspond to memory locations at all. what does this mean for the last address of memory location? the last address of a memory location is xFDFF. 
+
+20. what are addresses xFE00 to xFFFF used for? to identify registers that take part in input and output functions and some special registers associated with the processor. For example, the PSR is assigned address xFFFC, and the processor’s Master Control Register (MCR) is assigned address xFFFE. 
+
+21. what are the set of addresses from xFE00 to xFFFF is usually referred to as? I/O page since most of the addresses are used for identifying registers that take part in input or output functions. Access to those registers requires supervisor privilege.
+
+22. Finally, note that Figure 9.2 shows two stacks, a supervisor stack in system space and a user stack in user space. The supervisor stack is controlled by the operating system and requires supervisor privilege to access. The user stack is controlled by the user program and does not require privilege to access.
+
+23. Each has a stack pointer, Supervisor Stack Pointer (SSP) and User Stack Pointer (USP), to indicate the top of the stack. Since a program can only execute in Supervisor mode or User mode at any one time, only one of the two stacks is active at any one time. Register 6 is generally used as the stack pointer (SP) for the active stack. Two registers, Saved SSP and Saved USP, are provided to save the SP not in use. When privilege changes, for example, from Supervisor mode to User mode, the SP is stored in Saved SSP, and the SP is loaded from Saved USP.
+
+24. Input and output devices (keyboards, monitors, disks, or kiosks at the shopping mall) all handle input or output data using registers that are tailored to the needs of each particular input or output device. Even the simplest I/O devices usually need at least two registers: one to hold the data being transferred between the device and the computer, and one to indicate status information about the device.
+
+25. what is an example of status information? is whether the device is available or is it still busy processing the most recent I/O task.
+
+26. An instruction that interacts with an input or output device register must identify the particular input or output device register with which it is interacting. 
+
+27. Two schemes have been used in the past for input and output to facilitate input and output functionality. what are they? some computers use special input and output instructions. Most computers prefer to use the same data movement instructions that are used to move data in and out of memory.
+
+28. The very old PDP-8 (from Digital Equipment Corporation, more than 50 years ago—1965) is an example of a computer that used special input and output instructions. The 12-bit PDP-8 instruction contained a three-bit opcode. If the opcode was 110, an I/O instruction was indicated. The remaining nine bits of the PDP-8 instruction identiﬁed which I/O device register and what operation was to be performed.
+
+29. Most computer designers prefer not to specify an additional set of instructions for dealing with input and output. They use the same data movement instructions that are used for loading and storing data between memory and the general purpose registers. For example, a load instruction (LD, LDI, or LDR), in which the source address is that of an input device register, is an input instruction. Similarly, a store instruction (ST, STI, or STR) in which the destination address is that of an output device register is an output instruction.
+
+30. what implication does this have in the way input or output device registers are specified in the data movement instructions? since programmers use the same data movement instructions that are used for memory, every input device register and every output device register must be uniquely identiﬁed in the same way that memory locations are uniquely identiﬁed. Therefore, each device register is assigned an address from the memory address space of the ISA. That is, the I/O device registers are mapped to a set of addresses that are allocated to I/O device registers rather than to memory locations.
+
+31. what is this described as? memory-mapped I/O.
+
+32. The original PDP-11 ISA had a 16-bit address space. All addresses wherein bits [15:13] = 111 were allocated to I/O device registers. That is, of the 2^(16) addresses, only 57,344 corresponded to memory locations. The remaining 2^(13) were memory-mapped I/O addresses.
+
+33. The LC-3 uses memory-mapped I/O. As discussed prior, Addresses xFE00 to xFFFF are reserved for input/output device registers. Table A.3 lists the memory-mapped addresses of the LC-3 device registers that have been assigned so far.
+
+34. Most I/O is carried out at speeds very much slower than the speed of the processor. A typist, typing on a keyboard, loads an input device register with one ASCII code every time he/she types a character. A cpu can read the contents of that device register every time it executes a load instruction, where the operand address is the memory-mapped address of that input device register.
+
+35. Many of today’s microprocessors execute instructions under the control of a clock that operates well in excess of 2 GHz. Even for a microprocessor operating at only 2 GHz, a clock cycle lasts only 0.5 nanoseconds. Suppose a processor executed one instruction at a time, and it took the processor ten clock cycles to execute the instruction that reads the input device register and stores its contents. At that rate, the processor could read the contents of the input device register once every 5 nanoseconds. Unfortunately, people do not type fast enough to keep this processor busy full-time reading characters.
+
+36. How fast would a person have to type to supply input characters to the processor at the maximum rate the processor can receive them? 2 billion characters (keystrokes) per second 
+
+37. how could this speed disparity be mitigated? For example, we could design a piece of hardware that accepts one character every 200 million cycles. This would require a typing speed of 100 words/minute, assuming words on average consisted of ﬁve letters, which is certainly doable. 
+
+38. what is the draw back of this method? it would require that the typist work in lockstep with the computer’s clock. That is not acceptable since the typing speed (even of the same typist) varies from moment to moment.
+
+39. the discussion immediately above is to highlight that I/O devices usually operate at speeds very different from that of a micro processor, and not in lock step. what do we call this characteristic? asynchronous
+
+40. Most interaction between a processor and I/O is asynchronous. To control processing in an asynchronous world requires some protocol or handshaking mechanism. So it is with our keyboard and monitor. In the case of the keyboard, we will need a one-bit status register, called a ﬂag, to indicate if someone has or has not typed a character. In the case of the monitor, we will need a one-bit status register to indicate whether or not the most recent character sent to the monitor has been displayed, and so the monitor can be given another character to display.
+
+41. These ﬂags are the simplest form of synchronization. A single ﬂag, called the ready bit, is enough to synchronize the output of the typist who can type characters at the rate of 100 words/minute with the input to a processor that can accept these characters at the rate of 200 million characters/second. Each time the typist types a character, the ready bit is set to 1. Each time the computer reads a character, it clears the ready bit. By examining the ready bit before reading a character, the computer can tell whether it has already read the last character typed. If the ready bit is clear, no characters have been typed since the last time the computer read a character, and so no additional read would take place. When the computer detects that the ready bit is set, it could only have been caused by a new character being typed, so the computer would know to again read a character.
+
+42. The single ready bit provides enough handshaking to ensure that the asyn- chronous transfer of information between the typist and the microprocessor can be carried out accurately.
+
+43. If the typist could type at a constant speed, and we did have a piece of hard- ware that would accept typed characters at precise intervals (e.g., one character every 200 million cycles), then we would not need the ready bit. The computer would simply know, after 200 million cycles of doing other stuﬀ, that the typist had typed exactly one more character, and the computer would read that charac- ter. In this hypothetical situation, the typist would be typing in lockstep with the processor, and no additional synchronization would be needed. We would say the computer and typist were operating synchronously. That is, the input activity was synchronous.
+
+44. describe the difference between interrupt-driven vs. polling architectures: this is about who controls the interaction between the processor, which is computing, and the typist, who is typing. The two are separate entities; where each is doing their own activity. However, they need to interact i.e. the data that is typed has to be transimitted to the cpu. Does the processor do its own thing until being interrupted by an announcement from the keyboard, “Hey, a key has been struck. The ASCII code is in the input device register. You need to read it.” This is called interrupt-driven I/O, where the keyboard controls the interaction. Or, does the processor control the interaction, specifically by interrogating (usually, again and again) the ready bit until it (the processor) detects that the ready bit is set. At that point, the processor knows it is time to read the device register. This second type of interaction when the processor is in charge is called polling, since the ready bit is polled by the processor, asking if any key has been struck.
+
+45. what two things do we need in order to handle input character from the keyboard? a data register that contains the character to be input and a synchronisation mechanism to let the processor know that input has occurred. the synchronisation mechanism is contained in the status register associated with the keyboard.
+
+46. what are these two registers called? keyboard data register (KBDR) and the keyboard status register (KBSR). They are assigned addresses from the memory address space. As shown in Table A.3, address xFE02 is assigned to the KBDR; address xFE00 is assigned to the KBSR.
+
+49. Figure 9.3 shows the two device registers needed by the keyboard. Even though a character needs only 8 bits and the synchronization mechanism needs only 1 bit, it is easier to assign 16 bits (like all memory addresses in the LC-3) to each. In the case of KBDR, bits [7:0] are used for the data, and bits [15:8] contain x00. In the case of KBSR, bit [15] contains the synchronization mechanism, that is, the ready bit.
+
+50. how does the input service routine for the keyboard work? KBSR[15] controls the synchronization of the slow keyboard and the fast processor. When a key on the keyboard is struck, the ASCII code for that key is loaded into KBDR[7:0], and the electronic circuits associated with the keyboard automatically set KBSR[15] to 1. When the LC-3 reads KBDR, the electronic circuits associated with the keyboard automatically clear KBSR[15], allowing another key to be struck. 
+
+51. If KBSR[15] = 1, the ASCII code corresponding to the last key struck has not yet been read, and so the keyboard is disabled; that is, no key can be struck until the last key is read.
+
+52. what happens if input/output from the keyboard is controlled by the processor via polling? then a program can repeatedly test KBSR[15] until it notes that the bit is set. At that point, the processor can load the ASCII code contained in KBDR into one of the LC-3 registers. Since the processor only loads the ASCII code if KBSR[15] is 1, there is no danger of reading a single typed character multiple times. Furthermore, since the keyboard is disabled until the previous code is read, there is no danger of the processor missing characters that were typed. In this way, KBSR[15] provides the mechanism to guarantee that each key typed will be loaded exactly once.
+
+53. The following input routine loads R0 with the ASCII code that has been entered through the keyboard and then moves on to the NEXT TASK in the program.
+
+START     LDI      R1, A           ; Test for bit indicating input has occurred
+          BRzp     START           ; if negative value i.e. bit 15 is on, then proceed otherwise repeat check
+          LDI      R0, B
+          BRnzp    NEXT_TASK       
+A         .FILL    xFE00           ; Address of KBSR
+B         .FILL    xFE02           ; Address of KBDR
+
+54. As long as KBSR[15] is 0, no key has been struck since the last time the processor read the data register. Lines 01 and 02 comprise a loop that tests bit [15] of KBSR. Note the use of the LDI instruction, which loads R1 with the contents of xFE00, the memory-mapped address of KBSR. If the ready bit, bit [15], is clear, BRzp will branch to START and another iteration of the loop. When someone strikes a key, KBDR will be loaded with the ASCII code of that key, and the ready bit of KBSR will be set. This will cause the branch to fall through, and the instruction at line 03 will be executed. Again, note the use of the LDI instruction, which this time loads R0 with the contents of xFE02, the memory-mapped address of KBDR. The input routine is now done, so the program branches unconditionally to its NEXT TASK.
+
+55. Figure 9.4 shows the additional data path required to implement memory-mapped input. You are already familiar, from Chapter 5, with the data path required to carry out the EXECUTE phase of the load instructions. Essentially three steps are required:
+
+a. The MAR is loaded with the address of the memory location to be read.
+b. Memory is read, resulting in MDR being loaded with the contents at the speciﬁed memory location.
+c. The destination register (DR) is loaded with the contents of MDR.
+
+56. what steps are required for memory-mapped input to occur? the same steps are carried out, except instead of MAR being loaded with the address of a memory location, MAR is loaded with the address of a device register. Instead of the address control logic enabling memory to read, the address control logic selects the corresponding device register to provide input to the MDR.
+
+57. what of output to the monitor, how does it work? in a way very similar to input, with DDR and DSR replacing the roles of KBDR and KBSR, respectively. DDR stands for Display Data Register, which drives the monitor display. DSR stands for Display Status Register. In the LC-3, DDR is assigned address xFE06. DSR is assigned address xFE04.
+
+58. Figure 9.5 shows the two device registers needed by the monitor. As is the case with input, even though an output character needs only 8 bits and the synchronization mechanism needs only one bit, it is easier to assign 16 bits (like all memory addresses in the LC-3) to each output device register. In the case of DDR, bits [7:0] are used for data, and bits [15:8] contain x00. In the case of DSR, bit [15] contains the synchronization mechanism, that is, the ready bit. 
+
+59. DSR[15] controls the synchronization of the fast processor and the slow monitor display. When the LC-3 transfers an ASCII code to DDR[7:0] for outputting, the electronics of the monitor automatically clear DSR[15] as the processing of the contents of DDR[7:0] begins. When the monitor ﬁnishes processing the character on the screen, it (the monitor) automatically sets DSR[15]. This is a signal to the processor that it (the processor) can transfer another ASCII code to DDR for outputting. As long as DSR[15] is clear, the monitor is still processing the previous character, so the monitor is disabled as far as additional output from the processor is concerned.
+
+60. how would things work if output is controlled by the processor via polling? a program can repeatedly test DSR[15] until it notes that the bit is set, indicating that it is OK to write a character to the screen. At that point, the processor can store the ASCII code for the character it wishes to write into DDR[7:0], setting up the transfer of that character to the monitor’s display.
+
+61. The following routine causes the ASCII code contained in R0 to be displayed on the monitor:
+
+START     LDI      R1, A           ; Test for bit indicating output has occurred successfully
+          BRzp     START           ; if negative value i.e. bit 15 is on, then proceed otherwise repeat check
+          STI      R0, B
+          BRnzp    NEXT_TASK       
+A         .FILL    xFE04           ; Address of DSR
+B         .FILL    xFE06           ; Address of DDR
+
+62. lines 01 and 02 repeatedly poll DSR[15] to see if the monitor electronics is ﬁnished with the last character shipped by the processor. Note the use of LDI and the indirect access to xFE04, the memory-mapped address of DSR. As long as DSR[15] is clear, the monitor electronics is still processing this character, and BRzp branches to START for another iteration of the loop. When the monitor electronics ﬁnishes with the last character shipped by the processor, it automatically sets DSR[15] to 1, which causes the branch to fall through and the instruction at line 03 to be executed. Note the use of the STI instruction, which stores R0 into xFE06, the memory-mapped address of DDR. The write to DDR also clears DSR[15], disabling for the moment DDR from further output. The monitor electronics takes over and writes the character to the screen. Since the output routine is now done, the program unconditionally branches (line 04) to its NEXT TASK.

@@ -1,0 +1,372 @@
+PySpark is the Python API for Apache Spark, a distributed computing system designed for handling large-scale data processing. Its ability to perform computations across multiple nodes makes it an ideal choice for Big Data scenarios, where data sets can reach terabytes or even petabytes in size. PySpark allows data scientists and analysts to harness the power of distributed computing, scaling up their workflows and processing capabilities significantly.
+
+In contrast, Pandas is a powerful library tailored for data manipulation and analysis in Python, primarily used for handling structured data. It provides rich functionality for data cleaning, transformation, aggregation, and visualization, making it particularly suited for smaller data sets typically fitting into memory. Pandas excels at operations requiring quick turnaround times for data analysis and exploration, facilitating tasks such as data wrangling and exploratory data analysis.
+
+To illustrate the strengths of both PySpark and Pandas, we will utilize a sample COVID-19 data set containing daily cases, deaths, and vaccinations across various continents.
+
+Objectives
+
+Understand PySpark and Pandas: Explain the core functionalities and use cases of PySpark for big data processing and Pandas for data manipulation.
+
+Set up the environment: Install and configure PySpark and Pandas to work together in a Python environment.
+
+Load and explore data: Import data into Pandas and PySpark DataFrames and perform basic data exploration.
+
+Convert between DataFrames: Convert a Pandas DataFrame to a Spark DataFrame for distributed processing.
+
+Perform data manipulation: Create new columns, filter data, and perform aggregations using PySpark.
+
+Utilize SQL queries: Use Spark SQL for querying data and leveraging user-defined functions (UDFs).
+
+1. PySpark overview
+
+PySpark is the Python API for Apache Spark, designed for large-scale data processing and analysis. It offers tools for working with RDDs and DataFrames, enabling efficient, fault-tolerant distributed computing.
+
+Key features
+
+Distributed computing: Handles data across multiple nodes in a cluster.
+High performance: Outperforms traditional frameworks in speed.
+Big data handling: Manages data sets larger than a single machine's memory.
+Python integration: Compatible with Python libraries like Pandas and NumPy.
+
+Use cases
+
+Large-scale data processing: Ideal for processing large volumes of data that exceed the capacity of a single machine.
+Data analysis: Useful for complex data manipulations and analysis using distributed computing.
+
+Strengths
+
+High-speed data processing.
+Fault-tolerant and scalable.
+
+Limitations
+
+Complex setup and configuration.
+Steeper learning curve compared to some data processing tools.
+
+2. Understanding Pandas
+
+Overview
+
+Pandas is a Python library designed for data manipulation and analysis. It provides two primary data structures: Series and DataFrame, which facilitate handling and organizing structured data.
+
+Key features
+
+Data structures: Series for one-dimensional data and DataFrame for two-dimensional data.
+Data I/O: Reads and writes data in various formats such as CSV, Excel, and SQL.
+Data cleaning: Functions for handling missing or duplicate data.
+Data analysis: Includes statistical functions for detailed data analysis.
+
+Use cases
+
+Data manipulation: Efficient handling of structured data.
+Data analysis: Comprehensive analysis and transformation of data sets.
+
+Strengths
+
+User-friendly API for data manipulation.
+Extensive support for various data formats.
+
+Limitations
+
+Limited scalability for extremely large datasets compared to distributed frameworks.
+
+3. Setting up the environment
+
+Installation
+
+First, let's install the necessary libraries if they are not already installed.
+
+!pip install pyspark
+
+!pip install findspark
+
+!pip install pandas
+
+4. Initializing a Spark session
+
+A Spark session is crucial for working with PySpark. It enables DataFrame creation, data loading, and various operations.
+
+Importing libraries
+
+findspark is used to locate the Spark installation.
+pandas is imported for data manipulation.
+
+Creating a Spark session
+
+SparkSession.builder.appName("COVID-19 Data Analysis").getOrCreate() initializes a Spark session with the specified application name.
+
+Checking Spark session
+
+The code checks if the Spark session is active and prints an appropriate message.
+
+import findspark  # This helps us find and use Apache Spark
+findspark.init()  # Initialize findspark to locate Spark
+from pyspark.sql import SparkSession  
+from pyspark.sql.types import StructType, StructField, StringType, IntegerType, LongType, DateType
+import pandas as pd  
+# Initialize a Spark Session
+spark = SparkSession \
+    .builder \
+    .appName("COVID-19 Data Analysis") \
+    .config("spark.sql.execution.arrow.pyspark.enabled", "true") \
+    .getOrCreate()
+
+# Check if the Spark Session is active
+if 'spark' in locals() and isinstance(spark, SparkSession):
+    print("SparkSession is active and ready to use.")
+else:
+    print("SparkSession is not active. Please create a SparkSession.")
+
+5. Importing data into Pandas from various sources
+
+Let's read the COVID-19 data from the provided URL.
+
+# Read the COVID-19 data from the provided URL
+vaccination_data = pd.read_csv('https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/KpHDlIzdtR63BdTofl1mOg/owid-covid-latest.csv')
+
+6. Displaying the first five records
+
+To retrieve and print the first five records
+
+vaccination_data.head() retrieves the first five rows of the DataFrame vaccination_data.This gives us a quick look at the data contained within the data set.
+The print function is used to display a message indicating what is being shown, followed by the actual data.
+
+Selecting specific columns:
+
+Let's define a list called columns_to_display, which contains the names of the columns as : ['continent', 'total_cases', 'total_deaths', 'total_vaccinations', 'population'].
+By using vaccination_data[columns_to_display].head(), let's filter the DataFrame to only show the specified columns and again display the first five records of this subset.
+The continent column is explicitly converted to string, while the numeric columns (total cases, total deaths, total vaccinations, population) are filled with zeros for NaN values and then converted to int64 (which is compatible with LongType in Spark).
+The use of fillna(0) ensures that NaN values do not cause type issues during the Spark DataFrame creation.
+
+print("Displaying the first 5 records of the vaccination data:")
+columns_to_display = ['continent', 'total_cases', 'total_deaths', 'total_vaccinations', 'population']
+# Show the first 5 records
+print(vaccination_data[columns_to_display].head())
+
+7. Converting the Pandas DataFrame to a Spark DataFrame
+
+Let's convert the Pandas DataFrame, which contains our COVID-19 vaccination data, into a Spark DataFrame. This conversion is crucial as it allows us to utilize Spark's distributed computing capabilities, enabling us to handle larger datasets and perform operations in a more efficient manner.
+
+Defining the schema:
+
+StructType:
+
+A class that defines a structure for a DataFrame.
+StructField:
+
+Represents a single field in the schema.
+Parameters:
+Field name: The name of the field.
+Data type: The type of data for the field.
+Nullable: A boolean indicating whether null values are allowed.
+Data types:
+
+StringType(): Used for text fields.
+LongType(): Used for numerical fields.
+
+Data type conversion:
+
+astype(str):
+
+Used to convert the 'continent' column to string type.
+fillna(0):
+
+Replaces any NaN values with 0, ensuring that the numerical fields do not contain any missing data.
+astype('int64'):
+
+Converts the columns from potentially mixed types to 64-bit integers for consistent numerical representation.
+
+Creating a Spark DataFrame:
+
+createDataFrame:
+The createDataFrame method of the Spark session (spark) is called with vaccination_data (the Pandas DataFrame) as its argument.
+Parameters:
+It takes as input a subset of the pandas DataFrame that corresponds to the fields defined in the schema, accessed using schema.fieldNames().
+This function automatically converts the Pandas DataFrame into a Spark DataFrame, which is designed to handle larger data sets across a distributed environment.
+
+The resulting spark_df will have the defined schema, which ensures consistency and compatibility with Spark's data processing capabilities.
+
+Storing the result:
+
+# Convert to Spark DataFrame directly
+# Define the schema
+schema = StructType([
+    StructField("continent", StringType(), True),
+    StructField("total_cases", LongType(), True),
+    StructField("total_deaths", LongType(), True),
+    StructField("total_vaccinations", LongType(), True),
+    StructField("population", LongType(), True)
+])
+
+# Convert the columns to the appropriate data types
+vaccination_data['continent'] = vaccination_data['continent'].astype(str)  # Ensures continent is a string
+vaccination_data['total_cases'] = vaccination_data['total_cases'].fillna(0).astype('int64')  # Fill NaNs and convert to int
+vaccination_data['total_deaths'] = vaccination_data['total_deaths'].fillna(0).astype('int64')  # Fill NaNs and convert to int
+vaccination_data['total_vaccinations'] = vaccination_data['total_vaccinations'].fillna(0).astype('int64')  # Fill NaNs and convert to int
+vaccination_data['population'] = vaccination_data['population'].fillna(0).astype('int64')  # Fill NaNs and convert to int
+
+spark_df = spark.createDataFrame(vaccination_data[schema.fieldNames()])  # Use only the specified fields
+# Show the Spark DataFrame
+spark_df.show()
+
+8. Checking the structure of the Spark DataFrame
+
+In this section, Let's examine the structure of the Spark DataFrame that we created from the Pandas DataFrame. Understanding the schema of a DataFrame is crucial as it provides insight into the data types of each column and helps ensure that the data is organized correctly for analysis.
+
+Displaying the schema:
+
+The method spark_df.printSchema() is called to output the structure of the Spark DataFrame.
+This method prints the names of the columns along with their data types (e.g., StringType, IntegerType, DoubleType, etc.), providing a clear view of how the data is organized.
+
+print("Schema of the Spark DataFrame:")
+spark_df.printSchema()
+# Print the structure of the DataFrame (columns and types)
+
+9. Basic data exploration
+
+In this section, let's perform basic data exploration on the Spark DataFrame. This step is essential for understanding the data set better, allowing us to gain insights and identify any patterns or anomalies. Let's demonstrate how to view specific contents of the DataFrame, select certain columns, and filter records based on conditions.
+
+9.1 Viewing DataFrame contents
+
+To view the contents in the DataFrame, use the following code:
+
+# List the names of the columns you want to display
+columns_to_display = ['continent', 'total_cases', 'total_deaths', 'total_vaccinations', 'population']
+# Display the first 5 records of the specified columns
+spark_df.select(columns_to_display).show(5)
+
+9.2 Picking specific columns
+
+To display only certain columns, use the following code:
+
+print("Displaying the 'continent' and 'total_cases' columns:")
+# Show only the 'continent' and 'total_cases' columns
+spark_df.select('continent', 'total_cases').show(5)
+
+9.3 Sifting Through Data
+
+To filter records based on a specific condition, use the following code:
+
+print("Filtering records where 'total_cases' is greater than 1,000,000:")
+ # Show records with more than 1 million total cases
+spark_df.filter(spark_df['total_cases'] > 1000000).show(5) 
+
+10. Working with columns
+
+In this section, let's create a new column called death_percentage, which calculates the death rate during the COVID-19 pandemic. This calculation is based on the total_deaths (the count of deaths) and the population (the total population) columns in our Spark DataFrame. This new metric will provide valuable insight into the impact of COVID-19 in different regions.
+
+Let's import the functions module from pyspark.sql as F, which contains built-in functions for DataFrame operations.
+
+Calculating the death percentage:
+
+Let's create a new DataFrame spark_df_with_percentage by using the withColumn() method to add a new column called death_percentage.
+The formula (spark_df['total_deaths'] / spark_df['population']) * 100 computes the death percentage by dividing the total deaths by the total population and multiplying by 100.
+
+Formatting the percentage:
+
+Let's update the death_percentage column to format its values to two decimal places using F.format_number(), and concatenate a percentage symbol using F.concat() and F.lit('%').
+This makes the death percentage easier to read and interpret.
+
+Selecting relevant columns:
+
+Let's define a list columns_to_display that includes 'total_deaths', 'population', 'death_percentage', 'continent', 'total_vaccinations', and 'total_cases'.
+Finally, let's display the first five records of the modified DataFrame with the new column by calling spark_df_with_percentage.select(columns_to_display).show(5).
+
+from pyspark.sql import functions as F
+
+spark_df_with_percentage = spark_df.withColumn(
+    'death_percentage', 
+    (spark_df['total_deaths'] / spark_df['population']) * 100
+)
+spark_df_with_percentage = spark_df_with_percentage.withColumn(
+    'death_percentage',
+    F.concat(
+        # Format to 2 decimal places
+        F.format_number(spark_df_with_percentage['death_percentage'], 2), 
+        # Append the percentage symbol 
+        F.lit('%')  
+    )
+)
+columns_to_display = ['total_deaths', 'population', 'death_percentage', 'continent', 'total_vaccinations', 'total_cases']
+spark_df_with_percentage.select(columns_to_display).show(5)
+
+11. Grouping and summarizing
+
+Let's calculate the total number of deaths per continent using the data in our Spark DataFrame. Grouping and summarizing data is a crucial aspect of data analysis, as it allows us to aggregate information and identify trends across different categories.
+
+Grouping the data
+
+The spark_df.groupby(['continent']) method groups the data by the continent column. This means that all records associated with each continent will be aggregated together.
+
+Aggregating the deaths
+
+The agg({"total_deaths": "SUM"}) function is used to specify the aggregation operation. In this case, we want to calculate the sum of the total_deaths for each continent. This operation will create a new DataFrame where each continent is listed alongside the total number of deaths attributed to it.
+
+Displaying the results
+
+The show() method is called to display the results of the aggregation. This will output the total number of deaths for each continent in a tabular format.
+
+print("Calculating the total deaths per continent:")
+# Group by continent and sum total death rates
+spark_df.groupby(['continent']).agg({"total_deaths": "SUM"}).show()  
+
+12. Exploring user-defined functions (UDFs)
+
+UDFs in PySpark allow us to create custom functions that can be applied to individual columns within a DataFrame. This feature provides increased flexibility and customization in data processing, enabling us to define specific transformations or calculations that are not available through built-in functions. In this section, let's define a UDF to convert total deaths in the dataset.
+
+Importing pandas_udf
+
+The pandas_udf function is imported from pyspark.sql.functions. This decorator allows us to define a UDF that operates on Pandas Series
+
+Defining the UDF
+
+This function convert_total_deaths() takes in a parameter total_deaths and returns double its value. You can replace the logic with any transformation you want to apply to the column data.
+
+Registering the UDF
+
+The line spark.udf.register("convert_total_deaths", convert_total_deaths, IntegerType()) registers the UDF with Spark indicating that the function returns an integer, allowing us to use it in Spark SQL queries and DataFrame operations.
+
+from pyspark.sql import SparkSession
+from pyspark.sql.types import IntegerType
+# Function definition
+def convert_total_deaths(total_deaths):
+    return total_deaths * 2
+# Here you can define any transformation you want
+# Register the UDF with Spark
+spark.udf.register("convert_total_deaths", convert_total_deaths, IntegerType())
+
+13. Using Spark SQL
+
+Spark SQL enables us to execute SQL queries directly on DataFrames.
+
+# Drop the existing temporary view if it exists
+spark.sql("DROP VIEW IF EXISTS data_v")
+
+# Create a new temporary view
+spark_df.createTempView('data_v')
+
+# Execute the SQL query using the UDF
+spark.sql('SELECT continent, total_deaths, convert_total_deaths(total_deaths) as converted_total_deaths FROM data_v').show()
+
+14. Running SQL queries
+
+In this step, let's execute SQL queries to retrieve specific records from the temporary view which was created earlier. Let's demonstrate how to display all records from the data table and filter those records based on vaccination totals. This capability allows for efficient data exploration and analysis using SQL syntax.
+
+Displaying All Records
+
+The first query retrieves all records from the temporary view data using the SQL command SELECT * FROM data_v. The show() method is called to display the results in a tabular format. This is useful for getting an overview of the entire dataset.
+
+spark.sql('SELECT * FROM data_v').show()
+
+Filtering records
+
+The second query is designed to filter the data set to show only those continents where the total vaccinations exceed 1 million. The SQL command used here is SELECT continent FROM data_v WHERE total_vaccinations > 1000000. The show() method is again used to display the results, specifically listing the continents that meet the filter criteria.
+
+print("Displaying continent with total vaccinated more than 1 million:")
+# SQL filtering
+spark.sql("SELECT continent FROM data_v WHERE total_vaccinations > 1000000").show()
+
+Conclusion
+
+This hands-on-lab is designed to help you understand the core functionalities of robust tools for data manipulation and analysis. By mastering these tools, you gain the ability to choose the right one for your data processing needs, whether working with large data sets requiring distributed computing or smaller data sets that lend themselves to quick manipulation in memory.

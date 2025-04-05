@@ -1,4 +1,4 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2821
+{\rtf1\ansi\ansicpg1252\cocoartf2822
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;}
 {\colortbl;\red255\green255\blue255;}
 {\*\expandedcolortbl;;}
@@ -8,7 +8,7 @@
 {\list\listtemplateid4\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid301\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid4}
 {\list\listtemplateid5\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid401\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid5}}
 {\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}{\listoverride\listid4\listoverridecount0\ls4}{\listoverride\listid5\listoverridecount0\ls5}}
-\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh16960\viewkind0
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh17120\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f0\fs48 \cf0 1. AI foundations layer. Google cloud infrastructure can be thought of as being comprised of 3 layers\
@@ -172,7 +172,7 @@ Challenges faced on ML projects:\
 {\listtext	\uc0\u8226 	}many ML tools require advanced coding skills\
 {\listtext	\uc0\u8226 	}some of the tooling has no unified workflow\
 {\listtext	\uc0\u8226 	}choosing the right tool can be difficult \
-{\listtext	\uc0\u8226 	}model configuration is challenging as attention is taken away by I.e. tooling issues\
+{\listtext	\uc0\u8226 	}model configuration is challenging as attention is taken away by e.g. tooling issues\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 \cf0 \
 Vertex AI solves all of the above challenges.\
@@ -275,7 +275,7 @@ model deployment; here you have 2 options\
 }¬}\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \ls4\ilvl0\cf0 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls4\ilvl0\cf0 \kerning1\expnd0\expndtw0  2. \expnd0\expndtw0\kerning0
+\ls4\ilvl0\cf0 \kerning1\expnd0\expndtw0 {\listtext	3.	} 2. \expnd0\expndtw0\kerning0
 model monitoring\
 \pard\tx720\pardeftab720\partightenfactor0
 \cf0 {{\NeXTGraphic 2__#$!@%!#__Pasted Graphic 10.png \width28700 \height8200 \appleattachmentpadding0 \appleembedtype0 \appleaqc
@@ -320,7 +320,7 @@ What is the back bone of MLops on GCP? Vertex ai pipelines which supports both k
 }¬} \
 \pard\pardeftab720\partightenfactor0
 \cf0 \
-As seen above the process runs in two different environment: test environment and production environment.\
+As seen above the process runs in two different environments: test environment and production environment.\
 \
 Each of the above processes can be a pipeline component which is a self contained set of code that performs one task of a workflow.\
 \
@@ -509,8 +509,7 @@ Are there ways to enhance the quality of responses beyond just prompt design? Ye
 \
 Model garden is a model library to search, discover, and interact with google\'92s and open source gen AI models.\
 \
-When you want to build, train, and fine tune gen AI models in a comprehensive environment supported by both UI and coding, vertex AI studio can be a good start point. However, if you want to quickly find and apply the right model \
-to solve a problem, model garden is a good choice.\
+When you want to build, train, and fine tune gen AI models in a comprehensive environment supported by both UI and coding, vertex AI studio can be a good start point. However, if you want to quickly find and apply the right model to solve a problem, model garden is a good choice.\
 \
 \pard\pardeftab720\partightenfactor0
 \cf0 {{\NeXTGraphic Pasted Graphic 24.png \width34080 \height15800 \appleattachmentpadding0 \appleembedtype0 \appleaqc
@@ -547,9 +546,58 @@ To find a model that best suits your use case then you can use:\
 \
 \pard\pardeftab720\partightenfactor0
 \cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic.png \width33080 \height19340 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+Build, train, and deploy ML models with Keras on google cloud (second course)\
+\
+Tensor flow is an open source library for numerical computation that uses directed graphs. It is used for all kinds of GPU computing, not only used for ML purposes. You can write your code in a high level language like python and have it be executed in a very fast manner.\
+\
+How does it work? You create a directed graph (a dag) to represent the computation that you want to do. In the image you see below, the nodes (e.g. the light green rectangles) represent mathematical operations. Connecting the shapes are the edges, which are the input and output of the mathematical operations. Edges represent arrays of data flowing towards the output.\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic.png \width23560 \height18180 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+What is a tensor?\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 2.png \width32280 \height14400 \appleattachmentpadding0 \appleembedtype0 \appleaqc
 }¬}\
 \
 \
-\pard\pardeftab720\partightenfactor0
-\cf0 \
+A scalar is the simplest piece of data that you can have. It is a number like 3 or 5. It is 0 dimensional or rank 0. A one dimensional array is called a vector. A 2 dimensional array is a matrix.\
+\
+Why does tensorflow use directed graphs to represent computation? Due to portability. Directed graphs are a language independent representation of the code in your model. You write the code in a high level language like python and have it execute on different types of hardware, e.g. cpus or gpus, by the tensor flow execution engine. The tensor flow execution (just like the JVM) is very efficient and is targeted towards the underlying hardware capabilities.\
+\
+Tensor flow api hierarchy: the lowest layer of abstraction is the layer implemented to target the different hardware platforms. The next level above is the tensor flow C++ api which abstracts from the underlying hardware. The next level above is the core python api which contains most of the mathematical functionality used. The next level is a set of python modules that are a high level of representation of useful neural network components. These modules provide components that are useful in building custom neural network models. The next level above consists of high level APIs for distributed training, data pre processing etc\
+\
+{{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 4.png \width34320 \height13820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+\
+Understanding the shape of your data is the first essential part of a machine learning flow. \
+\
+{{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 5.png \width33040 \height16980 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}  \
+\
+\
+{{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 6.png \width25200 \height7900 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+{{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 7.png \width17440 \height15920 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+{{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 8.png \width17440 \height17280 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+{{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 9.png \width30920 \height10020 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+The variable constructor requires an initial value for the variable, which can be a tensor of any shape and type. This initial type defines the shape and type of the variable. After construction, the type and shape of the variable are fixed. The value can be changed using one of the assign methods.\
+\
+{{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 10.png \width30860 \height17340 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
 }
