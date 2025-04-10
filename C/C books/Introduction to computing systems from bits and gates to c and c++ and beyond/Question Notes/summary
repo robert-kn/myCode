@@ -1749,7 +1749,7 @@ chapter 9
 
 11. why are privilege and priority said to be orthogonal? they have nothing to do with each other
 
-12. a computer program can have supervisor privilege but no priority because it has lower urgency than other programs that need access to the computer system when immediately. likewise, a computer program can have user privilege and higher priority due to its pressing need to use computer resources to execute a certain task.
+12. a computer program can have supervisor privilege but low priority because it has lower urgency than other programs that need access to the computer system immediately. likewise, a computer program can have user privilege and higher priority due to its pressing need to use computer resources to execute a task.
 
 13. each program executing on the computer has associated with it two very important registers. what are they? the program counter (PC), which you are already familiar with, and the processor status register (PSR) which is shown in figure 9.1
 
@@ -1777,7 +1777,7 @@ chapter 9
 
 26. An instruction that interacts with an input or output device register must identify the particular input or output device register with which it is interacting. 
 
-27. Two schemes have been used in the past for input and output to facilitate input and output functionality. what are they? some computers use special input and output instructions. Most computers prefer to use the same data movement instructions that are used to move data in and out of memory.
+27. Two schemes have been used in the past to facilitate input and output functionality. what are they? some computers use special input and output instructions. Most computers prefer to use the same data movement instructions that are used to move data in and out of memory.
 
 28. The very old PDP-8 (from Digital Equipment Corporation, more than 50 years ago—1965) is an example of a computer that used special input and output instructions. The 12-bit PDP-8 instruction contained a three-bit opcode. If the opcode was 110, an I/O instruction was indicated. The remaining nine bits of the PDP-8 instruction identiﬁed which I/O device register and what operation was to be performed.
 
@@ -1795,7 +1795,7 @@ chapter 9
 
 35. Many of today’s microprocessors execute instructions under the control of a clock that operates well in excess of 2 GHz. Even for a microprocessor operating at only 2 GHz, a clock cycle lasts only 0.5 nanoseconds. Suppose a processor executed one instruction at a time, and it took the processor ten clock cycles to execute the instruction that reads the input device register and stores its contents. At that rate, the processor could read the contents of the input device register once every 5 nanoseconds. Unfortunately, people do not type fast enough to keep this processor busy full-time reading characters.
 
-36. How fast would a person have to type to supply input characters to the processor at the maximum rate the processor can receive them? 2 billion characters (keystrokes) per second 
+36. How fast would a person have to type to supply input characters to the processor at the maximum rate the processor can receive them? 2 hundred million characters (keystrokes) per second 
 
 37. how could this speed disparity be mitigated? For example, we could design a piece of hardware that accepts one character every 200 million cycles. This would require a typing speed of 100 words/minute, assuming words on average consisted of ﬁve letters, which is certainly doable. 
 
@@ -1807,9 +1807,9 @@ chapter 9
 
 41. These ﬂags are the simplest form of synchronization. A single ﬂag, called the ready bit, is enough to synchronize the output of the typist who can type characters at the rate of 100 words/minute with the input to a processor that can accept these characters at the rate of 200 million characters/second. Each time the typist types a character, the ready bit is set to 1. Each time the computer reads a character, it clears the ready bit. By examining the ready bit before reading a character, the computer can tell whether it has already read the last character typed. If the ready bit is clear, no characters have been typed since the last time the computer read a character, and so no additional read would take place. When the computer detects that the ready bit is set, it could only have been caused by a new character being typed, so the computer would know to again read a character.
 
-42. The single ready bit provides enough handshaking to ensure that the asyn- chronous transfer of information between the typist and the microprocessor can be carried out accurately.
+42. The single ready bit provides enough handshaking to ensure that the asynchronous transfer of information between the typist and the microprocessor can be carried out accurately.
 
-43. If the typist could type at a constant speed, and we did have a piece of hard- ware that would accept typed characters at precise intervals (e.g., one character every 200 million cycles), then we would not need the ready bit. The computer would simply know, after 200 million cycles of doing other stuﬀ, that the typist had typed exactly one more character, and the computer would read that charac- ter. In this hypothetical situation, the typist would be typing in lockstep with the processor, and no additional synchronization would be needed. We would say the computer and typist were operating synchronously. That is, the input activity was synchronous.
+43. If the typist could type at a constant speed, and we did have a piece of hardware that would accept typed characters at precise intervals (e.g., one character every 200 million cycles), then we would not need the ready bit. The computer would simply know, after 200 million cycles of doing other stuﬀ, that the typist had typed exactly one more character, and the computer would read that character. In this hypothetical situation, the typist would be typing in lockstep with the processor, and no additional synchronization would be needed. We would say the computer and typist were operating synchronously. That is, the input activity was synchronous.
 
 44. describe the difference between interrupt-driven vs. polling architectures: this is about who controls the interaction between the processor, which is computing, and the typist, who is typing. The two are separate entities; where each is doing their own activity. However, they need to interact i.e. the data that is typed has to be transimitted to the cpu. Does the processor do its own thing until being interrupted by an announcement from the keyboard, “Hey, a key has been struck. The ASCII code is in the input device register. You need to read it.” This is called interrupt-driven I/O, where the keyboard controls the interaction. Or, does the processor control the interaction, specifically by interrogating (usually, again and again) the ready bit until it (the processor) detects that the ready bit is set. At that point, the processor knows it is time to read the device register. This second type of interaction when the processor is in charge is called polling, since the ready bit is polled by the processor, asking if any key has been struck.
 
@@ -1852,7 +1852,7 @@ c. The destination register (DR) is loaded with the contents of MDR.
 
 60. how would things work if output is controlled by the processor via polling? a program can repeatedly test DSR[15] until it notes that the bit is set, indicating that it is OK to write a character to the screen. At that point, the processor can store the ASCII code for the character it wishes to write into DDR[7:0], setting up the transfer of that character to the monitor’s display.
 
-61. The following routine causes the ASCII code contained in R0 to be displayed on the monitor:
+61. Basic Output Service Routine: the following routine causes the ASCII code contained in R0 to be displayed on the monitor:
 
 START     LDI      R1, A           ; Test for bit indicating output has occurred successfully
           BRzp     START           ; if negative value i.e. bit 15 is on, then proceed otherwise repeat check
@@ -1861,4 +1861,266 @@ START     LDI      R1, A           ; Test for bit indicating output has occurred
 A         .FILL    xFE04           ; Address of DSR
 B         .FILL    xFE06           ; Address of DDR
 
-62. lines 01 and 02 repeatedly poll DSR[15] to see if the monitor electronics is ﬁnished with the last character shipped by the processor. Note the use of LDI and the indirect access to xFE04, the memory-mapped address of DSR. As long as DSR[15] is clear, the monitor electronics is still processing this character, and BRzp branches to START for another iteration of the loop. When the monitor electronics ﬁnishes with the last character shipped by the processor, it automatically sets DSR[15] to 1, which causes the branch to fall through and the instruction at line 03 to be executed. Note the use of the STI instruction, which stores R0 into xFE06, the memory-mapped address of DDR. The write to DDR also clears DSR[15], disabling for the moment DDR from further output. The monitor electronics takes over and writes the character to the screen. Since the output routine is now done, the program unconditionally branches (line 04) to its NEXT TASK.
+62. lines 01 and 02 repeatedly poll DSR[15] to see if the monitor electronics is ﬁnished with the last character shipped by the processor. Note the use of LDI and the indirect access to xFE04, the memory-mapped address of DSR. As long as DSR[15] is clear, the monitor electronics is still processing a character, and BRzp branches to START for another iteration of the loop. When the monitor electronics ﬁnishes with the last character shipped by the processor, it automatically sets DSR[15] to 1, which causes the branch to fall through and the instruction at line 03 to be executed. Note the use of the STI instruction, which stores R0 into xFE06, the memory-mapped address of DDR. The write to DDR also clears DSR[15], disabling for the moment DDR from further output. The monitor electronics takes over and writes the character to the screen. Since the output routine is now done, the program unconditionally branches (line 04) to its NEXT TASK.
+
+63. Figure 9.6 shows the additional data path required to implement memory-mapped output. As we discussed previously with respect to memory-mapped input, the mechanisms for handling the device registers provide very little additional complexity to what already exists for handling memory accesses.
+
+64. In Chapter 5, you became familiar with the process of carrying out the EXECUTE phase of the store instructions. what was it?
+
+a. The MAR is loaded with the address of the memory location to be written.
+b. The MDR is loaded with the data to be written to memory.
+c. Memory is written, resulting in the contents of MDR being stored in the speciﬁed memory location.
+
+65. In the case of memory-mapped output, the same steps are carried out, except instead of MAR being loaded with the address of a memory location, MAR is loaded with the address of a device register. Instead of the address control logic enabling memory to write, the address control logic asserts the load enable signal of DDR.
+
+66. Memory-mapped output also requires the ability to read output device registers. Before the DDR could be loaded, the ready bit had to be in state 1, indicating that the previous character had already ﬁnished being written to the screen. The LDI and BRzp instructions on lines 01 and 02 perform that test. To do this, the LDI reads the output device register DSR, and BRzp tests bit [15]. If the MAR is loaded with xFE04 (the memory-mapped address of the DSR), the address control logic selects DSR as the input to the MDR, where it is subsequently loaded into R1, and the condition codes are set.
+
+67. When we type at the keyboard, it is helpful to know exactly what characters we have typed. We can get this echo capability easily (without any sophisticated electronics) by simply combining the two routines we have discussed. The result: The key typed at the keyboard is displayed on the monitor.
+
+START     LDI     R1, KBSR     ; Test for character input
+          BRzp    START
+          LDI     R0, KBDR
+ECHO      LDI     R1, DSR      ; Test output register ready
+          BRzp    ECHO
+          STI     R0, DDR
+          BRnzp   NEXT_TASK
+KBSR      .FILL   xFE00        ; Address of KBSR
+KBDR      .FILL   xFE02        ; Address of KBDR
+DSR       .FILL   xFE04        ; Address of DSR
+DDR       .FILL   xFE06        ; Address of DDR
+
+68. what does the computer do to let a person sitting at the keyboard know that the program is waiting for input from the keyboard? prints a message on the monitor known as a prompt. The symbols that are displayed by your operating system (e.g., % or C:) or by your editor (e.g., :) are examples of prompts.
+
+69. The program fragment shown in Figure 9.7 obtains keyboard input via polling. It also includes a prompt to let the person sitting at the keyboard know when it is time to type a key. You are already familiar with lines 13 through 19 and lines 25 through 28 which correspond to the code for inputting a character via the keyboard and echoing it on the monitor. You are also familiar with the need to save and restore registers if those reg- isters are needed by instructions in the input routine. This leaves lines 05 through 08, 0A through 11, 1A through 1C, 29 and 2A. These lines serve to alert the person sitting at the keyboard that it is time to type a character. Lines 05 through 08 write the ASCII code x0A to the monitor. This is the ASCII code for a new line.
+
+70. Do most ASCII codes correspond to characters that are visible on the screen? yes
+
+71.  A few, like x0A, are control characters. why are they given this name? because they cause an action to occur. Speciﬁcally, the ASCII code x0A causes the cursor to move to the far left of the next line on the screen. Thus, the name Newline.
+
+72. Before attempting to write x0A, however, as is always the case, DSR[15] is tested (line 6) to see if DDR can accept a character. If DSR[15] is clear, the monitor is busy, and the loop (lines 06 and 07) is repeated. When DSR[15] is 1, the conditional branch (line 7) is not taken, and (line 8) x0A is written to DDR for outputting.
+
+73. Lines 0A through 11 cause the prompt Input a character> to be written to the screen. The prompt is specified by the .STRINGZ pseudo-op on line 2A and is stored in 19 memory locations—18 ASCII codes, one per memory location, corresponding to the 18 characters in the prompt, and the terminating sentinel x0000.
+
+74. Line 0C iteratively tests to see if the end of the string has been reached (by detecting x0000), and if not, once DDR is free, line 0F writes the next character in the input prompt into DDR. When x0000 is detected, the entire input prompt has been written to the screen, and the program branches to the code that handles the actual keyboard input (starting at line 13).
+
+75. After the person at the keyboard types a character and it has been echoed (lines 13 to 19), the program writes one more new line (lines 1A through 1C) before branching to its NEXT TASK.
+
+76. We showed in Figures 9.4 and 9.6 partial implementations of the data path to handle (separately) memory-mapped input and memory-mapped output. We have also learned that in order to support interrupt-driven I/O, the two status registers must be writeable as well as readable.
+
+77. Figure 9.8 shows the data path necessary to support the full range of features we have discussed for the I/O device registers. The Address Control Logic Block controls the input or output operation. Note that there are three inputs to this block. MIO.EN indicates whether a data movement from/to memory or I/O is to take place this clock cycle. MAR contains the address of the memory location or the memory-mapped address of an I/O device register. R.W indicates whether a load or a store is to take place. Depending on the values of these three inputs, the address control logic does nothing (MIO.EN = 0), or it provides the control signals to direct the transfer of data between the MDR and the memory or between the MDR and one of the I/O registers.
+
+78. If R.W indicates a load, the transfer is from memory or I/O device to the MDR. The Address Control Logic Block provides the select lines to INMUX to source the appropriate I/O device register or memory (depending on MAR) and also enables the memory if MAR contains the address of a memory location.
+
+79. If R.W indicates a store, the contents of the MDR is written either to memory or to one of the device registers. The address control logic either enables a write to memory or asserts the load enable line of the device register speciﬁed by the contents of the MAR.
+
+80. in order for the program to successfully obtain input from the keyboard and display it to the monitor, what does the programmer need to know?
+
+a. The hardware data registers for both the monitor and the keyboard
+b. the monitor so a prompt could be displayed, and the keyboard so the program would know where to get the input character.
+c. The hardware status registers for both the monitor and the keyboard
+d. the monitor so the program would know when it was OK to display the next character in the input prompt, and the keyboard so the program would know when someone had struck a key.
+e. The asynchronous nature of keyboard input relative to the executing program.
+
+81. This is beyond the knowledge of most application programmers. In fact, in the real world, if application programmers had to understand I/O at this level, there would be much less I/O and far fewer programmers in the business.
+
+82. There is another problem with allowing user programs to perform I/O activity by directly accessing KBDR and KBSR. I/O activity involves the use of device registers that are shared by many programs. This means that if a user programmer were allowed to access the hardware registers, and he/she messed up, it could create havoc for other user programs. Thus, in general it is ill-advised to give user programmers access to these registers. That is why the addresses of hardware registers are part of the privileged memory address space and accessible only to programs that have supervisor privilege.
+
+83. what is the solution? simpler solution as well as the safer solution to the problem of user programs requiring I/O, involves the TRAP instruction and the operating system, which of course has supervisor privilege.
+
+84. A great beneﬁt of the TRAP instruction is that it allows the user programmer to not have to know the gory details of I/O. In addition, it protects user programs from the consequences of other inept user programmers. Figure 9.9 shows a user program that, upon reaching location x4000, needs an I/O task performed. The user program uses the TRAP instruction to request the operating system to perform the task on behalf of the user program. The operating system takes control of the computer, handles the request speciﬁed by the TRAP instruction, and then returns control back to the user program at location x4001.
+
+85. The trap mechanism involves several elements. what are they?
+
+a. A set of service routines executed on behalf of user programs by the operating system. These are part of the operating system and start at arbitrary addresses in system space. The LC-3 was designed so that up to 256 service routines can be speciﬁed. Table A.2 in Appendix A contains the LC-3’s current complete list of operating system service routines.
+
+b. A table of the starting addresses of these 256 service routines. This table is stored in memory locations x0000 to x00FF. The table is referred to by various names by various companies. One company calls this table the System Control Block. Another company calls it the Trap Vector Table. Figure 9.10 shows the Trap Vector Table of the LC-3, with speciﬁc starting addresses highlighted. Among the starting addresses are the one for the character output service routine (memory location x0420), which is stored in memory location x0021, the one for the keyboard input service routine (location x04A0), stored in location x0023, and the one for the machine halt service routine (location x0520), stored in location x0025.
+
+c. The TRAP instruction. When a user program wishes to have the operating system execute a speciﬁc service routine on behalf of the user program, and then return control to the user program, the user program uses the TRAP instruction
+
+d. A linkage back to the user program. The service routine must have a mechanism for returning control to the user program.
+
+86. how does the trap instruction work? causes the service routine to execute by (1) changing the PC to the starting address of the relevant service routine on the basis of its trap vector, and (2) providing a way to get back to the program that executed the TRAP instruction. 
+
+87. what is "the way back" referred to? as linkage
+
+88. The TRAP instruction is made up of two parts: the TRAP opcode 1111 and the trap vector (bits [7:0]), which identiﬁes the service routine the user program wants the operating system to execute on its behalf. Bits [11:8] must be zero.
+
+15   14   13   12    11   10   9    8     7    6    5    4    3    2    1    0
+1    1    1    1  |  0    0    0    0  |  0    0    1    0    0    0    1    1 
+  TRAP                                                trap vector
+
+89. what three things occur during the EXECUTE phase of the TRAP instruction’s instruction cycle?
+
+a. The PSR and PC are both pushed onto the system stack. Since the PC was incremented during the FETCH phase of the TRAP instruction’s instruction cycle, the return linkage is automatically saved in the PC. When control returns to the user program, the PC will automatically be pointing to the instruction following the TRAP instruction.
+
+Note that the program requesting the trap service routine can be running either in Supervisor mode or in User mode. If in User mode, R6, the stack pointer, is pointing to the user stack. Before the PSR and PC can be pushed onto the system stack, the current contents of R6 must be stored in Saved USP, and the contents of Saved SSP loaded into R6.
+
+b. PSR[15] is set to 0, since the service routine is going to require supervisor privilege to execute. PSR[10:8] are left unchanged since the priority of the TRAP routine is the same as the priority of the program that requested it.
+
+c. The 8-bit trap vector is zero-extended to 16 bits to form an address that corresponds to a location in the Trap Vector Table. For the trap vector x23, that address is x0023. Memory location x0023 contains x04A0, the starting address of the TRAP x23 service routine. The PC is loaded with x04A0, completing the instruction cycle.
+
+90. Since the PC contains x04A0, processing continues at memory address x04A0. Location x04A0 is the starting address of the operating system service routine to input a character from the keyboard. We say the trap vector “points” to the starting address of the TRAP routine. Thus, TRAP x23 causes the operating system to start executing the keyboard input service routine.
+
+91. The RTI Instruction: To Return Control to the Calling Program is accomplished by the Return from Trap or Interrupt (RTI) instruction
+
+15   14   13   12    11   10   9    8     7    6    5    4    3    2    1    0
+1    0    0    0  |  0    0    0    0     0    0    0    0    0    0    0    0
+    RTI
+
+92. what does it do? pops the top two values on the system stack into the PC and PSR. Since the PC contains the address following the address of the TRAP instruction, control returns to the user program at the correct address.
+
+93. what is the final step? once the PSR has been popped oﬀ the system stack, PSR[15] must be examined to see whether the processor was running in User mode or Supervisor mode when the TRAP instruction was executed. If in User mode, the stack pointers need to be adjusted to reﬂect that now back in User mode, the relevant stack in use is the user stack. This is done by loading the Saved SSP with the current contents of R6, and loading R6 with the contents of Saved USP.
+
+94. Figure 9.11 shows the LC-3 using the TRAP instruction and the RTI instruction to implement the example of Figure 9.9. The ﬂow of control goes from (A) within a user program that needs a character input from the keyboard, to (B) the operating system service routine that performs that task on behalf of the user program, back to the user program (C) that presumably uses the information contained in the input character.
+
+95. As we know, the computer continually executes its instruction cycle (FETCH, DECODE, etc.) on sequentially located instructions until the flow of control is changed by changing the contents of the PC during the EXECUTE phase of the current instruction. In that way, the next FETCH will be at a redirected address.
+
+96. The TRAP instruction with trap vector x23 in our user program does exactly that. Execution of TRAP x23 causes the PSR and incremented PC to be pushed onto the system stack and the contents of memory location x0023 (which, in this case, contains x04A0) to be loaded into the PC. The dashed line on Figure 9.11 shows the use of the trap vector x23 to obtain the starting address of the trap service routine from the Trap Vector Table.
+
+97. The next instruction cycle starts with the FETCH of the contents of x04A0, which is the ﬁrst instruction of the relevant operating system service routine. The trap service routine executes to completion, ending with the RTI instruction, which loads the PC and PSR with the top two elements on the system stack, that is, the PSR and incremented PC that were pushed during execution of the TRAP instruction. Since the PC was incremented prior to being pushed onto the system stack, it contains the address of the instruction following the TRAP instruction in the calling program, and the user program resumes execution by fetching the instruction following the TRAP instruction.
+
+98. see example91a and example91b The correct operation of the program in this example assumes that the person sitting at the keyboard only types capital letters and the value 7. What if the person types a $? A better solution to Example 9.1 would be a program that tests the character typed to be sure it really is a capital letter from among the 26 capital letters in the alphabet or the single digit 7, and if it is not, takes corrective action. Question: Augment this program to add the test for bad data. That is, write a program that will type the lowercase representation of any capital letter typed and will terminate if anything other than a capital letter is typed. See Exercise 9.20.
+
+99. The input routine described in Figure 9.7 can be slightly modiﬁed to be the input service routine shown in Figure 9.12. Two changes are needed: (1) We add the appropriate .ORIG and .END pseudo-ops. .ORIG speciﬁes the starting address of the input service routine—the address found at location x0023 in the Trap Vector Table. And (2) we terminate the input service routine with the RTI instruction rather than the BR NEXT TASK, as is done on line 20 in Figure 9.7. We use RTI because the service routine is invoked by TRAP x23. It is not part of the user program, as was the case in Figure 9.7.
+
+100. The output routine in 61 can be modiﬁed in a similar way, as shown in Figure 9.13. The results are input (Figure 9.12) and output (Figure 9.13) service routines that can be invoked simply and safely by the TRAP instruction with the appropriate trap vector. In the case of input, upon completion of TRAP x23, R0 contains the ASCII code of the keyboard character typed. In the case of output, the initiating program must load R0 with the ASCII code of the character it wishes displayed on the monitor and then invoke TRAP x21.
+
+101. Recall you learned earlier that the RUN latch is ANDed with the crystal oscillator to produce the clock that controls the operation of the computer. We noted that if that one-bit latch was cleared, the output of the AND gate would be 0, stopping the clock. Years ago, most ISAs had a HALT instruction for stopping the clock. Given how infrequently that instruction is executed, it seems wasteful to devote an opcode to it. In many modern computers, the RUN latch is cleared by a TRAP routine. In the LC-3, the RUN latch is bit [15] of the Master Control Register (MCR), which is memory-mapped to location xFFFE. Figure 9.14 shows the trap service routine for halting the processor, that is, for stopping the clock.
+
+102. First (lines 02 and 03), registers R1 and R0 are saved. R1 and R0 are saved because they are needed by the service routine. Then (lines 07 through 0C), the banner Halting the machine is displayed on the monitor. Finally (lines 10 through 13), the RUN latch (MCR[15]) is cleared by ANDing the MCR with 0111111111111111. That is, MCR[14:0] remains unchanged, but MCR[15] is cleared. Question: What instruction (or trap service routine) can be used to start the clock? Hint: This is a trick question! :-)
+
+103. Looking again at the keyboard input service routine of Figure 9.12., is there a way to remove the duplication in the three-line sequence that occurs at symbolic addresses L1, L2, L3, and L4? yes.
+
+104. how? the JSR/RET mechanism enables us to almost replace these four occurrences of the same sequence with a single subroutine Figure 9.15, our “improved” keyboard input service routine, contains JSR WriteChar at lines 04, 0A, 10, and 13, and the four-instruction subroutine (at lines 1A through 1D). Note the RET instruction (a.k.a. JMP R7) that is needed to terminate the subroutine.
+
+WriteChar      LDI    R3,DSR  
+               BRzp   WriteChar
+               STI    R2,DDR
+               RET
+
+105. Note the hedging: almost. In the original sequences starting at L2 and L3, the STI instruction forwards the contents of R0 (not R2) to the DDR. We can ﬁx that easily enough, as follows: In line 08 of Figure 9.15, we use
+
+LDR    R2,R1,#0
+
+instead of
+
+LDR    R0,R1,#0
+
+This causes each character in the prompt to be loaded into R2. The subroutine Writechar forwards each character from R2 to the DDR. In line 0F of Figure 9.15, we insert the instruction
+
+ADD    R2,R0,#0
+
+in order to move the keyboard input (which is in R0) into R2. The subroutine Writechar forwards it from R2 to the DDR. Note that R0 still contains the keyboard input. Furthermore, since no subsequent instruction in the service routine loads R0, R0 still contains the keyboard input after control returns to the user program. 
+
+106. In line 12 of Figure 9.15, we insert the instruction
+
+LD   R2,Newline
+
+in order to move the “newline” character into R2. The subroutine Writechar forwards it from R2 to the DDR.
+
+107. PUTS: Writing a Character String to the Monitor; note the code on lines 08 through 0C. This fragment of the service routine is used to write the sequence of characters Input a character to the monitor. A sequence of characters is often referred to as a string of characters or a character string. This fragment is also present in Figure 9.14, with the result that Halting the machine is written to the monitor. In fact, it is so often the case that a user program needs to write a string of characters to the monitor that this function is given its own trap service routine in the LC-3 operating system. Thus, if a user program requires a character string to be written to the monitor, it need only provide (in R0) the starting address of the character string, and then invoke TRAP x22. In LC-3 assembly language this TRAP is called PUTS.
+
+108. PUTS (or TRAP x22) causes control to be passed to the operating system, and the trap routine shown in Figure 9.16 is executed. Note that PUTS is the code of lines 08 through 0C of Figure 9.15, with a few minor adjustments.
+
+109. what are the two ways that the processor and I/O can interact? can be controlled by the processor (i.e. polling) or it can be controlled by the I/O device (interrupt driven). We have studied several examples of polling. In each case, the processor tested the ready bit of the status register again and again, and when the ready bit was ﬁnally 1, the processor branched to the instruction that did the input or output operation.
+
+110. what is interrupt driven I/O? the notion that an I/O device that may or may not have anything to do with the program that is running can (1) force the running program to stop, (2) have the processor execute a program that carries out the needs of the I/O device, and then (3) have the stopped program resume execution as if nothing had happened. These three stages of the instruction execution ﬂow are shown in Figure 9.17.
+
+111. Why choose Interrupt-Driven I/O? polling requires the processor to waste a lot of time spinning its wheels, re-executing again and again the LDI and BR instructions until the ready bit is set. With interrupt-driven I/O, none of that testing and branching has to go on. Interrupt-driven I/O allows the processor to spend its time doing what is hopefully useful work, executing some other program perhaps, until it is notiﬁed that some I/O device needs attention. see example92
+
+112. what are the two Parts to the interrupt-driven I/O Process? the mechanism that enables an I/O device to interrupt the processor, and the mechanism that handles the interrupt request.
+
+113. Part I: Causing the Interrupt to Occur; what are several things that must be true for an I/O device to actually interrupt the program that is running?
+
+a. The I/O device must want service.
+b. The device must have the right to request the service.
+c. The device request mustbemoreurgentthan what the processor is currently doing.
+
+If all three elements are present, the processor stops executing the program that is running and takes care of the interrupt.
+
+114. The Device Must Want Service: We have discussed that already in the study of polling. It is the ready bit of the KBSR or the DSR. That is, if the I/O device is the keyboard, it wants service if someone has typed a character. If the I/O device is the monitor, it wants service (i.e., the next character to output) if the associated electronic circuits have successfully completed the display of the last character. In both cases, the I/O device wants service when the corresponding ready bit is set.
+
+115. The Device Must Have the Right to Request That Service: This is the interrupt enable bit, which can be set or cleared by the processor (usually by the operating system), depending on whether or not the processor wants to give the I/O device the right to request service. In most I/O devices, this interrupt enable (IE) bit is part of the device status register. In the KBSR and DSR shown in Figure 9.18, the IE bit is bit [14]. The interrupt request signal from the I/O device is the logical AND of the IE bit and the ready bit, as is also shown in Figure 9.18.
+
+116. If the interrupt enable bit (bit [14]) is clear, it does not matter whether the ready bit is set; the I/O device will not be able to interrupt the processor because it (the I/O device) has not been given the right to interrupt the processor. In that case, the program will have to poll the I/O device to determine if it is ready.
+
+117. If bit [14] is set, then interrupt-driven I/O is enabled. In that case, as soon as someone types a key (or as soon as the monitor has ﬁnished processing the last character), bit [15] is set. In this case, the device wants service, and it has been given the right to request service. The AND gate is asserted, causing an interrupt request to be generated from the I/O device.
+
+118. The Urgency of the Request: The third element in the list of things that must be true for an I/O device to actually interrupt the processor is that the request must be more urgent than the program that is currently executing. Recall that each program runs at a speciﬁed level of urgency called its priority level. To interrupt the running program, the device must have a higher priority than the program that is currently running. Actually, there may be many devices that want to interrupt the processor at a speciﬁc time. To succeed, the device must have a higher priority level than all other demands for use of the processor.
+
+119. Almost all computers have a set of priority levels that programs can run at. As we have already noted, the LC-3 has eight priority levels, PL0 to PL7. The higher the number, the more urgent the program. The PL of a program is usually the same as the PL (i.e., urgency) of the request to run that program. If a program is running at one PL, and a higher-level PL request wants the computer, the lower-priority program suspends processing until the higher-PL program executes and satisﬁes its more urgent request.
+
+120. For example, a computer’s payroll program may run overnight, and at PL0. It has all night to ﬁnish—not terribly urgent. A program that corrects for a nuclear plant current surge may run at PL6. We are perfectly happy to let the payroll wait while the nuclear power correction keeps us from being blown to bits.
+
+121. For our I/O device to successfully stop the processor and start an interrupt-driven I/O request, the priority of the request must be higher than the priority of the program it wishes to interrupt. 
+
+122. The INT Signal: To stop the processor from continuing execution of its currently running program and service an interrupt request, the INT signal must be asserted. Figure 9.19 shows what is required to assert the INT signal. Figure 9.19 shows the status registers of several devices operating at various priority levels (PL). Any device that has bits [14] and [15] both set asserts its interrupt request signal. The interrupt request signals are input to a priority encoder, a combinational logic structure that selects the highest priority request from all those asserted. If the PL of that request is higher than the PL of the currently executing program, the INT signal is asserted.
+
+123. The Test for INT: Recall from Chapter 4 that the instruction cycle continually sequences through the phases of the instruction cycle (FETCH, DECODE, EVALUATE ADDRESS, FETCH OPERAND, EXECUTE, and STORE RESULT). Each instruction changes the state of the computer, and that change is completed at the end of the instruction cycle for that instruction. That is, in the last clock cycle before the computer returns to the FETCH phase for the next instruction, the computer is put in the state caused by the complete execution of the current instruction.
+
+124. Interrupts can happen at any time. They are asynchronous to the synchronous ﬁnite state machine controlling the computer. For example, the interrupt signal could occur when the instruction cycle is in its FETCH OPERAND phase. If we stopped the currently executing program when the instruction cycle was in its FETCH OPERAND phase, we would have to keep track of what part of the current instruction has executed and what part of the current instruction still has work to do. It makes much more sense to ignore interrupt signals except when we are at an instruction boundary; that is, the current instruction has completed, and the next instruction has not yet started. Doing that means we do not have to worry about partially executed instructions, since the state of the computer is the state created by the completion of the current instruction, period!
+
+125. The additional logic to test for the interrupt signal is to augment the last state of the instruction cycle for each instruction with a test. Instead of always going from the last state of one instruction cycle to the ﬁrst state of the FETCH phase of the next instruction, the next state depends on the INT signal. If INT is not asserted, then it is business as usual, with the control unit returning to the FETCH phase to start processing the next instruction. If INT is asserted, then the next state is the ﬁrst state of Part II, handling the interrupt request.
+
+126. Part II: Handling the Interrupt Request: handling the interrupt request goes through three stages , as shown in Figure 9.17:
+
+a. Initiate the interrupt (three lines numbered 1 in Figure 9.17).
+b. Service the interrupt (four lines numbered 2 in Figure 9.17).
+c. Return from the interrupt (one line numbered 3 in Figure 9.17).
+
+127. Initiate the Interrupt: Since the INT signal was asserted, the processor does not return to the ﬁrst state of the FETCH phase of the next instruction cycle, but rather begins a sequence of actions to initiate the interrupt. The processor must do two things: (1) save the state of the interrupted program so it can pick up where it left oﬀ after the require- ments of the interrupt have been completed, and (2) load the state of the higher priority interrupting program so it can start satisfying its request.
+
+128. Save the State of the Interrupted Program: The state of a program is a snapshot of the contents of all the program’s resources. It includes the contents of the memory locations that are part of the program and the contents of all the general purpose registers. It also includes the PC and PSR. Recall from Figure 9.1 that a program’s PSR speciﬁes the privilege level and priority level of that program. PSR[15] indicates whether the program is running in privileged (Supervisor) or unprivileged (User) mode. PSR[10:8] speciﬁes the program’s priority level (PL), from PL0 (lowest) to PL7 (highest). Also, PSR[2:0] is used to store the condition codes. PSR[2] is the N bit, PSR[1] is the Z bit, and PSR[0] is the P bit.
+
+129. The ﬁrst step in initiating the interrupt is to save enough of the state of the program that is running so that it can continue where it left oﬀ after the I/O device request has been satisﬁed. That means, in the case of the LC-3, saving the PC and the PSR. The PC must be saved since it knows which instruction should be executed next when the interrupted program resumes execution. The condition codes (the N, Z, and P ﬂags) must be saved since they may be needed by a subsequent conditional branch instruction after the program resumes execution. The priority level of the interrupted program must be saved because it speciﬁes the urgency of the interrupted program with respect to all other programs. When the interrupted program resumes execution, it is important to know what priority level programs can interrupt it and which ones cannot. Finally, the privilege level of the program must be saved since it speciﬁes what processor resources the interrupted program can and cannot access.
+
+130. Although many computers save the contents of the general purpose registers, we will not since we will assume that the service routine will always save the contents of any general purpose register that it needs before using it, and then restore it before returning to the interrupted program. The only state information the LC-3 saves are the PC and PSR.
+
+131. The LC-3 saves this state information on the supervisor stack in the same way the PC and PSR are saved when a TRAP instruction is executed. That is, before the interrupt service routine starts, if the interrupted program is in User mode, the User Stack Pointer (USP) is stored in Saved USP, and R6 is loaded with the Supervisor Stack Pointer (SSP) from Saved SSP. Then the PSR and PC of the interrupted program are pushed onto the supervisor stack, where they remain unmolested while the service routine executes.
+
+132. Load the State of the Interrupt Service Routine: Once the state of the interrupted program has been safely saved on the supervisor stack, the second step is to load the PC and PSR of the interrupt service routine. Interrupt service rou- tines are similar to the trap service routines we have already discussed. They are program fragments stored in system space. They service interrupt requests.
+
+133. Most processors use the mechanism of vectored interrupts. You are familiar with this notion from your study of the trap vector contained in the TRAP instruction. In the case of interrupts, the eight-bit vector is provided by the device that is requesting the processor be interrupted. That is, the I/O device transmits to the processor an eight-bit interrupt vector along with its interrupt request signal and its priority level. The interrupt vector corresponding to the highest priority interrupt request is the one supplied to the processor. It is designated INTV.
+
+134. If the interrupt is taken, the processor expands the 8-bit interrupt vector (INTV) to form a 16-bit address, which is an entry into the Interrupt Vector Table. You know that the Trap Vector Table consists of memory locations x0000 to x00FF, each containing the starting address of a trap service routine. The Interrupt Vector Table consists of memory locations x0100 to x01FF, each containing the starting address of an interrupt service routine. The processor loads the PC with the contents of the location in the Interrupt Vector Table corresponding to the address formed by expanding the interrupt vector INTV.
+
+135. For example, the LC-3 keyboard could interrupt the processor every time a key is pressed by someone sitting at the keyboard. The keyboard interrupt vector would indicate the location in the interrupt vector table that contains the starting address of the keyboard interrupt service routine.
+
+136. The PSR is loaded as follows: Since no instructions in the service routine have yet executed, PSR[2:0] contains no meaningful information. We arbitrarily load it initially with 010. Since the interrupt service routine runs in privileged mode, PSR[15] is set to 0. PSR[10:8] is set to the priority level associated with the interrupt request. This completes the initiation phase, and the interrupt service routine is ready to execute.
+
+137. Service the Interrupt: Since the PC contains the starting address of the interrupt service routine, the service routine will execute, and the requirements of the I/O device will be serviced.
+
+138. Return from the Interrupt: The last instruction in every interrupt service routine is RTI, return from trap or interrupt. When the processor ﬁnally accesses the RTI instruction, all the requirements of the I/O device have been taken care of.
+
+139. Like the return from a trap routine discussed in Section 9.3.4, execution of the RTI instruction (opcode = 1000) for an interrupt service routine consists simply of popping the PC and the PSR from the supervisor stack (where they have been resting peacefully) and restoring them to their rightful places in the processor. The condition codes are now restored to what they were when the program was interrupted, in case they are needed by a subsequent BR instruction in the interrupted program. PSR[15] and PSR[10:8] now reﬂect the privilege level and priority level of the about-to-be-resumed program. If the privilege level of the interrupted program is unprivileged, the stack pointers must be adjusted, that is, the Supervisor Stack Pointer saved, and the User Stack Pointer loaded into R6. The PC is restored to the address of the instruction that would have been executed next if the program had not been interrupted. With all these things as they were before the interrupt occurred, the program can resume as if nothing had happened.
+
+140. An Example: Suppose program A is executing when I/O device B, having a PL higher than that of A, requests service. During the execution of the service routine for I/O device B, a still more urgent device C requests service. Figure 9.20 shows the execution ﬂow that must take place.
+
+141. Program A consists of instructions in locations x3000 to x3010 and was in the middle of executing the ADD instruction at x3006 when device B sent its interrupt request signal and accompanying interrupt vector xF1, causing INT to be asserted. Note that the interrupt service routine for device B is stored in locations x6200 to x6210; x6210 contains the RTI instruction. Note that the service routine for B was in the middle of executing the AND instruction at x6202 when device C sent its interrupt request signal and accompanying interrupt vector xF2. Since the request associated with device C is of a higher priority than that of device B, INT is again asserted. Note that the interrupt service routine for device C is stored in locations x6300 to x6315; x6315 contains the RTI instruction.
+
+142. Figure 9.21 shows several snapshots of the contents of the supervisor stack and the PC during the execution of this example. The processor executes as follows: Figure 9.21a shows the supervisor stack and the PC before program A fetches the instruction at x3006. Note that the stack pointer is shown as Saved SSP, not R6. Since the interrupt has not yet occurred, R6 is pointing to the current contents of the user stack, which are not shown! The INT signal (caused by an interrupt from device B) is detected at the end of execution of the instruction in x3006. Since the state of program A must be saved on the supervisor stack, the ﬁrst step is to start using the supervisor stack. This is done by saving R6 in the Saved.USP register and loading R6 with the contents of the Saved SSP register. The PSR of program A, which includes the condition codes produced by the ADD instruction, is pushed on the supervisor stack. Then the address x3007, the PC for the next instruction to be executed in program A is pushed on the stack. The interrupt vector associated with device B is expanded to 16 bits x01F1, and the contents of x01F1 (x6200) is loaded into the PC. Figure 9.21b shows the stack and PC at this point.
+
+143. The service routine for device B executes until a higher priority interrupt is detected at the end of execution of the instruction at x6202. The PSR of the service routine for B, which includes the condition codes produced by the AND instruction at x6202, and the address x6203 are pushed on the stack. The interrupt vector associated with device C is expanded to 16 bits (x01F2), and the contents of x01F2 (x6300) is loaded into the PC. Figure 9.21c shows the supervisor stack and PC at this point.
+
+144. Assume the interrupt service routine for device C executes to completion, ﬁnishing with the RTI instruction in x6315. The supervisor stack is popped twice, restoring the PC to x6203 and the PSR of the service routine for device B, including the condition codes produced by the AND instruction in x6202. Figure 9.21d shows the stack and PC at this point.
+The interrupt service routine for device B resumes execution at x6203 and runs to completion, ﬁnishing with the RTI instruction in x6210. The supervisor stack is popped twice, restoring the PC to x3007 and the PSR of program A, including the condition codes produced by the ADD instruction in x3006. Finally, since program A is in User mode, the contents of R6 is stored in Saved SSP and R6 is loaded with the contents of Saved USP. Figure 9.21e shows the supervisor stack and PC at this point. Program A resumes execution with the instruction at x3007.
+
+145. Not Just I/O Devices: so far we have discussed the processing of interrupts in the context of I/O devices that have higher priority than the program that is running and therefore can stop that program to enable its interrupt service routine to execute. Not all interrupts deal with I/O devices. Any event that has a higher priority and is external to the program that is running can interrupt the computer. It does so by supplying its INT signal, its INTV vector, and its pri- ority level. If it is the highest priority event that wishes to interrupt the computer, it does so in the same way that I/O devices do as described above.
+
+146. There are many examples of such events that have nothing to do with I/O devices. For example, a timer interrupt interrupts the program that is running in order to note the passage of a unit of time. The machine check interrupt calls attention to the fact that some part of the computer system is not functioning properly. The power failure interrupt notiﬁes the computer that, for example, someone has yanked the power cord out of its receptacle. 
+
+147. Polling Revisited, Now That We Know About Interrupts: We continually test the ready bit in the relevant status register, and if it is not set, we branch back to again test the ready bit. For example, suppose we are writing a character string to the monitor, and we are using polling to determine when the monitor has successfully written the current character so we can dispatch the next character. We take it for granted that the three-instruction sequence LDI (to load the ready bit of the DSR), BRzp (to test it and fall through if the device is ready), and STI (to store the next character in the DDR) acts as an atomic unit. 
+
+148. But what if we had interrupts enabled at the same time? That is, if an interrupt occurred within that LDI, BRzp, STI sequence (say, just before the STI instruction), it could easily be the case that the LDI instruction indicated the DDR was ready, the BRzp instruction did not branch back, but by the time the interrupt service routine completed so the STI could write to the DDR, the DDR may no longer be ready. The computer would execute the STI, but the write would not happen.
+
+149. A simple, but somewhat contrived example :-), will illustrate the problem. Suppose you are executing a “for” loop ten times, where each time the loop body prints to the monitor a particular character. Polling is used to determine that the monitor is ready before writing the next character to the DDR. Since the loop body executes ten times, this should result in the character being printed on the monitor ten times. Suppose you also have keyboard interrupts enabled, and the keyboard service routine echoes the character typed.
+
+150. Suppose the loop body executes as follows: LDI loads the ready bit, BRzp falls through since the monitor is ready, and STI stores the character in DDR. In the middle of this sequence, before the STI can execute, someone types a key. The keyboard interrupt occurs, the character typed is echoed, i.e., written to the DDR, and the keyboard interrupt service routine completes.
+
+151. The interrupted loop body then takes over and “knows” the monitor is ready, so it executes the STI. ... except the monitor is not ready because it has not com-pleted the write of the keyboard service routine! The STI of the loop body writes, but since DDR is not ready, the write does not occur. The ﬁnal result: Only nine characters get written, not ten. The problem becomes more serious if the string written is in code, and the missing write prevents the code from being deciphered.
+
+152. A simple way to handle this would be to disable all interrupts while polling was going on. But consider the consequences. Suppose the polling was required for a long time. If we disable interrupts while polling is going on, interrupts would be disabled for that very long time, unacceptable in an environment where one is concerned about the time between a higher priority interrupt occurring and the interrupt getting service.
+
+153. A better solution is shown in Figure 9.22. The sequence we want to make noninterruptable is shown on lines 0F to 11. We accomplish this by ﬁrst loading R1 with the PSR in line 09 and R2 with the PSR having interrupts disabled in line 0A. PSR[14] is the interrupt enable bit for all interrupts associated with this program. Note that PSR is memory mapped to xFFFC. We enable interrupts by storing R1 in PSR (line 0D), followed immediately by disabling interrupts by storing R2 in PSR (line 0E). With interrupts disabled, we execute the three-instruction sequence LDI, BRzp, and LDI (lines 0F, 10, and 11) if the status register indicates that the device is ready. If the device is not ready, BRzp (line 10) takes the computer back to line 0D where interrupts are again enabled.
+
+154. In this way, interrupts are disabled again and again, but each time only long enough to execute the three-instruction sequence LDI, BRzp, STI (in lines 0F, 10, 0D), after which interrupts are enabled again. The result: An interrupt would have to wait for the three-instruction sequence LDI, BRzp, STI to execute, rather than for the entire polling process to complete.
