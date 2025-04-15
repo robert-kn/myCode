@@ -613,7 +613,7 @@ Since the write enable signal to the master latches is now 0, the state of the m
 
 94. what does the data path of a computer consist of? all of the logic structures that combine to process information in the core of the computer see Figure 3.35 you should be able to spot 5 muxes, adder (ALU with +), ALU, PC, IR, MAR, and MDR are all 16-bit registers that store 16 bits of information each, three 1-bit registers, N, Z, and P
 
-The arrows in Figure 3.35 represent wires that transmit values from one struc- ture to another. Most of the arrows include a cross-hatch with a number next to it. The number represents the number of wires, corresponding to the number of bits being transmitted. 
+The arrows in Figure 3.35 represent wires that transmit values from one structure to another. Most of the arrows include a cross-hatch with a number next to it. The number represents the number of wires, corresponding to the number of bits being transmitted. 
 
 95. what is a register made of? a set of n flip flops that collectively are used to store one n-bit value. i.e. gated D latches where one bit of information can be stored in one flip flop hence a 16 bit register is composed of 16 flip flops see figure336
 
@@ -1015,7 +1015,7 @@ the computer’s memory like indirect addressing mode? yes
 
 78. Next the instruction at x30F9. The AND instruction, with an immediate operand x0000. At the end of execution, R2 contains the value 0, and the PC contains x30FA. At x30FA, the opcode 0001 speciﬁes the ADD instruction. After execution, R2 contains the value 5, and the PC contains x30FB.
 
-79. At x30FB, the opcode 0111 signiﬁes the STR instruction. STR (like LDR) uses the Base+oﬀset addressing mode. The memory address is obtained by adding the contents of the BASE register (speciﬁed by bits [8:6]) to the sign- extended oﬀset contained in bits [5:0]. In this case, bits [8:6] specify R1, which contains x30F4. The 16-bit sign-extended oﬀset is x000E. Since x30F4 + x000E is x3102, the memory address is x3102. The STR instruction stores into x3102 the contents of the register speciﬁed by bits [11:9], in this case R2. Since R2 contains the value 5, at the end of execution of this instruction, M[x3102] contains the value 5, and the PC contains x30FC.
+79. At x30FB, the opcode 0111 signiﬁes the STR instruction. STR (like LDR) uses the Base+oﬀset addressing mode. The memory address is obtained by adding the contents of the BASE register (speciﬁed by bits [8:6]) to the sign-extended oﬀset contained in bits [5:0]. In this case, bits [8:6] specify R1, which contains x30F4. The 16-bit sign-extended oﬀset is x000E. Since x30F4 + x000E is x3102, the memory address is x3102. The STR instruction stores into x3102 the contents of the register speciﬁed by bits [11:9], in this case R2. Since R2 contains the value 5, at the end of execution of this instruction, M[x3102] contains the value 5, and the PC contains x30FC.
 
 80. Finally the instruction at x30FC. The opcode 1010 speciﬁes LDI. LDI (like STI) uses the indirect addressing mode. The memory address is obtained by ﬁrst forming an address as is done in the PC-relative addressing mode. Bits [8:0] are sign-extended to 16 bits (xFFF7) and added to the incremented PC (x30FD). Their sum (x30F4) is the address of the operand address. Since M[x30F4] con- tains x3102, x3102 is the operand address. The LDI instruction loads the value found at this address (in this case 5) into the register identiﬁed by bits [11:9] of the instruction (in this case R3). At the end of execution of this instruction, R3 contains the value 5 and the PC contains x30FD.
 
@@ -2124,3 +2124,173 @@ The interrupt service routine for device B resumes execution at x6203 and runs t
 153. A better solution is shown in Figure 9.22. The sequence we want to make noninterruptable is shown on lines 0F to 11. We accomplish this by ﬁrst loading R1 with the PSR in line 09 and R2 with the PSR having interrupts disabled in line 0A. PSR[14] is the interrupt enable bit for all interrupts associated with this program. Note that PSR is memory mapped to xFFFC. We enable interrupts by storing R1 in PSR (line 0D), followed immediately by disabling interrupts by storing R2 in PSR (line 0E). With interrupts disabled, we execute the three-instruction sequence LDI, BRzp, and LDI (lines 0F, 10, and 11) if the status register indicates that the device is ready. If the device is not ready, BRzp (line 10) takes the computer back to line 0D where interrupts are again enabled.
 
 154. In this way, interrupts are disabled again and again, but each time only long enough to execute the three-instruction sequence LDI, BRzp, STI (in lines 0F, 10, 0D), after which interrupts are enabled again. The result: An interrupt would have to wait for the three-instruction sequence LDI, BRzp, STI to execute, rather than for the entire polling process to complete.
+
+chapter 10
+
+1. this chapter is about demonstrating the use of many of the concepts discussed so far as well as to show an example of well documented clearly written code.
+
+2. the program discussed simulates the actions of a calculator that a person can use to add, subtract, and multiply 2's complement integers. the person will enter numbers into the calculator-simulator by typing keys on the keyboard. result of a computation will be displayed on the monitor.
+
+3. the calculator simulation consists of a main program and eleven separate subroutines
+
+4. two topics have not been discussed that are needed to understand the workings of the calculator simulator. what are they? the conversion of integers between ASCII strings and 2s complement numbers; and arithmentic using a stack (the method most calculators use)
+
+5. what is the reason for the two data types and conversion between them? we need one data type for input/output and another for doing arithmetic. numbers entered via the keyboard and displayed on the monitor use ascii codes to represent the numbers. arithmetic uses 2's complement integers
+
+6. we will need to convert the number the person types from ASCII codes to a 2’s complement integer, and we will need to convert the result of the computation from a 2’s complement integer to ASCII codes in order to display it on the monitor.
+
+7. With respect to the way calculators perform arithmetic, the mechanism used by most calculators is very diﬀerent from the way most desktop and laptop computers perform arithmetic. The ISAs of most desktops and laptops are like the LC-3, where arithmetic instructions get their source operands from general purpose registers and store the results of the arithmetic operations in general purpose registers. 
+
+8. Our simulation of a calculator, like most calculators, does not use general purpose registers. Instead it uses a stack. Source operands are popped from the stack, and the result of the operation is pushed back onto the stack.
+
+9. I have already been exposed to several data types: unsigned integers for address arithmetic, 2’s complement integers for integer arithmetic, 16-bit binary strings for logical operations, ﬂoating point numbers for scientiﬁc computation, and ASCII codes for interaction with input and output devices. 
+
+10. It is important that every instruction be provided with source operands of the data type that the instruction requires. For example, an ALU requires operands that are 2’s complement integers to perform an ADD. If the ALU were supplied with ﬂoating point operands, the ALU would produce garbage results.
+
+11. It is not uncommon in high-level language programs to ﬁnd an instruction of the form A = R + I where R (ﬂoating point) and I (2’s complement integer) are represented in diﬀerent data types. If the operation is to be performed by a ﬂoating point adder, then we have a problem with I. To handle the problem, one must ﬁrst convert the value I from its original data type (2’s complement integer) to the data type required by the functional unit performing the operation (ﬂoating point). 
+
+12. For those programming in some high-level language, the compiler generally produces the code to do that conversion so the programmer does not even have to think about it.
+
+13. Even in our “character count problem” way back in Chapter 5, we had to deal with data type conversion. Our program entered a character from the keyboard, scanned a ﬁle counting the number of occurrences of that character, and then displayed the count on the monitor. Recall that before we could display our ﬁnal count on the monitor, we had to convert our 2’s complement integer to an ASCII code. Why? Because when we were counting, we were performing arithmetic on 2’s complement integers. But when we were displaying, we needed to represent our count as an ASCII code. 
+
+14. we restricted our program to work only on ﬁles where the total count was not greater than 9, so our conversion from a 2’s complement integer to an ASCII code could be obtained by simply adding x30 to the 2’s complement integer to get the ASCII code. For example, the 2’s complement representation for 6 (in one byte) is 00000110, or x06. The ASCII code for 6, on the other hand, is 00110110, or x36.
+
+15. That was a severe limitation to put on our count, restricting it to a single decimal digit. If our number is represented by more than one decimal digit, simply adding x30 does not work. For example, consider the two decimal digit number 25. If we enter 25 via the keyboard, we input the ASCII code x32, followed by the ASCII code x35. The bit stream is 0011001000110101. To perform arithmetic on this integer, we must ﬁrst convert it to 0000000000011001, the 2’s complement integer representation of 25. Displaying the result of some arithmetic computation on the monitor causes a similar problem. To do that, we must ﬁrst convert the result of the arithmetic (a 2’s complement integer) to an ASCII string.
+
+16. Figure 10.1 shows how we can get into trouble if we do not pay attention to the data types that we are working with. Suppose we want to enter two single-digit integers from the keyboard, add them, and display the result on the monitor. At ﬁrst blush, we write the simple program of Figure 10.1.
+
+17. What happens? Suppose the ﬁrst digit entered via the keyboard is a 2 and the second digit entered via the keyboard is a 3. What will be displayed on the monitor before the program terminates? The value loaded into R0 as a result of entering a 2 is the ASCII code for 2, which is x0032. When the 3 is entered, the ASCII code for 3, which is x0033, is loaded into R0 (after the ASCII code for 2 is moved to R1, of course). Thus, the ADD instruction adds the two binary strings x0032 and x0033, producing x0065. When that value is displayed on the monitor, it is treated as an ASCII code. Since x0065 is the ASCII code for a lowercase e, a lowercase e is displayed on the monitor.
+
+18. why did we not get 5? (a) we didn’t convert the two input characters from ASCII to 2’s complement integers before performing the addition and (b) we didn’t convert the result back to ASCII before displaying it on the monitor.
+
+19. Exercise: Correct Figure 10.1 so that it will add two single-digit positive integers and produce the correct single-digit positive sum. Assume that the two digits being added do in fact produce a single-digit sum.
+
+20. Input Data (ASCII to Binary): Figure 10.2 shows the ASCII representation of the three-decimal-digit integer 295, stored as an ASCII string in three consecutive LC-3 memory locations, starting at ASCIIBUFF. R1 contains the number of decimal digits in the positive integer. Our ASCII to binary subroutine restricts integers to the range 0 to 999.
+
+21. ASCIIBUFF is the address of the ﬁrst memory location of a sequence of four memory locations that we have allocated (a) to store the ASCII codes of decimal digits entered from the keyboard, and (b) to store the ASCII codes corresponding to the result of arithmetic operations in preparation for writing it (the result) to the monitor.
+
+22. why is it done this way? in Figure 10.2, we used a whole 16-bit word to store the ASCII code of each decimal digit when a byte would have been enough. In fact, typically, one does store each ASCII code in a single byte of memory. In this example, we decided to give each ASCII character its own word of memory in order to simplify the algorithm.
+
+23. why we are allocating four words of memory to ASCIIBUFF since we are restricting input to positive integers consisting of at most three decimal digits (Wouldn’t three words be enough)? For input yes, but in preparation for output, we will need one more word for the sign (positive or negative) of the result, since the result of the arithmetic could be negative.
+
+24. Figure 10.3 shows the ﬂowchart for a subroutine that converts the ASCII representation of an integer, stored in Figure 10.2, into a binary integer.
+
+25. how does it work? systematically takes each digit, converts it from its ASCII code to its binary code by stripping away all but the last four bits, and then uses those four bits to index into a table of ten binary values.
+
+26. Since we are restricting conversion to integers consisting of at most three decimal digits, only two tables are needed, one for the tens digit and one for the hundreds digit. Each entry in each table corresponds to the value of one of the ten digits. For example, the entry for index 6 in the hundreds table is the value #600, which is in binary 0000001001011000. That value is then added to R0. R0 is used to accumulate the contributions of all the digits. The result is returned in R0.
+
+27. Question: If we wanted to be able to convert four decimal-digit integers, would we need a table of thousands digits? Or, is there a way to convert larger numbers represented as larger decimal strings into their binary form without requiring a table of thousands digits, ten-thousands digits, etc.?
+
+28. Figure 10.4 shows the LC-3 code that implements this subroutine. There are two points that we need to make about the subroutines in this chapter, which are all part of our calculator simulation. First, they cannot be assembled individually, and second (because of that) we need to be sure that no label is used more than once.
+
+29. Why can't the subroutine of Figure 10.4 be assembled by itself? Answer: Line 33 speciﬁes a .FILL having the value ASCIIBUFF, but there is no location in the subroutine labeled ASCIIBUFF. Therefore, trying to assemble the subroutine by itself will fail. 
+
+30. We could have used .EXTERNAL, discussed brieﬂy in Chapter 7, to enable the subroutines to be assembled individually, but we chose to not do that, preferring to assemble the entire calculator-simulator program including its eleven subroutines as a single entity. As you would expect, line 42 in the code of Figure 10.15 contains the label ASCIIBUFF.
+
+31. Second, if we are to assemble the main program and all the subroutines as a single unit, we need to be sure to not use the same label in more than one subroutine. Note that in Figure 10.4, most labels start with “AtoB .” As expected, the same pattern of labeling is used in the rest of the subroutines.
+
+32. Display Result (Binary to ASCII): To display the result of a computation on the monitor, we must ﬁrst convert the 2’s complement integer result into an ASCII string. Figure 10.5 shows the subroutine for converting a 2’s complement integer stored in R0 into an ASCII string stored in the four consecutive memory locations starting at ASCIIBUFF. The value ini- tially in R0 is restricted to the range −999 to +999. After the subroutine completes execution, ASCIIBUFF contains the sign (+ or −) of the value initially stored in R0, followed by three locations that contain the ASCII codes corresponding to the decimal digits representing its magnitude.
+
+33. The subroutine works as follows: First, the sign of the result to be displayed is determined, and the ASCII code for + or − is stored in ASCIIBUFF. The result (in R0) is replaced by its absolute value. The algorithm determines the hundreds-place digit by repeatedly subtracting #100 from R0 until the result goes negative. This is next repeated for the tens-place digit. The value left is the ones digit.
+
+34. The Stack as Temporary Storage: You know that the LC-3 ADD instruction takes two source operands that are stored in registers, performs an addition, and stores the result into one of the LC-3’s eight general purpose registers.
+
+35. what do we call the register where the result is stored? destination register
+
+36. The eight general purpose registers R0 to R7 comprise the temporary storage that allows operate instructions like ADD to access both source registers and the destination register much more quickly than if the computer had to access memory for the operands.
+
+37. Because the three locations are speciﬁed explicitly [ADD  R0,R1,R2] we call the LC-3 a three-address machine. 
+
+38. Most desktop and laptop computers are either three-address machines like the LC-3 or two-address machines like the x86 ISA that is implemented in many of your laptop and desktop computers. In a two-address machine, two locations are speciﬁed explicitly. An example of an x86 ADD instruction is [ADD   EAX,EBX] where EAX and EBX are two of the eight general purpose registers in the x86 ISA. In this case, EAX serves as both the location of one of the source operands and the location of the destination operand. With a two-address machine, one of the source registers is overwritten with the result of the operation.
+
+39. There are also ISAs that do not use general purpose registers at all to store either source operands or the results of operate instructions. The most common of these are called stack machines because a stack is used for temporary storage.
+Most calculators, including the one we will simulate, use a stack for temporary storage rather than a set of general purpose registers.
+
+40. how are source operands obtained? by popping the top two elements from the stack. 
+
+41. where is the result stored? pushed onto the stack.
+
+42. Since the computer always pops and pushes operands from the stack, no addresses need to be speciﬁed explicitly. Therefore, stack machines are sometimes referred to as zero-address machines.
+
+43. The instruction would simply be [ADD] and the computer would know where to ﬁnd the operands. Note that the pop, push, and add are not part of the ISA of the computer, and therefore they are available to the programmer. They are control signals that the hardware uses to make the actual pop, push, and add occur. The control signals are part of the microarchitecture, similar to the load enable signals and mux select signals we discussed earlier. As is the case with LC-3 instructions LD and ST, and control signals PCMUX and LD.MDR, the programmer simply instructs the computer to ADD, and the microarchitecture does the rest. 
+
+44. An Example: Suppose we want to evaluate (A + B) ⋅ (C + D), where A contains 25, B contains 17, C contains 3, and D contains 2, and store the result in E. If the LC-3 had a multiply instruction (we would probably call it MUL), we could use the following program:
+
+LD   R0,A
+LD   R1,B
+ADD  R0,R0,R1
+LD   R2,C
+LD   R3,D
+ADD  R2,R2,R3
+MUL  R0,R0,R2
+ST   R0,E
+
+45. With a calculator, we would execute the following eight operations:
+
+push      25
+push      17
+add
+push      3
+push      2
+add 
+multiply 
+pop       E
+
+with the ﬁnal result popped (i.e., 210) being the result of the computation.
+
+46. Figure 10.6 shows a snapshot of the stack after each of the eight operations. Note that in this example we have allocated memory locations x3FFB to x3FFF for our stack, and the stack pointer is initially at x4000, indicating that there is nothing initially on the stack.
+
+47. The program we write to simulate a calculator will need three subroutines to be able to perform addition, subtraction, and multiplication. what are they? 
+
+a. OpAdd, which will pop two values from the stack, add them, and push the result onto the stack.
+b. OpMult, which will pop two values from the stack, multiply them, and push the result onto the stack.
+c. OpNeg, which will pop the top value, form its 2’s complement negative value, and push the result onto the stack. This will allow us to subtract two numbers A minus B by ﬁrst forming −B and then adding the result to A.
+
+48. The OpAdd Subroutine: Figure 10.7 shows the ﬂowchart of the OpAdd subroutine. Basically, it attempts to pop two values oﬀ the stack and, if successful, add them. If the result is within the range of acceptable values (i.e., an integer between −999 and +999), then the result is pushed onto the stack.
+
+50. what are two things that could prevent OpAdd from completing successfully? fewer than two values are available on the stack for source operands, or the result is out of range.
+
+51. In both cases, the stack is put back to the way it was at the start of the OpAdd subroutine. If the ﬁrst pop is unsuccessful, the stack is not changed since the POP routine leaves the stack as it was. If the second of the two pops reports back unsuccessfully, the stack pointer is decremented, which eﬀectively returns the ﬁrst value popped to the top of the stack. If the result is outside the range of acceptable values, then the stack pointer is decremented twice, returning both values to the top of the stack.
+
+52. The OpAdd subroutine is shown in Figure 10.8. Note that the OpAdd subroutine calls the RangeCheck subroutine. This is a simple test to be sure the result of the computation is within what can successfully be stored in a single stack location. For our purposes, we restrict values to integers in the range −999 to +999. The ﬂowchart for the RangeCheck subroutine is shown in Figure 10.9. The LC-3 program that implements this subroutine is shown in Figure 10.10.
+
+53. The OpMult Subroutine Figure 10.11 shows the flowchart of the OpMult subroutine, and Figure 10.12 shows the LC-3 program that implements it. Similar to the OpAdd subroutine, the OpMult subroutine attempts to pop two values off the stack and, if successful, multiplies them. Since the LC-3 does not have a multiply instruction, multiplication is performed as we have done in the past as a sequence of adds. Lines 17 to 19 of Figure 10.12 contain the crux of the actual multiply. If the result is within the range of acceptable values, then the result is pushed onto the stack.
+
+54. If the second of the two pops reports back unsuccessfully, the stack pointer is decremented, which eﬀectively returns the ﬁrst value popped to the top of the stack. If the result is outside the range of acceptable values, which as before will be indicated by a 1 in R5, then the stack pointer is decremented twice, returning both values to the top of the stack.
+
+55. The OpNeg Subroutine: To perform subtraction with the top two elements on the stack, we ﬁrst replace the top element on the stack with its negative and then use OpADD. That is, if the top of the stack contains A, and the second element on the stack contains B, we can push B−A on the stack by ﬁrst negating the top of the stack and then performing OpAdd. The subroutine OpNeg for computing the negative of the element on the top of the stack is shown in Figure 10.13.
+
+56. The Calculator functionality: our calculator will allow a user to enter positive integers consisting of not more than three decimal digits, perform basic arithmetic (addition, subtraction, and multiplication) on these integers, and display the decimal result (which will also be limited to at most three decimal digits). We will use the keyboard to tell the calculator what to do. We can enter positive integers having up to three decimal digits, the arithmetic operators + (for ADD), * (for MUL), and − (for negative), and three additional commands D (to display the result of the calculation on the monitor), C (to erase all values entered), and X (to turn oﬀ the calculator).
+
+57. The calculator algorithm works as follows: We use the keyboard to input commands and decimal values. We use the monitor to display results. We use a stack to hold source operands for performing arithmetic operations and the results of those arithmetic operations. Values entered and displayed are restricted to three decimal digits, that is, only values between −999 and +999, inclusive.
+
+58. Figure 10.14 is a ﬂowchart that provides an overview of our algorithm that simulates a calculator. Simulation of the calculator starts with initialization, which includes setting R6, the stack pointer, to an empty stack. Then the user sitting at the keyboard is prompted with: “Enter a Command.”
+
+59. The following commands are available to the user.
+
+X Exit the simulation.
+D Display the value at the top of the stack.
+C Clear all values from the stack.
++ Pop the top two elements A,B oﬀ the stack and push A+B.
+* Pop the top two elements A,B oﬀ the stack and push A*B.
+− Pop the top element A oﬀ the stack and push “minus” A.
+Enter or LF Push the value typed on the keyboard onto the top of the stack.
+
+60. If the user wants to enter a number, he/she types the number (up to three decimal digits) followed by <Enter> or <Line Feed (LF)>.
+
+61. Input is echoed, and the calculator simulation systematically tests the character to identify the user’s command. Depending on the user’s command, the calculator calls the appropriate subroutine to carry out the work speciﬁed. After the work is carried out, the subroutine returns, followed by a prompt for another command. The calculator simulation continues in this way until the user presses X, signaling that the user is ﬁnished with the calculator.
+
+62. For example, to calculate
+
+(51  -  49)  *  (172  +  205)  -  (17  *  2)
+
+and display the result 720 on the monitor, one types the following sequence of keys on the keyboard:
+
+5,1,LF,4,9,LF,−,+,1,7,2,LF,2,0,5,LF,+,*,1,7,LF,2,LF,*,−,+,D.
+
+63. Code: Twelve routines comprise the calculator simulation. Figure 10.15 is the main algorithm, supported by eleven subroutines. Note the three global labels, Stack- Max, StackBase, and ASCIIBUFF, are all part of the main algorithm, shown in Figure 10.15. They provide the symbol table entries needed by the subroutines that reference those locations. Note also that the stack has been allocated ten entries in the main algorithm, and R6, the stack pointer, is initialized to an empty stack in line 05.
+
+64. Figure 10.16 takes an ASCII string of characters terminating by a LF, checks to be sure it corresponds to a string of not more than three decimal digits, and if so, converts it to a binary number, then pushes the binary number onto the top of the stack. 
+
+65. Figure 10.4 provides the ASCII-to-binary conversion routine. Figure 10.19 pops the entry on the top of the stack, converts it to an ASCII character string, and displays the ASCII string on the monitor. Figure 10.5 provides the binary- to-ASCII conversion routine. Figures 10.8 (OpAdd), 10.12 (OpMult), and 10.13 (OpNeg) supply the basic arithmetic algorithms using a stack. Figures 10.17 and 10.18 contain the basic POP and PUSH routines Finally, Figure 10.20 clears
+the stack.

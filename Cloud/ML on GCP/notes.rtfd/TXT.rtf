@@ -8,7 +8,7 @@
 {\list\listtemplateid4\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid301\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid4}
 {\list\listtemplateid5\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid401\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid5}}
 {\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}{\listoverride\listid4\listoverridecount0\ls4}{\listoverride\listid5\listoverridecount0\ls5}}
-\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh17120\viewkind0
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh17060\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f0\fs48 \cf0 1. AI foundations layer. Google cloud infrastructure can be thought of as being comprised of 3 layers\
@@ -557,15 +557,16 @@ How does it work? You create a directed graph (a dag) to represent the computati
 \
 \pard\pardeftab720\partightenfactor0
 \cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic.png \width23560 \height18180 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\pard\pardeftab720\partightenfactor0
+}¬}\pard\pardeftab720\partightenfactor0
 \cf0 \
+\
 \
 What is a tensor?\
 \
 \pard\pardeftab720\partightenfactor0
 \cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 2.png \width32280 \height14400 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
 \
 A scalar is the simplest piece of data that you can have. It is a number like 3 or 5. It is 0 dimensional or rank 0. A one dimensional array is called a vector. A 2 dimensional array is a matrix.\
@@ -574,30 +575,125 @@ Why does tensorflow use directed graphs to represent computation? Due to portabi
 \
 Tensor flow api hierarchy: the lowest layer of abstraction is the layer implemented to target the different hardware platforms. The next level above is the tensor flow C++ api which abstracts from the underlying hardware. The next level above is the core python api which contains most of the mathematical functionality used. The next level is a set of python modules that are a high level of representation of useful neural network components. These modules provide components that are useful in building custom neural network models. The next level above consists of high level APIs for distributed training, data pre processing etc\
 \
-{{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 4.png \width34320 \height13820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 3__#$!@%!#__Pasted Graphic 4.png \width34320 \height13820 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
 \
 Understanding the shape of your data is the first essential part of a machine learning flow. \
 \
-{{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 5.png \width33040 \height16980 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}  \
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 5.png \width33040 \height16980 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0   \
 \
 \
-{{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 6.png \width25200 \height7900 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 6.png \width25200 \height7900 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
-{{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 7.png \width17440 \height15920 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 7.png \width17440 \height15920 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
-{{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 8.png \width17440 \height17280 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 8.png \width17440 \height17280 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
-{{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 9.png \width30920 \height10020 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 9.png \width30920 \height10020 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
 The variable constructor requires an initial value for the variable, which can be a tensor of any shape and type. This initial type defines the shape and type of the variable. After construction, the type and shape of the variable are fixed. The value can be changed using one of the assign methods.\
 \
-{{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 10.png \width30860 \height17340 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 10.png \width30860 \height17340 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+In any ML project, after you have defined the business use case and established the success criteria, the process of delivering an ML model to production involves the following steps:\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic.png \width32660 \height17360 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+There are two phases in machine learning: a training phase and an inference phase\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 1.png \width30260 \height15020 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+From a practical perspective, many machine learning models must represent the data or features as vectors of numbers because the feature values must be represented by the model weights. Features, the columns in your data frame, are key in assisting machine learning models to learn. Better features result in accurate training and more accurate predictions\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 2.png \width32900 \height17080 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+Having efficient data pipelines is of vital importance to any machine learning model. When you have data ready for training, tensorflows dataset module, tf.data API, can be used to build efficient data pipelines. Data pipelines are a series of data processing steps. The tf.data API allows the handling of large amounts of data, read from different data formats, and perform complex transformations.\
+\
+The tf.data API introduces the tf.data.Dataset abstraction that represents a sequence of elements in which each element consists of one more components. There are two distinct ways to create a dataset: a data source constructs a dataset from data stored in memory or in one or more files; or a data transformation constructs a dataset from one or more tf.Dataset objects.\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 3.png \width30000 \height17180 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+Large datasets tend to be shared or broken apart into multiple files which can be loaded progressively. Training is done on small batches of data I.e. you do not need to have the entire dataset in memory. One mini batch is all that is needed for one training step.\
+\
+The dataset API will help you create input functions for your model that load data in progressively. There are specialised data classes that can read data from text files like CSVs, tensorflow records, or fixed length record files. \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 4__#$!@%!#__Pasted Graphic 4.png \width32880 \height6000 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\
+For anything else, you can use the generic dataset class and add your own decoding code.\
+\
+When data used to train a model sits in memory, an input pipeline can be created by constructing a dataset using tf.data.Dataset.from_tensors or tf.data.Dataset.from_tensor_slices\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 5.png \width26600 \height12200 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+Datasets allow for data to be pre fetched prior to being operated on\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 6.png \width31580 \height16920 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+As the number of categories of a feature grow large, it becomes unfeasible to train a neural network using one hot encoding. An embedding column can be used to overcome this limitation. Instead of representing the data as a one hot vector of many dimensions, an embedding column represents that data as a lower dimensional dense vector	in which each cell can contain any number, not just 0 or 1. \
+\
+Keras pre processing layers:\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic 6__#$!@%!#__Pasted Graphic.png \width33000 \height13960 \appleattachmentpadding0 \appleembedtype0 \appleaqc
 }¬}\
+\
+{{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 1.png \width31420 \height14400 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+{{\NeXTGraphic 6__#$!@%!#__Pasted Graphic 2.png \width29200 \height10140 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+{{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 3.png \width29200 \height13120 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+{{\NeXTGraphic 5__#$!@%!#__Pasted Graphic 4.png \width34400 \height13120 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+{{\NeXTGraphic 6__#$!@%!#__Pasted Graphic 5.png \width34980 \height15780 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+\
 }
