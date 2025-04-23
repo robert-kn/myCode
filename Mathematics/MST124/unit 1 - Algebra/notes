@@ -28,16 +28,31 @@ some points correspond to rational numbers while others correspond to irrational
 11. what are the two alternative notations used to denote recurring decimal numbers? see recurring-decimal.png
 
 12. what do you call decimal numbers that neither terminate nor recur i.e. they have infinitely long blocks of digits but 
-none that recurs? irrational number
+none that recurs? irrational numbers
 
-13. what does BIDMAS stand for?
-14. what does it mean to raise a number to a power? means multiply a number by itself a specified number of times
-15. do you know what index notation is?
-16. what does it mean to take a root of a number? means taking its square root
-17. rounding decimal places
-18. rounding significant figures i.e. the first significant figure is the first non zero number from the left
-19. When you substitute a negative number into an algebraic expression, you usually have to enclose it inbrackets, to makesurethatyou 
-evaluatethe expression correctly
+13. Figure 3 is a summary of the types of numbers mentioned in this subsection. It illustrates that all the natural numbers 
+are also integers, all the integers are also rational numbers, and all the rational numbersare also real numbers.
+
+14. what does BIDMAS stand for?
+
+15. what does it mean to raise a number to a power? means multiply a number by itself a specified number of times
+
+16. In particular, squaring and cubing a number mean raising it to the powers 2 and 3, respectively.
+
+17. do you know what index notation is?
+
+18. what does it mean to take a root of a number? means taking its square root
+
+19. There are various ways to round a number. Sometimes it's appropriate to round to a particular number of decimal places 
+(often abbreviated to ‘d.p.’).The decimal places of a number are the positions of the digits to the right of the decimal 
+point. 
+
+20. More often, it’s appropriate to round to a particular number of signiﬁcant ﬁgures (often abbreviated to ‘s.f.’ or ‘sig. 
+ﬁgs.’).The ﬁrst signiﬁcant ﬁgure of a number is the ﬁrst non-zero digit (from the left), the next signiﬁcant ﬁgure is the 
+next digit along (whether zero or not), and so on. see rounding-numbers.png
+
+page 17
+
 20. meaning of statements b is a multiple a; b is divisible by a; a is a factor or divisor of b
 21. meaning of a factor pair; a positive factor pair; square number or a perfect square => same factor pair is repeated
 22. what do you call an integer greater than 1 whose only factors are 1 and itself?

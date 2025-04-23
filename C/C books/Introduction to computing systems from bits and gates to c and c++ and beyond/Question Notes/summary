@@ -2288,9 +2288,107 @@ and display the result 720 on the monitor, one types the following sequence of k
 
 5,1,LF,4,9,LF,−,+,1,7,2,LF,2,0,5,LF,+,*,1,7,LF,2,LF,*,−,+,D.
 
-63. Code: Twelve routines comprise the calculator simulation. Figure 10.15 is the main algorithm, supported by eleven subroutines. Note the three global labels, Stack- Max, StackBase, and ASCIIBUFF, are all part of the main algorithm, shown in Figure 10.15. They provide the symbol table entries needed by the subroutines that reference those locations. Note also that the stack has been allocated ten entries in the main algorithm, and R6, the stack pointer, is initialized to an empty stack in line 05.
+63. Code: Twelve routines comprise the calculator simulation. Figure 10.15 is the main algorithm, supported by eleven subroutines. Note the three global labels, StackMax, StackBase, and ASCIIBUFF, are all part of the main algorithm, shown in Figure 10.15. They provide the symbol table entries needed by the subroutines that reference those locations. Note also that the stack has been allocated ten entries in the main algorithm, and R6, the stack pointer, is initialized to an empty stack in line 05.
 
 64. Figure 10.16 takes an ASCII string of characters terminating by a LF, checks to be sure it corresponds to a string of not more than three decimal digits, and if so, converts it to a binary number, then pushes the binary number onto the top of the stack. 
 
 65. Figure 10.4 provides the ASCII-to-binary conversion routine. Figure 10.19 pops the entry on the top of the stack, converts it to an ASCII character string, and displays the ASCII string on the monitor. Figure 10.5 provides the binary- to-ASCII conversion routine. Figures 10.8 (OpAdd), 10.12 (OpMult), and 10.13 (OpNeg) supply the basic arithmetic algorithms using a stack. Figures 10.17 and 10.18 contain the basic POP and PUSH routines Finally, Figure 10.20 clears
 the stack.
+
+chapter 11
+
+1. We’ve just completed an introduction to the basic underlying structure of modern computing devices. Be it on a smartphone or in a smart car, the underlying mechanisms for processing digital data are very much the same. With these foundational concepts solidly in place, we are now well prepared to explore programming in a high-level programming language.
+
+2. this chapter will cover high-level programming concepts in the context of the C and C++ programming languages. At every step, with every new high-level concept, we will be able to make a connection to the lower levels of the digital system.
+
+3. In the ﬁrst ten chapters, we described the LC-3, a simple computing architecture that has all the important characteristics of a more complex, real system. A basic idea behind the LC-3 (and indeed, behind all modern digital systems) is that simple elements are systematically interconnected to form elements with more complex capabilities. MOS transistors are connected to build logic gates. Logic gates are used to build memory and data path elements. Memory and data path elements are interconnected to build the LC-3. 
+
+4.  This systematic connection of simple elements to create something more sophisticated is an important concept that is pervasive throughout computing, not only in hardware design but also in software design. 
+
+5. After describing the hardware of the LC-3, we programmed it in the 1s and 0s of its native machine language. Having gotten a taste of the error-prone and unnatural process of programming in machine language, we quickly moved to the more user-friendly LC-3 assembly language.
+
+6. We examined how low-level TRAP subroutines perform commonly needed tasks, such as input and output, on behalf of the programmer. Systematic decomposition and subroutines are prevalent design paradigms for software. 
+
+7. In this half of the book, our primary objectives are to introduce fundamental high-level programming constructs—variables, control structures, functions, arrays, pointers, recursion, simple data structures—and to teach a good problem solving methodology for attacking programming problems. Our primary vehicles for doing so are the C and C++ programming languages.
+
+8. complete coverage of C or C++ will not be provided as both are vast programming languages (particularly C++). Some of the most widely used apps, cloud services, and devices are built using C or C++. 
+
+9. It is almost always the software that enables a digital system to do its thing. In devices we might not consider to be software-driven, such as a smart speaker or Bluetooth headphones, there is a large body of software embedded in the device to implement its features. It’s the software that animates the device.
+
+10. Enabling these sophisticated capabilities requires larger and more complex bodies of software. A typical smartphone app might consist of hundreds of thousands of lines of code, a web browser several million, and the code to power a modern automobile (nonautonomous) might range in the hundreds of millions of lines. Over time, from generation to generation, the software needed to power these devices has grown in complexity. As the underlying hardware becomes faster and our demand for additional capabilities grows, we expect the amount of software needed to continue to grow as well. 
+
+11. Figure 11.1. provides a graphical view of the sizes of software systems for various applications.
+
+12. Programming languages such as C and C++ were created for one primary purpose: to increase programmer productivity. The most commonly used languages enable teams of programmers to more rapidly and maintainably develop correctly working code. Without eﬀective programming languages and corresponding development environments, our ability to create these incredible devices would be severely diminished.
+
+13. Clearly, LC-3 assembly language isn’t going to be the language of choice for developing most real-world software (nor are the assembly languages for x86 or ARM, which are the two most widespread instruction set architectures today, powering nearly all of our PCs, servers, and mobile devices). But it is the case that whatever the development language, C or C++ or Java or Python, the code is ultimately, and automatically, translated into the instruction set of the under- lying hardware (be it ARM or x86 or LC-3).
+
+14. So the conceptual process here is that the programming language enables us humans to express code in a much more human-friendly way and in a manner that can be automatically, and unambiguously, translated into a machine-executable form.
+
+15. As we made the transition from LC-3 machine language in Chapters 5 and 6 to LC-3 assembly language in Chapter 7, you no doubt noticed and appreciated how assembly language simplified programming the LC-3. The 1s and 0s became mnemonics, and memory addresses became symbolic labels. Both instructions and memory addresses took on a form more comfortable for the human than for the machinery. The assembler filled some of the gap between the algorithm level and the ISA level in the levels of transformation (see Figure 1.6). We would like the language level to fill more of that gap. High-level languages do just that. They help make the job of programming easier. 
+
+16. High-level languages help manage the values upon which we are computing: When programming in machine language, if we want to keep track of the iteration count of a loop, we need to set aside a memory location or a register in which to store the counter value. To update the counter, we need to remem- ber the spot where we last stored it, load it, operate, and store it back in that location. The process is easier in assembly language because we can assign a meaningful label to the counter’s memory location. In a higher-level language such as C, the programmer simply gives the value a meaningful symbolic name and the programming language takes care of allocating storage for it and perform- ing the appropriate data movement operations whenever we refer to it in our code. Since most programs contain lots of values, having such a convenient way to handle these values is critical to enhancing programmer productivity.
+
+17. High-level languages provide a human-friendly way to express computation: Most humans are more comfortable describing the interaction of objects in the real world than describing the interaction of objects such as integers, characters, and ﬂoating point numbers in the digital world. Because of their human-friendly orientation, high-level languages enable the programmer to be more expressive. In a high-level language, the programmer can express complex tasks with a smaller amount of code, with the code itself looking more like a human language. 
+
+18. High-level languages provide an abstraction of the underlying hardware: High-level languages provide a uniform programmer interface independent of underlying hardware. And this provides two distinct advantages. First, our code becomes portable. C or C++ or Java code can be easily and eﬃciently targeted for a variety of diﬀerent devices, independent of their hardware. Code written directly in assembly language takes advantage of the speciﬁcs of a particular hardware system and isn’t as easy to run on diﬀerent hardware. It’s easy to understand why portability is important: An app developer who has written an app for Android will want to quickly port the app to iOS to take advantage of the large base of Apple devices.
+
+19. The second advantage is that we use operations that aren’t natively supported by the hardware. For example, in the LC-3, there is no single instruction that performs an integer multiplication. Instead, an LC-3 assembly language programmer must write a small piece of code to perform multiplication. The set of operations supported by a high-level language is usually larger than the set supported by the ISA. The language will generate the necessary code to carry out the operation whenever the programmer uses it. The programmer can concentrate on the actual programming task knowing that these high-level operations will be performed correctly and without having to deal with the low-level implementation.
+
+20. High-level languages enhance maintainability: Since common control structures are expressed using simple, English-like statements, the program itself becomes easier to read and therefore easier for others to modify and ﬁx. One can look at a program in a high-level language, notice loops and decision constructs, and understand the code with less eﬀort than with a program written in assembly language. No doubt you’ve had to get reacquainted with your own LC-3 assem- bly code after spending even a couple of hours away from it. It’s no fun! Often as programmers, we are given the task of debugging or building upon someone else’s code. If the organization of the language is human-friendly to begin with, then understanding code in that language is a much simpler task.
+
+21. Many high-level languages provide safeguards against bugs: By making the programmer adhere to a stricter set of rules, the language can make checks as the program is translated or as it is executed. If certain rules or conditions are violated, an error message will direct the programmer to the spot in the code where the bug is likely to exist. In this manner, the language helps programmers to get their programs working more quickly.
+
+22. All high level languages must be translated into machine code. How is this translation done? depends on the design of the particular high-level language.
+
+23. One translation technique is called interpretation. With interpretation, a translation program called an interpreter reads in the high-level language program and performs the operations indicated by the programmer. The high-level language program does not directly execute but rather is executed by the interpreter program.
+
+24. The other technique is called compilation, and the translator is a compiler. The compilation process completely translates the high-level language program into machine language, or a form very close to machine language. An executable image is an output of the compilation process. It can directly execute on the hardware. Keep in mind that both interpreters and compilers are themselves pieces of software running on some device.
+
+25. interpretation: with interpretation, a high-level language program is a set of “commands” for the interpreter program. The interpreter reads in the commands and carries them out as deﬁned by the language. The high-level language program is not directly executed by the hardware but is in fact just input data for the interpreter. The interpreter is a virtual machine that executes the program in an isolated sandbox.
+
+26. Many interpreters translate the high-level language program section by section, one line, command, or subroutine at a time. For example, the interpreter might read a single line of the high-level language program and directly carry out the eﬀects of that line on the underlying hardware. If the line said, “Take the square root of B and store it into C,” the interpreter will carry out the square root by issuing the correct stream of instructions in the ISA of the computer to perform square root. Once the current line is processed, the interpreter moves on to the next line and executes it. This process continues until the entire high-level language program is done.
+
+27. Compilation: with compilation, on the other hand, a high-level language program is translated into machine code that can be directly executed on the hardware. To do this eﬀectively, the compiler must analyze the source program as a larger unit (usually, the entire source ﬁle) before producing the translated version. A program need only be compiled once, and it can be executed many times. A compiler processes the ﬁle (or ﬁles) containing the high-level language program and pro- duces an executable image. The compiler does not execute the program (although some sophisticated compilers do execute the program in order to better optimize its performance), but instead only transforms it from the high-level language into the computer’s native machine language.
+
+28. Pros and Cons: With interpretation, developing and debugging a program are usually easier. Interpreters often permit the execution of a program one section (a single line, for example) at a time. This allows the programmer to examine intermediate results and make code modiﬁcations on the ﬂy. Often the debugging is easier with interpretation. Interpreted code is more easily portable across diﬀerent computing systems. However, with interpretation, programs take longer to execute because there is an intermediary, the interpreter, which is actually doing the work. With compilation, the programmer can produce code that executes more quickly and uses memory more eﬃciently. Since compilation produces more eﬃcient code, most production software tends to be programmed in compiled languages.
+
+29. Because of their popularity and close-to-the-metal, low-level approach, C and C++ are the ideal languages for our bottom-up exploration. We’ll spend the bulk of our time with the C language in Chapters 11 through 19, and we will intro- duce some core C++ concepts in Chapter 20. Because C++ is based on C, the C-speciﬁc material we cover will help in our understanding of C++.
+
+30. Both C and C++ are highly developed, heavily evolved languages that support large-scale programming. We will not be covering all aspects of C or C++ in this textbook; instead, we will cover the common core subset that will enable you to write code on the order of hundreds of lines by yourself in a single source code ﬁle.
+
+31. Our objective is to give you a grounding in digital systems, hardware, and software. This grounding will be useful in your subsequent courses in data structures and software engineering for more complex software projects.
+
+32. All of the examples and speciﬁc details of C presented in this text are based on a standard version of C called ANSI C, or C18.
+
+33. As with many programming languages, several variants of C have been introduced throughout the years. The American National Standards Institute (ANSI) approves “an unambiguous and machine-independent deﬁnition of the language C” in order to standardize the language, promoting portability of C code across diﬀerent systems and compilers. The most recently adopted version of ANSI C is from 2018 and is thus referred to as C18. Likewise, we’ll use ISO C++, often called Standard C++, in our examples involving C++ code.
+
+34. Many of the new C and C++ concepts we present will be coupled with LC-3 code generated by a hypothetical LC-3 C compiler. In some cases, we will describe what actually happens when this code is executed. Keep in mind that you are not likely to be using an LC-3–based computer but rather one based on a real ISA such as the x86 or ARM. For example, if you are using a Windows-based PC, then it is likely that your compiler will generate x86 code, not LC-3 code. Many of the examples we provide are complete programs that you can compile and execute. 
+
+35. For the sake of clearer illustration, some of the examples we provide are not quite complete programs and need to be completed before they can be compiled. In order to keep things straight, we’ll refer to these partial code examples as code segments.
+
+36. The Compilation Process: The C or C++ compiler follows the typical mode of translation from a source program to an executable image.
+
+37. what is an executable image? is a machine language representation of a program that is ready to be loaded into memory and executed. 
+
+38. The compilation mechanism involves several distinct components, notably the preprocessor, the compiler itself, and the linker. Figure 11.2 shows the overall compilation process for C. 
+
+39. The Preprocessor: The preprocessor scans through the source ﬁles (the source ﬁles contain the actual C program) looking for and acting upon prepro- cessor directives. These directives are similar to pseudo-ops in LC-3 assembly language. They instruct the preprocessor to transform the source ﬁle in some controlled manner. For example, we can direct the preprocessor to substitute the character string DAYS_THIS_MONTH with the string 30 or direct it to insert the contents of ﬁle stdio.h into the source ﬁle at the current line. All preprocessor directives begin with a pound sign, #, as the ﬁrst character. 
+
+40. The Compiler: After the preprocessor transforms the input source ﬁle, the program is ready to be handed over to the compiler. The compiler transforms the preprocessed program into an object module.
+
+41. what is an object module? is the machine code for one section of the entire program. 
+
+42. what are the two major phases of compilation? analysis, in which the source program is broken down or parsed into its constituent parts, and synthesis, in which a machine code version of the program is generated. It is the job of the analysis phase to read in, parse, and build an internal representation of the original program. The synthesis phase generates machine code and, if directed, tries to optimize this code to execute more quickly and eﬃciently on the computer on which it will be run. 
+
+43. Each of these two phases is typically divided into subphases where speciﬁc tasks, such as parsing, register allocation, or instruction scheduling, are accomplished. Some compilers generate assembly code and use an assembler to complete the translation to machine code.
+
+44. One of the most important internal bookkeeping mechanisms the compiler uses in translating a program is the symbol table. A symbol table is the compiler’s internal bookkeeping method for keeping track of all the symbolic names the programmer has used in the program. The compiler’s symbol table is very similar to the symbol table maintained by the LC-3 assembler
+
+45. The Linker: The linker takes over after the compiler has translated the source ﬁle into object code. It is the linker’s job to link together all object modules to form an executable image of the program. The executable image is a version of the program that can be loaded into memory and executed by the underlying hardware. 
+
+46. When you click on the icon for the web browser or launch an app on your phone, for example, you are instructing the operating system to load the app’s executable image into memory and start executing it.
+
+47. Often, C programs rely upon library routines. Library routines perform common and useful tasks (such as I/O) and are prepared for general use by the developers of the system software (the operating system and compiler, for example). If a program uses a library routine, then the linker will ﬁnd the object code corresponding to the routine and link it within the ﬁnal executable image. Usually, library ﬁles are stored in a particular place, depending on the computer system.
+
+page 444
