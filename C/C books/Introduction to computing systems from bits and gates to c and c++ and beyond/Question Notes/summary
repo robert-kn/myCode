@@ -2391,4 +2391,64 @@ chapter 11
 
 47. Often, C programs rely upon library routines. Library routines perform common and useful tasks (such as I/O) and are prepared for general use by the developers of the system software (the operating system and compiler, for example). If a program uses a library routine, then the linker will ﬁnd the object code corresponding to the routine and link it within the ﬁnal executable image. Usually, library ﬁles are stored in a particular place, depending on the computer system.
 
-page 444
+48. Note that in ANSI C, main must be declared to return an integer value, and therefore the keyword
+int precedes the name of the function main.
+
+49. Variables are a useful and elementary feature provided by all high-level programming languages. They give us a way to symbolically name the values within a program rather than referring to them by the memory location or register in which they are stored.
+
+50. C is a free-format language. That is, white space (spaces and tabs and line breaks) between words and between lines within a program does not change the meaning of the program.
+
+51. the #include directive instructs the preprocessor literally to insert another source ﬁle into the code at the point where the #include appears. Essentially, the #include directive itself is replaced by
+the contents of another ﬁle.
+
+52. All C programs that perform typical input and output must include C’s input/output library’s header ﬁle stdio.h. This ﬁle deﬁnes some relevant information about the I/O functions in the library. The preprocessor directive #include <stdio.h> is used to insert the header ﬁle before compilation begins.
+
+53. if a specified header file includes < >, it tells the preprocessor that the header ﬁle can be found in a predeﬁned system directory. This is usually determined by the conﬁguration of the system, and it contains many common system-related header ﬁles, such as stdio.h.
+
+54. if a header file includes double quotes (" ") around the ﬁlename, it tells the preprocessor that the header ﬁle can be found in the same directory as the C source ﬁle or in some other directory known to the compiler.
+
+chapter 12
+
+1. Variables hold the values upon which a program acts, and operators are the language constructs for manipulating these values.
+
+2. High-level languages enable the programmer to refer to values symbolically, by a name rather than the storage location where the value resides. To operate on the value, referring to the symbolic name suﬃces, and the actual storage location is abstracted away.
+
+3. The compiler generates the full set of data movement operations to access the value from wherever it resides in memory. The programmer can focus on writing the logic of the program without concern about where values are currently stored. In high-level languages, these symbolically named values
+are called variables.
+
+4. Variables are the most basic type of memory object. An object is a named unit of data stored in memory with certain characteristics and behaviors.
+
+5. In order to properly track the variables in a program, the C or C++ compiler needs to know several characteristics about each variable, which are ultimately provided by the programmer. The compiler needs to know the symbolic name of the variable. It needs to know what type of information the variable will contain. It needs to know where in the code the variable will be accessible. In C and C++, this information is provided by the variable’s declaration.
+
+6. The meaning of a particular bit pattern depends on the data type imposed on the pattern. For exam-
+ple, the binary pattern 0110 0110 might represent the lowercase f or it might represent the decimal number 102, depending on whether we treat the pattern as an ASCII data type or as a 2’s complement integer data type.
+
+7. A variable’s declaration informs the compiler about the variable’s type. The compiler uses a variable’s type information to allocate a proper amount of storage for the variable. Also, type indicates how operations on the variable are to be performed at the machine level. For instance, performing an addition on two integer variables can be done on the LC-3 with one ADD instruction. If the two variables are of ﬂoating point type, the LC-3 compiler would generate a sequence of instructions to perform the addition because no single LC-3 instruction performs a ﬂoating
+point addition.
+
+8. C supports four basic data types: integers, characters, ﬂoating point numbers, and boolean values. Variables of these types can be created with the type speciﬁers int, char, ﬂoat (or double), and _Bool (or bool).
+
+9. The internal representation and range of values of an int depend on the ISA of the underlying hardware. In the LC-3, for example, an int is a 16-bit 2’s complement integer that can represent values between −32,768 and +32,767. On an x86-based system, an int is likely to be a 32-bit 2’s complement number that can represent values between −2,147,483,648 and +2,147,483,647. In most cases, an int is a 2’s complement integer in the word length of the underlying ISA.
+
+10. Floating point literals are represented containing either a decimal point or an exponent, or both, as demonstrated in the example code that follows. The exponent is signiﬁed by the character e or E and
+can be positive or negative. It represents the power of ten by which the fractional part (the part that precedes the e or E) is multiplied. Note that the exponent must be an integer value.
+
+double twoPointOne = 2.1;               // This is 2.1
+double twoHundredTen = 2.1E2;           // This is 210.0
+double twoHundred = 2E2;                // This is 200.0
+double twoTenths = 2E-1;                // This is 0.2
+double minusTwoTenths = -2E-1;          // This is -0.2
+double extTemp = -0.2;                  // This is -0.2
+
+11. The precision of a ﬂoating point number depends on the number of bits of the representation allocated to the fraction. In C, depending on the compiler and the ISA, a double may have more bits allocated for the fraction than a ﬂoat, but never fewer. The size of the double is dependent upon the ISA and the compiler. Usually, a double is 64 bits long and a ﬂoat is 32 bits in compliance with the
+IEEE 754 ﬂoating point standard.
+
+12. The _Bool type is a more recent addition to the C language and is now part of the ANSI standard. A variable of the _Bool type takes on the values 0 or 1, representing a value that can be false or true. This type was supported natively by C++, and later supported by C, and it provides a representation for a commonly occurring value in our code.
+
+13. The C type speciﬁer for a boolean type is _Bool. A more convenient way to accomplish the same is to use the use the bool speciﬁer. To do so, we need to include the stdbool.h header ﬁle. This header ﬁle also deﬁnes true to symbolically map to 1, and false to map to 0.
+
+_Bool flag = 1;         // Initialized to 1 or true
+bool test = false;      // Initialized to false, which is symbolically defined to 0. Requires stdbool.h
+
+14. Choosing Identiﬁers: Variables beginning with an underscore (e.g., _index_) conventionally are used only in special library code. Variables are almost never declared in all uppercase letters. The convention of all uppercase is used solely for symbolic values created using the preprocessor
+directive #deﬁne.
