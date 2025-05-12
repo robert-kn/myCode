@@ -2413,25 +2413,21 @@ chapter 12
 
 2. High-level languages enable the programmer to refer to values symbolically, by a name rather than the storage location where the value resides. To operate on the value, referring to the symbolic name suﬃces, and the actual storage location is abstracted away.
 
-3. The compiler generates the full set of data movement operations to access the value from wherever it resides in memory. The programmer can focus on writing the logic of the program without concern about where values are currently stored. In high-level languages, these symbolically named values
-are called variables.
+3. The compiler generates the full set of data movement operations to access the value from wherever it resides in memory. The programmer can focus on writing the logic of the program without concern about where values are currently stored. In high-level languages, these symbolically named values are called variables.
 
 4. Variables are the most basic type of memory object. An object is a named unit of data stored in memory with certain characteristics and behaviors.
 
 5. In order to properly track the variables in a program, the C or C++ compiler needs to know several characteristics about each variable, which are ultimately provided by the programmer. The compiler needs to know the symbolic name of the variable. It needs to know what type of information the variable will contain. It needs to know where in the code the variable will be accessible. In C and C++, this information is provided by the variable’s declaration.
 
-6. The meaning of a particular bit pattern depends on the data type imposed on the pattern. For exam-
-ple, the binary pattern 0110 0110 might represent the lowercase f or it might represent the decimal number 102, depending on whether we treat the pattern as an ASCII data type or as a 2’s complement integer data type.
+6. The meaning of a particular bit pattern depends on the data type imposed on the pattern. For example, the binary pattern 0110 0110 might represent the lowercase f or it might represent the decimal number 102, depending on whether we treat the pattern as an ASCII data type or as a 2’s complement integer data type.
 
-7. A variable’s declaration informs the compiler about the variable’s type. The compiler uses a variable’s type information to allocate a proper amount of storage for the variable. Also, type indicates how operations on the variable are to be performed at the machine level. For instance, performing an addition on two integer variables can be done on the LC-3 with one ADD instruction. If the two variables are of ﬂoating point type, the LC-3 compiler would generate a sequence of instructions to perform the addition because no single LC-3 instruction performs a ﬂoating
-point addition.
+7. A variable’s declaration informs the compiler about the variable’s type. The compiler uses a variable’s type information to allocate a proper amount of storage for the variable. Also, type indicates how operations on the variable are to be performed at the machine level. For instance, performing an addition on two integer variables can be done on the LC-3 with one ADD instruction. If the two variables are of ﬂoating point type, the LC-3 compiler would generate a sequence of instructions to perform the addition because no single LC-3 instruction performs a ﬂoating point addition.
 
 8. C supports four basic data types: integers, characters, ﬂoating point numbers, and boolean values. Variables of these types can be created with the type speciﬁers int, char, ﬂoat (or double), and _Bool (or bool).
 
 9. The internal representation and range of values of an int depend on the ISA of the underlying hardware. In the LC-3, for example, an int is a 16-bit 2’s complement integer that can represent values between −32,768 and +32,767. On an x86-based system, an int is likely to be a 32-bit 2’s complement number that can represent values between −2,147,483,648 and +2,147,483,647. In most cases, an int is a 2’s complement integer in the word length of the underlying ISA.
 
-10. Floating point literals are represented containing either a decimal point or an exponent, or both, as demonstrated in the example code that follows. The exponent is signiﬁed by the character e or E and
-can be positive or negative. It represents the power of ten by which the fractional part (the part that precedes the e or E) is multiplied. Note that the exponent must be an integer value.
+10. Floating point literals are represented containing either a decimal point or an exponent, or both, as demonstrated in the example code that follows. The exponent is signiﬁed by the character e or E and can be positive or negative. It represents the power of ten by which the fractional part (the part that precedes the e or E) is multiplied. Note that the exponent must be an integer value.
 
 double twoPointOne = 2.1;               // This is 2.1
 double twoHundredTen = 2.1E2;           // This is 210.0
@@ -2440,15 +2436,293 @@ double twoTenths = 2E-1;                // This is 0.2
 double minusTwoTenths = -2E-1;          // This is -0.2
 double extTemp = -0.2;                  // This is -0.2
 
-11. The precision of a ﬂoating point number depends on the number of bits of the representation allocated to the fraction. In C, depending on the compiler and the ISA, a double may have more bits allocated for the fraction than a ﬂoat, but never fewer. The size of the double is dependent upon the ISA and the compiler. Usually, a double is 64 bits long and a ﬂoat is 32 bits in compliance with the
-IEEE 754 ﬂoating point standard.
+11. The precision of a ﬂoating point number depends on the number of bits of the representation allocated to the fraction. In C, depending on the compiler and the ISA, a double may have more bits allocated for the fraction than a ﬂoat, but never fewer. The size of the double is dependent upon the ISA and the compiler. Usually, a double is 64 bits long and a ﬂoat is 32 bits in compliance with the IEEE 754 ﬂoating point standard.
 
 12. The _Bool type is a more recent addition to the C language and is now part of the ANSI standard. A variable of the _Bool type takes on the values 0 or 1, representing a value that can be false or true. This type was supported natively by C++, and later supported by C, and it provides a representation for a commonly occurring value in our code.
 
-13. The C type speciﬁer for a boolean type is _Bool. A more convenient way to accomplish the same is to use the use the bool speciﬁer. To do so, we need to include the stdbool.h header ﬁle. This header ﬁle also deﬁnes true to symbolically map to 1, and false to map to 0.
+13. The C type speciﬁer for a boolean type is _Bool. A more convenient way to accomplish the same is to use the bool speciﬁer. To do so, we need to include the stdbool.h header ﬁle. This header ﬁle also deﬁnes true to symbolically map to 1, and false to map to 0.
 
 _Bool flag = 1;         // Initialized to 1 or true
 bool test = false;      // Initialized to false, which is symbolically defined to 0. Requires stdbool.h
 
-14. Choosing Identiﬁers: Variables beginning with an underscore (e.g., _index_) conventionally are used only in special library code. Variables are almost never declared in all uppercase letters. The convention of all uppercase is used solely for symbolic values created using the preprocessor
-directive #deﬁne.
+14. Choosing Identiﬁers: Variables beginning with an underscore (e.g., _index_) conventionally are used only in special library code. Variables are almost never declared in all uppercase letters. The convention of all uppercase is used solely for symbolic values created using the preprocessor directive #deﬁne.
+
+15. a variable’s declaration assists the compiler in managing the storage of that variable. In C, a variable’s declaration conveys three pieces of information to the compiler: the variable’s identiﬁer, its type, and its scope. The ﬁrst two of these, identiﬁer and type, the C compiler gets explicitly from the variable’s declaration. The third piece, scope, the compiler infers from the position of the declaration within the code. The scope of a variable is the region of the program in which the variable is “alive” and accessible. The good news is that in C, there are only two basic types of scope for a variable. Either the variable is global to the entire program, or it is local, or private, to a particular block of code.
+
+16. If a variable is declared within a block, it is visible up through the end of the block. In C, a block is any subsection of a program beginning with the open brace character, {, and ending with the closing brace character, }. These variables are local to the block in which they are declared.
+
+17. In contrast to local variables, which can only be accessed within the block in which they are declared, global variables can be accessed throughout the program. They retain their storage and values throughout the duration of the program.
+
+18. What initial value will a variable have if it has no initializer? In C, by default, local variables start with an undeﬁned value. That is, local variables have garbage values in them, unless we explicitly initialize them in our code. Global variables, in contrast, are initialized to 0.
+
+19. Operator Precedence and Associativity in C; see table125
+
+20. our C compiler keeps track of variables in a program with a symbol table. Whenever the compiler reads a variable declaration, it creates a new entry in its symbol table corresponding to the variable being declared. The entry contains enough information for the compiler to manage the storage allocation for the variable and generation of the proper sequence of machine code whenever the variable is used in the program. For now, we’ll consider that each symbol table entry for a variable contains (1) its identifier, (2) its type, (3) the place in memory the variable has been allocated storage, and (4) the scope of the variable, which for our purposes will be the line numbers in the code corresponding to where the variable is in scope. Figure 12.5 shows the symbol table entries corresponding to the variables declared in the network rate calculation program in Figure 12.4. 
+
+21. Since this program contains six variable declarations, the compiler ends up with six entries in its symbol table, one for each. Notice that the compiler records a variable’s location in memory as an oﬀset, with most oﬀsets being negative. This oﬀset indicates the relative position of the variable within the region of memory in which it is allocated. Important concept. 
+
+22. Allocating Space for Variables: There are two regions of memory in which declared variables in C are allocated storage: the global data section and the run-time stack. Variables that are global are allocated storage in the global data section. Local variables are allocated storage on the run-time stack. The oﬀset ﬁeld in the symbol table enables the compiler to precisely locate those variables in either of those two regions. The oﬀset ﬁeld indicates how many locations from the base of the section a variable is allocated storage.
+
+23. For instance, if a global variable earth has an oﬀset of 4 and the global data section starts at memory location 0x5000, then earth is stored in location 0x5004. If R4 contained the address of the beginning of the global data section, then loading the variable earth into R3 can be accomplished with the following LC-3 instruction
+
+LDR R3, R4, #4
+
+24. If earth is instead a local variable, say for example in the function main,the variable is on the run-time stack, in units of allocation called activation records or stack frames. Whenever a function starts to execute, its stack frame is added to the run-time stack. A stack frame is a region of contiguous memory locations that contains all the local variables for a given function.
+
+25. Whenever a particular function is executing, the highest numbered memory address of its stack frame will be stored in R5—which is called the frame pointer. For example, the stack frame for the function main from the code in Figure 12.4 is shown in Figure 12.6. The variables are allocated in the record in the reverse of the order in which they are declared. Since the variable amount is declared ﬁrst, it appears closest to the frame pointer R5.
+
+26. If we make a reference to a particular local variable, the compiler will use the variable’s symbol table entry to generate the proper code to access it. The oﬀset in the variable’s symbol table entry indicates where in the stack the variable has been allocated storage. To access the variable seconds, the compiler would generate the instruction
+
+LDR R0, R5, #-5
+
+27. Whenever we call a function in C (functions are C’s notion of subroutines), the stack frame for the function is pushed onto the run-time stack. That is, the function’s stack frame is allocated on top of the stack. R5 is appropriately adjusted to point to the base of the record—therefore, any code within the function that accesses local variables will now work correctly using the oﬀsets as recorded in the symbol table. Whenever the function completes and control is about to return to the caller, the activation record is popped oﬀ the stack. R5 is adjusted to point to the caller’s activation record. Throughout all of this, R6 always contains the address of the top of the run-time stack—it is called the stack pointer.
+
+28. Figure 12.7 shows the organization of the LC-3’s memory when a program is running. The program itself occupies a region of memory (labeled Program text in the diagram); so does the run-time stack and the global data section. There is another region reserved for dynamically allocated data called the heap. Both the run-time stack and the heap can change size as the program executes. For example, whenever one function calls another, the run-time stack grows because we push another activation record onto the stack—in fact, it grows toward memory address x0000. In contrast, the heap grows toward 0xFFFF. Since the stack grows toward x0000, the organization of an activation record appears to be “upside-down”; that is, the ﬁrst local variable appears at the memory location pointed to by R5, the next one at R5 - 1,the subsequent one at R5-2, and so forth (as opposed to R5,R5+1,R5+2, etc).
+
+29. During execution, the PC points to a location in the program text, R4 points to the beginning of the global data section, R5 points within the run-time stack, and R6 points to the very top of the run-time stack. There are certain regions of memory, marked System space in Figure 12.7, that are reserved for the operating system, for things such as TRAP routines, vector tables, I/O registers, and boot code.
+
+30. Figure 12.8 is the source code for a complete C program that performs some simple operations on integer variables and then outputs the results of these operations. The program contains one global variable, inGlobal, and three local variables, inLocal, outLocalA, and outLocalB, which are local to the function main. The program starts oﬀ by assigning initial values to inLocal (which is initialized in the declaration) and inGlobal. After the initialization step, the variables outLocalA and outLocalB are updated based on two calculations performed using inLocal and inGlobal. After the calculation step, the values of outLocalA and outLocalB are output using the printf library function. Notice that because we are using printf, we must include the standard I/O library header ﬁle, stdio.h.
+
+31. When analyzing this code, the LC-3 C compiler will assign the global variable inGlobal the ﬁrst available spot in the global data section, which is at oﬀset 0. When analyzing the function main, it will assign inLocalA to oﬀset 0, outLocalA to oﬀset −1, and outLocalB to oﬀset −2 within main’s stack frame.
+
+32. A snapshot of the compiler’s symbol table corresponding to this program along with the activation record of main is shown in Figure 12.9. The resulting assembly code generated by the LC-3 C compiler is listed in Figure 12.10. Execution starts at the instruction labeled main.
+
+33. C gives the programmer the ability to specify larger or smaller versions of the basic types int, char, ﬂoat, and double. The modiﬁers long and short can be attached to int with the intent of extending or shortening the default size. For example, a long int can declare an integer that has twice the number of bits of a regular int, thereby allowing us to represent a larger range of integers in a C program. Similarly, the speciﬁer long can be attached to the double type to create a larger ﬂoating point type (if supported by the particular system) with greater range and precision.
+
+34. The modiﬁer short can be used to create variables that are smaller than the default size, which can be useful when trying to conserve on memory space when handling data that does not require the full range of the default data type.
+
+35. Because the size of the three basic C types is closely tied to the types supported by the underlying ISA, many compilers only support these modiﬁers long and short if the device’s ISA supports these size variations. Even though a variable can be declared as a long int, it may be equivalent to a regular int if the underlying ISA has no support for longer versions of the integer data type.
+
+36. Another useful variation of the basic int data type is the unsigned integer. We can declare an unsigned integer using the unsigned type modiﬁer. With unsigned integers, all bits are used to represent nonnegative integers (i.e., posi- tive numbers and zero). 
+
+37. In C, variables can also be declared as constants by adding the const qualiﬁer before the type speciﬁer. These constants are types whose values cannot be modiﬁed during the execution of a program; they are read-only. 
+
+38. In C, we can represent literal constants in hexadecimal by prepending a 0x in front of them, for example 0x1DB. ASCII literals require single quotes around them, as for example 'R', which is the ASCII value of the character R. Floating point literals can be the exponential notation described earlier.
+
+39. The third type of constant value is created using the preprocessor directive #deﬁne
+
+40. The distinction between constants declared using const and symbolic values deﬁned using #deﬁne might seem a little subtle to you. Using one vs. another is really a matter of programming style rather than function.
+
+chapter 13
+
+1. Conditional constructs allow a programmer to select an action based on some condition. This is a very common programming idiom, and every useful programming language provides a convenient way of expressing it. C provides two types of basic conditional constructs: if and if-else.
+
+2. The if statement is quite simple. It performs an action if a condition is true. The action is a C statement, and it is executed only if the condition, which is a C expression, evaluates to a non-zero (logically true) value. 
+
+3. if (x == 2) y=5; Let’s look at the LC-3 code that is generated for this code, assuming that x and y are integers that are locally declared. This means that R5 will point to the variable x and R5 - 1 will point to y.
+
+LDR R0, R5, #0  ; load x into R0
+ADD R0, R0, #-2 ; subtract 2 from x
+BRnp NOT_TRUE   ; If condition is not true, then skip the assignment
+AND R0, R0, #0  ; R0<-0
+ADD R0, R0, #5  ; R0<-5
+STR R0, R5, #-1 ; y=5;
+NOT_TRUE        ; the rest of the program
+
+4. Notice that it is most straightforward for the LC-3 C compiler to generate code that tests for the opposite of the original condition (x not equal to 2) and to branch based on its outcome.
+
+5. The ﬂow for the if-else is shown below 
+
+if (condition) 
+     action_if;
+else
+     action_else;
+
+If the variable x is non-zero, the if’s condition is true, y is incremented, and z is decremented. Otherwise, y is decremented and z incremented. The LC-3 code generated by our LC-3 C compiler is listed in Figure 13.3. The three variables x, y, and z are locally declared integers.
+
+6. An else is associated with the closest unassociated if. 
+
+7. A while loop executes a statement repeatedly while a condition is true. Before each iteration of the statement, the condition is checked. If the condition evaluates to a logical true (non-zero) value, the statement is executed again. In the following example program, the loop keeps iterating while the value of variable x is less than 10. 
+
+#include <stdio.h> 
+int main(void)
+{
+     int x = 0;
+     while (x < 10) { 
+          printf("%d ", x); 
+          x=x+1;
+     } 
+}
+
+The LC-3 code generated by our compiler for the above while example that counts from 0 to 9 is listed in Figure 13.7.
+
+8. The while statement is useful for coding loops where the iteration process involves testing for a sentinel condition. That is, we don’t know the number of iterations beforehand, but we wish to keep looping until some event (i.e., the sentinel) occurs. 
+
+9. the for loop is a special case of the while loop that happens to work well when the number of iterations is known ahead of time. The syntax for the C for statement 
+
+for (init; test; update)
+     loop_body;
+
+10. The init component is an expression (and optionally also a declaration) that is evaluated before the ﬁrst iteration. It is typically used to declare and initialize variables in preparation for executing the loop. The test is an expression that gets evaluated before every iteration to determine if another iteration should be executed. 
+
+11. If the test expression evaluates to zero, the for terminates, and the control ﬂow passes to the statement immediately following the for. If the expression is non-zero, another iteration of the loop_body is performed. The update component is an expression that is evaluated at the end of every iteration. It is used to update things in preparation for the next iteration. 
+
+12. Let’s take a look at the LC-3 translation of a simple for loop. The program is a simple one: It calculates the sum of all integers between 0 and 9.
+
+#include <stdio.h>
+int main(void)
+{
+     int x;
+     int sum = 0;
+     for (x = 0; x < 10; x++)
+          sum = sum + x;
+}
+
+The LC-3 code generated by the compiler is shown in Figure 13.10. 
+
+13. The break statement causes the compiler to gen- erate code that will immediately exit a loop or a switch statement. When used within a loop body, break causes the loop to terminate by jumping out to the end of the loop statement. No more iterations are executed. The continue statement, on the other hand, causes the current iteration to end. The next iteration might then execute, depending on the looping conditions. 
+
+14. Essentially, the break and continue statements cause the compiler to generate an unconditional branch instruction that leaves the loop or loop iteration from somewhere in the loop body. 
+
+
+chapter 14
+
+1. Functions are such a necessary and important concept that we build support for them directly in the hardware at the instruction set architecture level.
+
+2. Why are they so important? Functions (or procedures, or subroutines, or methods—all of which are variations of the same theme) enable abstraction. That is, they increase our ability to separate the operation performed by a component from the details of how it performs that operation.
+
+3. The C programming language is heavily oriented around functions. A C program is essentially a collection of functions.
+
+4. From every place in the program where a function is called, the actual arguments appearing in each call should match the type and ordering of the formal parameter list.
+
+5. In C, the arguments of the caller are passed as values to the callee. 
+
+6. What about the function main? Its return type is int (as required by the ANSI standard), yet it does not contain a return. Strictly speaking, we should include a return 0 at the end of main. In C, if a non-void function does not explicitly return a value, the value of the last statement is returned to the caller.
+
+7. A function declaration informs the compiler about the function, indicating its name, the number and types of parameters the function expects from a caller, and the type of value the function returns. A function deﬁnition is the actual source code for the function. The deﬁnition includes a formal parameter list, which indicates the names of the function’s parameters and the order in which they will be expected from the caller. A function is invoked via a function call. Input values, or arguments, for the function are listed within the parentheses of the function call. Literally, the value of each argument listed in the function call is assigned to the corresponding parameter in the parameter list, the ﬁrst argument assigned to the ﬁrst parameter, the second argument to the second parameter, and so forth. The return value is the output of the function, and it is passed back to the caller function.
+
+8. Functions in C are the high-level equivalent of subroutines at the LC-3 machine level. Functions in C are implemented using a similar set of mechanisms as assembly level subroutines. 
+
+9. There are four basic phases in the execution of a function call: (1) Argument values from the caller are passed to the callee, (2) control is transferred to the callee, (3) the callee executes its task, and (4) control is passed back to the caller, along with a return value. In C, each function is required to be caller-independent. That is, a function should be callable from any function. With this requirement, functions become composable building blocks that we can use from anywhere in our code.
+
+10. Run-Time Stack: At the assembly level, a function is just a sequence of instructions that is called using a JSR instruction. The RET instruction returns control back to the caller. We need a way to “activate” a function when it is called. That is, when a function starts executing, its local variables must be allocated somewhere in memory. There are many possible solutions, and here we’ll explore two options.
+
+11. Option 1: The compiler could systematically assign places in memory for each function to place its local variables. Function A might be assigned the memory chunk starting at X for its local values, function B might be assigned the memory chunk starting at location Y, and so forth, provided, of course, that these memory chunks do not overlap. While this seems like the most straightforward way to manage the allocation, it has some limitations. What happens if function A calls itself? We call this recursion. If function A calls itself, then the callee version of function A will overwrite the local values of the caller version of function A, and the program will not behave as we expect it to. For the C programming language, which allows recursive functions, option 1 will not work. Also it’s a wasteful allocation of memory because a function will require storage (potentially a lot of storage) even if it isn’t executing.
+
+12. Option 2: What if instead of allocating the space for local variables statically (i.e., in a ﬁxed place in memory), the space is allocated once the function starts executing? And when the function returns to the caller, its space is reclaimed to be assigned later to another function. And if the function is called from itself, the new invocation of the function will get its own space that is distinct from its other currently active invocations. This solves the issues raised with Option 1.
+
+13. How should this allocation be done? We can utilize the idea that the calling pattern of functions can easily be tracked with a stack data structure. Each function has a memory template where it stores its local variables, some bookkeeping information, and its parameter variables. This template is called its stack frame or activation record. Whenever a function is called, its stack frame will be allocated somewhere in memory. And because the calling pattern of functions naturally follows a stack-like pattern, this allocation and deallocation will follow the pushes and pops of a stack.
+
+14. The code in Figure 14.4 contains three functions, main, Watt, and Volt. What each function does is not important for this example, so we’ve omitted some of their details but provided enough so that the calling pattern between them is apparent. The function main calls Watt, and Watt calls Volt. Eventually, control returns to main, which then calls Volt.
+
+15. This is illustrated in the diagrams of Figure 14.5. Each of the shaded regions represents the activation record or stack frame of a particular function call. The sequence of ﬁgures shows how the run-time stack grows and shrinks as the various functions are called and return to their caller. Keep in mind that, as we push items onto the stack, the top of the stack moves, or “grows,” toward lower-numbered memory locations.
+
+16. Figure 14.5a is a picture of the run-time stack when the program starts execu- tion. Since the execution of a C program starts in main, the stack frame for main is the ﬁrst to be allocated on the stack. Figure 14.5b shows the run-time stack immediately after Watt is called by main. Notice that the stack frames are allocated in a stack-like fashion. That is, whenever a function is called, its stack frame is pushed onto the stack. Whenever the function returns, its frame is popped oﬀ the stack. Figure 14.5 parts (c) through (f) show the state of the run-time stack at various points during the execution of this code.
+
+17. We ultimately want to map this process into LC-3 assembly code, so we’ll need some easy way to access the data in each function’s stack frame and also to manage the pushing and popping of stack frames. For this, we will use R5 and R6. Notice that R5 points to some internal location within the stack frame at the top of the stack—it points to the base of the local variables for the currently executing function. We call it the frame pointer. Also notice how R6 always points to the very top of the stack. We call it the stack pointer. Both of these registers have a key role to play in the implementation of the run-time stack and of functions in C in general.
+
+18. It is clear that there is a lot of work going on at the machine level when a function is called. Arguments must be passed, stack frames pushed and popped, control moved from one function to another. As involved as it may seem, the implementation of this is rather straightforward, the next section will go through the details of the C run-time stack protocol on the LC-3.
+
+19. We’ll partition this protocol into four steps. Step 1: The caller function copies arguments for the callee onto the run-time stack and passes control to the callee. Step 2: The callee function pushes space for local variables and other information onto the run-time stack, essentially creating its stack frame on top of the stack. Step 3: The callee executes. Step 4: Once it is ready to return, the callee removes, or pops, its stack frame oﬀ the run-time stack and returns the return value and control to the caller.
+
+20. We’ll examine the LC-3 implementation of each of these steps in detail by looking at the code generated to accomplish the following line of code:
+
+w = Volt(w, 10);
+
+which is line 16 from the code in Figure 14.4.
+
+21. The Call: In the statement w = Volt(w, 10);, the function Volt is called with two arguments. The value returned by Volt is then assigned to the local integer variable w. In translating this function call, the compiler generates LC-3 code that does the following:
+
+a. Transmits the value of the two arguments to the function Volt by pushing them directly onto the top of the run-time stack. Recall that R6 points to the top of the run-time stack. It is the stack pointer. That is, it contains the address of the memory location that is actively holding the topmost data item on the stack. To push an item onto the stack, we ﬁrst decrement R6 and then store the data value using R6 as a base address. In our stack protocol, the arguments of a C function call are pushed onto the stack from right to left in the order in which they appear in the function call. In the case of Watt, we will ﬁrst push the value 10 (rightmost argument) and then the value of w.
+
+b. Transfers control to Volt via the JSR instruction.
+
+The following LC-3 code performs the call to Volt from Watt. Instructions 1 through 4 perform the push of the argument 10, and instructions 6 through 8 push the argument w. Notice that w itself is a local variable in Watt and must be loaded from Watt’s stack frame. More on this soon.
+
+1  AND R0, R0, #0 ;R0<-0
+2  ADD R0, R0, #10 ;R0<-10
+3  ADD R6, R6, #-1 ;
+4  STR R0, R6, #0 ; Push 10 onto stack
+5
+6  LDR R0, R5, #0 ; Load w
+7  ADD R6, R6, #-1 ;
+8  STR R0, R6, #0 ; Push w
+9  JSR Volt
+
+22. Figure 14.6 illustrates the modiﬁcations made to the run-time stack by these instructions. Notice that the argument values are pushed immediately on top of the stack frame of the caller (Watt). The stack frame for the callee (Volt) will be constructed on the stack directly on top of the stack frame of the caller.
+
+23. Starting the Callee Function: The instruction executed immediately after the JSR in the function Watt is the ﬁrst instruction in the callee function Volt. Before we begin to execute the actual work in Volt described by the C code, we need to set the stage for Volt to execute. We need to properly allocate the stack frame for Volt and properly set the stack pointer R6 and the frame pointer R5 so that the code of Volt can execute correctly. At this point, the stack contains the two arguments for Volt at the top. 
+
+24. The purpose of the preamble code of Volt is to prepare the stack such that it also contains a spot for the return value of Volt, the return address of Watt, Watt’s frame pointer, and all of the local variables of Volt. This will be accomplished in four steps, which we describe next, each as a single action:
+
+a. Save space on the stack for callee’s return value. The return value is located immediately on top of the parameters for the callee. Later, when the callee is ready to pass control back to the caller, the return value is written into this location.
+
+b. Push a copy of the return address in R7 onto the stack. Recall that R7 will hold the return address whenever a JSR is used to initiate a subroutine call. This will ensure that we can return to the caller even if the callee calls another function.
+
+c. Push a copy of the caller’s frame pointer in R5 onto the stack. By saving a copy of R5, we will be able to restore the stack frame of the caller in such a way that the caller can easily resume execution after the function call
+is complete. If either the caller’s return address or the frame pointer is destroyed, then we will have trouble restarting the caller correctly when the callee ﬁnishes. Therefore, it is important that we make copies of both in memory.
+
+d. Allocate space on the stack for the callee’s local variables, and adjust R5 to point to the base of the local variables and R6 to point to the top of the stack.
+
+25. The preamble code to accomplish this for Volt is provided below. This code appears ﬁrst before any of the code for statements in Volt.
+
+1 Volt: ADD R6, R6, #-1   ; Allocate spot for the return value
+2  
+3       ADD R6, R6, #-1   ;
+4       STR R7, R6, #0    ; Push R7 (Return address)
+5
+6       ADD R6, R6, #-1   ;
+7       STR R5, R6, #0    ; Push R5 (Caller's frame pointer)
+8
+9       ADD R5, R6, #-1   ; Set frame pointer for Volt
+10      ADD R6, R6, #-2   ; Allocate memory for Volt's local variables
+
+26. Figure 14.7 summarizes the changes to memory accomplished by the function call code we have encountered so far. The layout in memory of these stack frames—one for Watt and one for Volt—is apparent. Notice that some entries of the stack frame of Volt are written by Watt. In particular, the parameter ﬁelds of Volt’s stack frame are initialized using the argument values from Watt. Watt writes the value of its local variable w as the ﬁrst argument and the value 10 for the second argument. Keep in mind that these values are pushed from right to left according to their position in the function call. Therefore, the value of w appears on top of the value 10. Once invoked, Volt will refer to these values as the parameters q and r. Question: What are the initial values of Volt’s local variable? Recall from Chapter 11 that local variables such as these are uninitialized.
+
+27. Notice that each stack frame on the stack has the same structure. Each con- tains locations for the function’s local variables, for the bookkeeping information (consisting of the caller’s return address and caller’s frame pointer), the return value, and the function’s parameters.
+
+28. Ending the Callee Function: Once the callee function has completed its work, we prepare to return to the caller. This essentially involves tearing down the stack frame and restoring the run-time stack to the state it was in when the caller initiated its function call. To accomplish this, we use the following four actions:
+
+a. If there is a return value, it is written into the return value entry of the active stack frame.
+
+b. The local variables for the callee are popped oﬀ the stack. This can be accomplished by individually popping them, or simply by setting the stack pointer R6 to the location immediately after the frame pointer R5.
+
+c. The caller frame pointer and return address are restored.
+
+d. Control to the caller function via the RET instruction.
+
+29. The LC-3 instructions corresponding to this for Volt are as follows. Keep in mind that even though the stack frame for Volt is popped oﬀ the stack, its values remain in memory until they are explicitly overwritten.
+
+1    LDR  R0,R5,#0 ; Load local variable k
+2    STR  R0,R5,#3 ; Write it in return value slot, which will always be at location R5 + 3
+3
+4
+5    ADD  R6,R5,#1 ; Pop local variables
+6
+7    LDR  R5,R6,#0 ; Pop the frame pointer
+8    ADD  R6,R6,#1 ;
+9
+10   LDR R7, R6, #0   ; Pop the return address
+11   ADD R6, R6, #1   ;
+12   RET
+
+30. Returning to the Caller Function: After the callee function executes the RET instruction, control is passed back to the caller function. In some cases, there is no return value (if the callee is declared of type void) and, in some cases, the caller function ignores the return value. Again, from our previous example, the return value is assigned to the variable w in Watt. In particular, there are two actions to be performed:
+
+a. The return value (if there is one) is popped oﬀ the stack.
+b. The arguments are popped oﬀ the stack.
+
+The code after the JSR looks like the following. Once this code starts executing, R6 points to the top of the stack, which is the return value, and R5 is again the frame pointer of Watt.
+
+1  JSR   Volt
+2  LDR   R0,R6,#0 ; Load the return value
+3  STR   R0,R5,#0 ; w = Volt(w, 10);
+4  ADD   R6,R6,#1 ; Pop return value
+5
+6  ADD   R6,R6,#2 ; Pop arguments
+
+31. Once this code is done, the call is now complete, and the caller function can resume its normal operation. Notice that prior to the return, the callee restores the environment of the caller. From the caller’s perspective, it appears as if nothing has changed except that a new value (the return value) has been pushed onto the stack.
+
+32. Caller Save/Callee Save: During the execution of a function, R0 through R3 can contain temporary values that are part of an ongoing computation. Registers R4 through R7 are reserved for other purposes: R4 is the pointer to the global data section, R5 is the frame pointer, R6 is the stack pointer, and R7 is used to hold return addresses. If we make a function call, based on the calling convention we’ve described, R4 through R7 do not change, or they change in a predetermined fashion. But what happens to registers R0, R1, R2, and R3?
+
+33. To address this, digital systems typically adopt one of two strategies: (1) The caller will save these registers by pushing them onto its stack frame. This is the caller-save convention. When control is returned to the caller, the caller will restore these registers by popping them oﬀ the stack. 
+
+34. (2) Alternatively, the callee can save these registers by adding four ﬁelds in the bookkeeping area of its record. This is called the callee-save convention. When the callee is initiated, it will save R0 through R3 and R5 and R7 into the bookkeeping region and restore these registers before returning to the caller.
+
+35. Tying It All Together: The code for the function call in Watt and the beginning and end of Volt is listed in Figure 14.8. The LC-3 code segments presented in the previous sections are all combined, showing the overall structure of the code. This code is more optimized than the previous individual code segments. We’ve combined the manipulation of the stack pointer R6 associated with pushing and popping the return value into single instructions.
+
+36. Let’s summarize our LC-3 C function call protocol. The caller function pushes the value of each argument onto the stack and performs a Jump To Subroutine (JSR) to the callee. The callee allocates a space for the return value, saves the caller’s frame pointer and return address, and then allocates space on the stack for its local variables. The callee then proceeds to carry out its task. When the task is complete, the callee writes the return value into the space reserved for it, pops and restores frame pointer and return value for the caller, and returns to the caller. The caller then pops the return value and arguments from the stack and resumes its execution.
+
+37. Is it really necessary to go through all these steps just to make a function call? One of the characteristics of real calling conventions is that in the general case, any function should be able to call any other function. To enable this, the calling convention should be organized so that a caller does not need to know anything about a callee except its interface (i.e., the type of value the callee returns and the types of values it expects as arguments). Likewise, a callee is written to be independent of the functions that call it. Because of this generality, the functional calling protocol needs these steps. It is all part of the overhead required to make functions an essential building block for large-scale software.
+
+chapter 15
+
