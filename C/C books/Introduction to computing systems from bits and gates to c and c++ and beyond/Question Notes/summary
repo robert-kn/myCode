@@ -2726,3 +2726,83 @@ The code after the JSR looks like the following. Once this code starts executing
 
 chapter 15
 
+1. Programs are not correct by construction, particularly code written in C or C++. We must actively test and debug software as an integral part of the development process.
+
+2. Anecdotally, experienced coders spend more than half of their time debugging code as opposed to writing code. The best programmers are those who have mastered debugging. 
+
+3. Testing is the process of exposing bugs, and debugging is the process of ﬁxing them. Testing a piece of code involves subjecting it to as many input conditions as possible, in order to stress the software into revealing its bugs. 
+
+4. To better understand how to ﬁnd and ﬁx errors in our code, or to avoid errors in the ﬁrst place, it’s helpful to build a taxonomy of types of errors. There are four broad categories of errors that programmers introduce into code.
+
+5. Syntactic errors are the easiest to deal with because they are caught by the compiler. The compiler notiﬁes us of such errors when it tries to translate the source code into machine code, often pointing out exactly in which line the error occurred. Semantic errors, on the other hand, are problems that can often be very diﬃcult to repair. They occur when the
+program is syntactically correct but does not behave exactly as we intended.
+
+6. Both syntactic and semantic errors are generally typographic in nature— they occur when we write something we did not mean to write.
+
+7. Algorithmic errors,onthe other hand, are less casual mistakes. They are errors in which our approach to solving a problem is wrong. They are costly to the overall software development process because they are hard to detect and often hard to ﬁx.
+
+8. Speciﬁcation errors are due to poorly deﬁned program requirements, or misinterpretations of those requirements by the person or team implementing them.
+
+9. As far as overall digital systems go, bugs can be anywhere, and they aren’t limited to the software side of the house. The hardware can have bugs, sensors can be ﬂaky, and physical systems can fail, which can manifest in the device not working properly. And any of these systems can fail transiently due to an adverse operating situation—the device can fail for just a brief moment and then resume correct operation. 
+
+10. In C and C++ and all programming languages, syntactic errors (or syntax errors or parse errors) are always caught by the compiler or other translator. These types of errors occur when we ask the compiler to translate code that does not conform to the C/C++ speciﬁcation. 
+
+11. Speciﬁcation Errors: Perhaps the most infamous software bug of all was the Year 2000 computer bug, or Y2K bug. Many early computer systems had small memories, and this required programmers to economize on the size of data items they stored in memory. When storing dates, many early software systems only stored enough bits to represent the last two digits of the year; for example, in storing the year 1975, only 75 was stored, with the century being implicitly the 1900s. 
+
+12. With this shortcut, the year 2000 became indistinguishable from the year 1900 (or 1800 or 2100, for that matter). This presented a worldwide challenge as we anticipated the current year transitioning into the 2000s after December 31, 1999. Plenty of software written originally on memory-constrained systems was still functional, and this software needed ﬁxing in order to properly roll over with the century changeover. As a consequence, a lot of money and eﬀort were invested in tracking down Y2K- related bugs before January 1, 2000, rolled around.
+
+13. We call this type of bug a speciﬁcation bug. The software worked as speciﬁed, but the speciﬁcation itself was ﬂawed. The software architects of the day decided that it was OK to encode only the last two digits of a year because they didn’t expect the software would still be operational at the end of 1999. Speciﬁcation errors can arise from poor speciﬁcations that don’t properly anticipate the operating requirements for the software, and the Y2K bug is an example of this. 
+
+14. In an ideal world, we could test a program by examining its operation under every possible input condition. For most programs, testing for every input combination is impossible.
+
+15. The modern software development process views testing more systematically. In particular, black-box testing is used to check if the code meets its speciﬁcations, and white-box testing targets various facets of the program’s implementation in order to provide some assurance that many lines (if not every line) of code are tested.
+
+16. Black-Box Testing: With black-box testing, we examine if the program meets its input and output speciﬁcations, disregarding the internals of the program. We treat the software being tested as a black box where the internals are not visible to us.
+
+17. White-Box Testing: With black-box testing, it is not possible to know which lines of code have been tested and which have not, and therefore, according to the adage, all are presumed to be buggy. White-box tests isolate various internal components of the software and test whether the components conform to their intended design.
+
+18. Source-level debuggers are software development tools that enable us to examine variables, memory objects, registers, and memory at any point during the execution of our code. A source-level debugger can allow us to execute our code one C statement at a time and examine the values of any program state (variables, registers, memory, run-time stack, etc.) along the way. 
+
+19. For a source-level debugger to be used on a program, the program must be compiled such that the compiler augments the executable image with enough additional information for the debugger to do its job. Among other things, the debugger will need information from the compilation process in order to map every machine language instruction to its corresponding statement in the high-level source code. 
+
+20. The debugger also needs information about variable names and their locations in memory (i.e., the symbol table). This is required so that a programmer can examine the value of any variable within the program using its name in the source code.
+
+21. Most programmers today use an integrated development environment (IDE) for developing their code. These environments integrate the common tools needed to develop code, such as code repository, editor, and compilation system, into a single user interface. 
+
+chapter 16
+
+1. A pointer is simply the address of a memory object, such as a variable. With pointers, we can indirectly access these objects, which provides for some very useful capabilities. With pointers, we can create sophisticated data organizations that grow and shrink (like the run-time stack) during a program’s execution.
+
+2. An array is a list of data objects of the same type arranged sequentially in memory. To access a particular item in an array, we specify which element we want to access by providing its index. So, an expression like a[4] will access the ﬁfth element in the array named a—it is the ﬁfth element because we start numbering the array at element 0. Arrays are useful because they allow us to conveniently process groups of data such as vectors, matrices, lists, and character strings, which are naturally representative of certain objects in the real world.
+
+3. Pointers: In the C program in Figure 16.1, the function Swap is designed to switch the value of its two arguments. The function Swap is called from main with the arguments valueA, which in this case equals 3, and valueB, which equals 4. Once
+Swap returns control to main, we expect valueA and valueB to have their values swapped. However, compile and execute the code and you will notice that those variables in Swap remain unchanged. 
+
+4. To analyze why, let’s examine the run-time stack during the execution of Swap. Figure 16.2 shows the state of the run-time stack just prior to the completion of the function, just after the statement on line 25 has executed but before control returns to function main. 
+
+5. Notice that the function Swap has modiﬁed the values of its parameters ﬁrstVal and secondVal within its own stack frame. When Swap ﬁnishes and control returns to main, these modiﬁed values are lost when the stack frame for Swap is popped oﬀ the stack. The values from main’s perspective have not been swapped. And we are left with a buggy program.
+
+6. In C, arguments are always passed from the caller function to the callee by value. C evaluates each argument that appears in a function call as an expression and pushes the value of the expression onto the run-time stack in order to pass them to the function being called. In the callee, the argument values then become values for the function’s parameter variables. In the callee, the argument values then become values for the function’s parameter variables. 
+
+7. For Swap to modify the arguments that the caller passes to it, it must have access to the caller function’s stack frame—it must access the locations at which the arguments are stored in order to modify their values. The function Swap needs the addresses of valueA and valueB in main in order to change their values.
+
+8. Just as an integer variable contains a bit pattern that is treated and interpreted as an integer value, a pointer variable contains a bit pattern that is treated as an address of a memory object, such as a variable. A pointer is said to point to the variable whose address it contains. Associated with a pointer variable is the type of object to which it points. So, for instance, an integer pointer points to an integer variable. 
+
+9. If a pointer variable is declared as a local variable, it will not be initialized automatically. C has two operators for pointer-related manipulations, the address operator & and the indirection operator *.
+
+10. The address operator, whose symbol is an ampersand, &, generates the memory address of its operand, which must be a memory object such as a variable. In the following code sequence, the pointer variable ptr will point to the integer variable object. The expression on the right-hand side of the second assignment statement generates the memory address of object.
+
+int object;
+int *ptr;
+object = 4;
+ptr = &object;
+
+11. Let’s examine the LC-3 code for this sequence. Both declared variables are local variables allocated on the run-time stack. Recall that R5, the base pointer, points to the ﬁrst declared local variable, or object in this case.
+
+AND R0, R0, #0 ; Clear R0
+ADD R0, R0, #4 ;R0=4
+STR R0, R5, #0 ; object = 4;
+ADD R0, R5, #0 ; Generate memory address of object
+STR R0, R5, #-1 ; Ptr = &object;
+
+12. Figure 16.3 shows the stack frame of the function containing this code imme- diately after the statement ptr = &object; has executed. In order to make things more concrete, each memory location is labeled with an address, which we’ve arbitrarily selected to be in the xEFF0 range. The base pointer R5 currently points to xEFF2. Notice that object contains the integer value 4 and ptr contains the memory address of object.
