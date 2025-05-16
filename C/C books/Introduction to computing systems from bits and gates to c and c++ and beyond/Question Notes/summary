@@ -2805,4 +2805,46 @@ STR R0, R5, #0 ; object = 4;
 ADD R0, R5, #0 ; Generate memory address of object
 STR R0, R5, #-1 ; Ptr = &object;
 
-12. Figure 16.3 shows the stack frame of the function containing this code imme- diately after the statement ptr = &object; has executed. In order to make things more concrete, each memory location is labeled with an address, which we’ve arbitrarily selected to be in the xEFF0 range. The base pointer R5 currently points to xEFF2. Notice that object contains the integer value 4 and ptr contains the memory address of object.
+12. Figure 16.3 shows the stack frame of the function containing this code immediately after the statement ptr = &object; has executed. In order to make things more concrete, each memory location is labeled with an address, which we’ve arbitrarily selected to be in the xEFF0 range. The base pointer R5 currently points to xEFF2. Notice that object contains the integer value 4 and ptr contains the memory address of object.
+
+13. The Indirection Operator *: The second pointer operator is called the indirection,ordereference, operator, and its symbol is the asterisk, *. This operator allows us to indirectly manipulate the value of a memory object. Adding to the previous C code example,
+
+int object;
+int *ptr;
+object = 4;
+ptr = &object;
+*ptr = *ptr + 1;
+
+14. The statement *ptr = *ptr + 1; accomplishes the same thing as object = object + 1;. The expression *ptr means diﬀerent things depending on which side of the assignment operator it appears on. On the right-hand side of the assign- ment operator, it refers to the value that appears at that location (in this case the value 4). On the left-hand side, it speciﬁes the location that gets modiﬁed (in this case, the address of object).Let’s examine the LC-3 code for the last statement in the preceding code.
+
+LDR R0, R5, #-1 ; R0 contains the value of ptr
+LDR R1, R0, #0 ; R1 <- *ptr
+ADD R1, R1, #1 ;*ptr+1
+STR R1, R0, #0 ; *ptr = *ptr + 1;
+
+15. Notice that this code is diﬀerent from what would be generated if the ﬁnal C statement had been object = object + 1;. With the pointer dereference, the compiler generates two LDR instructions for the indirection operator on the right-hand side, one to load the value of ptr, which is a memory address, and another to get the value stored at that address. With the dereference on the left-hand side, the compiler generates a STR R1, R0, #0. Had the statement been object = *ptr + 1;, the compiler would have generated STR R1, R5, #0.
+
+16. Passing a Reference Using Pointers: Using the address and indirection operator, we can repair the Swap function from Figure 16.1, which did not quite accomplish the swap of its two input arguments. Figure 16.4 lists the same program with a revised version of Swap called NewSwap.
+
+17. The ﬁrst modiﬁcation we’ve made is that the parameters of NewSwap are no longer integers but are now pointers to integers (int *). These two parameters are the memory addresses of the two variables that are to be swapped. Within the func- tion body of NewSwap, we use the indirection operator * to obtain the values that these pointers point to.
+
+18. Now when we call NewSwap from main, we need to supply the addresses for the two variables we want swapped, rather than the values of the variables as we did in the previous version of the code. For this, the & operator does the trick.
+
+19. Figure 16.5 shows the run-time stack when various statements of the function NewSwap are executed. The three subﬁgures (A–C) correspond to the run-time stack after lines 23, 24, and 25 execute.
+
+20. By design, C passes information from the caller function to the callee by value; that is, each argument expression in the call statement is evaluated, and the resulting value is passed to the callee via the run-time stack. However, in NewSwap we created a call by reference for the two arguments by using the address operator &. When an argument is passed as a reference, its address is passed to the callee function—for this to be valid, the argument must be a variable or other memory object (i.e., it must have an address). The callee function then can use the indirection operator * to access (and modify) the original value of the object.
+
+21. Null Pointers: Sometimes it is convenient for us to have a pointer point to nothing so that we can diﬀerentiate it from an actual pointer value. A pointer that points to nothing is a null pointer. In C, we make this designation with the following assignment:
+
+int *ptr;
+ptr = NULL;
+
+22. Here, we are assigning the value of NULL to the pointer variable ptr.InC,NULL is a specially deﬁned preprocessor macro that contains a value 0. So by convention, we consider a pointer that points to memory address 0 to be a special case pointer that points to nothing. 
+
+23. An Example Problem Involving Pointers: Say we want to develop a C program that calculates the quotient and remainder given an integer dividend and integer divisor. That is, our code will calculate dividend / divisor and dividend % divisor. The code in Figure 16.6 contains a function that does just that. The function IntDivide has four parameters, two of which are integers and two of which are pointers to integers. The function divides the ﬁrst parameter x by the second parameter y. 
+
+24. The integer portion of the result is assigned to the memory location pointed to by quoPtr, and the integer remainder is assigned to the memory location pointed to by remPtr. Using call-by-reference with pointers, we can create a function that “returns” multiple output values back to its caller.
+
+25. Notice that the function IntDivide also returns a value to indicate its status: It returns a −1 if the divisor is zero, indicating to the caller that an error has occurred. It returns a zero otherwise, indicating to the caller that the computation proceeded successfully. The function main, upon return, checks the return value to determine if the values in quotient and remainder are correct. Using the return value to signal error conditions during a function call is a common programming convention, particularly for complex functions.
+
+26. An array is a collection of similar data items that are stored sequentially in memory and accessible through a single name or identiﬁer. 
