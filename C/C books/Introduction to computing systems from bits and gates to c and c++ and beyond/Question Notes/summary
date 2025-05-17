@@ -2847,4 +2847,43 @@ ptr = NULL;
 
 25. Notice that the function IntDivide also returns a value to indicate its status: It returns a −1 if the divisor is zero, indicating to the caller that an error has occurred. It returns a zero otherwise, indicating to the caller that the computation proceeded successfully. The function main, upon return, checks the return value to determine if the values in quotient and remainder are correct. Using the return value to signal error conditions during a function call is a common programming convention, particularly for complex functions.
 
-26. An array is a collection of similar data items that are stored sequentially in memory and accessible through a single name or identiﬁer. 
+26. An array is a collection of similar data items that are stored sequentially in memory and accessible through a single name or identiﬁer. Speciﬁcally, all the elements in the array are of the same type.
+
+27. Declaring and Using Arrays: As with all other declarations, arrays must have a type associated with them. The type indicates the properties of the values stored in the array. The following declaration creates an array of ten integers:
+
+int grid[10];
+
+The keyword int indicates that we are declaring something of integer type named grid. The brackets indicate we are declaring an array, and the 10 indicates that the array is to contain ten integers, all of which will be consecutively located in memory. Figure 16.7 shows a pictorial representation of how grid is allocated. The ﬁrst element, grid[0], is allocated in the lowest memory address and the last element, grid[9], in the highest address. 
+
+28. To access a particular element, we provide an index within brackets. For example, 
+
+grid[6] = grid[3] + 1;
+
+Let’s look at the LC-3 code for this example. Let’s say that grid is the only local variable allocated on the run-time stack. By our run-time stack convention, this means that the frame pointer R5 will point to grid[9],orthe
+last element in the array.
+
+ADD R0, R5, #-9     ; Put the base address of grid into R0
+LDR R1, R0, #3      ; R1 <-- grid[3]
+ADD R1, R1, #1      ; R1 <-- grid[3] + 1
+STR R1, R0, #6      ; grid[6] = grid[3] + 1;
+
+29. Notice that the ﬁrst instruction calculates the base address of the array, which is the address of grid[0], and puts it into R0. The base address of an array in general is the address of the ﬁrst element of the array. We can access any element in the array by adding the index of the desired element to the base address.
+
+20. The power of arrays comes from being able to compute an array index using a C integral expression. The following example demonstrates this. Here we are accessing the array grid using another variable x. 
+
+grid[x+1] = grid[x] + 2;
+
+Let’s look at the LC-3 code for this statement. Assume x is allocated on the run-time stack directly on top of the array grid.
+
+LDR R0, R5, #-10    ; Load the value of x
+ADD R1, R5, #-9     ; Put the base address of grid into R1
+ADD R1, R0, R1      ; Calculate address of grid[x]
+LDR R2, R1, #0      ; R2 <-- grid[x]
+ADD R2, R2, #2      ; R2 <-- grid[x] + 2
+LDR R0, R5, #-10    ; Load the value of x
+ADD R0, R0, #1      ; R0 <-- x + 1
+ADD R1, R5, #-9     ; Put the base address of grid into R1
+ADD R1, R0, R1      ; Calculate address of grid[x+1]
+STR R2, R1, #0      ; grid[x+1] = grid[x] + 2;
+
+21. Arrays as Parameters: Say we want to create a set of functions that cal- culates the mean and median on an array of integers. We would need either (1) to pass the entire array of values from one function to another or (2) to pass a refer- ence to the array. If the array contains a large number of elements, copying each element from one stack frame onto another could be very costly in execution time. Fortunately, C naturally passes arrays by reference. Figure 16.10 is a C program that contains a function Average whose single parameter is an array of integers.
