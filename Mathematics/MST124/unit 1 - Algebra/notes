@@ -51,41 +51,74 @@ point.
 ﬁgs.’).The ﬁrst signiﬁcant ﬁgure of a number is the ﬁrst non-zero digit (from the left), the next signiﬁcant ﬁgure is the 
 next digit along (whether zero or not), and so on. see rounding-numbers.png
 
-page 17
+21. for SI units see SI-units.png
 
-20. meaning of statements b is a multiple a; b is divisible by a; a is a factor or divisor of b
-21. meaning of a factor pair; a positive factor pair; square number or a perfect square => same factor pair is repeated
-22. what do you call an integer greater than 1 whose only factors are 1 and itself?
-23. what do you call an integer greater than 1 that isn't a prime number? a composite number
-24. can you break down any composite number into a product of prime factors?
-25. what does the fundamental theorem of arithmetic state? every integer greater than 1 can be written as a product of prime factors in
-just one way (order of the factors can change)
-26. what is prime factorisation of an integer greater than 1? is any expression that shows the integer written as a product of prime 
-factors 
-27. for SI units see SI-units.png
-28. what is a common multiple? is a number that is a multiple of two or more numbers
-29. what is the lowest common multiple? is the smallest positive integer that is a multiple of two or more numbers
-30. what is a common factor? is a number that is a factor of two or more integers
-31. what is the HCF or GCD? is the largest positive number that is a factor of two or more integers
-32. using prime factorisation to find LCM and HCF see finding-lcm-hcf.png and summary-finding-lcm-hcf.png
-33. what other method can you use to find LCM and HCF other than prime factorisations? euclids algorithm
-34. what is the definition of an expression in mathematics? arrangement of letters, numbers and/or mathematical symbols (+, x, etc) which is
-such that if numbers are substituted for any letters present then you can work out the value of the expression
-35. what do we call an expression that contans letters (as well aas numbers and mathematical symbols)? algebraic expression
-36. what do we call an expression that only contains numbers and mathematical symbols? numerical expression
-37. what do we call an expression that’s part of a larger expression, and can be enclosed in brackets without aﬀecting the meaning of the 
-larger expression? subexpression
-38. Letters representing numbers in algebraic expressions can be any of three diﬀerent types. what are they? a variable, an unknown, or
-a constant
-39. give a definition of an equation? made up of two expressions with an equal sign between them
-40. who introduced the equal sign to mathematics? robert recorde (welsh mathematician) 
-41. If an expression is a list of quantities that are all added or subtracted, then it’s often helpful to think of it as a list of 
-quantities that are all added i.e. 5ab - 3b - 4 means the same as 5ab + (- 3b) + (- 4). The quantities that are added are called the terms
-of the expression.
-42. if a term has the form a ﬁxed value × a combination of variables, what is the ﬁxed value called? coefficient
+22. meaning of statements b is a multiple a; b is divisible by a; a is a factor or divisor of b
+
+23. meaning of a factor pair of an integer; is a pair of its factors that multiply together
+to give the integer. a positive factor pair; square number or a perfect square => same factor pair is 
+repeated
+
+24. what do you call an integer greater than 1 whose only factors are 1 and itself?
+
+25. what do you call an integer greater than 1 that isn't a prime number? a composite number
+
+26. can you break down any composite number into a product of prime factors? see composite-factorisation
+
+27. what does the fundamental theorem of arithmetic state? every integer greater than 1 can be written 
+as a product of prime factors in just one way (order of the factors can change)
+
+28. what is prime factorisation of an integer greater than 1? is any expression that shows the integer 
+written as a product of prime factors 
+
+29. what is a common multiple? is a number that is a multiple of two or more numbers
+
+30. what is the lowest common multiple? is the smallest positive integer that is a multiple of two or 
+more numbers
+
+31. what is a common factor? is a number that is a factor of two or more integers
+
+32. what is the HCF or GCD? is the largest positive number that is a factor of two or more integers
+
+33. using prime factorisation to find LCM and HCF see finding-lcm-hcf.png and summary-finding-lcm-hcf.png
+
+34. what other method can you use to find LCM and HCF other than prime factorisations? euclids algorithm
+
+35. what is the definition of an expression in mathematics? arrangement of letters, numbers and/or 
+mathematical symbols (+, x, etc) which is such that if numbers are substituted for any letters present 
+then you can work out the value of the expression
+
+36. what do we call an expression that contans letters (as well as numbers and mathematical symbols)? 
+algebraic expression
+
+37. what do we call an expression that only contains numbers and mathematical symbols? numerical 
+expression
+
+38. what do we call an expression that’s part of a larger expression, and can be enclosed in brackets 
+without aﬀecting the meaning of the larger expression? subexpression
+
+39. Letters representing numbers in algebraic expressions can be any of three diﬀerent types. what are 
+they? a variable, an unknown, or a constant
+
+40. give a definition of an equation? made up of two expressions with an equal sign between them
+
+41. If an expression is a list of quantities that are all added or subtracted, then it’s often helpful 
+to think of it as a list of quantities that are all added i.e. 5ab - 3b - 4 means the same as 5ab + 
+(- 3b) + (- 4). The quantities that are added are called the terms of the expression.
+
+42. if a term has the form, a ﬁxed value × a combination of variables, what is the ﬁxed value called? 
+coefficient. For example 5ab has coeﬃcient 5 and is a term in ab;
+
 43. difference of two squares? For any expressions A and B, (A + B)(A − B)= A^2 − B^2 
-44. Factors and multiples of algebraic expressions
-45. algebraic fractions (simplifying, adding, subtracting, multiplying, dividing) see algebraic-fractions.png
+
+44. Factors and multiples of algebraic expressions: For example, the equation a^2b = a × ab shows that 
+both a and ab are factors of a^2b, and it also shows that a^2b is a multiple of both a and ab. Every 
+algebraic expression is both a factor and a multiple of itself. For example, the equation a^2b = 1 × 
+a^2b shows that a^2b is both a factor and a multiple of itself.
+
+45. algebraic fractions (simplifying, adding, subtracting, multiplying, dividing) see 
+algebraic-fractions.png
+
 46. roots of numbers (square, cube, fourth, fifth etc)
 47. every positive number has two square roots, a positive one and a negative one
 48. every negative number has no real roots
