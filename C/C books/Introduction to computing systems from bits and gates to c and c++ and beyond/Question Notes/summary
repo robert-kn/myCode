@@ -2886,4 +2886,121 @@ ADD R1, R5, #-9     ; Put the base address of grid into R1
 ADD R1, R0, R1      ; Calculate address of grid[x+1]
 STR R2, R1, #0      ; grid[x+1] = grid[x] + 2;
 
-21. Arrays as Parameters: Say we want to create a set of functions that cal- culates the mean and median on an array of integers. We would need either (1) to pass the entire array of values from one function to another or (2) to pass a refer- ence to the array. If the array contains a large number of elements, copying each element from one stack frame onto another could be very costly in execution time. Fortunately, C naturally passes arrays by reference. Figure 16.10 is a C program that contains a function Average whose single parameter is an array of integers.
+21. Arrays as Parameters: Say we want to create a set of functions that calculates the mean and median on an array of integers. We would need either (1) to pass the entire array of values from one function to another or (2) to pass a reference to the array. If the array contains a large number of elements, copying each element from one stack frame onto another could be very costly in execution time. Fortunately, C naturally passes arrays by reference. Figure 16.10 is a C program that contains a function Average whose single parameter is an array of integers.
+
+22. When calling the function Average from main, we use as the argument the name of the array numbers. Here, we are not using the standard notation involving brackets [ ] that we normally use for arrays. In C, an array’s name refers to the address of the base element of the array. The name numbers is equivalent to &numbers[0]. The type of numbers is similar to int *, because numbers is a pointer to something of integer type.
+
+23. In using numbers as the argument to the function Average, we are causing the address of the array numbers to be pushed onto the stack and passed to the function Average. Within the function Average, the parameter inputValues is assigned the address of the array. Within Average we can access the elements of the original array using standard array notation. Figure 16.11 shows the run-time stack just prior to the execution of the return from Average (line 34 of the program).
+
+24. Notice how the input parameter inputValues is speciﬁed in the declaration of the function Average. The brackets []indicate to the compiler that the corresponding parameter will be the base address to an array of the speciﬁed type, in this case an array of integers. Since arrays are passed by reference in C, any modiﬁcations to the array values made by the called function will be visible to the caller once control returns to it. 
+
+25. How would we go about passing only a single element of an array by value? How about by reference?
+
+26. Strings in C: Strings are sequences of characters that represent text. Strings in C are sim- ply arrays of character type, with each subsequent element containing the next character of the string. For example,
+
+char word[10];
+
+declares an array that can contain a string of up to ten characters. 
+
+27. We adopt a special protocol for strings in C where the end of a string is denoted by the null character whose ASCII value is 0. This character serves as a sentinel that identiﬁes the end of the string. Such strings are also called null-terminated strings.’\0’ is the special character sequence that we can use in our C code to designate the null character.
+
+28. Continuing with our previous declaration,
+
+char word[10];
+word[0] = 'g';
+word[1] = 'i';
+word[2] = 'r';
+word[3] = 'a';
+word[4] = 'f';
+word[5] = 'f';
+word[6] = 'e';
+word[7] = '\0';
+printf("%s", word);
+
+29. Here, we are assigning each element of the array individually such that the string will contain “giraﬀe”. Notice that the end-of-string character itself is a character that occupies an element of the array. Even though the array is declared for ten elements, we must reserve one element for the null character, and therefore strings that are longer than nine characters cannot be stored in this array. 
+
+30. We also used a new printf format speciﬁcation %s in this example. This speciﬁcation prints out a string of characters, starting with the character pointed to by the corresponding parameter and ending at the end-of-string character ‘\0’.
+
+31. C also allows strings to be initialized within their declarations. For instance, the preceding example can be rewritten to the following:
+
+char word[10] = "Hello";
+printf("%s", word);
+
+32. Make note of two things here: First, character strings are distinguished from single characters with double quotes,“ ”. Single quotes are used for single characters, such as ‘A’. Second, the null character is automatically added to the end of the string.
+
+33. Examples of Strings: Figure 16.12 contains C code that performs a common, useful primitive operation on strings: It calculates the length of a string. Notice that we are using the format speciﬁcation %s in the scanf statement. This speciﬁcation causes scanf to read in a string of characters from the keyboard until the ﬁrst white space character. In C, any space, tab, new line, carriage return, vertical tab, or form-feed character is considered white space. Notice that the white space is automatically discarded by this %s speciﬁcation. 
+
+33. What happens if the ﬁrst word is longer? The scanf function has no information on the size of the array input and will keep storing characters to the array address it was provided until white space is encountered. So what then happens if the ﬁrst word is longer than 20 characters? Any local variables that are allocated after the array input in the function main will be overwritten. Draw out the stack frame before and after the call to scanf to see why. 
+
+34. Let’s examine a slightly more complex example that uses functions we developed in previous code examples in this chapter. In the code example in Figure 16.13, we read an input string from the keyboard using scanf, then call a function to reverse the string. The reversed string is then printed out. The function Reverse ﬁrst determines the length of the string using the StringLength function from the previous example. Then it performs the reversal by swapping the ﬁrst character with the last, the second character with the second to last, the third character with the third to last, and so on. 
+
+35. The Relationship Between Arrays and Pointers in C: You might have noticed that there is a similarity between an array’s name and a pointer variable to an element of the same type as the array. For instance,
+
+char word[10]; 
+char *cptr; 
+cptr = word;
+
+is a legal, and sometimes useful, sequence of code. Here we have assigned the pointer variable cptr to point to the base address of the array word. Because they are both pointers to characters, cptr and word can be used interchangeably.
+
+36. For example, we can access the fourth character within the string by using either word[3] or *(cptr + 3). One diﬀerence between the two, though, is that cptr is a variable and can be reassigned (i.e., it can appear on the left-hand side of an assignment operator). The array identiﬁer word, on the other hand, cannot be reassigned. For example, the following statement is illegal: word = newArray. It generates a compiler error. The identiﬁer always points to a ﬁxed spot in memory where the compiler has placed the array. Once it has been allocated, it cannot be moved.
+
+37. Table 16.1 shows the equivalence of several expressions involving pointer and array notation. Rows in the table are expressions with similar meanings.
+
+38. Problem Solving: Insertion Sort; We will write C code to sort an array of integers into ascending order. That is, the code should arrange the data in array a[] such that a[0] ≤ a[1] ≤ a[2] .... There are many algorithms for sorting, and you will encounter various techniques in later computing courses. We use insertion sort here because it parallels how we might sort items in the physical world, with real objects. 
+
+39. Unlike some other modern programming languages, C does not provide protec- tion against exceeding the size (or bounds) of an array. Recall that C originated during an era when memory and computer processing power were precious resources, and programmers had to be very economical in the operations their code performed. In the spirit of minimizing overhead, C performs no size enforcement on arrays. This enables programs written in C to be fast and eﬃcient, but at the cost of potential bugs. Programmer beware!
+
+40. In all of our discussion of arrays up until this point, we’ve worked under the assumption that an array in C is of ﬁxed size. That is, the size of the array is ﬁxed and is known when the code is compiled. In order to allocate an array on the run-time stack, the compiler needs to know the exact size. If the exact size is not known, then the oﬀsets from the frame pointer (R5) for the array and other variables in the stack frame cannot be properly determined, and everything falls apart.
+
+41. But this particular restriction proves to be quite limiting. Often we want to size our arrays based on the particular situation we’ve encountered during execution. Starting in 1999, the ANSI C standard adopted support for variable-length arrays. Variable-length arrays are arrays whose sizes are variable integer expres- sions, rather than constants. The following code fragment
+
+int Calculate(int len)
+{
+int data[len];
+
+illustrates the declaration of a variable-length array. The size of the array data can only be determined during execution of the code, and it is not known at compile time. The array data is still allocated on the run-time stack in this case but using a diﬀerent type of allocation scheme than with standard, statically sized arrays. This protocol requires additional instructions during allocation and access, which adds performance overheard. Variable-length arrays are a nice programming convenience at the expense of additional performance.
+
+42. Multidimensional Arrays in C: Nearly everyone alive today has taken or will take a picture with a smartphone. It’s an activity that’s simple enough for a person to accomplish, but it triggers an incredible amount of activity within a smartphone. Some of this activity involves physics and optics, as light from the scene being captured enters the lens of the phone to form an image on a device called a CMOS image sensor (think of it as the digital retina of the phone’s camera). Much of this activity is digital; the image sensor and a slew of associated software on the phone convert the signals cap- tured by the sensor into a high-quality picture. What exactly is this picture? Each element of the picture, or image, is called a pixel, and it represents the intensity of green, blue, and red at a particular point in the image. The image itself is a collection of these pixels (short for picture elements), arranged in a two-dimensional grid, with each pixel belonging to a particular row and column within the image. For example, an image might have 1080 rows and 1920 columns of pixels and would contain about two million pixels altogether.
+
+43. We can easily extend our idea of arrays to incorporate multidimensional concepts like images. In C, the syntax for doing so is simple:
+
+int image[1080][1920];
+
+This declaration creates an array called image that is organized as a two-dimensional array. The ﬁrst dimension is of size 1080, or the number of rows of pixels, and the second dimension is of size 1920, and it represents the number of columns of pixels. Instead of providing a single index value to access elements of a single dimensional array, we now need to provide two, one for the row and one for the column. 
+
+44. This 2D array will need to be mapped into memory somehow, just as we did with a simple 1D array. In the 1D case, the mapping is easy because the arrangement in memory corresponds to increasing indices of the array. In the 2D case, we have two options. Either we can map consecutive elements of each column into consecutive memory locations, or we can map consecutive elements of each row into consecutive memory locations. With C and C++, consecutive elements of each column are in adjacent memory locations, which is an ordering often called row-major order. Figure 16.16 provides a diagram of how this ordering applies to the array image. The image is so large that it won’t ﬁt into the LC- 3’s 16-bit address space. The LC-3 only has 216  or 65,536 locations, and this image requires 2,073,600. We need a larger address space! So for this ﬁgure, we extended the address space to be 32 bits to make the example work.
+
+45. Let’s take a look at a simple image processing function that operates on images represented as 2D arrays. Using our example of an image, let’s say that each element of the image array is an integer, and this integer represents the inten- sity of light at that position in the image. The higher the value, the brighter that particular pixel. As such, the value represents the “white value” of the pixel. More generally, we’d incorporate color into the representation, but for now we’ll keep it simple.
+
+46. The function Adjust in Figure 16.17 divides each pixel value by 2. When viewed visually, what would you expect in the resulting image? to be darker 
+
+47. The idea of multidimensional arrays in C extends beyond 2D arrays, too. We can declare a 3D array by attaching another set of brackets to the declaration, thus adding a dimension.
+
+int dataVolume[40][50][60]; // This declares 120,000 elements
+
+48. The layout in memory of a 3D array in C follows the same pattern as a 2D array: Consecutive elements of the rightmost index are allocated sequentially in memory. And we move through the indices right to left. So immediately in memory after dataVolume[0][0][59] will be dataVolume[0][1][0].
+
+chapter 17
+
+1. Suppose we want to ﬁnd a particular student’s exam in a stack of exams that are already sorted into alphabetical order. Our procedure for doing so could be as follows: Pick a random point in the stack, and check for a match. If we ﬁnd a match, great! We are done. If we don’t ﬁnd the exam (which is the more likely case, initially), we now know the exam we’re looking for is either in the upper stack or in the lower stack based on whether the name occurs alphabetically before or after the name at the random point. Here’s the key: We can now repeat the same procedure on a stack of exams (lower or upper) that is necessarily smaller than our original stack. For example, say we are looking for Mira’s exam. We ﬁnd at our selected random point Salina’s exam. We clearly didn’t ﬁnd Mira’s exam, but we know that it must in the portion of the stack that precedes Salina’s exam. We repeat our search on that smaller substack. Fairly quickly, we will locate Mira’s exam, if it exists in the set.
+
+2. The technique we’ve described is recursive. We are solving the problem (ﬁnding an exam in a stack of exams) by stating that we’ll solve it on successively smaller versions of the problem (ﬁnd the exam on this smaller stack).
+
+3. Recursion is similar to iteration in that both describe a repeating ﬂow of computation. The power of recursion lies in its ability to elegantly express the computation ﬂow for certain programming tasks. There are some programming problems for which the recursive solution is far simpler than the corresponding iterative solution.
+
+4.  Nearly always, recursion comes at the cost of additional execution overhead compared to iteration. So recursion must be applied carefully with a thorough understanding of the underlying costs. 
+
+5. What Is Recursion? A function that calls itself is a recursive function. The function RunningSum in Figure 17.1 is an example. This function calculates the sum of all the integers between the input parameter n and 1, inclusive. For example, RunningSum(4) calculates 4+3+2+1. This recursive deﬁnition is the basis for a recursive algorithm. In other words,
+
+RunningSum(n) = n + RunningSum(n − 1)
+
+6. In order to complete the evaluation of this equation, we must also supply an initial case. So in addition to the preceding formula, we need to state
+
+RunningSum(1) = 1
+
+before we can completely evaluate the recurrence. Now we can fully evaluate RunningSum(4):
+
+RunningSum(4) = 4 + RunningSum(3)
+              = 4 + 3 + RunningSum(2)
+              = 4 + 3 + 2 + RunningSum(1)
+              = 4 + 3 + 2 + 1
