@@ -3004,3 +3004,210 @@ RunningSum(4) = 4 + RunningSum(3)
               = 4 + 3 + RunningSum(2)
               = 4 + 3 + 2 + RunningSum(1)
               = 4 + 3 + 2 + 1
+
+7. During execution of the function call RunningSum(4), RunningSum makes a function call to itself, with an argument of 3 (i.e., RunningSum(3)). However, before RunningSum(3) ends, it makes a call to RunningSum(2). And before RunningSum(2) ends, it makes a call to RunningSum(1). RunningSum(1), however, makes no additional recursive calls and returns the value 1 to RunningSum(2), which enables RunningSum(2) to end and return the value 2+1backtoRunningSum(3). This enables RunningSum(3) to end and pass a value of 3 + 2 + 1 to RunningSum(4). Figure 17.2 pictorially shows how the execution of RunningSum(4) proceeds.
+
+8. Recursion vs. Iteration: There is a parallel between using recursion and using conventional iteration (such as for and while loops) in programming. All recursive functions can be written using iteration. For certain programming problems, however, the recur- sive version is simpler and more elegant than the iterative version. Solutions to certain problems are naturally expressed in a recursive manner, such as problems that are expressed with recurrence equations. It is because of such problems that recursion is an indispensable programming technique.
+
+9. Knowing which problems require recursion and which are better solved with iteration is part of the art of computer programming, and it is a skill one develops through coding experience.
+
+10. Recursion, as useful as it is, comes at a cost. As an experiment, write an iterative version of RunningSum and compare the running time for large n with the recursive version. To do this you can use library functions to get the time of day (e.g., gettimeofday) before the function starts and when it ends. Plot the running time for a variety of values of n and you will notice that the recursive version is relatively slower (provided the compiler did not optimize away the recursion, which it can do through a simple transformation that converts certain types of recursive code to iterative code when the recursion is the last operation in the function, i.e., it occurs at the tail of the function). Recursive functions incur function call overhead that iterative solutions do not. Understanding the under- lying overheads of recursion is something we cleanly explore with our bottom-up approach, and it will assist you in knowing when, and when not, to apply recursion for a particular programming task.
+
+11. Towers of Hanoi: The puzzle involves a platform with three posts. On one of the posts sit a number of wooden disks, each smaller than the one below it. The objective is to move all the disks from their current post to one of the other posts. However, there are two rules for moving disks: Only one disk can be moved at a time, and a larger disk can never be placed on top of a smaller disk. For example, Figure 17.3 shows a puzzle where ﬁve disks are on post 1. To solve this puzzle, these ﬁve disks must be moved to one of the other posts obeying the two rules. 
+
+12. Now how would we go about writing C code to solve this puzzle? If we view the problem from the end ﬁrst, we can make the following observation: The ﬁnal sequence of moves must involve moving the largest disk from post 1 to the target post, say post 3, and then moving all of the other disks back on top of it. Conceptually, we need to move all n − 1 disks oﬀ the largest disk and onto the intermediate post, then move the largest disk onto the target post. Finally, we move all n − 1 disks from the intermediate post onto the target post.
+
+13. Moving n − 1 disks in one move is not a singular, legal move. However, we have stated the problem in such a manner that we can solve by solving two smaller subproblems.
+
+14. We now have a recursive deﬁnition of the problem: In order to move n disks to the target post, which we symbolically represent as Move(n, target), we ﬁrst move n − 1 disks to the intermediate post, Move(n-1, intermediate), then move the nth disk to the target, which is a singular move, and ﬁnally move n − 1 disks from the intermediate to the target, Move(n-1, target). So in order to Move(n, target), two recursive calls are made to solve two smaller subproblems involving n − 1 disks.
+
+15. In the way we have formulated the problem, the base case involves moving the smallest disk (disk 1). Moving disk 1 requires no other disks to be moved since it is always on top and can be moved directly from one post to any another without moving any other disks. Without a base case, a recursive function would never end, similar to an inﬁnite loop in conventional iteration. Figure 17.4 is a recursive C function of this algorithm.
+
+16. Let’s see what happens when we solve the puzzle with three disks. Following is the initial function call to MoveDisk. We start oﬀ by saying that we want to move disk 3 (the largest disk) from post 1 to post 3, using post 2 as the intermediate storage post. That is, we want to solve a three-disk Towers of Hanoi puzzle. See Figure 17.5.
+
+// diskNumber 3; startPost 1; endPost 3; midPost 2
+MoveDisk(3, 1, 3, 2)
+
+17. This call invokes another call to MoveDisk to move disks 1 and 2 oﬀ disk 3 and onto post 2 using post 3 as intermediate storage. The call is performed at line 10 in the source code.
+
+// diskNumber 2; startPost 1; endPost 2; midPost 3
+MoveDisk(2, 1, 2, 3)
+
+18. To move disk 2 from post 1 to post 2, we ﬁrst move disk 1 oﬀ disk 2 and onto post 3 (the intermediate post). This triggers another call to MoveDisk again from the call on line 10.
+
+// diskNumber 1; startPost 1; endPost 3; midPost 2
+MoveDisk(1, 1, 3, 2)
+
+19. For this call, the condition of the if statement on line 7 will not be true, and disk 1 can be moved directly to the target post. The printf statement on lines 19–20 is executed. See Figure 17.6.
+
+Move disk 1 from post 1 to post 3.
+
+20. This  invocation  of  MoveDisk returns  to  its  caller,  which  was  the  call MoveDisk(2, 1, 2, 3). Recall that we were waiting for all disks on top of disk 2 to be moved to post 3. Since that is now complete, we can move disk 2 from post 1 to post 2. The printf on lines 19–20 is the next statement to execute, signaling another disk to be moved. See Figure 17.7.
+
+Move disk 2 from post 1 to post 2.
+
+21. Next, a call is made to move all disks that were on disk 2 back onto disk 2. This happens at the call on line 16 of the source code for MoveDisk.
+
+// diskNumber 1; startPost 2; endPost 3; midPost 1
+MoveDisk(1, 2, 3, 1)
+
+22. Again, since disk 1 has no disks on top of it, we see the move printed. See Figure 17.8.
+
+Move disk number 1 from post 3 to post 2.
+
+23. Control passes back to the call MoveDisk(2, 1, 2, 3) which, having com- pleted its task of moving disk 2 (and all disks on top of it) from post 1 to post 2, returns to its caller. Its caller is MoveDisk(3, 1, 3, 2). All disks have been moved oﬀ disk 3 and onto post 2. Disk 3 can be moved from post 1 onto post 3. The printf is the next statement executed. See Figure 17.9.
+
+Move disk 3 from post 1 to post 3.
+
+24. The next subtask remaining is to move disk 2 (and all disks on top of it) from post 2 onto post 3. We can use post 1 for intermediate storage. The following call occurs on line 16 of the source code.
+
+// diskNumber 2; startPost 2; endPost 3; midPost 1
+MoveDisk(2, 2, 3, 1)
+
+25. In order to do so, we must ﬁrst move disk 1 from post 2 onto post 1, via the call on line 16.
+
+// diskNumber 1; startPost 2; endPost 1; midPost 3
+MoveDisk(1, 2, 1, 3)
+
+26. The move requires no submoves. See Figure 17.10.
+
+Move disk 1 from post 2 to post 1.
+
+Return passes back to the caller MoveDisk(2, 2, 3, 1), and disk 2 is moved onto post 3. See Figure 17.11.
+
+Move disk 2 from post 2 to post 3.
+
+27. The only thing remaining is to move all disks that were on disk 2 back on top.
+
+// diskNumber 1; startPost 1; endPost 3; midPost 2
+MoveDisk(1, 1, 3, 2)
+
+28. The move is done immediately. See Figure 17.12.
+
+Move disk 1 from post 1 to post 3.
+
+and the puzzle is completed!
+
+Let’s summarize the action of the recursion by examining the sequence of function calls that were made in solving the three-disk puzzle:
+
+MoveDisk(3, 1, 3, 2)  // Initial Call
+MoveDisk(2, 1, 2, 3)
+MoveDisk(1, 1, 3, 2)
+MoveDisk(1, 2, 3, 1)
+MoveDisk(2, 2, 3, 1)
+MoveDisk(1, 2, 1, 3)
+MoveDisk(1, 1, 3, 2)
+
+29. Consider how you would write an iterative version of a solver for this puz- zle. You’ll no doubt quickly appreciate the simplicity of the recursive version. Returning to the legend of the Towers of Hanoi: The world will end when the monks ﬁnish solving a 64-disk version of the puzzle. For a three-disk puzzle, the solution required seven moves. If each move takes one second, how long will it take the monks to solve the 64-disk puzzle? Would the number of moves for an iterative version be any diﬀerent?
+
+30. Fibonacci Numbers: We considered this a bad application of recursion when we introduced it for the LC-3, and it still is in C! But this example is worth reexamining. It’s simple enough to express with a short C function, yet complex enough to have interesting stack behavior during execution. Also, we can view a complete translation to LC-3 assembly and take note of how the recursion is handled by the run-time stack.
+
+31. The following recurrence equations generate a well-known sequence of num- bers called the Fibonacci numbers, which has some interesting mathematical, geometrical, and natural properties.
+
+f (n) = f (n − 1) + f (n − 2)
+f (1) = 1
+f (0) = 1
+
+32. The nth Fibonacci number is the sum of the previous two. The series is 1, 1, 2, 3, 5, 8, 13, … This series was popularized by the Italian mathematician Leonardo of Pisa around the year 1200 (it is thought to have ﬁrst been described by Indian mathematicians around 200 BC). 
+
+33. We can formulate a recursive function to calculate the nth Fibonacci number directly from the recurrence equations. Fibonacci(n) is recursively calculated by Fibonacci(n-1) + Fibonacci(n-2). The base case of the recursion is simply the fact that Fibonacci(1) and Fibonacci(0) both equal 1. Figure 17.13 lists the recursive code to calculate the nth Fibonacci number.
+
+34. Whenever a function is called, whether from itself or another function, a new copy of its stack frame is pushed onto the run-time stack. That is, each invocation of the function gets a new, private copy of parameters and local variables. And once each invocation completes, this private copy must be deallocated. The run-time stack enables this in a natural fashion. If the variables of a recursive function were statically allocated in memory, each recursive call to Fibonacci would overwrite the values of the previous call.
+
+35. Let’s take a look at the run-time stack when we call the function Fibonacci with the parameter 3, Fibonacci(3).Westartoﬀwiththestackframefor Fibonacci(3) on top of the run-time stack. Figure 17.14 shows the progression of the stack as the original function call is evaluated.  
+
+36. The  func- tion call Fibonacci(3) will ﬁrst calculate Fibonacci(3-1) as the expression Fibonacci(n-1) + Fibonacci(n-2) is evaluated left to right. Therefore, a call is ﬁrst made to Fibonacci(2), and a stack frame for Fibonacci(2) is pushed onto the run-time stack (see Figure 17.14, step 2). 
+
+37.  For Fibonacci(2), the parameter n equals 2 and does not meet the terminal condition; therefore, a call is made to Fibonacci(1) (see Figure 17.14, step 3). This call is made in the course of evaluating Fibonacci(2-1) + Fibonacci(2-2). The call Fibonacci(1) results in no more recursive calls because the parameter n meets the terminal condition. The value 1 is returned to Fibonacci(2), which now can complete the evaluation of Fibonacci(1) + Fibonacci(0) by calling Fibonacci(0) (see Figure 17.14, step 4). 
+
+38. The call Fibonacci(0) immediately returns a 1. Now, the call Fibonacci(2) can complete and return its subcalcula- tion (its result is 2) to its caller, Fibonacci(3). Having completed the left-hand component of the expression Fibonacci(2) + Fibonacci(1), Fibonacci(3) calls Fibonacci(1) (see Figure 17.14, step 5), which immediately returns the value 1. Now Fibonacci(3) is done—its result is 3 (Figure 17.14, step 6). We could state the recursion of Fibonacci(3) algebraically, as follows:
+
+Fibonacci(3) = Fibonacci(2) + Fibonacci(1)
+             = (Fibonacci(1) + Fibonacci(0)) + Fibonacci(1)
+             = 1 + 1 + 1 = 3 
+
+39. The sequence of function calls made during the evaluation of Fibonacci(3) is as follows:
+
+Fibonacci(3)
+Fibonacci(2)
+Fibonacci(1)
+Fibonacci(0)
+Fibonacci(1)
+
+40. Walk through the execution of Fibonacci(4) and you will notice that the sequence of calls made by Fibonacci(3) is a subset of the calls made by Fibonacci(4). No surprise, since Fibonacci(4) = Fibonacci(3) + Fibonacci(2). Likewise, the sequence of calls made by Fibonacci(4) is a subset of the calls made by Fibonacci(5). 
+
+41. it’s worthwhile to compare the running time of the recursive version of Fibonnaci in C to an iterative version. The simple recursive version, while it falls directly out of the recurrence equations and is easy to code, is far more costly than its iterative counterpart. It is more expensive not only because of the function call overhead, but also because the recursive solution has a signiﬁcant number of repeated calculations that the iterative version does not.
+
+42. Figure 17.15 lists the LC-3 C compiler generated for this Fibonacci program. Notice that no special treatment was required to handle the program’s recursive nature. Because of the run-time stack mechanism for activating functions, a recursive function gets treated like every other function. If you examine this code closely, you will notice that the compiler generated a temporary variable in order to translate line 24 of Fibonacci properly. Most compilers will generate such temporaries when compiling complex expressions and will allocate storage in the stack frame on top of programmer-declared local variables.
+
+43. Binary Search: Say we want to ﬁnd a particular integer value in an array of integers that is in ascending order. The function should return the index of the integer, or a −1 if the integer does not exist. To accomplish this, we will use the binary search technique as follows: Given an array and an integer to search for, we will examine the midpoint of the array and determine if the integer is (1) equal to the value at the midpoint, (2) less than the value at the midpoint, or (3) greater than the value at the midpoint. If it is equal, we are done. If it is less than, we perform the search again, but this time only on the ﬁrst half of the array. If it is greater than, we perform the search only on the second half of the array. Notice that we can express cases (2) and (3) using recursive calls.
+
+44. What happens if the value we are searching for does not exist within the array? Given this recursive technique of performing searches on smaller and smaller subarrays of the original array, we eventually perform a search on an array that has no elements (e.g., of size 0) if the item we are searching for does not exist. If we encounter this situation, we will return a −1. This will be a base case in the recursion.
+
+45. Figure 17.16 contains the recursive implementation of the binary search algorithm in C. Notice that in order to determine the size of the array at each step, we pass the starting and ending points of the subarray along with each call to BinarySearch. Each call reﬁnes the variables start and end to search smaller and smaller subarrays of the original array list. The variable start contains the array index of the ﬁrst data item, and the variable end contains the index of the last data item.
+
+46. Figure 17.17 provides an illustration of this code during execution. The array list contains eleven elements as shown. The initial call to BinarySearch passes the value we are searching for (item) and the array to be searched.  (Recall from Chapter 16 that this is the address of the very ﬁrst element, or base address, of the array.) Along with the array, we provide the extent of the array. That is, we provide the starting and ending points of the portion of the array to be searched.
+
+47. In every subsequent recursive call to BinarySearch, this extent is made smaller, eventually reaching a point where the subset of the array we are searching has either only one element or no elements at all. These two situations are the base cases of the recursion.
+
+48. A more straightforward search technique would be to sequentially search through the array. That is, we could examine list[0], then list[1], then list[2], etc., and eventually either ﬁnd the item or determine that it does not exist. Binary search, however, will require fewer comparisons and can potentially execute faster if the array is large enough.
+
+49. Escaping a Maze:  Let’s start by considering how to represent a maze in C. we’ll use a two-dimensional array, with each element in the array representing whether the maze position is blocked (because it contains a wall), is open, or contains an exit. The maze will be a character array, where each element of the array contains the character X for a blocked space, a space ’ ’ character for an open space, and the character E for an exit. Our maze solver will take this 2D array as input, along with coordinates of the initial starting point, and will search through the maze to ﬁnd a path to the exit, if it exists. 
+
+50. Figure 17.18 shows an example of a simple 4 × 4 maze represented in our 2D array format. In this example, maze[3][0] = 'E' designates the exit, and maze[0][2] = 'X' is an example of a space that is blocked. If we set the initial position to maze[1][2], then there exists a path to the exit.
+
+51. Now the question is, how might a maze solver compute the path to the exit? We can use the following idea: From the starting point, if a path to the exit exists, it must go through the space either directly to the left, directly to the right, directly up, or directly down from the initial point. So we set the new position to one of those spaces and recursively solve the maze from there. That is, from the new point, if a solution exists, it must go through space to the left, to the right, directly up, or directly down from the new point.
+
+52. Eventually, we’ll hit a blocked space X or the exit E. And these designate base cases for the recursion. We’ll also need to mark spaces that we’ve already visited with a V. This will enable us to skip over spaces that we’ve already evaluated, and it will prevent us from going in circles (literally!). This will also be a base case.
+
+53. Figure 17.19 provides the C code implementation of the ExitMaze function. It takes as its parameters a maze represented as a 2D character array of dimensions MAZE_HEIGHT by MAZE_WIDTH, and two integers that represent the current position as x and y indices in the maze array. 
+
+54. The initial portion of the function checks to see if we’ve hit any of our terminal conditions: Either xpos or ypos is out of the maze, or the current position is the exit or corresponds to a space in the maze that has already been visited or is blocked. If not, we mark the current position as visited and recursively check the neighboring positions.
+
+55. This algorithm performs something called a depth-ﬁrst search through all the possible paths through the maze. We can represent the recursive calls as a graph, where each node in the graph corresponds to an invocation of the function ExitMaze. In the general case, each invocation of ExitMaze can make up to four recursive calls (one call for each direction). So each node can end up creating up to four new invocations of ExitMaze. Figure 17.20 provides a graphical depiction of ExitMaze in action. The initial call shows the initial maze conﬁguration, along with the starting point (maze[1][2]). That initial call generates four new calls, each evaluated one after the other. The ﬁrst call (move down) returns immediately, as does the next call (move right), as does the third call (move up). The fourth call (move left) is a move into an open space, and thus it causes new calls to be generated.
+
+
+chapter 18
+
+1. Whether it be to the screen, to a ﬁle, or to another computer across a network, all useful programs perform output of some sort or another. Most programs also require some form of input. As is the case with many other modern programming languages, input and output are not directly supported by C. Instead input/output (I/O) is handled by a set of standard library functions that extend the base language. 
+
+2. The behavior of these standard library functions is precisely deﬁned by the ANSI C standard. The functions putchar and printf write to the output device, and getchar and scanf read from the input device. The more general functions fprintf and fscanf perform ﬁle I/O, such as to a ﬁle on disk. We have used printf and scanf extensively throughout the second half of this book.
+
+3. The C Standard Library: The C standard library is a major extension of the C programming language. It provides support for input/ouput, character string manipulations, mathematical functions, ﬁle access functions, and various system utilities that are not specifically required for a single program but are generally useful in many programs.
+
+4. The standard library is intended to be a repository of useful, primitive functions that serve as components for building complex software. This component-based library approach is a characteristic of many contemporary programming languages such as C++, Java, and Python, which also have similar standard libraries of primitive functions, types, and other facilities.
+
+5. The library’s functions are typically developed by the designers of the underlying device and system—the Android smartphone, for example—and are optimized for the system on which they are developed.
+
+6. To use a function deﬁned within the C standard library, we must include the appropriate header ﬁle (.h ﬁle). The functions within the standard library are grouped according to their functionality. Each of these groups has a header ﬁle associated with it. For example, mathematical functions such as sin and tan use the common header ﬁle math.h. The standard I/O functions use the header ﬁle stdio.h. These header ﬁles contain, among other things, function declarations for the I/O functions and preprocessor macros relating to I/O. A library header ﬁle does not contain the source code for library functions.
+
+7. If the header ﬁles do not contain source code, how does the machine code for, say, printf get added to our applications? Each library function called within a program is linked in when the executable image is formed. 
+
+8. The object ﬁles containing the library functions are stored somewhere on the system and are accessed by the linker, which links together the various function binaries into a single executable program. We refer to this as static linking.
+
+9. Libraries can be linked dynamically into the application. With certain types of libraries (dynamically linked libraries, or DLLs), the machine code for a library isn’t directly integrated into the executable image but is “linked” on demand, while the program executes. This has a number of advantages over a statically linked library. It reduces the size of the executable, it enables multiple programs to link the same code, thereby reducing memory requirements, and it allows the library to be upgraded independently from the application.
+
+10. I/O, One Character at a Time: The functions getchar and putchar perform input and output on a single character at a time. Input is read in as ASCII and output is written out as ASCII, in a manner similar to the IN and OUT TRAP routines of the LC-3.
+
+11. I/O Streams: Conceptually, all character-based input and output is performed in streams. The sequence of ASCII characters typed by the user at the keyboard is an example of an input stream. As each character is typed, it is added to the end of the stream. Whenever a program reads keyboard input, it reads from the beginning of the stream. The sequence of ASCII characters printed by a program, similarly, is added to the end of the output stream. In other words, this stream abstraction allows us to further decouple the producer from the consumer, which is helpful because the two are usually operating at diﬀerent rates.
+
+12. For example, if a program wants to perform some output, it adds characters to the end of the output stream without being required to wait for the output device to ﬁnish displaying the previous character. Many other popular languages, such as C++, provide a similar stream-based abstraction for I/O.
+
+13. In C, the standard input stream is referred to as stdin and is mapped to the keyboard by default. The standard output stream is referred to as stdout and is mapped by default to the display. The functions getchar and putchar operate on these two streams.
+
+14. putchar: The function putchar is the high-level language equivalent of the LC-3 OUT TRAP routine. The function putchar displays on the stdout output stream the ASCII value of the parameter passed to it. It performs no type conversions—the value passed to it is assumed to be ASCII and is added directly to the output stream. All the calls to putchar in the following code segment cause the same character (lowercase h) to be displayed. The function putchar is the high-level language equivalent of the LC-3 OUT TRAP routine. The function putchar displays on the stdout output stream the ASCII value of the parameter passed to it. It performs no type conversions—the value passed to it is assumed to be ASCII and is added directly to the output stream. All the calls to putchar in the following code segment cause the same character (lowercase h) to be displayed.
+
+15. A putchar function call is treated like any other function call, except here the function resides within the standard library. The function declaration for putchar appears in the stdio.h header ﬁle. Its code will be linked into the executable during the compiler’s link phase.
+
+char c = 'h';
+:
+putchar(c);
+putchar('h');
+putchar(104);
+
+16. getchar: The function getchar is the high-level language equivalent of the LC-3 IN TRAP function. It returns the ASCII value of the next input character appearing in the stdin input stream. By default, the stdin input stream is simply the stream of characters typed at the keyboard. In the following code segment, getchar returns the ASCII value of the next character typed at the keyboard. This return value is assigned to the variable c.
+
+char c;
+c = getchar();
+
+17. Buffered I/O:
