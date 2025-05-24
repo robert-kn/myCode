@@ -3354,3 +3354,4 @@ if (infile == NULL)
 
 chapter 19
 
+1. C at its core provides support for just a few fundamental types of data. That is, C natively supports the allocation of variables of integers, ﬂoating point values, characters, and booleans. C also supports operators that manipulate these types, such as + for addition and * for multiplication. With C, we can quite easily declare variables of these native types, and we can also create arrays of them and pointers to them.
