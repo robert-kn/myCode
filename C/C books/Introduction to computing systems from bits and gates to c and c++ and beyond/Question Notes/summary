@@ -3355,3 +3355,316 @@ if (infile == NULL)
 chapter 19
 
 1. C at its core provides support for just a few fundamental types of data. That is, C natively supports the allocation of variables of integers, ﬂoating point values, characters, and booleans. C also supports operators that manipulate these types, such as + for addition and * for multiplication. With C, we can quite easily declare variables of these native types, and we can also create arrays of them and pointers to them.
+
+2. Ultimately, though, when we write code, we often deal with things that can- not be easily described by an integer, or ﬂoating point value, or character, or boolean, or even by arrays of them. If we are, for example, modeling an aircraft wing or developing the path planner for an autonomous vehicle, we need more sophisticated types in order to map the real world (or virtual world) into the digital world of the computing device.
+
+3. The next two chapters deal primarily with the framework that C and C++ provide for creating and organizing more complex data types. We’ll discover that the fundamental data types, as limited as they are, form the building blocks with which we can build nearly any general, complex type we might need. Creating these types, organizing them, connecting them together, and deﬁning operations to manipulate them are a large part of the coding process.
+
+4. In C, we can create a new type that is a collection of basic types by using a structure. Structures provide us with a convenient way of representing objects that are best represented by combinations of the basic types. For example, an employee might be represented as a structure containing a name (character string), job title (character string), department (perhaps integer), and employee ID (integer) within a corporate database. With this structure, we can declare a single memory object representing an employee just as simply as we can declare an integer variable.
+
+5. In addition to structures, we’ll explore dynamic memory allocation in C, which is a framework for allocating memory objects that are more persistent than those allocated on the run-time stack. With the pairing of structures and dynamic memory allocation, we can create dynamic data structures that can grow and shrink and persist in memory across diﬀerent function calls. This capability is so incredibly useful that it forms the basis of most software development.
+
+6. Let’s leap straight into an example. Let’s say we wanted to track airborne aircraft around a particular geographic point, say the city of Urbana, Illinois. There are several characteristic features that we would want to associate with each aircraft. for example, we’d want the following values:
+
+char ID[7];         // Max 6 characters
+int altitude;       // in meters
+int longitude;      // in tenths of degrees
+int latitude;       // in tenths of degrees
+int heading;        // in tenths of degrees
+double airSpeed;    // in kilometers/hour
+
+7. Structures allow the programmer to deﬁne a new type that consists of a combination of other, simpler types such as int, char, and double, as well as pointers to them and arrays of them. Structure variables are declared in the same way variables of fundamental data types are declared. Before any structure variables are declared, however, the structure itself needs to be deﬁned.
+
+8. For our aircraft tracking app, we could create a structure deﬁnition as such:
+
+struct flightType {
+     char ID[7];         // Max 6 characters
+     int altitude;       // in meters
+     int longitude;      // in tenths of degrees
+     int latitude;       // in tenths of degrees
+     int heading;        // in tenths of degrees
+     double airSpeed;    // in kilometers/hour
+};
+
+9. With this structure deﬁnition, we create a new type consisting of six values, or members. If we were to declare something of this new type, it would be allocated in contiguous storage, with enough space for all its members. To declare a variable of this new type, we do the following:
+
+struct flightType plane;
+
+This declares a variable called plane that consists of the six members deﬁned in the structure deﬁnition.
+
+10. We can access the individual members of this structure variable using the following syntax:
+
+struct flightType plane;
+plane.airSpeed = 800.00;
+plane.altitude = 10000;
+
+Each member can be accessed using the variable’s name as the base name followed by a dot “.” followed by the member name.
+
+11. The variable plane gets allocated onto the stack just like any other local variable, and it occupies a contiguous region of memory large enough to hold all member elements. In this case, if each of the basic types occupied one LC-3 memory location, the variable plane would occupy 12 locations (7 for the character string, 5 for the integers, and 1 for the double). Figure 19.1 shows a portion of the run-time stack when a function that contains the following declarations is invoked.
+
+int x;
+struct flightType plane;
+int y;
+
+12. More generally, the syntax for a structure declaration is as follows:
+
+struct tag {
+     type1 member1;
+     type2 member2;
+     ...
+     typeN memberN
+} identifiers;
+
+13. The tag ﬁeld provides a handle for referring to the structure later in the code, as in the case of declaring variables of the structure’s format. The list of members deﬁnes the organization of a structure and is syntactically a list of declarations in types that have been previously deﬁned. A member can be of any type, including another structure type. We can optionally include identiﬁers in a structure’s dec- laration to actually declare variables of that structure’s type. These appear after the closing brace of the structure declaration, prior to the semicolon.
+
+14. typedef: C structures enable programmers to deﬁne their own aggregate types. C typedef enables programmers to name their own types. It has the general form 
+
+typedef type name;
+
+It’s not so much a type deﬁnition, as its name implies, as it is a type synonym. This statement causes the identiﬁer name to be synonymous with the type type, which can be any basic type or aggregate type (e.g., a structure). For instance,
+
+typedef int Color;
+
+allows us to deﬁne variables of type Color, which will now be synonymous with integer. Using this deﬁnition, we can declare:
+
+Color pixels[200][100];
+
+which could be used to represent an image, for example, of size 200 × 100 pixels.
+
+15. The typedef facility is particularly useful when dealing with structures. For example, we can create a simpler, more meaningful name for our airborne aircraft structure.
+
+struct flightType {
+     char ID[7];         // Max 6 characters
+     int altitude;       // in meters
+     int longitude;      // in tenths of degrees
+     int latitude;       // in tenths of degrees
+     int heading;        // in tenths of degrees
+     double airSpeed;    // in kilometers/hour
+};
+
+typedef struct flightType Flight;
+
+Now we can declare structure variables using the type name Flight. For example,
+
+Flight plane;
+
+is now equivalent to the declaration used previously:
+
+struct flightType plane;
+
+16. The typedef declaration provides no additional functionality. However, its purpose is to provide additional clarity to our code, particularly code that is heavy with programmer-deﬁned types. Well-chosen type names connote properties of the variables they declare even beyond what can be expressed by the names of the variables themselves.
+
+17. Implementing Structures in C: A structure variable is a regular variable like an int, char,or ﬂoat, but with more moving parts. Each of these parts is necessarily a simpler type that can be directly manipulated using existing operators.
+For example, in the following code, the member altitude of the structure variable of type Flight is accessed.
+
+int x;
+Flight plane;
+int y;
+plane.altitude = 0;
+
+18. Here, the variable plane is of type Flight, meaning it contains the six mem- ber ﬁelds we deﬁned previously. The member ﬁeld labeled altitude is accessed using the variable’s name followed by a period, followed by the member ﬁeld label. The compiler, knowing the layout of the structure, generates code that accesses the structure’s member ﬁeld using the appropriate oﬀset. Figure 19.1 shows the layout of the portion of the stack frame for this function. The compiler keeps track, in its symbol table, of the position of each variable in relation to the base pointer R5, and if the variable is an aggregate data type, it also tracks the position of each ﬁeld within the variable. Notice that for the particular reference plane.altitude = 0;, the compiler must generate code to access the second variable on the stack and the second member element of that variable. Following is the code generated by the LC-3 C compiler for the assignment statement plane.altitude = 0;
+
+AND R1, R1, #0      ; zero out R1
+ADD R0, R5, #-12    ; R0 contains base address of plane
+STR R1, R0, #7      ; plane.altitude = 0;
+
+19. Arrays of Structures: An easy, straightforward way to represent the set of airborne aircraft would be to use an array. We are already familiar with arrays for building contiguous collections of simple variables, and here we’ll apply the same concept to objects of ﬂightType. We quickly run into a design issue in that we need to pick a size for the array, either statically or using a variable-sized array. For the sake of example, let’s make the determination that no more than 100 aircraft will exist in this airspace (but what if we are wrong?). For this the following declaration suﬃces:
+Flight aircraft[100];
+
+20. This declaration is like a declaration of a regular array, except instead of declaring 100 integer values, we have declared a contiguous region of memory contain- ing 100 structures, each of which is composed of the six members indicated in the declaration struct ﬂightType. The reference aircraft[12], for example, would refer to the 13th object in the region of 100 such objects in memory.
+
+21. Each object contains enough storage for its six constituent member ele- ments. Each object in this array is of type Flight (which is a synonym of struct ﬂightType) and can be accessed using standard array notation. For example, accessing the ﬂight characteristics of the ﬁrst aircraft can be done using the identiﬁer aircraft[0]. Accessing a member ﬁeld is done by accessing an element of the array and then specifying a ﬁeld:
+
+aircraft[0].heading
+
+22. What if there are fewer than 100 aircraft? We’d need some convenient way of tracking the actual number of airborne aircraft in our array.
+
+23. We can also create pointers to structures. The following declaration creates a pointer variable that contains the address of a variable of type Flight.
+
+Flight *aircraftPtr;
+
+We can assign this variable as we would any pointer variable.
+
+aircraftPtr = &aircraft[34];
+
+24. If we want to access any of the member ﬁelds pointed to by this pointer variable, we could use an expression such as the following:
+
+(*aircraftPtr).longitude
+
+25. Let’s decode this expression. We are dereferencing the variable aircraftPtr. It points to something of type Flight, which is a structure. We can access one of the member elements of this structure by using the dot operator (.). Pointers to structures are an incredibly powerful and therefore commonly used concept, so the creators of the C programming language provided for a simple, intuitive syntax for this type of dereferencing. The previous expression is equivalent to:
+
+aircraftPtr->longitude
+
+26. That is, the expression -> is like the dereference operator *, except it is used for directly dereferencing a member element of a structure type. The symbol -> visually evokes that something is being pointed at.
+
+27. Say we want to add some functionality that determines, for each aircraft, which of the other aircraft is clos- est in physical distance. To accomplish this, we need to examine the position and altitude of each aircraft and determine the one that is closest to the reference aircraft. In Figure 19.2, the function NearestNeighbor calls the function AirDistance on pairs of aircraft to determine distance and ﬁnds the minimum of all pairs. The function AirDistance isn’t completely coded. It uses the position and altitude of each of its two arguments to determine their distance apart.
+
+28. Notice that NearestNeighbor passes AirDistance two pointers rather than the structures themselves. While it is possible to pass structures, passing pointers is more eﬃcient because it involves less pushing of data onto the run-time stack; that is, in this case two pointers are pushed rather than 24 locations’ worth of data for two objects of type Flight.
+
+29. Dynamic Memory Allocation: The choice of array of Flight types for our core data structure is quite problem- atic for several reasons. We needed to choose a size for this array and hard-code that size into our code. If the number of aircraft is fewer than that size, then we are okay, except that we have more space allocated than we actually need. Yes, we also need a means for identifying which array elements contain real aircraft and which are unused. But if we had more than that number of aircraft in the sky, then our code would not function correctly. Such rigid assumptions make our code brittle. When the assumptions don’t hold, our code is likely to fail. It would be better if we could make our sizing choice ﬂexible to accommodate however many aircraft are in the air.
+
+30. Another reason that the array of Flight types is a poor choice of core struc- ture arises from the dynamic nature of airborne aircraft. They tend to land, take oﬀ, exit the airspace, or enter it with relatively high frequency. Our core data structure will need to add and remove aircraft as they enter and exit the airspace. Adding or removing a data item from the middle of an array is easy enough to code, but it requires moving all the items that follow in the array over one spot, which amounts to a lot of data movement over time, which could slow down our app or put a higher load on our device’s battery.
+
+31. The solution to these issues (the ﬁxed data structure size and the ineﬃcient delete of objects) is to use a dynamic data structure. 
+
+32. Memory objects (e.g., variables) in C programs are allocated to one of three spots in memory: the run-time stack, the global data section, or the heap. Variables declared local to functions are allocated during execution onto the run-time stack by default. Global variables are allocated to the global data section and are accessible from all parts of a program. Dynamically allocated data objects are allocated onto the heap, and their allocation and deallocation are determined completely by the logic of our code.
+
+33. At a high level, dynamic memory allocation works as follows: A memory allocator (which is a C system library function named malloc) manages an area of memory called the heap. During execution, a program can make a request to the memory allocator for blocks of memory of a particular size in bytes. The memory allocator locates a contiguous block of this size, reserves this block by marking it as allocated, and returns a pointer to this block. 
+
+34. A block of memory that is allocated on the heap stays allocated until we decide to explicitly deallocate it by calling the memory deallocator (it works in  concert  with  the  allocator  and  is  also  a  C  system  library  function.  It’s named free). The deallocator adds the block back onto the heap for subsequent reallocation.
+
+35. Figure 19.3 is a copy of Figure 12.7; it shows the relationship of the various regions of memory, including the heap. Notice that as blocks are allocated and deallocated, the heap grows and shrinks. The heap and the stack both grow toward each other. The size of the stack is based on the depth of the current function call, whereas the size of the heap is based on how much memory the memory allocator has reserved for the requests it has received.
+
+36. Objects that are allocated in the heap stay “alive” until we, the programmer, explicitly deallocate them. This is unlike the stack, where objects are deallocated once the code blocks (e.g., functions) in which they are declared have exited. This additional programmer control is invaluable. It will enable us to create data structures that are persistent across multiple functions and across large spans of program execution.
+
+37. Dynamically Sized Arrays: Dynamic allocation and deallocation are handled by the C standard library functions malloc and free. They both have simple interfaces—they each take one argument 
+
+int numAircraft;
+Flight *planes;
+printf("Total number of aircraft?");
+scanf("%d", &numAircraft);
+planes = malloc(24 * numAircraft);
+
+38. The  function  malloc allocates a contiguous region of memory on the heap of the size in bytes indicated by the single parameter. If the heap has enough unclaimed memory and the call is successful, malloc returns a pointer to the allocated region. Here we allocate a chunk of memory consisting of 24 * numAircraft bytes, where numAircraft is the number of aircraft in the air.
+
+39. What about the 24? Recall that the type Flight is composed of six members— an array of seven characters, four integers, and a double, each occupying a single two-byte location on the LC-3. Each structure requires 24 bytes of memory on the LC-3. But this same structure on a Windows PC might require 31 bytes, due to the different sizes of integers, characters, and double types. As a necessary convenience for programmers, the C language supports a compile-time operator called sizeof. This operator returns the size, in bytes, of the memory object or type on the particular system being compiled for.
+
+40. For example, sizeof(Flight) will return the number of bytes occupied by an object of type Flight on the particular device the code is being compiled for. In this way, we can create more portable code that works on different systems without having to modify it.
+
+41. If all the memory on the heap has been allocated and the current allocation cannot be accomplished, malloc returns the value NULL. Recall that the symbol NULL is a preprocessor macro symbol that represents a null pointer. It is good programming practice to check that the return value from malloc indicates that the memory allocation was successful.
+
+42. The function malloc returns a pointer, but of what type? In the preceding example, we are treating the pointer that is returned by malloc as a pointer to some variable of type Flight. In other places, we might want malloc to allocate an array of integers, characters, or of some other type. In other words, malloc needs to return a generic pointer of type void *. This generic pointer needs to be type cast to the appropriate type during assignment.
+
+43. That is, whenever we call the memory allocator, we need to convert the void * pointer from malloc to the type of the pointer variable we are assigning it to. In the preceding example, we assigned the pointer to planes, which is of type Flight *; we therefore should cast the pointer to type Flight *. To do otherwise makes the code less portable, and most compilers generate a warning message because we are assigning a pointer value of one type to a pointer variable of another.
+
+44. To type cast a value from one type to a newType, we use the following syntax. The variable var should be of newType.
+var = (newType) expression;
+
+45. Now that we’ve discussed type casting, the sizeof operation, and error checking of the return value from malloc, the correct way to write the code from the previous example is:
+
+int numAircraft;
+Flight *planes;
+
+printf("Total number of aircraft?");
+scanf("%d", &numAircraft);
+planes = (Flight *) malloc(sizeof(Flight) * numAircraft);
+if (planes == NULL) {
+     printf("Error in malloc...\n");
+     :
+     :
+
+46. Since the region that is allocated by malloc is contiguous in memory, we can switch between pointer notation and array notation. Now we can use the expression planes[29] to access the characteristics of the 30th aircraft (provided that numAircraft was larger than 30, of course). Notice that we smoothly switched from pointer notation to array notation; this is an example of the equivalence between array and pointer notation that we discussed earlier
+
+47. What about deallocation? To deallocate memory and return it to the heap, we can use the function free. It takes as an argument a pointer to a block that was previously allocated by malloc and deallocates it. After a region has been free’d, it is once again eligible for allocation. 
+
+48. The function malloc is only one of several memory allocation functions in the standard library. The function calloc allocates memory and initializes it to the value 0. The function realloc attempts to grow or shrink previously allocated regions of memory. To use the memory allocation functions of the C standard library, we need to include the stdlib.h header ﬁle.
+
+49. We can use realloc to create an array that adapts to the data size. For exam- ple, the function AddMoreAircraft() could double the size of our core aircraft array if the current size of the planes were too small. Likewise, we could use ReduceAircraft() when the size of the array is larger than what is required. Both of these functions would call realloc to adjust the array’s size.
+
+50. Dynamically sized arrays (or dynamic arrays) are allocated on the heap, which means that we can access them through- out our code and not just within a single function, which is the case with stack-allocated variable-sized arrays. Dynamic arrays can also grow and shrink, whereas variable-length arrays are of ﬁxed size throughout program execution. Even if we chose to use variable-length arrays for our aircraft tracker code, if the number of aircraft in our airspace surged, our code might not have enough space to track all aircraft.
+
+51. Linked Lists: A linked list is a data structure that is similar to an array in that both can be used for data that is a sequential list of elements. In an array, each element (except the last) has a next element that follows it consecutively in memory. Likewise in a linked list, each element has a next element (except the last), but the elements need not be adjacent in memory. Rather, each element in a linked list contains a pointer to the next element, which enables the next element to be placed anywhere in relation. The pointer is used to reconstruct the sequential order.
+
+52. A linked list is a collection of elements, or nodes, where each node is one “unit” of data, such as the Flight structure for tracking airborne aircraft, plus a pointer to the next node. Given a starting node, we can traverse the list from one node to another by following the pointers. 
+
+53. The following code shows how this is accomplished in C. Here we have added a single new member element to the structure, the pointer Flight * next. As a side note, we rearranged this code slightly from the example in Figure 19.2 by moving the typedef to precede the structure deﬁnition. Why? This enables us to use the more convenient Flight * rather than struct ﬂightType * as the type for next.
+
+1  // Structure definition
+2  typedef struct flightType Flight; 
+3  struct flightType {
+4    char ID[7];         // Max 6 characters
+5    int altitude;       // in meters
+6    int longitude;      // in tenths of degrees
+7    int latitude;       // in tenths of degrees
+8    int heading;        // in tenths of degrees 
+9    double airSpeed;    // in kilometers/hour
+10   Flight *next;       // Pointer to next element
+11 };
+
+54. Like an array, a linked list has a beginning and an end. Its beginning, or head, is accessed using a pointer called the head pointer. The ﬁnal node in the list, or tail, points to the NULL value, which signiﬁes that no additional elements follow, similar to the way the NULL character indicates the end of a string. Figure 19.4 shows two representations of a linked list data structure: an abstract depiction where nodes are represented as blocks and pointers are represented by arrows, and a more physical representation that shows what the data structure might look like in memory. Nodes can appear anywhere, and it is the pointers that help re-create the linear order. Given a head pointer, we can access all elements in the list by traversing from one node to the next via the next pointer.
+
+55. Despite their similarities, arrays and linked lists have fundamental diﬀer- ences. An array can be accessed in random order. We can access element number 4, followed by element 911, followed by 45, for example, by providing the index of the element we wish to access. A simple linked list must be traversed sequentially starting at its head; if we wanted to access node 29, then we would have to start at node 0 (the head node) and then go to node 1, then to node 2, and so forth. This sequential access may seem like a disadvantage, and it is! But there is a strong beneﬁt to linked lists
+
+56. Linked lists are dynamic in nature; additional nodes can be added or deleted without movement of the other nodes. Existing nodes stay in place, with the new node added, or old node deleted, by rearranging the node-to-node links. Both add and delete are accomplished by rearranging pointers, and they don’t require copying or moving data. While it is straightforward to dynamically size an array, it is more costly to add or remove a single element in an array.
+
+57. Support Functions: There are two basic functions we’ll develop in this example, AddFlight, which will add an aircraft to the linked list as it enters our airspace, and DeleteFlight to remove an aircraft. Our starting point will be the variable
+
+Flight *airspace = NULL;
+
+and it will replace the array we used in Figure 19.2. It is initially empty, as signiﬁed by its initialization to NULL.
+
+58. Before we dive into the linked list itself, let’s build up the code surrounding the AddFlight and DeleteFlight functions. Figure 19.5 lists the C source code for the support functions for our linked list–based ﬂight tracker. The structure definition is just as we developed previously, with the addition of the Flight *next pointer to enable us to link nodes together.
+
+59. The function CreateFlight takes as arguments the various properties of an aircraft to create a new node via malloc. The function then returns a pointer to this new node.
+
+60. The function PrintAirspace prints all the aircraft in the airspace by travers- ing the linked list, which is provided as an input parameter. Notice that the while loop is the analog of the for loop we would typically use for traversing a ﬁxed-size array. Since we don’t know the number of nodes in the list, we use a while loop to keep traversing from node to node until we reach the NULL pointer. And instead of the i++ which is typical of a for loop, the iteration is accomplished by list = list ->next; 
+
+61. The function main orchestrates everything, and it contains example calls to the functions AddFlight and DeleteFlight.
+
+62. One note about the code in Figure 19.5 is that we needed to include two additional header ﬁles from the C standard library. The header ﬁle stdlib.h contains the deﬁnitions for the memory allocation functions that we’ll use, e.g., malloc and free. The header ﬁle string.h contains various string functions, including strcmp, which we’ll use in the functions to add and delete aircraft to and from our linked list.
+
+63. Adding a Node to a Linked List: Since the linked list of aircraft will be maintained in sorted order by aircraft ID, there is a precise spot within the list where each new aircraft should be added. For example, if our list contains two aircraft, one with ID A, followed by one with ID C, then the new aircraft B will be inserted in between those two aircraft. The new list will be A, B, C.
+
+64. The basic insertion algorithm is simple: the next pointer of A, which currently points to C, should be changed to point to the new aircraft B, and the next pointer of B should be changed to point to C. Only two values are modiﬁed in order to add the new node. Compare this to what is required to add a node to a sorted array!
+
+65. We want to traverse the list, searching for the spot in the list at which to insert B. We’ll use a while loop, as we did for the PrintAirspace support function, to traverse the list. We’re searching for a node with an ID that is greater than B because that indicates we’ve found the spot at which to insert B. In this case, A is not greater than B, so we keep iterating. C is greater than B, and therefore we insert B just before C.
+
+66. Note that because ID is represented as a character string, we’ll use the C standard string function strcmp, which compares two strings, stringX and stringY:
+
+comp = strcmp(stringX, stringY);
+
+It returns a 0 if both are equal, or a value <0ifstringX appears before stringY in alphabetical order, according to ASCII, or a value >0ifstringX appears after stringY.
+
+67. To insert B prior to node C, we need to modify the next pointer of A, which is prior to node C. To accomplish this, we need to retain a “previous” pointer that points to the node prior to node C. In other words, the current pointer serves as our index through the linked list, and the previous pointer lags it by one node. The current pointer helps us locate the point of insertion, and the previous pointer assists in the insertion by providing a way to access the node whose next pointer needs to be modiﬁed.
+
+68. The code provided in Figure 19.6 provides the basic structure, albeit incomplete, of our code. Notice that the while loop iterates through the nodes in the linked list using the pointer variable current. The pointer variable previous lags current by one node.
+
+69. This code is incomplete. It doesn’t take into account some of the diﬀerent cases we will encounter during use. How does the preceding situation change if C doesn’t exist, or if A doesn’t exist, or if neither exists? Let’s walk through the permutations of A and C (and B) existing in the list prior to the insertion of B.
+
+70. We’ve already covered the situation where both A and C are in the list in the code in Figure 19.6. Here B is inserted in between two existing nodes. We’ll call this the “Add to Middle” case. Let’s consider the other cases.
+
+71. Empty List: What if neither A nor C exists prior to the insertion of B? Here we are adding B to an empty list. We want to change the value of the head pointer of the list (allAircraft in the function main), which currently points to NULL,to point instead to B. The next pointer of B will point to NULL. The list now contains a single aircraft, B.
+
+72. Add at Tail: What if A exists, but C does not? In this case, we will be adding B to the end, or tail, of the list. The next pointer of A will be modiﬁed to point to B instead of NULL. B’s next pointer will be set to NULL.
+
+73. Add at Head: What if C exists, but A does not? In this case, B will be inserted prior to C. This requires modifying the head pointer of the list (allAircraft in the function main), which currently points to C, to point to B instead. B’s next pointer will be set to point to C.
+
+74. B Exists: What if A and C exist, but so does B? In this case, we will not insert a duplicate of B; instead we will signal that a special condition has occurred. Figure 19.7 provides another view of each of these ﬁve cases. We’ll have to ensure that our AddFlight code from Figure 19.6 handles all ﬁve of these situations. Some of these cases are rather easy to address, such as “B Exists”. “Add at Tail” is also rather simple. Here we exit the while loop without having added B. At this point, we know that B will be added to the tail, which requires modifying the previous node to point to B and having B point to NULL.
+
+75. The other two cases, Add at Head and Empty List, are more problematic. They both require modifying the parameter list to point to a new node.
+
+76. To address this issue, we’ll need to pass list by reference to AddFlight (see Section 16.2.3). That is, we’ll need to pass a pointer to it, instead of the value itself. We’ve seen how to do this for typical variables, but it gets a little confusing when dealing with pointer variables. In C, this parameter would be expressed as a pointer to a variable of type Flight *, or as expressed as code:
+
+Flight **list;
+
+77. It’s often distractingly diﬃcult to clearly think about what this actually means. The double asterisks can require some mental processing for most programmers to decode. It is helpful to keep in mind that the concept is just the same as if we were passing an integer variable by reference:
+
+int *x;
+
+78. And in order to modify the variable x, say by incrementing it, we can use the following notation:
+
+*x = *x + 1;
+
+79. Likewise, to modify a pointer variable passed by reference, we can use the following notation:
+
+*list = *list->next;
+
+80. We’ve provided the complete version of AddFlight in Figure 19.8. The places in the code where we handle each of the ﬁve diﬀerent cases are identiﬁed in the comments.
+
+81. Deleting Node from a Linked List: The delete function requires an ID of the aircraft to be deleted. The corresponding node can exist somewhere within the list, at the head of the list, at the tail of the list, or it might not exist at all. As with our code to add an element to the list, our delete code needs to handle each of these cases.
+
+82. We traverse the list looking for the node to delete. If found, the node previous to it is modiﬁed to point to the node following it. The node to delete is then deallocated using the free function. As with the add function, DeleteFlight returns a 0 if the delete proceeded successfully or a −1 if it didn’t.
+
+83. When deleting a node from a linked list, we can encounter situations analogous to those we encountered when adding a node: Delete from Middle, Empty List, Delete from Tail, Delete from Head, and Doesn’t Exist.
+
+84. Each of these situations is simple to code on top of the basic while loop structure. Some of these cases are similar to each other: Empty List and Doesn’t Exist are in eﬀect the same. Neither actually performs a delete, and each returns a −1 to signal an error. Also, Delete from Middle and Delete from Tail are the same due to the type similarity between a NULL pointer and a pointer to a real node. The Delete from Head case requires that we modify the parameter list in order to assign a new head node after the delete operation. Figure 19.9 provides the complete source code for DeleteFlight.
+
+85. Arrays vs. Linked Lists: We can now replace our core array data structure in our ﬂight tracker app with the more dynamic linked list. Throughout this chapter, we’ve discussed some of the advantages in doing so. But as with many things in computing, there are tradeoﬀs involved: linked lists provide some advantages over arrays, but they also have some disadvantages. Wisely choosing which method of data organization to use in a particular situation requires consideration of these tradeoﬀs (and also a deeper sense of how these structures are implemented at the lower level).
+
+86. Let’s ﬁrst examine the impact to memory space. Arrays are quite memory eﬃcient. If we create an array of 1000 integers, we will be allocated 1000 inte- gers’ worth of memory space. Additional storage is not required. If the array is dynamically allocated on the heap, there is likely some additional overhead to keep track of the block of memory, but that is small in relation to the actual array. Linked lists, in contrast, require a pointer per node to link to the next node. Also, since the nodes are individually allocated on the heap, each node will incur addi- tional dynamic allocation overhead. If the node size is small, then this overhead can be a signiﬁcant fraction of overall data structure size. While arrays are eﬃcient in terms of allocation, they suﬀer in our inability to precisely size them to our needs. We often need to declare strings that are long enough to hold the longest string we expect to encounter, which is larger than necessary for the typical case.
+
+87. Now, what if we wanted to add an element, or delete an element, or search the structure for a particular element? These are primitive operations that we may want to perform on any list of data. For adding and deleting elements, which we’ve examined when developing our ﬂight tracker app, a linked list oﬀers the ability to dynamically add and remove nodes by rearranging links. And because the data structure need not be contiguous in memory, we can dynamically allocate nodes to ﬁt the actual run-time needs of the application. With arrays, adding an element requires that enough space exists for it in the array; if there is enough space, existing elements must then be moved around to create a spot for the new data. Likewise, when deleting an element from an array, we need to ﬁll the vacated spot by moving data elements in order to keep data contiguous. As for searching, linked lists require sequential traversal, whereas with an array, we can use binary search which is a highly eﬃcient algorithm for searching a sorted list.
+
+88. These diﬀerences arise because we’ve improved the add and delete opera- tions at the expense of random access. Array elements can be randomly accessed, whereas nodes in a linked list require sequential traversal. This in turn aﬀects our ability to do eﬃcient search.
+
+89. Arrays and linked lists form the opposite ends of a spectrum of data structure choices. There is a near continuum of variations created by inventive programmers and computer scientists to ﬁt particular situations, each of which provides some advantages of one end of the spectrum without the disadvantages of the other. A subsequent course in data structures and algorithmic analysis will provide deeper exposure to the data structure zoo.
