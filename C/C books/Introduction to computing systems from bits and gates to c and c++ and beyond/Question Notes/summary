@@ -5,7 +5,7 @@ work
 
 what is this book about? mastering the fundamentals of computing
 
-what is the conventional wisdom when it comes to teaching computer science? start  with a high level programming language
+what is the conventional wisdom when it comes to teaching computer science? start with a high level programming language
 which leads to the memorisation of technical details without an understanding of basic underpinnings
 
 how does the book approach mastering computing fundamentals? a bottom up approach where it continually builds on what is 
@@ -23,11 +23,11 @@ in order to acquire an understanding
 
 does that mean that the top down design approach is flawed?
 
-what was their  concern about including C++ in their instructional approach? many of the languages features are too far 
+what was their concern about including C++ in their instructional approach? many of the languages features are too far 
 abstracted from the underlying layers to make for an easy fit to their instructional approach. Additionally C++ is a vast 
 language that would have necessiated more pages to be added to the book. 
 
-why do they still use C in the book? serves as the defacto development language for systems aand hardware oriented projects
+why do they still use C in the book? serves as the defacto development language for systems and hardware oriented projects
 
 what are the two major segments that the book can be broken down into? (a) the underlying structure of a computer (b) programming
 in a high level language
@@ -38,7 +38,7 @@ clearly the connection between software and the underlying hardware
 why lc-3 ISA and not ARM or RISCV? because commercial ISAs have no place in an introductory course but still have to be
 understood in order to be used effectively. They wanted an ISA that was clean with no special cases to deal with, with as few
 opcodes as necessary so that you the student spends all your time on the fundamental concepts of the course and very little 
-time on the nuaances of the instruction set
+time on the nuances of the instruction set
 
 the lc-3 instruction set with only 15 four-bit opcodes, is small enough that the students can absorb the ISA without struggling
 too much
@@ -84,8 +84,8 @@ these simple parts that the book will introduce, explain and tie together to sho
 3. what is the main goal of the book? by the time you are finished, you will be able to write programs using a language like C 
 and be able to understand what is going on underneath the computer
 
-4. how will we get there? you will see that all information processed by computers is in the form of 0's and 1's. therefors, all 
-information processed by computers is therefore encoded as 0's and 1's. you will learn how to process such information
+4. how will we get there? you will see that all information processed by computers is in the form of 0's and 1's. therefore, all 
+information processed by computers is encoded as 0's and 1's. you will learn how to process such information
 
 5. what is meant by all information processed by computers is encoded in 0's and 1's? each piece of information has a code point made up
 of 1's and 0's
@@ -108,7 +108,7 @@ of 1's and 0's
 
 14. what do transistors combine to form? logic gates 
 
-15. what do opportunity do logic gates provide? the ability to think in 1's and 0's instead of varying voltages across the transistor wires
+15. what opportunity do logic gates provide? the ability to think in 1's and 0's instead of varying voltages across the transistor wires
 
 16. what does a combination of logic gates produce? a logic circuit - a further abstraction
 
@@ -3668,3 +3668,12 @@ int *x;
 88. These diﬀerences arise because we’ve improved the add and delete opera- tions at the expense of random access. Array elements can be randomly accessed, whereas nodes in a linked list require sequential traversal. This in turn aﬀects our ability to do eﬃcient search.
 
 89. Arrays and linked lists form the opposite ends of a spectrum of data structure choices. There is a near continuum of variations created by inventive programmers and computer scientists to ﬁt particular situations, each of which provides some advantages of one end of the spectrum without the disadvantages of the other. A subsequent course in data structures and algorithmic analysis will provide deeper exposure to the data structure zoo.
+
+APPENDIX C: The Microarchitecture of the LC-3
+
+I saw in Chapters 4 and 5 the several stages of the instruction cycle that must occur in order for the computer to process each instruction. If a microarchitecture is to implement an ISA, it must be able to carry out this instruction cycle for every instruction in the ISA. This appendix illustrates one example of a microarchitecture that can do that for the LC-3 ISA. Many of the details of the microarchitecture and the reasons for each design decision are well beyond the scope of an introductory course.
+
+Figure C.1 shows the two main components of a microarchitecture: the data path, which contains all the components that actually process the instructions, and the control, which contains all the components that generate the set of control signals that are needed to control the processing during each clock cycle.
+
+That is, time is divided into clock cycles. The cycle time of a microprocessor is the
+duration of a clock cycle. A common cycle time for a microprocessor today is 0.33 nanoseconds, which corresponds to 3 billion clock cycles each second. We say that such a microprocessor is operating at a frequency of 3 gigahertz, or 3 GHz.

@@ -117,23 +117,49 @@ algebraic expression is both a factor and a multiple of itself. For example, the
 a^2b shows that a^2b is both a factor and a multiple of itself.
 
 45. algebraic fractions (simplifying, adding, subtracting, multiplying, dividing) see 
-algebraic-fractions.png
+algebraic-fractions.png algebraic-2 algebraic-3
 
-46. roots of numbers (square, cube, fourth, fifth etc)
-47. every positive number has two square roots, a positive one and a negative one
-48. every negative number has no real roots
-49. the number 0 has one square root - itself
-50. for cube root; every real number, whether positive, negative or zero, has exactly one real cube root
-51. The situation for fourth roots, sixth roots and all even-numbered roots is similar to that for square roots
-52. the situation for ﬁfth roots, seventh roots and all odd-numbered roots is similar to that for cube roots.
-53. You ucan use the symbol ‘±’, which means ‘plus or minus’, to write a positive and a negative root together
-54. The symbol √ is used to denote the positive square root of a positive real number. 
-55. Most roots of numbers are irrational numbers. In particular, the square root of any natural number that isn’t a perfect square is 
-irrational. Because numbers like these can’t be written down exactly as fractions or terminating decimals, we often leave them just as they 
-are in calculations and in the answers to calculations. 
-56. what is an expression such as 1−2√5 called? surd. a surd is a numerical expression that contains one or more irrational roots of 
-numbers.
+46. Expanding algebraic fractions: Remember that an algebraic fraction can be expanded only if it has a sum
+of terms in the numerator.
+
+47. roots of numbers (square, cube, fourth, fifth etc)
+
+48. every positive number has two square roots, a positive one and a negative one.For example, the two 
+square roots of 36 are 6 and −6. When we say the square root of a positive number, we mean the
+positive square root.
+
+49. every negative number has no real roots. For example, there’s no real number that when squared 
+gives −36.
+
+50. the number 0 has one square root - itself
+
+51. for cube root; every real number, whether positive, negative or zero, has exactly one real cube 
+root
+
+52. The situation for fourth roots, sixth roots and all even-numbered roots is similar to that for 
+square roots, and the situation for ﬁfth roots, seventh roots and all odd-numbered roots is similar to 
+that for cube roots.
+
+53. You ucan use the symbol ‘±’, which means ‘plus or minus’, to write a positive and a negative root 
+together
+
+54. The symbol √ is used to denote the positive square root of a positive real number. Note
+in particular that the number under any of the symbols square, cube, fourth... must be positive or
+zero, and the resulting root is always positive or zero.
+
+55. Most roots of numbers are irrational numbers. In particular, the square root of any natural number 
+that isn’t a perfect square is irrational. Because numbers like these can’t be written down exactly as 
+fractions or terminating decimals, we often leave them just as they are in calculations and in the 
+answers to calculations. 
+
+56. what is an expression such as 1−2√5 called? surd. a surd is a numerical expression that contains one or 
+more irrational roots of numbers.
+
+
 57. surd rules see surds.png
+
+page 58
+
 58. if a surd contains an irrational root in the denominator of a fraction what is something you can sometimes do? rewrite the denominator
 such that it no longer contains the irrational root. what is this process called? rationalising the denominator
 59. how do you rationalise the denominator? multiplying the top and bottom fraction by the surd see rationalising-denominator
