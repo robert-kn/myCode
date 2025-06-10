@@ -974,3 +974,403 @@ Figure C.9 completes our microprogrammed implementation of the LC-3. It shows th
 
 D. The C Programming Language
 
+Source Files
+
+The C programming convention is to separate programs into ﬁles of two types: source ﬁles (with the extension .c) and header ﬁles (with the extension .h). Source ﬁles, sometimes called .c or dot-c ﬁles, contain the C code for a group of related functions. For example, functions related to managing a stack data struc- ture might be placed in a ﬁle named stack.c. Each .c ﬁle is compiled into an object ﬁle, and these objects are linked together into an executable image by the linker.
+
+Header Files
+
+Header ﬁles typically do not contain C statements but rather contain function, variable, structure, and type declarations, as well as preprocessor macros. The programming convention is to couple a header ﬁle with the source ﬁle in which the declared items are deﬁned. For example, if the source ﬁle stdio.c con- tains the deﬁnitions for the functions printf, scanf, getchar, and putchar, then the header ﬁle stdio.h contains the declarations for these functions. If one of these functions is called from another .c ﬁle, then the stdio.h header ﬁle should be #included to get the proper function declarations.
+
+Literals
+
+C programs can contain literal constant values that are integers, ﬂoating point values, characters, character strings, or enumeration constants. These literals can be used as initializers for variables, or within expressions. Some examples are provided in the following subsections.
+
+Integer
+
+Integer literals can be expressed either in decimal, octal, or hexadecimal notation. If the literal is preﬁxed by a 0 (zero), it will be interpreted as an octal num- ber. If the literal begins with a 0x, it will be interpreted as hexadecimal. Thus, it can consist of the digits 0 through 9 and the characters a through f. Uppercase A through F can be used as well. An unpreﬁxed literal (i.e., it doesn’t begin with a 0 or 0x) indicates it is in decimal notation and consists of a sequence of digits. Regardless of its base, an integer literal can be preceded by a minus sign, −,to indicate a negative value.
+
+An integer literal can be suﬃxed with the letter l or L to indicate that it is of type long int. An integer literal suﬃxed with the letter u or U indicates an unsigned value. Refer to Section D.3.2 for a discussion of long and unsigned types.
+
+The ﬁrst three examples that follow express the same number, 87. The two last versions express it as an unsigned int value and as a long int value.
+
+87     // 87 in decimal
+0x57   // 87 in hexadecimal
+0127   // 87 in octal
+-24    // -24 in decimal
+-024   // -20 in octal
+-0x24  // -36 in hexadecimal
+87U
+87L
+
+Floating Point
+
+Floating point constants consist of three parts: an integer part, a decimal point, and a fractional part. The fractional part and integer part are optional, but one of the two must be present. The number preceded by a minus sign indicates a negative value. Several examples follow:
+
+1.613123
+.613123
+1. // expresses the number 1.0
+-.613123
+
+Floating point literals can also be expressed in exponential notation. With this form, a ﬂoating point constant (such as 1.613123) is followed by an e or E. The e or E signals the beginning of the integer exponent, which is the power of ten by which the part preceding the exponent is multiplied. The exponent can be a negative value. The exponent is obviously optional, and if used, then the decimal
+point is optional. Examples follow:
+
+6.023e23     // 6.023 * 10ˆ23
+454.323e-22  // 454.323 * 10ˆ(-22)
+5E13         // 5.0 * 10ˆ13
+
+By default, a ﬂoating point type is a double or double-precision ﬂoating point number. This can be modiﬁed with the optional suﬃx f or F, which indicates a ﬂoat or single-precision ﬂoating point number. The suﬃx l or L indicates a long double (see Section D.3.2).
+
+Character
+
+A character literal can be expressed by surrounding a particular character by single quotes, for example, 'c'. This converts the character into the internal char- acter code used by the computer, which for most computers today, including the LC-3, is ASCII.
+
+Table D.1 lists some special characters that typically cannot be expressed with a single keystroke. The C programming language provides a means to state them via a special sequence of characters. The last two forms, octal and hexadec- imal, specify ways of stating an arbitrary character by using its code value, stated as either octal or hex. For example, the character ‘S’, which has the ASCII value of 83 (decimal), can be stated as ‘∖0123’ or ‘∖x53’.
+
+String Literals
+
+A string literal within a C program must be enclosed within double quote char- acters, ". String literals have the type char * and space for them is allocated in a special section of the memory address space reserved for literal con- stants. The termination character '\0' is automatically added to the character string. The following are two examples of string literals:
+
+char greeting[10] = "bon jour!";
+printf("This is a string literal");
+
+String literals can be used to initialize character strings, or they can be used wherever an object of type char * is expected, for example, as an argument to a function expecting a parameter of type char *. String literals, however, cannot be used for the assignment of arrays. For example, the following code is not legal in C.
+
+char greeting [10];
+greeting = "bon jour!";
+
+Enumeration Constants
+
+Associated with an enumerated type (see Section D.3.1) are enumerators, or enu- meration constants. These constants are of type int, and their precise value is deﬁned by the enumerator list of an enumeration declaration. In essence, an enumeration constant is a symbolic, integral value.
+
+Formatting
+
+C is a freely formatted language. The programmer is free to add spaces, tabs, carriage returns, new lines between and within statements and declarations. C programmers often adopt a style helpful for making the code more readable, which includes adequate indenting of control constructs, consistent alignment of open and close braces, and adequate commenting that does not obstruct someone trying to read the code. See the numerous examples in the C programming chapters of the book for a typical style of formatting C code.
+
+Types
+
+In C, expressions, functions, and objects have types associated with them. The type of a variable, for example, indicates something about the actual value the variable represents. For instance, if the variable kappa is of type int, then the value (which is essentially just a bit pattern) referred to by kappa will be inter- preted as a signed integer. In C, there are the basic data types, which are types natively supported by the programming language, and derived types, which are types based on basic types and which include programmer-deﬁned types.
+
+Basic Data Types
+
+There are several predeﬁned basic types within the C language: int, ﬂoat, double, char, _Bool, _Complex, _Imaginary. They exist automatically within all implementations of C, although their sizes and range of values depend upon the computer system being used.
+
+int
+
+The binary value of something of int type will be interpreted as a signed whole number. Typical computers use 32 bits to represent signed integers, expressed in 2’s complement form. Such integers can take on values between (and including)
+−2,147,483,648 and +2,147,483,647.
+
+ﬂoat
+
+Objects declared of type ﬂoat represent single-precision ﬂoating point numbers. These numbers typically, but not always, follow the representations deﬁned by the IEEE standard for single-precision ﬂoating point numbers, which means that the type is a 32-bit type, where 1 bit is used for sign, 8 bits for exponent (expressed in bias-127 code), and 23 bits for fraction.
+
+double
+
+Objects declared of type double deal with double-precision ﬂoating point num- bers. Like objects of type ﬂoat, objects of type double are also typically represented using the IEEE standard. The precise diﬀerence between objects of type ﬂoat and of type double depends on the system being used; however, the ANSI C standard speciﬁes that the precision of a double should never be less than that of a ﬂoat. On most machines a double is 64 bits.
+
+char
+
+Objects of character type contain a single character, expressed in the character code used by the computer system. Typical computer systems use the ASCII character code (see Appendix E). The size of a char is large enough to store a character from the character set. C also imposes that the size of a short int must be at least the size of a char.
+Collectively, the int and char types (and enumerated types) are referred to as integral types, whereas ﬂoat and double are ﬂoating types.
+
+Enumerated Types
+
+C provides a way for the programmer to specify objects that take on symbolic values. For example, we may want to create a type that takes on one of four values: Penguin, Riddler, CatWoman, Joker. We can do so by using an enumerated type, as follows:
+
+// Specifier
+enum villains { Penguin, Riddler, CatWoman, Joker };
+// Declaration
+enum villains badGuy;
+
+The variable badGuy is of the enumerated type villains. It can take on one of the four symbolic values deﬁned by enumerator list in the speciﬁer. The four symbolic values are called enumeration constants (see Section D.2.4.5) and are actually integer values.
+
+In an enumerator list, the value of the ﬁrst enumeration constant will be 0, the next will be 1, and so forth. In the type villains, the value of Penguin will be 0, Riddler will be 1, CatWoman will be 2, Joker will be 3. The value of an enumerator can be explicitly set by the programmer by using the assignment operator, =. For example,
+
+// Specifier
+enum villains { Penguin = 3, Riddler, CatWoman, Joker };
+causes Penguin to be 3, Riddler to be 4, and so forth.
+
+Type Qualiﬁers
+
+The basic types can be modiﬁed with the use of a type qualiﬁer. These modiﬁers alter the basic type in some small fashion or change its default size.
+
+signed,  unsigned
+
+The types int and char can be modiﬁed with the use of the signed and unsigned qualiﬁers. By default, integers are signed; the default on characters depends on the computer system.
+For example, if a computer uses 32-bit 2’s complement signed integers, then a signed int can have any value in the range −2,147,483,648 to +2,147,483,647. On the same machine, an unsigned int can have a value in the range 0 to
++4,294,967,295.
+
+signed int c;        // the signed modifier is redundant
+unsigned int d;
+signed char j;       // forces the char to be interpreted 
+                    // as a signed value
+unsigned char k;   // the char will be interpreted as an 
+                  // unsigned value
+
+long,  short
+
+The qualiﬁers long and short allow the programmer to manipulate the physical size of a basic type. For example, the qualiﬁers can be used with an integer to create short int and long int.
+It is important to note that there is no strict deﬁnition of how much larger one type of integer is than another. The C language states only that the size of a short int is less than or equal to the size of an int, which is less than or equal to the size of a long int. Stated more completely and precisely:
+
+sizeof(char) <= sizeof(short int) <= sizeof(int) <= sizeof(long int)
+
+New computers that support 64-bit data types make a distinction on the long qualiﬁer. On these machines, a long int might be a 64-bit integer, whereas an int might be a 32-bit integer. The range of values of types on a particular computer can be found in the standard header ﬁle <limits.h>. On most UNIX systems, it will be in the /usr/include directory.
+
+The following are several examples of type modiﬁers on the integral data types.
+short int q;
+long int p;
+unsigned long int r;
+
+The long and short qualiﬁers can also be used with the ﬂoating type double to create a ﬂoating point number with higher precision or larger range (if such a type is available on the computer) than a double. As stated by the ANSI C speciﬁcation, the size of a ﬂoat is less than or equal to the size of a double, which is less than or equal to the size of a long double.
+
+double x; 
+long double y;
+
+const
+
+A value that does not change through the course of execution can be qualiﬁed with the const qualiﬁer. For example,
+const double pi = 3.14159;
+By using this qualiﬁer, the programmer is providing information that might enable an optimizing compiler to perform more powerful optimizations on the resulting code. All variables with a const qualiﬁer must be explicitly initialized.
+
+Storage Class
+
+Memory objects in C can be of the static or automatic storage class. Objects of the automatic class are local to a block (such as a function) and lose their value once their block is completed. By default, local variables within a function are of the automatic class and are allocated on the run-time stack (see Section 14.3.1).
+
+Objects of the static class retain their values throughout program execution. Global variables and other objects declared outside of all blocks are of the static class. Objects declared within a function can be qualiﬁed with the static quali- ﬁer to indicate that they are to be allocated with other static objects, allowing their value to persist across invocations of the function in which they are declared. For example,
+
+int Count(int x)
+{
+    static int y;
+    y++;
+    printf("This function has been called %d times.", y);
+}
+
+The value of y will not be lost when the activation record of Count is popped oﬀ the stack. To enable this, the compiler will allocate a static local variable in the global data section. Every call of the function count updates the value of y.
+Unlike typical local variables of the automatic class, variables of the static class are initialized to zero. Variables of the automatic class must be initialized by the programmer.
+There is a special qualiﬁer called register that can be applied to objects in the automatic class. This qualiﬁer provides a hint to the compiler that the value is frequently accessed within the code and should be allocated in a register to potentially enhance performance. The compiler, however, treats this only as a suggestion and can override or ignore this speciﬁer based on its own analysis.
+Functions, as well as variables, can be qualiﬁed with the qualiﬁer extern. This qualiﬁer indicates that the function’s or variable’s storage is deﬁned in another object module that will be linked together with the current module when the executable is constructed.
+
+Derived Types
+
+The derived types are extensions of the basic types provided by C. The derived types include pointers, arrays, structures, and unions. Structures and unions enable  the  programmer  to  create  new  types  that  are  aggregations  of  other types.
+
+Arrays
+
+An array is a sequence of objects of a particular type that is allocated sequentially in memory. That is, if the ﬁrst element of the array of type T is at memory location X, the next element will be at memory location X + sizeof(T), and so forth. Each element of the array is accessible using an integer index, starting with the index 0. That is, the ﬁrst element of array list is list[0], numbered starting at 0. The size of the array must be stated as a constant integral expression (it is not required to be a literal) when the array is declared.
+
+char string[100]; // Declares array of 100 characters
+int data[20];   // Declares array of 20 integers
+
+To access a particular element within an array, an index is formed using an integral expression within square brackets, [].
+
+data[0]       // Accesses first element of array data
+data[i + 3]    // The variable i must be an integer
+string[x + y]  // x and y must be integers
+
+The compiler is not required to check (nor is it required to generate code to check) whether the value of the index falls within the bounds of the array. The responsibility of ensuring proper access to the array is upon the programmer. For example, based on the previous declarations and array expressions, the reference string[x + y], the value of x+yshould be 100 or less; otherwise, the reference exceeds the bounds of the array string.
+
+Pointers
+
+Pointers are objects that are addresses of other objects. Pointer types are declared by preﬁxing an identiﬁer with an asterisk, *. The type of a pointer indicates the type of the object that the pointer points to. For example,
+
+int *v;  // v points to an integer
+
+C allows a restricted set of operations to be used on pointer variables. Point- ers can be manipulated in expressions, thus allowing “pointer arithmetic” to be performed. C allows assignment between pointers of the same type, or assign- ment, of a pointer to 0. Assignment of a pointer to the constant value 0 causes the generation of a null pointer. Integer values can be added to or subtracted from a pointer value. Also, pointers of the same type can be compared (using the rela- tional operators) or subtracted from one another, but this is meaningful only if the pointers involved point to elements of the same array. All other pointer manip- ulations are not explicitly allowed in C but can be done with the appropriate casting.
+
+Structures
+
+Structures enable the programmer to specify an aggregate type. That is, a struc- ture consists of member elements, each of which has its own type. The program- mer can specify a structure using the following syntax. Notice that each member element has its own type.
+
+struct tag_id {
+    type1 member1;
+    type2 member2;
+    :
+    :
+    typeN memberN;
+};
+
+This  structure  has  member  elements  named  member1 of  type  type1, member2 of type2,uptomemberN of typeN. Member elements can take on any basic or derived type, including other programmer-deﬁned types.
+
+The programmer can specify an optional tag, which in this case is tag_id. Using the tag, the programmer can declare structure variables, such as the variable x in the following declaration:
+
+struct tag_id x;
+
+A structure is deﬁned by its tag. Multiple structures can be declared in a program with the same member elements and member element identiﬁers; they are diﬀerent if they have diﬀerent tags.
+
+Alternatively, variables can be declared along with the structure declaration, as shown in the following example. In this example, the variable ﬁrstPoint is declared along with the structure. The array image is declared using the structure tag point.
+
+struct point {
+    int x;
+    int y;
+} ﬁrstPoint;
+
+// declares an array of structure type variables
+struct point image[100];
+
+Unions
+
+Structures are containers that hold multiple objects of various types. Unions, on the other hand, are containers that hold a single object that can take on diﬀerent predetermined types at various points in a program. For example, the following is the declaration of a union variable joined:
+
+union u_tag {
+    int ival;
+    double fval; 
+    char cval;
+} joined;
+
+The variable joined ultimately contains bits. These bits can be an integer, double, or character data type, depending on what the programmer decides to put there. For example, the variable will be treated as an integer with the expression joined.ival, or as a double-precision ﬂoating point value with joined.fval, or as a character with joined.cval. The compiler will allocate enough space for union variables as required for the largest data type.
+
+typedef
+
+In C, a programmer can use typedef to create a synonym for an existing type. This is particularly useful for providing names for programmer-deﬁned types. The general form for a typedef follows:
+
+typedef type name;
+
+Here, type can be any basic type, enumerated type, or derived type. The identiﬁer name can be any legal identiﬁer. The result of this typedef is that name is a synonym for type. The typedef declaration is an important feature for enhancing code readability; a well-chosen type name conveys additional information about the object declared of that type. Following are some examples.
+
+typedef enum {coffee, tea, water, soda} Beverage; 
+Beverage drink;   // Declaration uses previous typedef 
+typedef struct {
+    int xCoord;
+    int yCoord;
+    int color;
+} Pixel;
+
+Pixel bitmap[1024*820]; // Declares an array of pixels
+
+Declarations
+
+An object is a named section of memory, such as a variable. In C, an object must be declared with a declaration before it can be used. Declarations inform the com- piler of characteristics, such as its type, name, and storage class, so that correct machine code can be generated whenever the object is manipulated within the body of the program.
+In C, functions are also declared before they are used. A function declaration informs the compiler about the return value, function name, and types and order of input parameters.
+
+Variable Declarations
+
+The format for a variable declaration is as follows:
+
+[storage-class] [type-qualifier] {type} {identifier} [ = initializer] ; 
+
+The curly braces, {}, indicate items that are required and the square brackets, [], indicate optional items.
+
+The  optional  storage-class  can  be  any  storage  class  modiﬁer  listed  in Section D.3.3, such as static.
+
+The optional type-qualiﬁer can be any legal type qualiﬁers, such as the qualiﬁers provided in Section D.3.2.
+
+The type of a variable can be any of the basic types (int, char, ﬂoat, double), enumerated types, or derived types (array, pointer, structure, or union).
+
+An identiﬁer can be any sequence of letters, digits, and the underscore char- acter,  . The ﬁrst character must be a letter or the underscore character. Identiﬁers can have any length, but for most variables you will use, at least 31 characters will be signiﬁcant. That is, variables that diﬀer only after the 31st character might be treated as the same variable by an ANSI C compiler. Uppercase letters are diﬀer- ent from lowercase, so the identiﬁer sum is diﬀerent from Sum. Identiﬁers must be diﬀerent from any of the C keywords (see Section D.2.6). Several examples of legal identiﬁers follow. Each is a distinct identiﬁer.
+
+blue
+Blue1
+Blue2
+_blue_
+bluE
+primary_colors
+primaryColors
+
+The initializer for variables of automatic storage (see Section D.3.3) can be any expression that uses previously deﬁned values. For variables of the static class (such as global values) or external variables, the initializer must be a constant expression.
+
+Also, multiple identiﬁers (and initializers) can be placed on the same line, creating multiple variables of the same type, having the same storage class and type characteristics.
+
+static long unsigned int k = 10UL;
+register char 1 = 'Q';
+int list[100];
+struct node_type n; // Declares a structure variable
+
+Declarations can be placed at the beginning of any block (see Section D.6.2), before any statements. Such declarations are visible only within the block in which they appear. Declarations can also appear at the outermost level of the program, outside of all functions. Such declarations are global variables. They are visible from all parts of the program. See Section 12.2.3 for more information on variable declarations.
+
+Function Declarations
+
+A function’s declaration informs the compiler about the type of value returned by the function and the type, number, and order of parameters the function expects to receive from its caller. The format for a function declaration is as follows:
+
+{type} {function-id}([type1] [, type2], ... [, typeN]);
+
+The curly braces, {}, indicate items that are required and the square brackets, [], indicate items that are optional.
+
+The type indicates the type of the value returned by the function and can be of any basic type, enumerated type, a structure, a union, a pointer, or void (note: it cannot be an array). If a function does not return a value, then its type must be declared as void.
+
+The function-id can be any legal identiﬁer that has not already been deﬁned. 
+
+Enclosed within parentheses following the function-id are the types of each of the input parameters expected by the function, indicated by type1, type2, typeN, each separated by a comma. Optionally, an identiﬁer can be supplied for each argument, indicating what the particular argument will be called within the func- tion’s deﬁnition. For example, the following might be a declaration for a function that returns the average of an array of integers:
+
+int Average(int numbers[], int howMany);
+
+Operators
+
+Assignment Operators += -= *= /= %= &= |= ˆ= <<= >>=
+
+Arithmetic Operators + - * / %
+
+Bit-Wise Operators &  | ˆ ˜ << >>
+
+Logical Operators AND OR NOT
+
+Relational Operators == != > >= < <=
+
+Increment/Decrement Operators ++ --
+
+Conditional Expression Operators {expressionA} ? {expressionB} : {expressionC}
+
+
+Pointer, Array, and Structure Operators
+
+Address Operator: The address operator is the &. It takes the address of its operand. The operand must be a memory object, such as a variable, array element, or structure member.
+
+Dereference Operator: The complement of the address operator is the dereference operator. It returns the object to which the operand is pointing. For example, given the following code:
+
+int *p;
+int x = 5;
+p = &x;
+*p=*p+1;
+
+the expression *p returns x. When *p appears on the left-hand side of an assignment operator, it is treated as an lvalue (see Section D.5.1). Otherwise *p evaluates to the value of x.
+
+Array Reference
+
+In C, an integral expression within square brackets, [], designates a subscripted array reference. The typical use of this operator is with an object declared as an array. The following code contains an example of an array reference on the array list.
+
+int x;
+int list [100];
+x = list[x + 10];
+
+Structure and Union References
+
+C contains two operators for referring to member elements within a structure or union. The ﬁrst is the dot, or period, which directly accesses the member element of a structure or union variable. The following is an example:
+
+struct pointType {
+    int x;
+    int y;
+};
+typedef pointType Point; 
+
+Point pixel;
+pixel.x = 3;
+pixel.y = pixel.x + 10;
+
+The variable pixel is a structure variable, and its member elements are accessed using the dot operator.
+The second means of accessing member elements of a structure is the arrow, or -> operator. Here, a pointer to a structure or union can be derefer- enced and a member element selected with a single operator. The following code demonstrates:
+
+Point pixel;
+Point *ptr;
+ptr = &pixel;
+ptr->x = ptr->x + 1;
+
+Here, the pointer variable ptr points to the structure variable pixel.
+
+sizeof: The sizeof operator returns the number of bytes required to store an object of the type speciﬁed. For example, sizeof(int) will return the number of bytes occupied by an integer. If the operand is an array, then sizeof will return the size of the array. The following is an example:
+
+int list [45]; 
+
+struct example_type {
+    int  valueA;
+    int valueB;
+    double valueC;
+};
+typedef struct example_type Example;
+...
+sizeA = sizeof(list); /* 45 * sizeof(int) */ 
+sizeB = sizeof(Example); /* Size of structure */
+
+Order of Evaluation
+
+The order of evaluation of an expression starts at the subexpression in the inner- most parentheses, with the operator with the highest precedence, moving to the operator with the lowest precedence within the same subexpression. If two operators have the same precedence (e.g., two of the same operators, as in the expression 2+3+4), then the associativity of the operators determines the order of evaluation, either from left to right or from right to left. The evaluation of the expression continues recursively from there.
+
+Table D.4 provides the precedence and associativity of the C operators. The operators of highest precedence are listed at the top of the table, in lower numbered precedence groups.
