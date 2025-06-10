@@ -1,0 +1,976 @@
+A.1 Overview
+
+The instruction set architecture (ISA) of the LC-3 is deﬁned as follows:
+
+Memory address space 16 bits, corresponding to 216 locations, each containing one word (16 bits). Addresses are numbered from 0 (i.e., x0000) to 65,535 (i.e., xFFFF). Addresses are used to identify memory locations and memory-mapped I/O device registers. Certain regions of memory are reserved for special uses, as described in Figure A.1.
+Locations x0000 to x2FFF comprise privileged memory and are only accessible if the process is executing in Supervisor mode (PSR[15]=0). Locations x3000 to xFDFF comprise memory available to User mode and data. Addresses xFE00 to xFFFF specify input and output device registers and special internal processor registers that are also only accessible if the process is executing in Supervisor mode (PSR[15]=0). For purposes of controlling access to these device registers, their addresses are also considered part of privileged memory.
+
+Memory-mapped I/O Input and output are handled by load/store (LD/ST, LDI/STI, LDR/STR) instructions using memory addresses from xFE00 to xFFFF to designate each device register. Table A.1 lists the input and output device registers and internal processor registers that have been speciﬁed for the LC-3 thus far, along with their corresponding assigned addresses from the memory address space.
+
+Bit numbering Bits of all quantities are numbered, from right to left, starting with bit 0. The leftmost bit of the contents of a memory location is bit 15.
+
+Instructions Instructions are 16 bits wide. Bits [15:12] specify the opcode (operation to be performed); bits [11:0] provide further information that is needed to execute the instruction. The speciﬁc operation of each LC-3 instruction is described in Section A.2.
+
+Illegal opcode exception Bits [15:12] = 1101 has not been speciﬁed. If an instruction contains 1101 in bits [15:12], an illegal opcode exception occurs. Section A.3 explains what happens.
+
+Program counter A 16-bit register containing the address of the next instruction to be processed.
+
+General purpose registers Eight 16-bit registers, numbered from 000 to 111 (R0 to R7).
+
+Condition codes Three 1-bit registers: N (negative), Z (zero), and P (positive). Load instructions (LD, LDI, and LDR) and operate instructions (ADD, AND, and NOT) each load a result into one of the eight general purpose registers. The condition codes are set, based on whether that result, taken as a 16-bit 2’s complement integer, is negative (N = 1; Z, P = 0), zero (Z = 1; N, P = 0), or positive (P = 1; N, Z = 0). All other LC-3 instructions leave the condition codes unchanged.
+
+Interrupt processing I/O devices have the capability of interrupting the processor. Section A.3 describes the mechanism.
+
+Priority level The LC-3 supports eight levels of priority. Priority level 7 (PL7) is the highest, PL0 is the lowest. The priority level of the currently executing process is speciﬁed in bits PSR[10:8].
+
+Processor status register (PSR) A 16-bit register, containing status information about the currently executing process. Seven bits of the PSR have been deﬁned thus far. PSR[15] speciﬁes the privilege mode of the executing process. PSR[10:8] speciﬁes the priority level of the currently executing process. PSR[2:0] contains the condition codes. PSR[2] is N, PSR[1] is Z, and PSR[0] is P.
+
+Supervisor mode The LC-3 speciﬁes two modes of operation, Supervisor mode (privileged) and User mode (unprivileged). Interrupt service routines and trap service routines (i.e., system calls) execute in Supervisor mode. The privilege mode is speciﬁed by PSR[15]. PSR[15]=0 indicates Supervisor mode; PSR[15]=1 indicates User mode.
+
+Privilege mode exception The RTI instruction executes in Supervisor mode. If the processor attempts to execute the RTI instruction while in User mode, a privilege mode exception occurs. Section A.3 explains what happens.
+
+Access Control Violation (ACV) exception An ACV exception occurs if a process attempts to access a location in privileged memory (either a location in system space or a device register having an address from xFE00 to xFFFF) while operating in User mode. Section A.3 explains what happens.
+
+Supervisor stack A region of memory in system space accessible via the Supervisor Stack Pointer (SSP). When PSR[15]=0, the stack pointer (R6) is SSP. When the processor is operating in User mode (PSR[15]=1), the SSP is stored in Saved SSP.
+
+User stack A region of memory in user space accessible via the User Stack Pointer (USP). When PSR[15]=1, the stack pointer (R6) is USP. When the processor is operating in Supervisor mode (PSR[15]=0), the USP is stored in Saved USP.
+
+A.2 The Instruction Set
+
+The LC-3 supports a rich, but lean, instruction set. Each 16-bit instruction consists of an opcode (bits[15:12]) plus 12 additional bits to specify the other informa- tion that is needed to carry out that instruction. Figure A.2 summarizes the 15 diﬀerent opcodes in the LC-3 and the speciﬁcation of the remaining bits of each instruction. The 16th four-bit opcode is not speciﬁed but is reserved for future use.
+
+In the following pages, the instructions will be described in greater detail. Table A.2 is provided to help you to understand those descriptions. For each instruction, we show the assembly language representation, the format of the 16-bit instruction, the operation of the instruction, an English-language descrip- tion of its operation, and one or more examples of the instruction. Where relevant, additional notes about the instruction are also provided.
+
+ADD                     Addition
+
+Assembler Formats
+
+    ADD DR, SR1, SR2
+    ADD DR, SR1, imm5
+
+Encodings
+
+15      12 11    9 8   6 5 4 3 2   0
+   0001       DR    SR1  0  00  SR2
+
+
+15      12 11    9 8   6 5 4       0
+   0001       DR    SR1  1    imm5
+
+Operation
+if  (bit[5]  ==  0)
+     DR=SR1+SR2;
+else
+     DR=SR1+SEXT(imm5);
+setcc();
+
+Description
+
+If bit [5] is 0, the second source operand is obtained from SR2. If bit [5] is 1, the second source operand is obtained by sign-extending the imm5 ﬁeld to 16 bits. In both cases, the second source operand is added to the contents of SR1 and the result stored in DR. The condition codes are set, based on whether the result is negative, zero, or positive.
+
+Examples
+     ADD R2, R3, R4 ; R2 ← R3 + R4
+     ADD R2, R3, #7 ; R2 ← R3 + 7
+
+-----
+
+AND                 Bit-wise Logical AND
+
+Assembler Formats
+    AND DR, SR1, SR2
+    AND DR, SR1, imm5
+
+Encodings
+
+15      12 11    9 8   6 5 4 3 2   0
+   0101       DR    SR1  0  00  SR2
+
+
+15      12 11    9 8   6 5 4       0
+   0101       DR    SR1  1    imm5
+
+
+Operation
+if  (bit[5]  ==  0)
+    DR=SR1  AND  SR2;
+else
+    DR=SR1  AND  SEXT(imm5);
+setcc();
+
+Description
+If bit [5] is 0, the second source operand is obtained from SR2. If bit [5] is 1, the second source operand is obtained by sign-extending the imm5 ﬁeld to 16 bits. In either case, the second source operand and the contents of SR1 are bit- wise ANDed and the result stored in DR. The condition codes are set, based on whether the binary value produced, taken as a 2’s complement integer, is negative, zero, or positive.
+
+Examples
+
+AND R2, R3, R4 ;R2 ← R3 AND R4
+AND R2, R3, #7 ;R2 ← R3 AND 7
+
+----
+
+BR      Conditional Branch
+
+Assembler Formats
+
+BRn LABEL      BRzp  LABEL
+BRz LABEL      BRnp  LABEL
+BRp LABEL      BRnz  LABEL
+BR† LABEL      BRnzp LABEL
+
+Encoding
+
+15      12 11 10 9 8              0
+   0000     n z  p    PCoffset9
+
+
+Operation
+if  ((n  AND  N)  OR  (z  AND  Z)  OR  (p  AND  P))
+    PC=PC‡ +   SEXT(PCoffset9);
+
+Description
+The condition codes speciﬁed by bits [11:9] are tested. If bit [11] is 1, N is tested; if bit [11] is 0, N is not tested. If bit [10] is 1, Z is tested, etc. If any of the condition codes tested is 1, the program branches to the memory location speciﬁed by adding the sign-extended PCoﬀset9 ﬁeld to the incremented PC.
+
+Examples
+      BRzp    LOOP BR†  ; Branch to LOOP if the last result was zero or positive.
+      BR†     NEXT      ; Unconditionally branch to NEXT.
+      
+† The assembly language opcode BR is interpreted the same as BRnzp; that is, always branch to the target address.
+‡ This is the incremented PC.
+
+
+----
+
+JMP    Jump
+RET    Return from Subroutine
+
+Assembler Formats 
+
+    JMP  BaseR 
+    RET
+
+Encoding
+
+JMP      15      12 11   9 8     6             0
+            1100      000   BaseR     000000
+
+RET      15      12 11   9 8     6             0
+            1100      000    111      000000
+
+Operation
+
+PC = BaseR;
+
+Description
+
+The program unconditionally jumps to the location speciﬁed by the contents of the base register. Bits [8:6] identify the base register.
+
+Examples
+
+    JMP    R2   ; PC ← R2
+    RET         ; PC ← R7
+
+Note
+The RET instruction is a special case of the JMP instruction, normally used in the return from a subroutine. The PC is loaded with the contents of R7, which con- tains the linkage back to the instruction following the subroutine call instruction.
+
+----
+
+JSR         Jump to Subroutine
+JSRR
+
+Assembler Formats 
+
+    JSR    LABEL 
+    JSRR   BaseR
+
+Encoding
+
+JSR     15      12 11 10                        0
+           0100     1       PCoffset11
+
+JSRR    15      12 11 10 9 8      6 5           0
+           0100    0   00    BaseR     000000
+
+Operation
+
+TEMP=PC;†
+if  (bit[11]  ==  0)
+    PC = BaseR;
+else
+    PC=PC†   +  SEXT(PCoffset11);
+R7=TEMP;
+
+Description
+First, the incremented PC is saved in a temporary location. Then the PC is loaded with the address of the ﬁrst instruction of the subroutine, which will cause an unconditional jump to that address after the current instruction completes execu- tion. The address of the subroutine is obtained from the base register (if bit [11] is 0), or the address is computed by sign-extending bits [10:0] and adding this value to the incremented PC (if bit [11] is 1). Finally, R7 is loaded with the value stored in the temporary location. This is the linkage back to the calling routine.
+
+Examples
+JSR QUEUE  ; Put the address of the instruction following JSR into R7; JSR
+           ; Jump to QUEUE.
+JSRR  R3   ; Put the address of the instruction following JSRR into R7
+           ; Jump to the address contained in R3.
+
+† This is the incremented PC.
+
+----
+
+LD              Load
+
+Assembler Format
+    LD    DR, LABEL
+
+Encoding
+
+15      12 11  9 8                        0
+   0010      DR        PCoffset9 
+
+Operation
+if  (computed  address  is  in  privileged  memory  AND  PSR[15]  ==  1) 
+    Initiate  ACV  exception;
+else
+    DR = mem[PC†   +  SEXT(PCoffset9)];
+setcc();
+
+Description
+An address is computed by sign-extending bits [8:0] to 16 bits and adding this value to the incremented PC. If the address is to privileged memory and PSR[15]=1, initiate ACV exception. If not, the contents of memory at this address is loaded into DR. The condition codes are set, based on whether the value loaded is negative, zero, or positive.
+
+Example
+        LD    R4, VALUE ; R4 ← mem[VALUE]
+ 
+† This is the incremented PC.
+
+----
+
+LDI         Load Indirect
+
+Assembler Format 
+    LDI  DR, LABEL
+
+Encoding
+
+15      12 11   9 8                        0
+   1010      DR         PCoffset9
+
+Operation
+if  (either  computed  address  is  in  privileged  memory  AND  PSR[15]  ==  1) 
+    Initiate  ACV  exception;
+else
+    DR = mem[mem[PC†   +  SEXT(PCoffset9)]];
+    setcc();
+
+Description
+An address is computed by sign-extending bits [8:0] to 16 bits and adding this value to the incremented PC. What is stored in memory at this address is the address of the data to be loaded into DR. If either address is to privileged mem- ory and PSR[15]=1, initiate ACV exception. If not, the data is loaded and the condition codes are set, based on whether the value loaded is negative, zero, or positive.
+
+Example
+    LDI    R4, ONEMORE ; R4 ← mem[mem[ONEMORE]]
+
+† This is the incremented PC.
+
+----
+
+LDR           Load Base+oﬀset
+
+Assembler Format
+        LDR   DR, BaseR, oﬀset6
+
+Encoding
+15      12 11   9 8     6 5             0
+   0110      DR    BaseR      offset6
+
+Operation
+If  (computed  address  is  in  privileged  memory  AND  PSR[15]  ==  1) 
+    Initiate  ACV  exception;
+else
+    DR = mem[BaseR  +  SEXT(offset6)];
+    setcc();
+
+Description
+An address is computed by sign-extending bits [5:0] to 16 bits and adding this value to the contents of the register speciﬁed by bits [8:6]. If the computed address is to privileged memory and PSR[15]=1, initiate ACV exception. If not, the contents of memory at this address is loaded into DR. The condition codes are set, based on whether the value loaded is negative, zero, or positive.
+
+Example
+        LDR    R4, R2, #−5    ;R4← mem[R2 − 5]
+
+----
+
+LEA           Load Eﬀective Address
+
+Assembler Format
+       LEA     DR, LABEL
+
+Encoding
+
+15      12 11   9 8                  0
+   1110      DR      PCoffset9
+
+Operation
+
+DR = PC†   +  SEXT(PCoffset9);
+
+Description
+
+An address is computed by sign-extending bits [8:0] to 16 bits and adding this value to the incremented PC. This address is loaded into DR.‡
+
+Example
+        LEA    R4, TARGET  ; R4 ← address of TARGET.
+
+† This is the incremented PC.
+‡ The LEA instruction computes an address but does NOT read memory. Instead, the address itself is loaded into DR.
+
+----
+
+NOT         Bit-Wise Complement
+
+Assembler Format 
+        NOT    DR, SR
+
+Encoding
+
+15      12 11   9 8    6 5 4 3 2    0
+   1001      DR     SR   1   11111
+
+Operation
+
+DR=NOT(SR);
+setcc();
+
+Description
+The bit-wise complement of the contents of SR is stored in DR. The condi- tion codes are set, based on whether the binary value produced, taken as a 2’s complement integer, is negative, zero, or positive.
+Example
+    NOT    R4, R2 ; R4 ← NOT(R2)
+
+----
+
+RET       Return from Subroutine
+
+Assembler Format 
+
+RET†
+
+Encoding
+
+15      12 11   9 8    6 5        0
+   1100      000   111     000000
+
+Operation
+
+PC  =  R7;
+
+Description
+The PC is loaded with the value in R7. Its normal use is to cause a return from a previous JSR(R) instruction.
+Example
+RET    ; PC ← R7
+
+† The RET instruction is a speciﬁc encoding of the JMP instruction. See also JMP.
+
+----
+
+RTI       Return from Trap or Interrupt
+
+Assembler Format
+
+    RTI
+
+Encoding
+
+15      12 11                      0
+   1000         000000000000
+
+Operation
+if  (PSR[15]  ==  1)
+    Initiate  a  privilege  mode  exception;
+else
+    PC=mem[R6];  R6  is  the  SSP,  PC  is  restored
+    R6=R6+1;
+    TEMP=mem[R6];
+    R6=R6+1;  system  stack  completes  POP  before  saved  PSR  is  restored PSR=TEMP;  PSR  is  restored
+    if  (PSR[15]  ==  1)
+        Saved SSP=R6  and  R6=Saved USP;
+
+Description
+If the processor is running in User mode, a privilege mode exception occurs. If in Supervisor mode, the top two elements on the system stack are popped and loaded into PC, PSR. After PSR is restored, if the processor is running in User mode, the SSP is saved in Saved SSP, and R6 is loaded with Saved USP.
+
+Example
+    RTI    ; PC, PSR ← top two values popped oﬀ stack.
+
+Note
+RTI is the last instruction in both interrupt and trap service routines and returns control to the program that was running. In both cases, the relevant service routine is initiated by first pushing the PSR and PC of the program that is running onto the system stack. Then the starting address of the appropriate service routine is loaded into the PC, and the service routine executes with supervisor privilege. The last instruction in the service routine is RTI, which returns control to the interrupted program by popping two values off the supervisor stack to restore the PC and PSR. In the case of an interrupt, the PC is restored to the address of the instruction that was about to be processed when the interrupt was initiated. In the case of an exception, the PC is restored to either the address of the instruction that caused the exception or the address of the following instruction, depending on whether the instruction that caused the exception is to be re-executed. In the case of a TRAP service routine, the PC is restored to the instruction following the TRAP instruction in the calling routine. In the case of an interrupt or TRAP, the PSR is restored to the value it had when the interrupt was initiated. In the case of an exception, the PSR is restored to the value it had when the exception occurred or to some modified value, depending on the exception. See also Section A.3.
+
+---
+
+ST          Store
+
+Assembler Format 
+
+    ST    SR, LABEL
+
+Encoding
+
+15      12 11   9 8                  0
+   0011      SR       PCoffset9
+
+Operation
+if  (computed  address  is  in  privileged  memory  AND  PSR[15]  ==  1) 
+    Initiate  ACV  exception;
+else
+    mem[PC†   +  SEXT(PCoffset9)]  =  SR;
+
+Description
+If the computed address is to privileged memory and PSR[15]=1, initiate ACV exception. If not, the contents of the register speciﬁed by SR is stored in the memory location whose address is computed by sign-extending bits [8:0] to 16 bits and adding this value to the incremented PC.
+
+Example
+ST    R4, HERE ; mem[HERE] ← R4
+
+† This is the incremented PC.
+
+----
+
+STI          Store Indirect
+
+Assembler Format STI   SR, LABEL
+
+Encoding
+
+15      12 11   9 8                  0
+   1011      SR      PCoffset9
+
+Operation
+if  (either  computed  address  is  in  privileged  memory  AND  PSR[15]  ==  1) 
+    Initiate  ACV  exception;
+else
+    mem[mem[PC†   +  SEXT(PCoffset9)]]  =  SR;
+
+Description
+If either computed address is to privileged memory and PSR[15]=1, initiate ACV exception. If not, the contents of the register speciﬁed by SR is stored in the memory location whose address is obtained as follows: Bits [8:0] are sign- extended to 16 bits and added to the incremented PC. What is in memory at this address is the address of the location to which the data in SR is stored.
+
+Example
+    STI    R4, NOT HERE        ; mem[mem[NOT HERE]] ← R4
+
+† This is the incremented PC
+
+----
+
+STR    Store Base+oﬀset
+
+Assembler Format
+    STR   SR, BaseR, oﬀset6
+
+Encoding
+
+15      12 11   9 8     6 5                0
+   0111      SR    BaseR       offset6
+
+Operation
+if  (computed  address  is  in  privileged  memory  AND  PSR[15]  ==  1) 
+    Initiate  ACV  exception;
+else
+    mem[BaseR  +  SEXT(offset6)]  =  SR;
+
+Description
+If the computed address is to privileged memory and PSR[15]=1, initiate ACV exception. If not, the contents of the register speciﬁed by SR is stored in the memory location whose address is computed by sign-extending bits [5:0] to 16 bits and adding this value to the contents of the register speciﬁed by bits [8:6].
+
+Example
+    STR    R4, R2, #5 ; mem[R2+5] ← R4
+
+-----
+
+TRAP   System Call
+
+Assembler Format
+    TRAP   trapvector8
+
+Encoding
+
+15      12 11     8 7                0
+   1111      0000      trapvect8
+
+
+Operation
+TEMP=PSR;
+if  (PSR[15]  ==  1)
+    Saved USP=R6  and  R6=Saved SSP;
+    PSR[15]=0;
+Push  TEMP,PC†   onthesystemstack
+PC=mem[ZEXT(trapvect8)];
+
+
+Description
+If the the program is executing in User mode, the User Stack Pointer must be saved and the System Stack Pointer loaded. Then the PSR and PC are pushed on the system stack. (This enables a return to the instruction physically follow- ing the TRAP instruction in the original program after the last instruction in the service routine (RTI) has completed execution.) Then the PC is loaded with the starting address of the system call speciﬁed by trapvector8. The starting address is contained in the memory location whose address is obtained by zero-extending trapvector8 to 16 bits.
+
+Example
+TRAP    x23    ; Directs the operating system to execute the IN system call.
+               ; The starting address of this system call is contained in
+               ; memory location x0023.
+
+Note:
+Memory locations x0000 through x00FF, 256 in all, are available to contain starting addresses for system calls speciﬁed by their corresponding trap vectors. This region of memory is called the Trap Vector Table. Table A.3 describes the functions performed by the service routines corresponding to trap vectors x20 to x25.
+
+† This is the incremented PC.
+
+-----
+
+Assembler Format   Unused Opcode
+
+none
+
+Encoding
+
+15       12 11                    0
+   1101
+
+Operation
+Initiate an illegal opcode exception.
+
+Description
+If an illegal opcode is encountered, an illegal opcode exception occurs.
+Note:
+The opcode 1101 has been reserved for future use. It is currently not deﬁned. If the instruction currently executing has bits [15:12] = 1101, an illegal opcode exception occurs. Section A.3 describes what happens.
+
+A.3 Interrupt and Exception Processing
+
+Events external to the program that is running can interrupt the processor. A common example of an external event is interrupt-driven I/O. It is also the case that the processor can be interrupted by exceptional events that occur while the program is running that are caused by the program itself. An example of such an “internal” event is the presence of an unused opcode in the computer program that is running.
+
+Associated with each event that can interrupt the processor is an eight-bit vector that provides an entry point into a 256-entry interrupt vector table. The starting address of the interrupt vector table is x0100. That is, the interrupt vector table occupies memory locations x0100 to x01FF. Each entry in the interrupt vector table contains the starting address of the service routine that handles the needs of the corresponding event. These service routines execute in Supervisor mode.
+
+Half (128) of these entries, locations x0100 to x017F, provide the starting addresses of routines that service events caused by the running program itself. These routines are called exception service routines because they handle excep- tional events, that is, events that prevent the program from executing normally. The other half of the entries, locations x0180 to x01FF, provide the starting addresses of routines that service events that are external to the program that is running, such as requests from I/O devices. These routines are called interrupt service routines.
+
+A.3.1 Interrupts
+
+At this time, an LC-3 computer system provides only one I/O device that can interrupt the processor. That device is the keyboard. It interrupts at priority level PL4 and supplies the interrupt vector x80.
+
+An I/O device can interrupt the processor if it wants service, if its interrupt enable (IE) bit is set, and if the priority of its request is greater than the priority of any other event that wants to interrupt and greater than the priority of the program that is running.
+
+Assume a program is running at a priority level less than 4, and someone strikes a key on the keyboard. If the IE bit of the KBSR is 1, the currently execut- ing program is interrupted at the end of the current instruction cycle. The interrupt service routine is initiated as follows:
+
+1.  The PSR of the interrupted process is saved in TEMP.
+2.  The processor sets the privilege mode to Supervisor mode (PSR[15]=0).
+3.  The processor sets the priority level to PL4, the priority level of the interrupting device (PSR[10:8]=100).
+4.  If the interrupted process is in User mode, R6 is saved in Saved USP and R6 is loaded with the Supervisor Stack Pointer (SSP).
+5.  TEMP and the PC of the interrupted process are pushed onto the supervisor stack.
+6.  The keyboard supplies its eight-bit interrupt vector, in this case x80.
+7.  The processor expands that vector to x0180, the corresponding 16-bit address in the interrupt vector table.
+8.  The PC is loaded with the contents of memory location x0180, the address of the ﬁrst instruction in the keyboard interrupt service routine.
+
+The processor then begins execution of the interrupt service routine.
+
+The last instruction executed in an interrupt service routine is RTI. The top two elements of the supervisor stack are popped and loaded into the PC and PSR registers. R6 is loaded with the appropriate stack pointer, depending on the new value of PSR[15]. Processing then continues where the interrupted program left off.
+
+A.3.2 Exceptions
+
+At this time, the LC-3 ISA speciﬁes three exception conditions: privilege mode violation, illegal opcode, and access control violation (ACV). The privilege mode violation occurs if the processor attempts to execute the RTI instruction while running in User mode. The illegal opcode exception occurs if the processor attempts to execute an instruction having the unused opcode (bits [15:12] = 1101). The ACV exception occurs if the processor attempts to access privileged memory (i.e., a memory location in system space or a device register having an address from xFE00 to xFFFF while running in User mode).
+
+Exceptions are handled as soon as they are detected. They are initiated very much like interrupts are initiated, that is:
+
+1.  The PSR of the process causing the exception is saved in TEMP.
+2.  The processor sets the privilege mode to Supervisor mode (PSR[15]=0).
+3.  If the process causing the exception is in User mode, R6 is saved in
+Saved USP and R6 is loaded with the SSP.
+4.  TEMP and the PC of the process causing the exception are pushed onto the supervisor stack.
+5.  The exception supplies its eight-bit vector. In the case of the privilege mode violation, that vector is x00. In the case of the illegal opcode, that vector is x01. In the case of the ACV exception, that vector is x02.
+6.  The processor expands that vector to x0100, x0101, or x0102, the corresponding 16-bit address in the interrupt vector table.
+7.  The PC is loaded with the contents of memory location x0100, x0101, or x0102, the address of the ﬁrst instruction in the corresponding exception service routine.
+
+The processor then begins execution of the exception service routine.
+The details of the exception service routine depend on the exception and the way in which the operating system wishes to handle that exception.
+In many cases, the exception service routine can correct any problem caused by the exceptional event and then continue processing the original program. In those cases, the last instruction in the exception service routine is RTI, which pops the top two elements from the supervisor stack and loads them into the PC and PSR registers. The program then resumes execution with the problem corrected.
+In some cases, the cause of the exceptional event is suﬃciently catastrophic that the exception service routine removes the program from further processing.
+Another diﬀerence between the handling of interrupts and the handling of exceptions is the priority level of the processor during the execution of the service routine. In the case of exceptions, we normally do not change the priority level when we service the exception. The priority level of a program is the urgency with which it needs to be executed. In the case of the exceptions speciﬁed by the LC-3 ISA, the urgency of a program is not changed by the fact that a privilege mode violation occurred or there was an illegal opcode in the program or the program attempted to access privileged memory while it was in User mode.
+
+
+Appendix B LC-3 to x86
+
+As you know, the ISA of the LC-3 explicitly specifies the interface between what the LC-3 machine language programmer or the LC-3 machine language programmer or the LC-3 compiler produce and what a microarchitecture of the LC-3 can accept and process. Among those things speciﬁed are the address space and addressability of memory, the number and size of the registers, the format of the instructions, the opcodes, the data types that are the encodings used to represent information, and the addressing modes that are available for determining the location of an operand.
+
+The ISA of the microprocessor in your PC also speciﬁes an interface between the compilers and the microarchitecture. However, in the case of the PC, the ISA is not the LC-3. Rather it is the x86. Intel introduced the ﬁrst member of this ISA in 1979. It was called the 8086, and the “normal” size of the addresses and data elements it processed was 16 bits, the same size as the LC-3. Today, the typical size of addresses and data is 64 bits. With special vector extensions, instructions can operate on vectors that can be of size 128, 256, and 512 bits. Because there are a lot of old programs and data expressed in 32 bits, the x86 is able to process instructions in what we call 64-bit mode or 32-bit mode. That is, in 32-bit mode, the x86 restricts itself to a 32-bit address space and 32-bit elements.
+
+From the 8086 to the present time, Intel has continued implementations of the x86 ISA, among them the 386 (in 1985), 486 (in 1989), Pentium (in 1992), Pentium Pro (in 1995), Pentium II (in 1997), Pentium IV (in 2001), “1st Generation Core i7-9xx Series,” codename Nehalem (in 2008), “4th Generation Core i7-4xxx Series,” codename Haswell (in 2013), and “8th Generation Core i7-8086K,” codename: Coﬀee Lake (in 2018).
+
+The ISA of the x86 is much more complicated than that of the LC-3. There are more opcodes, more data types, more addressing modes, a more complicated memory structure, and a more complicated encoding of instructions into 0s and 1s. However, fundamentally, they have the same basic ingredients.
+
+You have spent a good deal of time understanding computing within the con- text of the LC-3. Some may feel that it would be good to learn about a real ISA. One way to do that would be to have some company such as Intel mass-produce LC-3 microprocessors, some other company like Dell put them in their PCs, and a third company such as Microsoft compile Windows NT into the ISA of the LC-3. An easier way to introduce you to a real ISA is by way of this appendix.
+
+We present here elements of the x86, a very complicated ISA. We do so in spite of its complexity because it is one of the most pervasive of all ISAs available in the marketplace.
+
+We make no attempt to provide a complete speciﬁcation of the x86 ISA. That would require a whole book by itself, and to appreciate it, a deeper under- standing of operating systems, compilers, and computer systems than we think is reasonable at this point in your education. If one wants a complete treat- ment, we recommend the Intel Architecture Software Developer’s Manual. In this appendix, we restrict ourselves to some of the characteristics that are relevant to application programs. Our intent is to give you a sense of the richness of the x86 ISA. We introduce these characteristics within the context of the LC-3 ISA, which at this point you are very familiar with.
+
+B.1 LC-3 Features and Corresponding x86 Features
+
+B.1.1 Instruction Set
+
+An instruction set is made up of instructions, each of which has an opcode and zero or more operands. The number of operands depends on how many are needed by the corresponding opcode. Each operand is a data element and is encoded according to its data type. The location of an operand is determined by evaluating its addressing mode.
+
+The LC-3 instruction set contains one data type, 15 opcodes, and three addressing modes: PC-relative (LD, ST), indirect (LDI, STI), and register-plus- oﬀset (LDR, STR). The x86 instruction set has more than a dozen data types, more than a thousand opcodes, and more than two dozen addressing modes (depending on how you count).
+
+B.1.1.1 Data Types
+
+Recall that a data type is a representation of information such that the ISA pro- vides opcodes that operate on information that is encoded in that representation.
+
+The LC-3 supports only one data type, 16-bit 2’s-complement integers. This is not enough for eﬃcient processing in the real world. Scientiﬁc applications need numbers that are represented by the ﬂoating point data type. Multimedia applications require information that is represented by a diﬀerent data type. Com- mercial applications written years ago, but still active today, require an additional data type, referred to as packed decimal. Some applications require a greater range of values and a greater precision of each value than other applications.
+
+As a result of all these requirements, the x86 is designed with instructions that operate on (for example) 8-bit integers, 16-bit integers, and 32-bit integers, 32-bit and 64-bit ﬂoating point numbers, 64-bit, 128-bit, 256-bit, and 512-bit- multimedia values. Figure B.1 shows some of the data types present in the x86 ISA.
+
+B.1.1.2 Opcodes
+
+The LC-3 comprises 15 opcodes; the x86 instruction set comprises more than a thousand. Recall that the three basic instruction types are operates, data movement, and control. Operates process information, data movement opcodes move information from one place to another (including input and output), and control opcodes change the ﬂow of the instruction stream.
+
+In addition, we should add a fourth category to handle functions that must be performed in the real world because a user program runs in the context of an operating system that is controlling a computer system, rather than in isolation. These instructions deal with computer security, system management, hardware performance monitoring, and various other issues that are beyond what the typical application program pays attention to. We will ignore those instructions in this appendix, but please realize that they do exist, and you will see them as your studies progress. Here we will concentrate on the three basic instruction types: operates, data movement, and control.
+
+Operates The LC-3 has three operate instructions: ADD, AND, and NOT. The ADD opcode is the only LC-3 opcode that performs arithmetic. If one wants to subtract, one obtains the negative of an operand and then adds. If one wants to multiply, one can write a program with a loop to ADD a number some speciﬁed number of times. However, this is too time-consuming for a real microprocessor. So the x86 has separate SUB and MUL, as well as DIV, INC (increment), DEC (decrement), and ADC (add with carry), to name a few.
+
+A useful feature of an ISA is to extend the size of the integers on which it can operate. To do this, one writes a program to operate on such long integers. The ADC opcode, which adds two operands plus the carry from the previous add, is a very useful opcode for extending the size of integers.
+
+In addition, the x86 has, for each data type, its own set of opcodes to operate on that data type. For example, multimedia instructions (collectively called the MMX instructions) often require saturating arithmetic, which is very diﬀerent from the arithmetic we are used to. PADDS is an opcode that adds two operands with saturating arithmetic.
+
+Saturating arithmetic can be explained as follows: Suppose we represent the degree of grayness of an element in a ﬁgure with a digit from 0 to 9, where 0 is white and 9 is black. Suppose we want to add some darkness to an existing value of grayness of that ﬁgure. An element could start out with a grayness value of 7, and we might wish to add a 5 worth of darkness to it. In normal arithmetic, 7 + 5 is 2 (with a carry), which is lighter than either 7 or 5. Something is wrong! With saturating arithmetic, when we reach 9, we stay there—we do not generate a carry. So, for example, 7 + 5 = 9 and 9 + n = 9. Saturating arithmetic is a diﬀerent kind of arithmetic, and the x86 has opcodes (MMX instructions) that perform this type of arithmetic.
+
+Scientiﬁc applications require opcodes that operate on values represented in the ﬂoating point data type. FADD, FMUL, FSIN, FSQRT are examples of ﬂoating point opcodes in the x86 ISA.
+
+The AND and NOT opcodes are the only LC-3 opcodes that perform logical functions. One can construct any logical expression using these two opcodes.
+
+However, as is the case with arithmetic, this also is too time-consuming. The x86 has in addition separate OR, XOR, AND-NOT, and separate logical operators for diﬀerent data types.
+
+Furthermore, the x86 has a number of other operate instructions that set and clear registers, convert a value from one data type to another, shift or rotate the bits of a data element, and so on. Table B.1 lists some of the operate opcodes in the x86 instruction set.
+
+Data Movement The LC-3 has six data movement opcodes: LD, LDI, ST, STI, LDR, and STR. They all copy information between memory (and memory- mapped device registers) and the eight general purpose registers, R0 to R7.
+
+Although the x86 does not have LDI or STI opcodes, it does have the other four, and in addition to these, many other data movement opcodes. XCHG can swap the contents of two locations. PUSHA pushes all eight general purpose registers onto the stack. IN and OUT move data between input and output ports and the processor. CMOVcc copies a value from one location to another only if a previously computed condition is true. Table B.2 lists some of the data movement opcodes in the x86 instruction set.
+
+Control The LC-3 has ﬁve control opcodes: BR, JSR/JSRR, JMP, RTI, and TRAP. x86 has all these and more. Table B.3 lists some of the control opcodes in the x86 instruction set.
+
+B.1.1.3 Two Address vs. Three Address
+The LC-3 is a three-address ISA. This description reﬂects the number of operands explicitly speciﬁed by the ADD instruction. An add operation requires two source operands (the numbers to be added) and one destination operand to store the result. In the LC-3, all three must be speciﬁed explicitly, hence the name three-address ISA.
+
+Even if the same location is to be used both for one of the sources and for the destination, the three addresses are all speciﬁed. For example, the LC-3
+
+ADD  R1,R1,R2
+
+identiﬁes R1 as both a source and the destination.
+
+The x86 is mostly (except for special instructions deﬁned as SSE or AVX instructions) a two-address ISA. Since the add operation needs three operands, the location of one of the sources must also be used to store the result. For example, the corresponding 16-bit ADD instruction in the x86 ISA would be
+
+ADD  AX,BX
+
+where AX and BX are names of two of the x86’s eight 16-bit general purpose registers. AX and BX are the sources, and AX is the destination.
+
+Since the result of the operate is stored in the location that originally con- tained one of the sources, that source operand is no longer available after that instruction is executed. If that source operand is needed later, it must be saved before the operate instruction is executed.
+
+B.1.1.4 Memory Operands
+
+A major diﬀerence between the LC-3 instruction set and the x86 instruction set is the restriction on where operate instructions can get their operands. An LC-3 operate instruction must obtain its source operands from registers and write the result to a destination register. An x86 instruction, on the other hand, can obtain one of its sources from memory and/or write its result to memory. In other words, the x86 can read a value from memory, operate on that value, and store the result in memory all in a single instruction. The LC-3 cannot.
+
+The LC-3 program requires a separate load instruction to read the value from memory before operating on it, and a separate store instruction to write the result in memory after the operate instruction. An ISA, like the LC-3, that has this restriction is called a load-store ISA. The x86 is not a load-store ISA.
+
+B.1.2 Memory
+
+The LC-3 memory consists of 216 locations, each containing 16 bits of informa- tion. We say the LC-3 has a 16-bit address space, since one can uniquely address its 216 locations with 16 bits of address. We say the LC-3 has an addressability of 16 bits, since each memory location contains 16 bits of information.
+
+The x86 memory has a 64-bit address space and an addressability of eight bits. Since one byte contains eight bits, we say the x86 memory is byte address- able. Since each location contains only eight bits, four contiguous locations in memory are needed to store a 32-bit data element, say locations X, X+1, X+2, and X+3. We designate X as the address of the 32-bit data element. In actuality, X only contains bits [7:0], X+1 contains bits [15:8], X+2 contains bits [23:16], and X+3 contains bits [31:24] of the 32-bit value.
+
+One can determine an LC-3 memory location by simply obtaining its address from the instruction, using one of the three addressing modes available in the instruction set. An x86 instruction has available to it more than two dozen addressing modes that it can use to specify the memory address of an operand. We examine the addressing modes of an x86 instruction in Section B.2.
+
+In addition to the larger number of addressing modes, the x86 contains a mechanism called segmentation that provides a measure of protection against unwanted accesses to particular memory addresses. The address produced by an instruction’s addressing mode, rather than being an address in its own right, is used as an address within a segment of memory. Access to that memory location must take into account the segment register that controls access to that segment. The details of how the protection mechanism works will have to wait for later in your studies.
+
+However,  Figure  B.2  does  show  how  an  address  is  calculated  for  the register+oﬀset  addressing  mode,  both  for  the  LC-3  and  for  the  x86,  with segmentation. In both cases, the opcode is to move data from memory to a gen- eral purpose register. The LC-3 uses the LDR instruction. The x86 uses the MOV instruction. In the case of the x86, the address calculated is in the DS segment, which is accessed via the DS register. That access is done through a 16- bit selector, which indexes into a segment descriptor table, yielding the segment descriptor for that segment. The segment descriptor contains a segment base register,a segment limit register, and protection information. The memory address obtained from the addressing mode of the instruction is added to the segment base register to provide the actual memory address, as shown in Figure B.2.
+
+B.1.3 Internal State
+
+The internal state of the LC-3 consists of eight 16-bit general purpose registers, R0 to R7, a 16-bit PC, and a 16-bit PSR that speciﬁes the privilege mode, priority, and three 1-bit condition codes (N, Z, and P). The user-visible internal state of the x86 consists of 64-bit application-visible registers, a 64-bit Instruction pointer (RIP), a 64-bit RFLAGS register, and the 16-bit segment registers.
+
+B.1.3.1 Application-Visible Registers
+
+Figure B.3 shows some of the application-visible registers in the x86 ISA. 
+
+In 64-bit mode, the x86 has 16 general purpose registers: RAX, RBX, RCX, RDX, RSP, RBP, RCI, RDI, and R8 through R15. Each register contains 64 bits reﬂecting the normal size of operands. In 32-bit mode, there are eight general purpose registers: EAX, EBX, ECX, EDX, ESP, EBP, ECI, and EDI, which use bits [31:0] of the corresponding 64-bit registers. Also, since some x86 opcodes process 16-bit and 8-bit operands, x86 also speciﬁes 16-bit registers AX, BX, ...DI by using bits [15:0] of the 64-bit registers, and 8 bit registers AL, BL, CL, and DL using bits [7:0] and AH, BH, CH, and DH, using bits [15:8] of the corresponding 64-bit registers. The x86 also provides 128-bit, 256-bit, and 512-bit SIMD registers for operands needed by SSE and AVX operations. They are, respectively, XMM0 to XMM31 for 128 bits, YMM0 to YMM31 for 256 bits, and ZMM0 to ZMM31 for 512 bits.
+
+B.1.3.2 System Registers
+The LC-3 has two system-level registers—the PC and the PSR. The user-visible x86 has these and more. Figure B.4 shows some of the user-visible system registers in the x86 ISA.
+
+Instruction Pointer (RIP) The x86 has the equivalent of the LC-3’s 16-bit pro- gram counter. The x86 calls it an instruction pointer (RIP). Since the address space of the x86 is 64 bits, the RIP is a 64-bit register. In 32-bit mode, since the address space is only 32 bits, the instruction pointer (EIP) uses bits [31:0] of the RIP.
+
+RFLAGS Register Corresponding to the LC-3’s N, Z, and P condition codes, the x86 has a one-bit SF (sign ﬂag) register and a one-bit ZF (zero ﬂag) register.
+
+SF and ZF provide exactly the same functions as the N and Z condition codes of the LC-3. The x86 does not have the equivalent of the LC-3’s P condition code. In fact, the P condition code is redundant since, if one knows the val- ues of N and Z, one knows the value of P. We included it in the LC-3 ISA anyway, for the convenience of assembly language programmers and compiler writers.
+
+The x86 collects other one-bit values in addition to N and Z. These one-bit values (which Intel calls ﬂags, rather than condition codes) are contained in a 64-bit register called RFLAGS. Several of these ﬂags are discussed in the following paragraphs.
+
+The CF ﬂag stores the carry produced by the last relevant operation that generated a carry. As we said earlier, together with the ADC instruction, CF facilitates the generation of procedures, which allows the software to deal with larger integers than the ISA supports.
+
+The OF ﬂag stores an overﬂow condition if the last relevant operate generated a value too large to store in the available number of bits. Recall the discussion of overﬂow in Section 2.5.3.
+
+The DF ﬂag indicates the direction in which string operations are to process strings. If DF = 0, the string is processed from the high-address byte down (i.e., the pointer keeping track of the element in the string to be processed next is decre- mented). If DF = 1, the string is processed from the low-address byte up (i.e., the string pointer is incremented).
+
+Two ﬂags not usually considered as part of the application state are the IF (interrupt) ﬂag and the TF (trap) ﬂag. Both correspond to functions with which you are familiar.
+
+IF is very similar to the IE (interrupt enable) bit in the KBSR and DSR, discussed in Section 9.4.4.1. If IF  =  1, the processor can recognize external interrupts (like keyboard input, for example). If IF = 0, these external inter- rupts have no eﬀect on the process that is executing. We say the interrupts are disabled.
+
+TF is very similar to single-step mode in the LC-3 simulator, only in this case it is part of the ISA. If TF = 1, the processor halts after every instruction so the state of the system can be examined. If TF = 0, the processor ignores the trap and processes the next instruction.
+
+Segment Registers When operating in its preferred operating mode (called pro- tected mode), the address calculated by the instruction is really an oﬀset from the starting address of a segment, which is speciﬁed by some segment base regis- ter. These segment base registers are part of their corresponding data segment descriptors, which are contained in the segment descriptor table. At each instant of time, six of these segments are active. They are called, respectively, the code segment (CS), stack segment (SS), and four data segments (DS, ES, FS, and GS). The six active segments are accessed via their corresponding segment registers shown in Figure B.4, which contain pointers to their respective segment descriptors.
+
+B.2 The Format and Speciﬁcation of x86 Instructions
+
+The LC-3 instruction is a 16-bit instruction. Bits [15:12] always contain the opcode; the remaining 12 bits of each instruction are used to support the needs of that opcode.
+
+The length of an x86 instruction is not ﬁxed. It consists of from 1 to 16 bytes, depending on the needs of that instruction. A lot of information can be packed into one x86 instruction. Figure B.5 shows the format of an x86 instruction.
+
+The two key parts of an x86 instruction are the opcode and, where neces- sary, the ModR/M byte. The opcode speciﬁes the operation the instruction is to perform. The ModR/M byte speciﬁes how to obtain the operands it needs. The ModR/M byte speciﬁes one of several addressing modes, some of which require the use of registers, a one-, two-, or four-byte displacement, and additional register information contained in an optional SIB byte.
+
+Some opcodes specify an immediate operand and also specify the number of bytes of the instruction that is used to store that immediate information. The immediate value (when one is speciﬁed) is the last element of the instruction.
+
+Finally, instructions assume certain default information with respect to the semantics of an instruction, such as address size, operand size, segment to be used, and so forth. The instruction can change this default information by means of one or more preﬁxes, which are located at the beginning of the instruction.
+
+Each part of an x86 instruction is discussed in more detail in Sections B.2.1 through B.2.6.
+
+B.2.1 Preﬁx
+
+Preﬁxes provide additional information that is used to process the instruction. There are four classes of preﬁx information, and each instruction can have from zero to four preﬁxes, depending on its needs. Fundamentally, a preﬁx overrides the usual interpretation of the instruction.
+
+The four classes of preﬁxes are lock and repeat, segment override, operand override, and address override. Table B.4 describes the four types of preﬁxes.
+
+B.2.2 Opcode
+
+The opcode byte (or bytes—some opcodes are represented by two bytes) spec- iﬁes a large amount of information about the needs of that instruction. The opcode byte (or bytes) speciﬁes, among other things, the operation to be per- formed, whether the operands are to be obtained from memory or from reg- isters, the size of the operands, whether or not one of the source operands is an immediate value in the instruction, and if so, the size of that immediate operand.
+
+Some opcodes are formed by combining the opcode byte with bits [5:3] of the ModR/M byte, if those bits are not needed to provide addressing mode information. The ModR/M byte is described in Section B.2.3.
+
+B.2.3 ModR/M Byte
+
+The ModR/M byte, shown in Figure B.5, provides addressing mode information for two operands, when necessary, or for one operand, if that is all that is needed. If two operands are needed, one may be in memory, the other in a register, or both may be in registers. If one operand is needed, it can be either in a register or in memory. The ModR/M byte supports all cases.
+
+The ModR/M byte is essentially partitioned into two parts. The ﬁrst part consists of bits [7:6] and bits [2:0]. The second part consists of bits [5:3].
+
+If bits [7:6]  =  00, 01, or 10, the ﬁrst part speciﬁes the addressing mode of a memory operand, and the combined ﬁve bits ([7:6],[2:0]) identify which addressing mode. If bits [7:6] = 11, there is no memory operand, and bits [2:0] specify a register operand.
+
+Bits [5:3] specify the register number of the other operand, if the opcode requires two operands. If the opcode only requires one operand, bits [5:3] are available as a subopcode to diﬀerentiate among eight opcodes that have the same opcode byte, as described in Section B.2.2.
+
+Table B.5 lists some of the interpretations of the ModR/M byte.
+
+B.2.4 SIB Byte
+
+If the opcode speciﬁes that an operand is to be obtained from memory, the Mod- R/M byte speciﬁes the addressing mode, that is, the information that is needed to calculate the address of that operand. Some addressing modes require more information than can be speciﬁed by the ModR/M byte alone. Those operand speciﬁers (see the third entry in Table B.5) specify the inclusion of an SIB byte in the instruction. The SIB byte (for scaled-index-base), shown in Figure B.5, pro- vides scaling information and identiﬁes which register is to be used as an index register and/or which register is to be used as a base register. Taken together, the SIB byte computes scale ⋅ index + base, where base and/or index can be zero, and scale can be 1. Table B.6 lists some of the interpretations of the SIB byte.
+
+B.2.5 Displacement
+
+If the ModR/M byte speciﬁes that the address calculation requires a displacement, the displacement (one, two, or four bytes) is contained in the instruction. The opcode and/or ModR/M byte speciﬁes the size of the displacement.
+
+Figure B.6 shows the addressing mode calculation for the source operand if the instruction is as shown. The preﬁx x26 overrides the segment register and speciﬁes using the ES segment. The ModR/M and SIB bytes specify that a four-byte displacement is to be added to the base register ECX + the index register EBX after its contents is multiplied by 4.
+
+B.2.6 Immediate
+
+Recall that the LC-3 allowed small immediate values to be present in the instruc- tion, by setting inst[5:5] to 1. The x86 also permits immediate values in the instruction. As stated previously, if the opcode speciﬁes that a source operand is an immediate value in the instruction, it also speciﬁes the number of bytes of the instruction used to represent the operand. That is, an immediate can be represented in the instruction with one, two, or four bytes. Since the opcode also speciﬁes the size of the operand, immediate values that can be stored in fewer bytes than the operand size are ﬁrst sign-extended to their full size before being operated on. Figure B.7 shows the use of the immediate operand with the ADD instruction. The example is ADD EAX, $5. We are very familiar with the corresponding LC-3 instruction: ADD R0,R0,#5.
+
+B.3 An Example
+
+We conclude this appendix with an example. The problem is one we have dealt with extensively in Chapter 14. Given an input character string consisting of text, numbers, and punctuation, write a C program to convert all the lowercase letters to uppercase. Figure B.8 shows a C program that solves this problem. Figure B.9 shows the annotated LC-3 assembly language code that a C compiler would generate. Figure B.10 shows the corresponding annotated x86 assembly language code, assuming we are operating the x86 in 32-bit mode. For readability, we show assembly language representations of the LC-3 and x86 programs rather than the machine code.
+
+C The Microarchitecture of the LC-3
+
+Figure C.1 shows the two main components of a microarchitecture: the data path, which contains all the components that actually process the instructions, and the control, which contains all the components that generate the set of control signals that are needed to control the processing at each instant of time.
+
+We say, “at each instant of time,” but we really mean during each clock cycle. That is, time is divided into clock cycles. The cycle time of a microprocessor is the duration of a clock cycle. A common cycle time for a microprocessor today is 0.33 nanoseconds, which corresponds to 3 billion clock cycles each second. We say that such a microprocessor is operating at a frequency of 3 gigahertz, or 3 GHz.
+
+At each instant of time—or, rather, during each clock cycle—the 52 control signals (as shown in Figure C.1) control both the processing in the data path and the generation of the control signals for the next clock cycle. Processing in the data path is controlled by 42 bits, and the generation of the control signals for the next clock cycle is controlled by 10 bits.
+
+Note that the hardware that determines which control signals are needed each clock cycle does not operate in a vacuum. On the contrary, the control signals needed in the “next” clock cycle depend on the following:
+
+1.  The control signals that are present during the current clock cycle.
+2.  The LC-3 instruction that is being executed.
+3.  The privilege mode of the program that is executing, and whether the processor has the right to access a particular memory location.
+4.  If that LC-3 instruction is a BR, whether the conditions for the branch have been met (i.e., the state of the relevant condition codes).
+5.  Whether or not an external device is requesting that the processor be interrupted.
+6.  If a memory operation is in progress, whether it is completing during this cycle.
+
+Figure C.1 identiﬁes the speciﬁc information in our implementation of the LC-3 that corresponds to these six items. They are, respectively:
+
+1.  J[5:0], COND[2:0], and IRD—ten bits of control signals provided by the current clock cycle.
+2.  inst[15:12], which identiﬁes the opcode, and inst[11:11], which
+diﬀerentiates JSR from JSRR (i.e., the addressing mode for the target of the subroutine call).
+3.  PSR[15], bit [15] of the Processor Status Register, which indicates whether the current program is executing with supervisor or user privileges, and ACV, a signal that informs the processor that a process operating in User mode is trying to access a location in privileged memory. ACV stands for Access Control Violation. When asserted, it denies the process access to the privileged memory location.
+4.  BEN to indicate whether or not a BR should be taken.
+5.  INT to indicate that some external device of higher priority than the executing process requests service.
+6.  R to indicate the end of a memory operation.
+
+The State Machine
+
+The behavior of the LC-3 microarchitecture during a given clock cycle is com- pletely determined by the 52 control signals, combined with ten bits of addi- tional information (inst[15:11], PSR[15], ACV, BEN, INT, and R), as shown in Figure C.1. We have said that during each clock cycle, 42 of these control signals determine the processing of information in the data path and the other ten control signals combine with the ten bits of additional information to determine which set of control signals will be required in the next clock cycle.
+
+We say that these 52 control signals specify the state of the control structure of the LC-3 microarchitecture. We can completely describe the behavior of the LC-3 microarchitecture by means of a directed graph that consists of nodes (one corresponding to each state) and arcs (showing the ﬂow from each state to the one[s] it goes to next). We call such a graph a state machine.
+
+Figure C.2, combined with Figure C.7, is the state machine for our implemen- tation of the LC-3. The state machine describes what happens during each clock cycle in which the computer is running. Each state is active for exactly one clock cycle before control passes to the next state. The state machine shows the step- by-step (clock cycle–by–clock cycle) process that each instruction goes through from the start of its FETCH phase to the end of its instruction cycle, as described in Section 4.3.2. Each node in the state machine corresponds to the activity that the processor carries out during a single clock cycle. The actual processing that is performed in the data path is contained inside the node. The step-by-step ﬂow is conveyed by the arcs that take the processor from one state to the next.
+
+Let’s start our study of Figure C.2 by examining the FETCH phase of the instruction cycle. As you know, every instruction goes through the same FETCH phase in its instruction cycle. Recall from Chapter 4 that the FETCH phase starts with a memory access to read the instruction at the address speciﬁed by the PC. Note that in the state numbered 18, the MAR is loaded with the address contained in PC, and the PC is incremented in preparation for the FETCH of the next LC-3 instruction after the current instruction ﬁnishes its instruction cycle. If the content of MAR speciﬁes privileged memory, and PSR[15] = 1, indicating User mode, the access of the instruction will not be allowed. That would be an access control violation, so ACV is set. Finally, if there is no interrupt request present (INT = 0), the ﬂow passes to the state numbered 33. We will describe in Section C.7 the ﬂow of control if INT = 1, that is, if an external device is requesting an interrupt.
+
+Before we get into what happens during the clock cycle when the proces- sor is in the state numbered 33, we should explain the numbering system—that is, why are states numbered 18 and 33. Recall, from our discussion of ﬁnite state machines in Chapter 3, that each state must be uniquely speciﬁed and that this unique speciﬁcation is accomplished by means of state variables. Our state machine that implements the LC-3 ISA requires 59 distinct states to implement the entire behavior of the LC-3. Figure C.2 shows 31 of them plus pointers to seven others (states 8, 13, 15, 48, 49, 57, and 60). Figure C.7 shows the other 28 states (including the seven that are pointed to in Figure C.2). We will visit all of them as we go through this appendix. Since k logical variables can uniquely identify 2k items, six state variables are needed to uniquely specify 59 states. The number next to each node in Figure C.2 and Figure C.7 is the decimal equivalent of the values (0 or 1) of the six state variables for the corresponding state. Thus, for example, the state numbered 18 has state variable values 010010.
+
+Now, back to what happens after the clock cycle in which the activity of state 18 has ﬁnished. As we said, if no external device is requesting an interrupt, the ﬂow passes to state 33 (i.e., 100001). From state 33, control passes to state 60 if the processor is trying to access privileged memory while in User mode, or to state 28, if the memory access is allowed, that is, if there is no ACV violation. We will discuss what happens if there is an ACV violation in Section C.7.
+
+In state 28, since the MAR contains the address of the instruction to be processed, this instruction is read from memory and loaded into the MDR. Since this memory access can take multiple cycles, this state continues to execute until a ready signal from the memory (R) is asserted, indicating that the memory access has completed. Thus, the MDR contains the valid contents of the memory location specified by MAR. The state machine then moves on to state 30, where the instruction is loaded into the instruction register (IR), completing the fetch phase of the instruction cycle.
+
+The state machine then moves to state 32, where DECODE takes place. Note that there are 13 arcs emanating from state 32, each one corresponding to bits [15:12] of the LC-3 instruction. These are the opcode bits that direct the state machine to one of 16 paths to carry out the instruction cycle of the particular instruction that has just been fetched. Note that the arc from the last state of each instruction cycle (i.e., the state that completes the processing of that LC-3 instruction) takes us to state 18 (to begin the instruction cycle of the next LC-3 instruction).
+
+The Data Path
+
+The data path consists of all components that actually process the information during each clock cycle—the functional units that operate on the information, the registers that store information at the end of one cycle so it will be available for further use in subsequent cycles, and the buses and wires that carry information from one point to another in the data path. Figure C.3, an expanded version of what you have already encountered in Figure 5.18, illustrates the data path of our microarchitecture of the LC-3.
+
+Note the control signals that are associated with each component in the data path. For example, ALUK, consisting of two control signals, is associated with the ALU. These control signals determine how that component (the ALU) will be used each cycle. Table C.1 lists the set of 42 control signals that control the elements of the data path and the set of values that each control signal can have. (Actually, for readability, we provide a symbolic name for each value, rather than the binary value.) For example, since ALUK consists of two bits, it can have one of four values. Which value it has during any particular clock cycle depends on whether the ALU is required to ADD, AND, NOT, or simply pass one of its inputs to the output during that clock cycle. PCMUX also consists of two control signals and speciﬁes which input to the MUX is required during a given clock cycle. LD.PC is a single-bit control signal and is a 0 (NO) or a 1 (YES), depending on whether or not the PC is to be loaded during the given clock cycle.
+
+During each clock cycle, corresponding to the “current state” in the state machine, the 42 bits of control direct the processing of all components in the data path that are required during that clock cycle. As we have said, the processing that takes place in the data path during that clock cycle is speciﬁed inside the node representing the state.
+
+The Control Structure
+
+The control structure of a microarchitecture is speciﬁed by its state machine. As described earlier, the state machine (Figure C.2 and Figure C.7) determines which control signals are needed each clock cycle to process information in the data path and which control signals are needed each clock cycle to direct the ﬂow of control from the currently active state to its successor state.
+
+Figure C.4 shows a block diagram of the control structure of our implemen- tation of the LC-3. Many implementations are possible, and the design considerations that must be studied to determine which of many possible implementations should be used is the subject of a full course in computer architecture.
+
+We have chosen here a straightforward microprogrammed implementation. Each state of the control structure requires 42 bits to control the processing in the data path and 10 bits to help determine which state comes next. These 52 bits are collectively known as a microinstruction. Each microinstruction (i.e., each state of the state machine) is stored in one 52-bit location of a special memory called the control store. There are 59 distinct states. Since each state corresponds to one microinstruction in the control store, the control store for our microprogrammed implementation requires six bits to specify the address of each microinstruction. Those six bits correspond to the state number associated with each state in the state machine. For example, the microinstruction associated with state 18 is the set of 52 control signals stored in address 18 of the control store.
+
+Table C.2 lists the function of the ten bits of control information that help determine which state comes next. Figure C.5 shows the logic of the micro-sequencer. The purpose of the microsequencer is to determine the address in the control store that corresponds to the next state, that is, the location where the 52 bits of control information for the next state are stored.
+
+As we said, state 32 of the state machine (Figure C.2) performs the DECODE phase of the instruction cycle. It has 16 “next” states, depending on the LC-3 instruction being executed during the current instruction cycle. If the IRD con- trol signal in the microinstruction corresponding to state 32 is 1, the output MUX of the microsequencer (Figure C.5) will take its source from the six bits formed by 00 concatenated with the four opcode bits IR[15:12]. Since IR[15:12] speci- ﬁes the opcode of the current LC-3 instruction being processed, the next address of the control store will be one of 16 addresses, corresponding to the 15 opcodes plus the one unused opcode, IR[15:12] = 1101. That is, each of the 16 next states after state 32 is the ﬁrst state to be carried out after the instruction has been decoded in state 32. For example, if the instruction being processed is ADD, the address of the next state is state 1, whose microinstruction is stored at location 000001. Recall that IR[15:12] for ADD is 0001.
+
+If, somehow, the instruction inadvertently contained IR[15:12] = 1101, the  unused  opcode,  the  microarchitecture  would  execute  a  sequence  of microinstructions, starting at state 13. These microinstructions would respond to the fact that an instruction with an illegal opcode had been fetched. Section C.7.3 describes what happens in that case.
+
+Several signals necessary to control the data path and the microsequencer are not among those listed in Tables C.1 and C.2. They are DR, SR1, BEN, INT, ACV, and R. Figure C.6 shows the additional logic needed to generate DR, SR1, BEN, and ACV.
+
+The INT signal is supplied by some event external to the normal instruction processing, indicating that normal instruction processing should be interrupted and this external event dealt with. The interrupt mechanism was described in Chapter 9. The corresponding ﬂow of control within the microarchitecture is described in Section C.7.
+
+The remaining signal, R, is a signal generated by the memory in order to allow the LC-3 to operate correctly with a memory that takes multiple clock cycles to read or store a value.
+
+Suppose it takes memory ﬁve cycles to read a value. That is, once MAR contains the address to be read and the microinstruction asserts READ, it will take ﬁve cycles before the contents of the speciﬁed location in memory is available to be loaded into MDR. (Note that the microinstruction asserts READ by means of two control signals: MIO.EN/YES and R.W/RD; see Figure C.3.)
+
+Recall our discussion in Section C.2 of the function of state 28, which accesses an instruction from memory during the FETCH phase of each instruc- tion cycle. If the memory takes ﬁve cycles to read a value, for the LC-3 to operate correctly, state 28 must execute ﬁve times before moving on to state 30. That is, until MDR contains valid data from the memory location speciﬁed by the con- tents of MAR, we want state 28 to continue to re-execute. After ﬁve clock cycles, the memory has completed the “read,” resulting in valid data in MDR, so the pro- cessor can move on to state 30. What if the microarchitecture did not wait for the memory to complete the read operation before moving on to state 30? Since the contents of MDR would still be garbage, the microarchitecture would put garbage into the IR in state 30.
+
+The ready signal (R) enables the memory read to execute correctly. Since the memory knows it needs ﬁve clock cycles to complete the read, it asserts a ready signal (R) throughout the ﬁfth clock cycle. Figure C.2 shows that the next state is 28 (i.e., 011100) if the memory read will not complete in the current clock cycle and state 30 (i.e., 011110) if it will. As we have seen, it is the job of the microsequencer (Figure C.5) to produce the next state address.
+
+The ten microsequencer control signals for state 28 are:
+
+IRD/0           ; NO
+COND/001        ; Memory Ready
+J/011100
+
+With these control signals, what next state address is generated by the microse- quencer? For each of the ﬁrst four executions of state 28, since R = 0, the next state address is 011100. This causes state 28 to be executed again in the next clock cycle. In the ﬁfth clock cycle, since R = 1, the next state address is 011110, and the LC-3 moves on to state 30. Note that in order for the ready signal (R) from memory to be part of the next state address, COND had to be set to 001, which allowed R to pass through its four-input AND gate.
+
+The TRAP Instruction
+
+As we have said, each LC-3 instruction follows its own path from state 32 to its ﬁnal state in its instruction cycle, after which it returns to state 18 to start processing the next instruction. As an example, we will follow the instruction cycle of the TRAP instruction, shown in Figure C.7.
+
+Recall that the TRAP instruction pushes the PSR and PC onto the system stack, loads the PC with the starting address of the trap service routine, and executes the service routine from privileged memory.
+
+From state 32, the next state after DECODE is state 15, consistent with the TRAP instruction opcode 1111. In state 15, the Table register, which will be used to form MAR[15:8] of the trap vector table entry, is loaded with x00, the PC is incremented (we will see why momentarily), and the MDR is loaded with the PSR in preparation for pushing it onto the system stack. Control passes to state 47.
+
+In state 47, the trap vector (IR[7:0]) is loaded into the eight-bit register Vector, PSR[15] is set to Supervisor mode since the trap service routine exe- cutes in privileged memory, and the state machine branches to state 37 or 45, depending on whether the program that executed the TRAP instruction was in User mode or Supervisor mode. If in User mode, state 45 saves the User Stack Pointer in Saved USP, loads the stack pointer from Saved SSP, and continues on to state 37, where the processor starts pushing PSR and PC onto the stack. If the program executing the TRAP instruction is already in Privileged mode, state 45 is not necessary.
+
+In states 37 and 41, the PSR is pushed onto the system stack. In states 43, 46, and 52, the PC is pushed onto the system stack. Note that in state 43, the PC is decremented before being pushed onto the stack. This is necessary in the case of dealing with interrupts and exceptions, which will be explained in Section C.7. This is not necessary for processing the TRAP instruction, which is why PC is incremented in state 15.
+
+The only thing remaining is to load PC with the starting address of the trap service routine. This is done by loading MAR with the address of the proper entry in the trap vector table, obtained by concatenating Table and Vector (in state 54), loading the starting address from memory into MDR (in state 53), and loading the PC (in state 55). This completes the execution of the TRAP instruction, and control returns to state 18 to begin processing the next instruction – in this case, the ﬁrst instruction of the trap service routine.
+
+The last instruction in every trap service routine is RTI (return from trap or interrupt). From DECODE in state 32, the next state of RTI is state 8, consistent with its eight-bit opcode 1000. In states 8, 36, and 38, the PC is popped oﬀ the system stack and loaded into PC. In states 39, 40, 42, and 34, the PSR is popped oﬀ the system stack and loaded into PSR. This returns the PC and PSR to the values it had before the trap service routine was executed. Finally, if the program that invoked the TRAP instruction was in User mode, PSR[15] must be returned to 1, the Supervisor Stack Pointer saved, and the User Stack Pointer loaded into SP. This is done in state 59, completing the instruction cycle for RTI.
+
+Memory-Mapped I/O
+
+As you know from Chapter 9, the LC-3 ISA performs input and output via memory-mapped I/O, that is, with the same data movement instructions that it uses to read from and write to memory. The LC-3 does this by assigning an address to each device register. Input is accomplished by a load instruction whose eﬀective address is the address of an input device register. Output is accomplished by a store instruction whose eﬀective address is the address of an output device register. For example, in state 25 of Figure C.2, if the address in MAR is xFE02, MDR is supplied by the KBDR, and the data input will be the last keyboard character typed. On the other hand, if the address in MAR is a legitimate memory address, MDR is supplied by the memory.
+
+The state machine of Figure C.2 does not have to be altered to accommo- date memory-mapped I/O. However, something has to determine when memory should be accessed and when I/O device registers should be accessed. This is the job of the address control logic (ADDR.CTL.LOGIC) shown in Figure C.3.
+
+Table C.3 is a truth table for the address control logic, showing what con- trol signals are generated, based on (1) the contents of MAR, (2) whether or not memory or I/O is accessed this cycle (MIO.EN/NO, YES), and (3) whether a load (R.W/Read) or store (R.W/Write) is requested. Note that, for a memory-mapped load, data can be supplied to MDR from one of four sources: memory, KBDR, KBSR, or DSR. The address control logic provides the appropriate select signals to the INMUX. For a memory-mapped store, the data supplied by MDR can be written to memory, KBSR, DDR, or DSR. The address control logic supplies the appropriate enable signal to the corresponding structure.
+
+Interrupt and Exception Control
+
+The ﬁnal piece of the state machine needed to complete the LC-3 story are those states that control the initiation of an interrupt, those states that control the return from an interrupt (the RTI instruction), and those states that control the initiation of one of the three exceptions speciﬁed by the ISA.
+
+Interrupts and exceptions are very similar. Both stop the program that is currently executing. Both push the PSR and PC of the interrupted program onto the system stack, obtain the starting address of the interrupt or exception service rou- tine from the interrupt vector table, and load that starting address into the Program Counter. The main diﬀerence between interrupts and exceptions is the nature of the event that causes the program that is executing to stop. Interrupts are events that usually have nothing to do with the program that is executing. Exceptions are events that are the direct result of something going awry in the program that is exe- cuting. The LC-3 speciﬁes three exceptions: a privilege mode violation, an illegal opcode, and an ACV exception. Figure C.7 shows the state machine that carries these out. Figure C.8 shows the data path, after adding the additional structures to Figure C.3 that are needed to make interrupt and exception processing work.
+
+Section C.7.1 describes the flow of processing required to initiate an interrupt. Section C.7.3 describes the flow of processing required to initiate an exception.
+
+C.7.1 Initiating an Interrupt
+
+While a program is executing, an interrupt can be requested by some external event so that the normal processing of instructions can be preempted and the control can turn its attention to processing the interrupt. The external event requests an interrupt by asserting its interrupt request signal. Recall from Chapter 9 that if the priority level of the device asserting its interrupt request signal is higher than both the priority level of the currently executing program and any other external interrupt request asserted at the same time, INT is asserted and INTV is loaded with the interrupt vector corresponding to that external event. The microproces- sor responds to INT by initiating the interrupt. That is, the processor puts itself into Supervisor mode if it isn’t in Supervisor mode, pushes the PSR and PC of the interrupted process onto the supervisor stack, and loads the PC with the starting address of the interrupt service routine. The PSR contains the privilege mode PSR[15], priority level PSR[10:8], and condition codes PSR[2:0] of a program. It is important that when the processor resumes execution of the interrupted program, the privilege mode, priority level, and condition codes are restored to what they were when the interrupt occurred.
+
+The microarchitecture of the LC-3 initiates an interrupt as follows: Recall from Figure C.2 that in state 18, while MAR is loaded with the contents of PC and PC is incremented, INT is tested.
+
+State 18 is the only state in which the processor checks for interrupts. The reason for only testing in state 18 is straightforward: Once an LC-3 instruction starts processing, it is easier to let it ﬁnish its complete instruction cycle (FETCH, DECODE, etc.) than to interrupt it in the middle and have to keep track of how far along it was when the external device requested an interrupt (i.e., asserted INT). If INT is only tested in state 18, the current instruction cycle can be aborted early (even before the instruction has been fetched), and control directed to initiating the interrupt.
+
+The test is enabled by the control signals that make up COND5, which are 101 only in state 18, allowing the value of INT to pass through its four-input AND gate, shown in Figure C.5, to contribute to the address of the next state. Since the COND signals are not 101 in any other state, INT has no eﬀect in any other state.
+
+In state 18, the ten microsequencer control bits are as follows:
+
+IRD/0        ; NO
+COND/101     ; Test for interrupts 
+J/100001
+
+If INT = 1, a 1 is produced at the output of the AND gate, which in turn makes the next state address not 100001, corresponding to state 33, but rather 110001, corresponding to state 49. This starts the initiation of the interrupt (see Figure C.7).
+
+Several functions are performed in state 49. The PSR, which contains the privilege mode, priority level, and condition codes of the interrupted program, are loaded into MDR, in preparation for pushing it onto the supervisor stack. PSR[15] is cleared, reﬂecting the change to Supervisor mode, since all inter- rupt service routines execute in Supervisor mode. The three-bit priority level and eight-bit interrupt vector (INTV) provided by the interrupting device are recorded. PSR[10:8] is loaded with the priority level of the interrupting device. The internal register Vector is loaded with INTV and the eight-bit register Table is loaded with x01 in preparation for accessing the interrupt vector table to obtain the starting address of the interrupt service routine. Finally, the processor tests the old PSR[15] to determine whether the stack pointers must be adjusted before pushing PSR and PC.
+
+If the old PSR[15] = 0, the processor is already operating in Supervisor mode. R6 is the Supervisor Stack Pointer (SSP), so the processor proceeds immediately to states 37 and 41 to push the PSR of the interrupted program onto the super- visor stack. If PSR[15] = 1, the interrupted program was in User mode. In that case, the User Stack Pointer (USP) must be saved in Saved USP and R6 must be loaded with the contents of Saved SSP before moving to state 37. This is done in state 45.
+
+The control ﬂow from state 49 to either 37 or 45 is enabled by the ten microsequencer control bits, as follows:
+
+IRD/0        ; NO
+COND/100     ; Test PSR[15], privilege mode J/100101
+
+If PSR[15] = 0, control goes to state 37 (100101); if PSR[15] = 1, control goes to state 45 (101101).
+
+In state 37, R6 (the SSP) is decremented (preparing for the push), and MAR is loaded with the address of the new top of the stack.
+
+In state 41, the memory is enabled to WRITE (MIO.EN/YES, R.W/WR). When the write completes, signaled by R = 1, PSR has been pushed onto the supervisor stack, and the ﬂow moves on to state 43.
+
+In state 43, the PC is loaded into MDR. Note that state 43 says MDR is loaded with PC-1. Recall that in state 18, at the beginning of the instruction cycle for the interrupted instruction, PC was incremented. Loading MDR with PC-1 adjusts PC to the correct address of the interrupted program.
+
+In states 46 and 52, the same sequence as in states 37 and 41 occurs, only this time the PC of the interrupted program is pushed onto the supervisor stack.
+
+The ﬁnal task to complete the initiation of the interrupt is to load the PC with the starting address of the interrupt service routine. This is carried out by states 54, 53, and 55. It is accomplished in a manner similar to the loading of the PC with the starting address of a TRAP service routine. The event causing the INT request supplies the eight-bit interrupt vector INTV associated with the interrupt, similar to the eight-bit trap vector contained in the TRAP instruction. This interrupt vector is stored in the eight-bit register INTV, shown on the data path in Figure C.8.
+
+The interrupt vector table occupies memory locations x0100 to x01FF. In state 54, the interrupt vector that was loaded into Vector in state 49 is combined with the base address of the interrupt vector table (x0100) and loaded into MAR. In state 53, memory is READ. When R = 1, the read has completed, and MDR contains the starting address of the interrupt service routine. In state 55, the PC is loaded with that starting address, completing the initiation of the interrupt.
+It is important to emphasize that the LC-3 supports two stacks, one for each privilege mode, and two stack pointers (USP and SSP), one for each stack. R6 is the stack pointer and is loaded from the Saved SSP when privilege changes from User mode to Supervisor mode, and from Saved USP when privilege changes from Supervisor mode to User mode. When the privilege mode changes, the cur- rent value in R6 must be stored in the appropriate “Saved” stack pointer in order to be available the next time the privilege mode changes back.
+
+Returning from an Interrupt or Trap Service Routine, RTI
+
+Interrupt service routines, like trap service routines already described, end with the execution of the RTI instruction. The job of the RTI instruction is to restore the computer to the state it was in before the interrupt or trap service routine was executed. This means restoring the PSR (i.e., the privilege mode, priority level, and the values of the condition codes N, Z, P) and restoring the PC. These values were pushed onto the stack during the initiation of the interrupt or execution of the TRAP instruction. They must, therefore, be popped oﬀ the stack in the reverse order.
+
+The ﬁrst state after DECODE is state 8. Here we load the MAR with the address of the top of the supervisor stack, which contains the last thing pushed (that has not been subsequently popped)—the state of the PC when the interrupt was initiated. At the same time, we test PSR[15] since RTI is a privileged instruc- tion and can only execute in Supervisor mode. If PSR[15] = 0, we can continue to carry out the requirements of RTI.
+
+States 36 and 38 restore PC to the value it had when the interrupt was initi- ated. In state 36, the memory is read. When the read is completed, MDR contains the address of the instruction that was to be processed next when the interrupt occurred. State 38 loads that address into the PC.
+
+States 39, 40, 42, and 34 restore the privilege mode, priority level, and con- dition codes (N, Z, P) to their original values. In state 39, the Supervisor Stack Pointer is incremented so that it points to the top of the stack after the PC was popped. The MAR is loaded with the address of the new top of the stack. State 40 initiates the memory READ; when the READ is completed, MDR contains the interrupted PSR. State 42 loads the PSR from MDR, and state 34 increments the stack pointer.
+
+The only thing left is to check the privilege mode of the interrupted pro- gram to see whether the stack pointers have to be switched. In state 34, the microsequencer control bits are as follows:
+
+IRD/0        ; NO
+COND/100     ; Test PSR[15], privilege mode 
+J/110011
+
+If PSR[15] = 0, control ﬂows to state 51 (110011) to do nothing for one cycle. If PSR[15] = 1, control ﬂows to state 59, where R6 is saved in Saved SSP and R6 is loaded from Saved USP. In both cases, control returns to state 18 to begin processing the next instruction.
+
+Initiating an Exception
+
+The LC-3 identiﬁes three cases where processing is not allowed to continue nor- mally due to something going awry in the executing program. We refer to these cases as exceptions. They are initiated in the same way interrupts are initiated, by pushing the PSR and PC onto the system stack, obtaining the starting address of the exception service routine from the interrupt vector table, and loading that address into the PC to initiate the exception service routine.
+
+The three exceptions identiﬁed in the LC-3 are (1) a privileged mode excep- tion caused by the program attempting to execute the RTI instruction while in User mode, (2) the illegal opcode exception caused by the program trying to exe- cute an instruction whose opcode is 1101, and (3) an access control violation (ACV) exception caused by the program trying to access a privileged memory location while in User mode.
+
+C.7.3.1 Privilege Mode Exception
+
+If the processor is in User mode (PSR[15] = 1) and is attempting to execute RTI, a privilege mode exception occurs. The processor pushes the PSR and the address of the RTI instruction onto the supervisor stack and loads the PC with the starting address of the service routine that handles privilege mode violations. Figure C.7 shows the ﬂow, starting with a branch from state 8 to state 44 if PSR[15] = 1.
+
+In state 44, the eight-bit Table register is loaded with x01, indicating the address of an entry in the interrupt vector table, and the eight-bit Vector register is loaded with x00, indicating the ﬁrst entry in the interrupt vector table. The contents of x0100 is the starting address of the service routine that handles privilege mode exceptions. The MDR is loaded with the PSR of the program that caused the exception in preparation for pushing it onto the system stack. Finally, PSR[15] is set to 0, since the service routine will execute with supervisor privileges. Then the processor moves to state 45, where it follows the same ﬂow as the initiation of interrupts.
+
+The main diﬀerence between this ﬂow and that for the initiation of interrupts is in state 54, where MAR is loaded with x01’Vector. In the case of interrupts, Vector is loaded in state 49 with INTV, which is supplied by the interrupting device. In the case of the privilege mode violation, Vector is loaded in state 44 with x00.
+
+There are two additional functions performed in state 49 that are not per- formed in state 44. First, the priority level is changed, based on the priority of the interrupting device. We do not change the priority in handling a privilege mode violation. The service routine executes at the same priority as the program that caused the violation. Second, a test to determine the privilege mode is performed for an interrupt. This is unnecessary for a privilege mode violation since the processor already knows it is executing in User mode.
+
+Illegal Opcode Exception
+
+Although it would be a rare situation, it is possible, we suppose, that a pro- grammer writing a program in machine language could mistakenly include an instruction having opcode = 1101. Since there is no such opcode in the LC-3 ISA, the computer cannot process that instruction. State 32 performs the DECODE, and the next state is state 13.
+
+The action the processor takes is very similar to that of a privilege mode exception. The PSR and PC of the program are pushed onto the supervisor stack, and the PC is loaded with the starting address of the Illegal Opcode exception service routine.
+
+State 13 is very similar to state 44, which starts the initiation of a privilege mode exception. There are two diﬀerences: (1) Vector is loaded with x01, since the starting address of the service routine for the illegal opcode exception is in x0101. (2) In the case of the privilege mode exception, we know the program is in User mode when the processor attempts to execute the RTI instruction. In the case of an illegal opcode, the processor can be in either mode, so from state 13 the processor goes to state 37 or state 45, depending on whether the program is executing in Supervisor mode or User mode when the illegal opcode instruction is encountered.
+
+Like state 44, the priority of the running program is not changed, since the urgency of handling the exception is the same as the urgency of executing the program that contains it. Like state 49, state 13 tests the privilege mode of the program that contains the illegal opcode, since if the currently executing pro- gram is in User mode, the stack pointers need to be switched as described in Section C.7.1. Like state 49, the processor then microbranches either to state 37 if the stack pointer is already pointing to the supervisor stack, or to state 45 if the stack pointers have to be switched. From there, the initiating sequence continues in states 37, 41, 43, etc., identical to what happens when an interrupt is initiated (Section C.7.1) or a privilege mode exception is initiated (Section C.7.3.1). The PSR and PC are pushed onto the supervisor stack and the starting address of the service routine is loaded into the PC, completing the initiation of the exception.
+
+Access Control Violation (ACV) Exception
+
+An Access Control Violation (ACV) exception occurs if the processor attempts to access privileged memory while operating in User mode. The state machine checks for this in every case where the processor accesses memory, that is, in states 17, 19, 23, 33, and 35. If an ACV violation occurs, the next state is respec- tively states 56, 61, 48, 60, or 57 (see Figure C.2). In all ﬁve states, the processor loads Table with x01, Vector with x02, MDR with the PSR, sets PSR[15] to 0, exactly like state 44, with one exception. Vector is set to x02 since the starting address of the ACV exception service routine is in memory location x0102. Pro- cessing continues exactly like in state 44, moving ﬁrst to state 45 to switch to the system stack, and then pushing PSR and PC onto the stack and loading the PC with the starting address of the service routine.
+
+Control Store
+
+Figure C.9 completes our microprogrammed implementation of the LC-3. It shows the contents of each location of the control store, corresponding to the 52 control signals required by each state of the state machine. We have left the exact entries blank to allow you, the reader, the joy of ﬁlling in the required signals yourself. The solution is available from your instructor.
+
+D. The C Programming Language
+

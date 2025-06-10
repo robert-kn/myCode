@@ -3665,15 +3665,6 @@ int *x;
 
 87. Now, what if we wanted to add an element, or delete an element, or search the structure for a particular element? These are primitive operations that we may want to perform on any list of data. For adding and deleting elements, which we’ve examined when developing our ﬂight tracker app, a linked list oﬀers the ability to dynamically add and remove nodes by rearranging links. And because the data structure need not be contiguous in memory, we can dynamically allocate nodes to ﬁt the actual run-time needs of the application. With arrays, adding an element requires that enough space exists for it in the array; if there is enough space, existing elements must then be moved around to create a spot for the new data. Likewise, when deleting an element from an array, we need to ﬁll the vacated spot by moving data elements in order to keep data contiguous. As for searching, linked lists require sequential traversal, whereas with an array, we can use binary search which is a highly eﬃcient algorithm for searching a sorted list.
 
-88. These diﬀerences arise because we’ve improved the add and delete opera- tions at the expense of random access. Array elements can be randomly accessed, whereas nodes in a linked list require sequential traversal. This in turn aﬀects our ability to do eﬃcient search.
+88. These diﬀerences arise because we’ve improved the add and delete operations at the expense of random access. Array elements can be randomly accessed, whereas nodes in a linked list require sequential traversal. This in turn aﬀects our ability to do eﬃcient search.
 
 89. Arrays and linked lists form the opposite ends of a spectrum of data structure choices. There is a near continuum of variations created by inventive programmers and computer scientists to ﬁt particular situations, each of which provides some advantages of one end of the spectrum without the disadvantages of the other. A subsequent course in data structures and algorithmic analysis will provide deeper exposure to the data structure zoo.
-
-APPENDIX C: The Microarchitecture of the LC-3
-
-I saw in Chapters 4 and 5 the several stages of the instruction cycle that must occur in order for the computer to process each instruction. If a microarchitecture is to implement an ISA, it must be able to carry out this instruction cycle for every instruction in the ISA. This appendix illustrates one example of a microarchitecture that can do that for the LC-3 ISA. Many of the details of the microarchitecture and the reasons for each design decision are well beyond the scope of an introductory course.
-
-Figure C.1 shows the two main components of a microarchitecture: the data path, which contains all the components that actually process the instructions, and the control, which contains all the components that generate the set of control signals that are needed to control the processing during each clock cycle.
-
-That is, time is divided into clock cycles. The cycle time of a microprocessor is the
-duration of a clock cycle. A common cycle time for a microprocessor today is 0.33 nanoseconds, which corresponds to 3 billion clock cycles each second. We say that such a microprocessor is operating at a frequency of 3 gigahertz, or 3 GHz.
