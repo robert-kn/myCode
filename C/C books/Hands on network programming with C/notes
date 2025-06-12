@@ -1,8 +1,10 @@
-Network programming is a fun topic, but it's also a very deep one; a lot is going on at many levels. Some programming languages hide these abstractions. In the Python programming language, for example, you can download an entire web page using only one line of code. This isn't the case in C! In C, if you want to download a web page, you have to know how everything works. You need to know sockets, you need to know Transfer Control Protocol (TCP), and you need to know HTTP. In C network programming, nothing is hidden.
+Network programming is a fun topic, but it's also a very deep one; a lot is going on at many levels. Some programming languages hide these abstractions. In Python for example, you can download an entire web page using only one line of code. This isn't the case in C! In C, if you want to download a web page, you have to know how everything works. You need to know sockets, you need to know Transfer Control Protocol (TCP), and you need to know HTTP. In C network programming, nothing is hidden.
 
 C is a great language to learn network programming in. This is not only because we get to see all the details, but also because the popular operating systems all use kernels written in C. No other language gives you the same first-class access as C does. In C, everything is under your control – you can lay out your data structures exactly how you want, manage memory precisely as you please, and even shoot yourself in the foot just the way you want.
 
 There is a lot of C networking code that is done wrong. Internet tutorials about C sockets often use deprecated functions and ignore memory safety completely. When it comes to network programming, you can't take the it works so it's good enough programming-by-coincidence approach. You have to use reasoning.
+
+source code form the book can be found here https://github.com/codeplea/Hands-On-Network-Programming-with-C
 
 chapter 1
 
@@ -31,6 +33,10 @@ Application layer (7): The applications that the user interfaces with (for examp
 In the OSI model, an application, such as a web browser, exists in the application layer (layer 7). A protocol from this layer, such as HTTP used to transmit web pages, doesn't have to concern itself with how the data is being transmitted. It can rely on services provided by the layer underneath it to effectively transmit data. see diagram
 
 It should be noted that chunks of data are often referred to by different names depending on the OSI layer they're on. A data unit on layer 2 is called a frame, since layer 2 is responsible for framing messages. A data unit on layer 3 is referred to as a packet, while a data unit on layer 4 is a segment if it is part of a TCP connection or a datagram if it is a UDP message.
+
+In this book, we often use the term packet as a generic term to refer to a data unit on any layer. However, segment will only be used in the context of a TCP connection, and datagram will only refer to UDP datagrams.
+
+The OSI model doesn't fit precisely with the common protocols in use today. However, it is still a handy model to explain networking concerns, and it is still in widespread use for that purpose today.
 
 TCP/IP layer model
 
@@ -88,10 +94,9 @@ Here are some examples of IPv4 addresses:
 
 0.0.0.0, 127.0.0.1, 10.0.0.0, 172.16.0.5, 192.168.0.1, 192.168.50.1, 255.255.255.255
 
-A special address, called the loopback address, is reserved at 127.0.0.1. This address essentially means establish a connection to myself. Operating systems short-circuit this address so that packets to it never enter the network but instead stay local on the originating system.
+A special address, called the loopback address, is reserved at 127.0.0.1. This address essentially means establish a connection to myself. Operating systems short-circuit this address so that packets sent to it never enter the network but instead stay local on the originating system.
 
-IPv4 reserves some address ranges for private use. If you're using IPv4 through a
-router/NAT, then you are likely using an IP address in one of these ranges. These reserved private ranges are as follows:
+IPv4 reserves some address ranges for private use. If you're using IPv4 through a router/NAT, then you are likely using an IP address in one of these ranges. These reserved private ranges are as follows:
 
 10.0.0.0 to 10.255.255.255
 172.16.0.0 to 172.31.255.255
@@ -165,6 +170,8 @@ The IP addresses are usually listed for many of the intermediate routers, but a 
 
 In Unix-based systems, the utility to trace routes is called traceroute. The information obtained is essentially the same.
 
+Sometimes, when IP packets are transferred between networks, their addresses must be translated. This is especially common when using IPv4. Let's look at the mechanism for this next.
+
 Local networks and address translation
 
 It's common for households and organizations to have small Local Area Networks (LANs). As mentioned previously, there are IPv4 addresses ranges reserved for use in these small local networks. 
@@ -183,6 +190,8 @@ Likewise, when the router receives the return communication, it must modify the 
 Network address translation can be more complicated than it first appears. In addition to modifying the source IP address in the packet, it must also update the checksums in the packet. Otherwise, the packet would be detected as containing errors and discarded by the next router. The NAT router must also remember which private IP address sent the packet in order to route the reply. Without remembering the translation address, the NAT router wouldn't know where to send the reply to on the private network.
 
 NATs will also modify the packet data in some cases. For example, in the File Transfer Protocol (FTP), some connection information is sent as part of the packet's data. In these cases, the NAT router will look at the packet's data in order to know how to forward future incoming packets. IPv6 largely avoids the need for NAT, as it is possible (and common) for each device to have its own publicly-addressable address.
+
+You may be wondering how a router knows whether a message is locally deliverable or whether it must be forwarded. This is done using a netmask, subnet mask, or CIDR.
 
 Subnetting and CIDR
 
