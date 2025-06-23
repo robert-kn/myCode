@@ -285,6 +285,8 @@ http://api.ipify.org/
 http://icanhazip.com/
 http://ifconfig.me/ip
 
+Now that we've seen the built-in utilities for determining our local IP addresses, let's next look at how to accomplish this from C.
+
 Listing network adapters from C
 
 Sometimes, it is useful for your C programs to know what your local address is. For most of this book, we are able to write code that works both on Windows and Unix-based (Linux and macOS) systems. However, the API for listing local addresses is very different between systems. For this reason, we split this program into two: one for Windows and one for Unix-based systems.
@@ -330,7 +332,7 @@ Each IP packet has a local address, remote address, local port number, remote po
 
 chapter 2
 
-what are sockets? a socket is one endpoint of a communication link between end systems (hosts). You applications sends and receives all of its network data through a socket.
+what are sockets? a socket is one endpoint of a communication link between end systems (hosts). Your applications sends and receives all of its network data through a socket.
 
 There are a few different socket application programming interfaces (APIs). The first were Berkeley sockets, which were released in 1983 with 4.3BSD Unix. The Berkeley socket API was widely successful and quickly evolved into a de facto standard. From there, it was adopted as a POSIX standard with little modification. The terms Berkeley sockets, BSD sockets, Unix sockets, and Portable Operating System Interface (POSIX) sockets are often used interchangeably.
 
@@ -345,6 +347,8 @@ Before we can use the socket API, we need to include the socket API header files
 We will use the C preprocessor to run the proper code on Windows compared to Berkeley socket systems. By using the preprocessor statement, #if defined(_WIN32), we can include code in our program that will only be compiled on Windows.
 
 A complete program that includes the needed socket API headers for each platform and properly initializes Winsock on Windows can be found in Code-and-IAC/C/listing-network-adapters-all
+
+Now that we've done the necessary setup to begin using the socket APIs, let's take a closer look at what we will be using these sockets for.
 
 Two types of sockets
 
@@ -432,6 +436,8 @@ A UDP server listens for connections from a UDP client. This server should initi
 
 Graphically, the program flow of a UDP client and server looks like this: see diagram
 
+We're almost ready to begin implementing our first networked program, but before we begin, we should take care of some cross-platform concerns. Let's work on this now.
+
 Berkeley sockets versus Winsock sockets
 
 As we stated earlier, Winsock sockets were modeled on Berkeley sockets. Therefore, there are many similarities between them. However, there are also many differences we need to be aware of.
@@ -482,6 +488,8 @@ When a socket function, such as socket(), bind(), accept(), and so on, has an er
 #define GETSOCKETERRNO() (errno)
 #endif
 
+With these helper macros out of the way, let's dive into our first real socket program.
+
 Our first program
 
 Now that we have a basic idea of socket APIs and the structure of networked programs, we are ready to begin our first program. By building an actual real-world program, we will learn the useful details of how socket programming actually works.
@@ -495,4 +503,354 @@ The local, console version of our time-telling program is as follows: see /Users
 
 Making it networked
 
-To see the functionality of the time program above netwworked see /Users/robertndungu/Documents/Computing/Code-and-IAC/C/time server
+To see the functionality of the time program above networked see /Users/robertndungu/Documents/Computing/Code-and-IAC/C/time server
+
+working with ipv6
+
+Please recall the hints.ai_family = AF_INET part of time_server.c near the beginning of the main() function. If this line is changed to hints.ai_family = AF_INET6, then your web server listens for IPv6 connections instead of IPv4 connections. This modified file is included in the GitHub repository as time_server_ipv6.c.
+
+In this case, you should navigate your web browser to http://[::1]:8080 to see the web page. ::1 is the IPv6 loopback address, which tells the web browser to connect to the same machine it's running on. In order to use IPv6 addresses in URLs, you need to put them in square brackets, []. :8080 specifies the port number in the same way that we did for the IPv4 example.
+
+Supporting both IPv4 and IPv6
+
+It is also possible for the listening IPv6 socket to accept IPv4 connections with a dual-stack socket. Not all operating systems support dual-stack sockets. With Linux in particular, support varies between distros. If your operating system does support dual-stack sockets, then I highly recommend implementing your server programs using this feature. It allows your programs to communicate with both IPv4 and IPv6 peers while requiring no extra work on your part.
+
+We can modify time_server_ipv6.c to use dual-stack sockets with only a minor addition. After the call to socket() and before the call to bind(), we must clear the IPV6_V6ONLY flag on the socket. This is done with the setsockopt() function:
+
+/*time_server_dual.c excerpt*/
+
+int option = 0;
+
+if (setsockopt(socket_listen, IPPROTO_IPV6, IPV6_V6ONLY, (void*)&option, sizeof(option)))
+{
+    fprintf(stderr, "setsockopt() failed. (%d)\n", GETSOCKETERRNO());
+    return 1;
+}
+
+We first declare option as an integer and set it to 0. IPV6_V6ONLY is enabled by default, so we clear it by setting it to 0. setsockopt() is called on the listening socket. We pass in IPPROTO_IPV6 to tell it what part of the socket we're operating on, and we pass in IPV6_V6ONLY to tell it which flag we are setting. We then pass in a pointer to our option and its length. setsockopt() returns 0 on success.
+
+Windows Vista and later supports dual-stack sockets. However, many Windows headers are missing the definitions for IPV6_V6ONLY. For this reason, it might make sense to include the following code snippet at the top of the file:
+
+/*time_server_dual.c excerpt*/
+
+#if !defined(IPV6_V6ONLY)
+#define IPV6_V6ONLY 27
+#endif
+
+Keep in mind that the socket needs to be initially created as an IPv6 socket. This is accomplished with the hints.ai_family = AF_INET6 line in our code. When an IPv4 peer connects to our dual-stack server, the connection is remapped to an IPv6 connection. This happens automatically and is taken care of by the operating system. When your program sees the client IP address, it will still be presented as a special IPv6 address. These are represented by IPv6 addresses where the first 96 bits consist of the prefix—0:0:0:0:0:ffff. The last 32 bits of the address are used to store the IPv4 address. For example, if a client connects with the IPv4 address 192.168.2.107, then your dual-stack server sees it as the IPv6 address ::ffff:192.168.2.107.
+
+Networking with inetd
+
+On Unix-like systems, such as Linux or macOS, a service called inetd can be used to turn console-only applications into networked ones. You can configure inetd (with /etc/inetd.conf) with your program's location, port number, protocol (TCP or UDP), and the user you want it to run as. inetd will then listen for connections on your desired port. After an incoming connection is accepted by inetd, it will start your program and redirect all socket input/output through stdin and stdout.
+what is a console only application? is a computer program dessigned to be used via a text only computer interface. These applications typically run in a command line interface or terminal and do not have a GUI option.
+
+Using inetd, we could have time_console.c behave like time_server.c with very minimal changes. We would only need to add in an extra printf() function with the HTTP response header, read from stdin, and configure inetd.
+
+You may be able to use inetd on Windows through Cygwin or the Windows Subsystem for Linux.
+
+questions:
+
+1. What is a socket? is one endpoint of a communication link between systems; it is an abstraction in which your application can send and receive data over the network
+
+2. what is a connectionless protocol? used by the UDP protocol where each data packet is addressed individually. Each data packet is completely independent and unrelated to any packets coming before or after it
+
+what is a connection oriented protocol? Used by the Tcp protocol; guarantees that data arrives in the same order that it was sent whilst preventing duplicate data from arriving twice and resending missing data. It also provides notifications when a connection is terminated and algorithms to mitigate network congestion
+
+3. Is UDP a connectionless or connection-oriented protocol? connectionless protocol
+
+4. Is TCP a connectionless or connection-oriented protocol? connection-oriented protocol
+
+5. What types of applications generally benefit from using the UDP protocol? real time applications and simple protocols like DNS
+
+6. What types of applications generally benefit from using the TCP protocol? those that guaranteed data delivery, error checking, and flow control
+
+7. Does TCP guarantee that data will be transmitted successfully? yes
+
+8. What are some of the main differences between Berkeley sockets and Winsock sockets? initialisation and cleanup process required when using the Winsock windows API. This is not required when using berkley sockets. The header files used also differ between the two APIs; although they do have common ones between them. there exist some function name differences eg close() function in berkley sockets is replaced by closesocket() in winsock.
+
+9. What does the bind() function do? after a socket has been created, a call to bind() is made to associate the socket with the local address obtained from calling getaddrinfo()
+
+10. What does the accept() function do? is used to accept any incoming connections, it creates a new socket for the accepted connection. It also fills in the address info of the client that connected
+
+11. In a TCP connection, does the client or the server send application data first? could be either
+
+
+C. An indepth overview of TCP connections
+
+Multiplexing TCP connections
+
+The socket APIs are blocking by default. When you use accept() to wait for an incoming connection, your program's execution is blocked until a new incoming connection is actually available. When you use recv() to read incoming data, your program's execution blocks until new data is actually available.
+
+In the last chapter, we built a simple TCP server. This server only accepted one connection, and it only read data from that connection once. Blocking wasn't a problem then, because our server had no other purpose than to serve its one and only client.
+
+In the general case, though, blocking I/O can be a significant problem. Imagine that our server from Chapter 2, Getting to Grips with Socket APIs, needed to serve multiple clients. Then, imagine that one slow client connected to it. Maybe this slow client takes a minute before sending its first data. During this minute, our server would simply be waiting on the recv() call to return. If other clients were trying to connect, they would have to wait it out.
+
+Blocking on recv() like this isn't really acceptable. A real application usually needs to be able to manage several connections simultaneously. This is obviously true on the server side, as most servers are built to manage many connected clients. Imagine running a website where hundreds of clients are connected at once. Serving these clients one at a time would be a non-starter.
+
+Blocking also isn't usually acceptable on the client side either. If you imagine building a fast web browser, it needs to be able to download many images, scripts, and other resources in parallel. Modern web browsers also have a tab feature where many whole web pages can be loaded in parallel.
+
+What we need is a technique for handling many separate connections simultaneously.
+
+Polling non-blocking sockets
+
+It is possible to configure sockets to use a non-blocking operation. One way to do this is by calling fcntl() with the O_NONBLOCK flag (ioctlsocket() with the FIONBIO flag on Windows), although other ways also exist. Once in non-blocking mode, a call to recv() with no data will return immediately. See Chapter 13, Socket Programming Tips and Pitfalls, for more information.
+
+A program structured with this in mind could simply check each of its active sockets in turn, continuously. It would handle any socket that returned data and ignore any socket that didn't. This is called polling. Polling can be a waste of computer resources since most of the time, there will be no data to read. It also complicates the program somewhat, as the programmer is required to manually track which sockets are active and which state, they are in. Return values from recv() must also be handled differently than with blocking sockets. For these reasons, we won't use polling in this book.
+
+Forking and multithreading
+
+Another possible solution to multiplexing socket connections is to start a new thread or process for each connection. In this case, blocking sockets are fine, as they block only their servicing thread/process, and they do not block other threads/processes. This can be a useful technique, but it also has some downsides. First of all, threading is tricky to get right. This is especially true if the connections must share any state between them. It is also less portable as each operating system provides a different API for these features.
+
+On Unix-based systems, such as Linux and macOS, starting a new process is very easy. We simply use the fork() function. The fork() function splits the executing program into two separate processes. A multi-process TCP server may accept connections like this:
+
+while(1) {
+    socket_client = accept(socket_listen, &new_client, &new_client_length);     
+    int pid = fork();
+    if (pid == 0) { //child process
+        close(socket_listen);
+        recv(socket_client, ...);
+        send(socket_client, ...);
+        close(socket_client);
+        exit(0);
+    }
+    //parent process
+    close(socket_client);
+}
+
+In this example, the program blocks on accept(). When a new connection is established, the program calls fork() to split into two processes. The child process, where pid == 0, only services this one connection. Therefore, the child process can use recv() freely without worrying about blocking. The parent process simply calls close() on the new connection and returns to listening for more connections with accept().
+
+Using multiple processes/threads is much more complicated on Windows. Windows provides CreateProcess(), CreateThread(), and many other functions for these features. However—and I can say this objectively—they are all much harder to use than Unix's fork().
+
+Debugging these multi-process/thread programs can be much more difficult compared to the single process case. Communicating between sockets and managing shared state is also much more burdensome. For these reasons, we will avoid fork() and other multiprocess/thread techniques for the rest of this book.
+
+That being said, an example TCP server using fork is included in this chapter's code. It's named tcp_serve_toupper_fork.c. It does not run on Windows, but it should compile and run cleanly on Linux and macOS. I would suggest finishing the rest of this chapter before looking at it.
+
+The select() function
+
+Our preferred technique for multiplexing is to use the select() function. We can give select() a set of sockets, and it tells us which ones are ready to be read. It can also tell us which sockets are ready to write to and which sockets have exceptions. Furthermore, it is supported by both Berkeley sockets and Winsock. Using select() keeps our programs portable.
+
+Synchronous multiplexing with select()
+
+The select() function has several useful features. Given a set of sockets, it can be used to block until any of the sockets in that set is ready to be read from. It can also be configured to return if a socket is ready to be written to or if a socket has an error. Additionally, we can configure select() to return after a specified time if none of these events take place.
+
+The C function prototype for select() is as follows:
+
+int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
+
+Before calling select(), we must first add our sockets into an fd_set. If we have three sockets, socket_listen, socket_a, and socket_b, we add them to an fd_set, like this:
+
+fd_set our_sockets;
+FD_ZERO(&our_sockets);
+FD_SET(socket_listen, &our_sockets);
+FD_SET(socket_a, &our_sockets);
+FD_SET(socket_b, &our_sockets);
+
+It is important to zero-out the fd_set using FD_ZERO() before use.
+
+Socket descriptors are then added to the fd_set one at a time using FD_SET(). A socket can be removed from an fd_set using FD_CLR(), and we can check for the presence of a socket in the set using FD_ISSET().
+
+You may see some programs manipulating an fd_set directly. I recommend that you use only FD_ZERO(), FD_SET(), FD_CLR(), and FD_ISSET() to maintain portability between Berkeley sockets and Winsock.
+
+select() also requires that we pass a number that's larger than the largest socket descriptor we are going to monitor. (This parameter is ignored on Windows, but we will always do it anyway for portability.) We store the largest socket descriptor in a variable, like this:
+
+SOCKET max_socket;
+max_socket = socket_listen;
+if (socket_a > max_socket) max_socket = socket_a;
+if (socket_b > max_socket) max_socket = socket_b;
+
+When we call select(), it modifies our fd_set of sockets to indicate which sockets are ready. For that reason, we want to copy our socket set before calling it. We can copy an fd_set with a simple assignment like this, and then call select() like this:
+
+fd_set copy;
+copy = our_sockets;
+select(max_socket+1, &copy, 0, 0, 0);
+
+This call blocks until at least one of the sockets is ready to be read from. When select() returns, copy is modified so that it only contains the sockets that are ready to be read from. We can check which sockets are still in copy using FD_ISSET(), like this:
+
+if (FD_ISSET(socket_listen, &copy)) {
+    //socket_listen has a new connection
+    accept(socket_listen...
+}
+if (FD_ISSET(socket_a, &copy)) {
+    //socket_a is ready to be read from
+    recv(socket_a...
+}
+if (FD_ISSET(socket_b, &copy)) {
+    //socket_b is ready to be read from
+    recv(socket_b...
+}
+
+In the previous example, we passed our fd_set as the second argument to select(). If we wanted to monitor an fd_set for writability instead of readability, we would pass our fd_set as the third argument to select(). Likewise, we can monitor a set of sockets for exceptions by passing it as the fourth argument to select().
+
+select() timeout
+
+The last argument taken by select() allows us to specify a timeout. It expects a pointer to struct timeval. The timeval structure is declared as follows:
+
+struct timeval {     
+    long tv_sec;     
+    long tv_usec; 
+}
+
+tv_sec holds the number of seconds, and tv_usec holds the number of microseconds (1,000,000th second). If we want select() to wait a maximum of 1.5 seconds, we can call it like this:
+
+struct timeval timeout;
+timeout.tv_sec = 1;
+timeout.tv_usec = 500000;
+select(max_socket+1, &copy, 0, 0, &timeout);
+
+In this case, select() returns after a socket in fd_set copy is ready to read or after 1.5 seconds has elapsed, whichever is sooner.
+
+If timeout.tv_sec = 0 and timeout.tv_usec = 0, then select() returns immediately (after changing the fd_set as appropriate). As we saw previously, if we pass in a null pointer for the timeout parameter, then select() does not return until at least one socket is ready to be read.
+
+select() can also be used to monitor for writeable sockets (sockets where we could call send() without blocking), and sockets with exceptions. We can check for all three conditions with one call:
+
+select(max_sockets+1, &ready_to_read, &ready_to_write, &excepted, &timeout);
+
+On success, select() itself returns the number of socket descriptors contained in the (up to) three descriptor sets it monitored. The return value is zero if it timed out before any sockets were readable/writeable/excepted. select() returns -1 to indicate an error.
+
+Iterating through an fd_set
+
+We can iterate through an fd_set using a simple for loop. Essentially, we start at 1, since all socket descriptors are positive numbers, and we continue through to the largest known socket descriptor in the set. For each possible socket descriptor, we simply use FD_ISSET() to check if it is in the set. If we wanted to call CLOSESOCKET() for every socket in the fd_set master, we could do it like this:
+
+SOCKET i;
+for (i = 1; i <= max_socket; ++i) {
+    if (FD_ISSSET(i, &master)) {
+        CLOSESOCKET(i);
+    }
+}
+
+This may seem like a brute-force approach, and it actually kind of is. However, these are the tools that we have to work with. FD_ISSET() runs very fast, and it's likely that processor time spent on other socket operations will dwarf what time was spent iterating through them in this manner. Nevertheless, you may be able to optimize this operation by additionally storing your sockets in an array or linked list. I don't recommend that you make this optimization unless you profile your code and find the simple for loop iteration to be a significant bottleneck.
+
+select() on non-sockets
+
+On Unix-based systems, select() can also be used on file and terminal I/O, which can be extremely useful. This doesn't work on Windows, though. Windows only supports select() for sockets.
+
+A TCP client
+
+It will be useful for us to have a TCP client that can connect to any TCP server. This TCP client will take in a hostname (or IP address) and port number from the command line. It will attempt a connection to the TCP server at that address. If successful, it will relay data that's received from that server to the terminal and data inputted into the terminal to the server. It will continue until either it is terminated (with Ctrl + C) or the server closes the connection.
+
+This is useful as a learning opportunity to see how to program a TCP client, but it is also useful for testing the TCP server programs we develop throughout this book.
+
+Our basic program flow looks like this: tcp_client_flow.png
+
+Our program first uses getaddrinfo() to resolve the server address from the command-line arguments. Then, the socket is created with a call to socket(). The fresh socket has connect() called on it to connect to the server. We use select() to monitor for socket input. select() also monitors for terminal/keyboard input on non-Windows systems. On Windows, we use the _kbhit() function to detect terminal input. If terminal input is available, we send it over the socket using send(). If select() indicated that socket data is available, we read it with recv() and display it to the terminal. This select() loop is repeated until the socket is closed.
+
+TCP client code
+
+We begin our TCP client by including the header file, chap03.h, which was printed at the beginning of this chapter. This header file includes the various other headers and macros we need for cross-platform networking:
+
+/*tcp_client.c*/
+#include "chap03.h"
+
+On Windows, we also need the conio.h header. This is required for the _kbhit() function, which helps us by indicating whether terminal input is waiting. We conditionally include this header, like so:
+
+#if defined(_WIN32)
+#include <conio.h>
+#endif
+
+We can then begin the main() function and initialize Winsock: please see TCP client folder in Code-and-IAC/C
+
+int main(int argc, char *argv[]) {
+#if defined(_WIN32)
+    WSADATA d;
+    if (WSAStartup(MAKEWORD(2, 2), &d)) {         
+        fprintf(stderr, "Failed to initialize.\n");         
+        return 1;
+    } 
+#endif
+
+We would like our program to take the hostname and port number of the server it should connect to as command-line arguments. This makes our program flexible. We have our program check that these command-line arguments are given. If they aren't, it displays usage information:
+
+if (argc < 3) {
+    fprintf(stderr, "usage: tcp_client hostname port\n");
+    return 1;
+}
+
+argc contains the number of argument values available to us. Because the first argument is always our program's name, we check that there is a total of at least three arguments. The actual values themselves are stored in argv[].
+
+We then use these values to configure a remote address for connection:
+
+printf("Configuring remote address...\n");
+struct addrinfo hints;
+memset(&hints, 0, sizeof(hints));
+hints.ai_socktype = SOCK_STREAM;
+struct addrinfo *peer_address;
+if (getaddrinfo(argv[1], argv[2], &hints, &peer_address)) {         
+    fprintf(stderr, "getaddrinfo() failed. (%d)\n", GETSOCKETERRNO());         
+    return 1;
+}
+
+This is similar to how we called getaddrinfo() in Chapter 2, Getting to Grips with Socket APIs. However, in Chapter 2, Getting to Grips with Socket APIs, we wanted it to configure a local address, whereas this time, we want it to configure a remote address.
+
+We set hints.ai_socktype = SOCK_STREAM to tell getaddrinfo() that we want a TCP connection. Remember that we could set SOCK_DGRAM to indicate a UDP connection.
+
+In Chapter 2, Getting to Grips with Socket APIs, we also set the family. We don't need to set the family here, as we can let getaddrinfo() decide if IPv4 or IPv6 is the proper protocol to use.
+
+For the call to getaddrinfo() itself, we pass in the hostname and port as the first two arguments. These are passed directly in from the command line. If they aren't suitable, then getaddrinfo() returns non-zero and we print an error message. If everything goes well, then our remote address is in the peer_address variable.
+
+getaddrinfo() is very flexible about how it takes inputs. The hostname could be a domain name like example.com or an IP address such as 192.168.17.23 or ::1. The port can be a number, such as 80, or a protocol, such as http.
+
+After getaddrinfo() configures the remote address, we print it out. This isn't really necessary, but it is a good debugging measure. We use getnameinfo() to convert the address back into a string, like this:
+
+printf("Remote address is: ");
+char address_buffer[100];
+char service_buffer[100];
+getnameinfo(peer_address->ai_addr, peer_address->ai_addrlen, address_buffer, sizeof(address_buffer), service_buffer, 
+            sizeof(service_buffer), NI_NUMERICHOST);
+printf("%s %s\n", address_buffer, service_buffer);
+
+We can then create our socket:
+
+printf("Creating socket...\n");
+SOCKET socket_peer;
+socket_peer = socket(peer_address->ai_family, peer_address->ai_socktype, peer_address->ai_protocol);
+if (!ISVALIDSOCKET(socket_peer)) {
+    fprintf(stderr, "socket() failed. (%d)\n", GETSOCKETERRNO());         
+    return 1;
+}
+
+This call to socket() is done in exactly the same way as it was in Chapter 2, Getting to Grips with Socket APIs. We use peer_address to set the proper socket family and protocols. This keeps our program very flexible, as the socket() call creates an IPv4 or IPv6 socket as needed.
+
+After the socket has been created, we call connect() to establish a connection to the remote server:
+
+printf("Connecting...\n");
+if (connect(socket_peer, peer_address->ai_addr, peer_address->ai_addrlen)) {         
+    fprintf(stderr, "connect() failed. (%d)\n", GETSOCKETERRNO());
+    return 1;
+}
+freeaddrinfo(peer_address);
+
+connect() takes three arguments—the socket, the remote address, and the remote address length. It returns 0 on success, so we print an error message if it returns non-zero. This call to connect() is extremely similar to how we called bind() in Chapter 2, Getting to Grips with Socket APIs. Where bind() associates a socket with a local address, connect() associates a socket with a remote address and initiates the TCP connection.
+
+After we've called connect() with peer_address, we use the freeaddrinfo() function to free the memory for peer_address.
+
+If we've made it this far, then a TCP connection has been established to the remote server. We let the user know by printing a message and instructions on how to send data:
+
+printf("Connected.\n");
+printf("To send data, enter text followed by enter.\n");
+
+Our program should now loop while checking both the terminal and socket for new data. If new data comes from the terminal, we send it over the socket. If new data is read from the socket, we print it out to the terminal.
+
+It is clear we cannot call recv() directly here. If we did, it would block until data comes from the socket. In the meantime, if our user enters data on the terminal, that input is ignored. Instead, we use select(). We begin our loop and set up the call to select(), like this:
+
+while(1) {
+    fd_set reads;
+    FD_ZERO(&reads);
+    FD_SET(socket_peer, &reads);
+#if !defined(_WIN32)
+    FD_SET(0, &reads);
+#endif
+    struct timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 100000;
+
+    if (select(socket_peer+1, &reads, 0, 0, &timeout) < 0) {
+        fprintf(stderr, "select() failed. (%d)\n", GETSOCKETERRNO());           
+        return 1;
+    }
+
+First, we declare a variable, fd_set reads, to store our socket set. We then zero it with FD_ZERO() and add our only socket, socket_peer.
+
+On non-Windows systems, we also use select() to monitor for terminal input. We add stdin to the reads set with FD_SET(0, &reads). This works because 0 is the file descriptor for stdin. Alternatively, we could have used FD_SET(fileno(stdin),
+&reads) to the same effect.
+
+
