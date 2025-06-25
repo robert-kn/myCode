@@ -441,7 +441,7 @@ On the other hand, if both A and B are supplied with 1.2 volts, then both of the
 
 19. Now that we understand the workings of the basic logic gates, what is the next step? build some of the logic structures that are important components of the microarchitecture of a computer.
 
-20. there are two types of logic structures, what are they called and what do? those that include storage of information and those that do not. those that do not store information are called decision elements or combinational logic structures. those that store information and make decisions as well are called sequential logic circuits
+20. there are two types of logic structures, what are they called and what do they do? those that include storage of information and those that do not. those that do not store information are called decision elements or combinational logic structures. those that store information and make decisions as well are called sequential logic circuits
 
 21. why are combinational logic structures called so? because their outputs are strictly dependent on the combination of input values that are being applied to the structure right now. Their outputs are not at all dependent on any past history of information that is stored internally, since no information can be stored internally in a combinational logic circuit.
 
