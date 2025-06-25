@@ -29,8 +29,7 @@ language that would have necessiated more pages to be added to the book.
 
 why do they still use C in the book? serves as the defacto development language for systems and hardware oriented projects
 
-what are the two major segments that the book can be broken down into? (a) the underlying structure of a computer (b) programming
-in a high level language
+what are the two major segments that the book can be broken down into? (a) the underlying structure of a computer (b) programming in a high level language
 
 why does the C programming language fit very nicely with the bottom up approach? its low level nature allows students to see
 clearly the connection between software and the underlying hardware 
@@ -98,7 +97,7 @@ of 1's and 0's
 
 9. define abstraction? technique of establishing a simpler way to interact with a system
 
-10. what is the premise that allows us to use abstraction effectively? allows not getting bogged down in the details of a system when everything is working fine; establishes a simpler way for a person to interect with a system
+10. what is the premise that allows us to use abstraction effectively? allows not getting bogged down in the details of a system when everything is working fine; establishes a simpler way for a person to interact with a system
 
 11. why is abstraction favoured? it is a productivity enhancer as i can deal with a situation at a higher level focusing on the essential aspects whilst keeping component ideas in the background
 
@@ -146,7 +145,7 @@ of 1's and 0's
 
 33. fast forward to today and the relative weights and power consumption of computing devices has decreased massively. the speed at which they process information has also increased enormously. they estimate that the computing power in a smartphone today is more than 4 million times the computing power of the ENIAC
 
-34. what has brought about this increase in computational power? integrated circuit packages have seen phenomenal improvement e.g first  intel microprocessor in 1971 (intel 4004) contained 2300 transistors and operated at 106 KHz; one of the latest intel microprocessors Core i9-13900K contains a reported 25.9 billion transistors and and can operate at a frequency of 5.8 GHz. this factor of one million since 1971 in both the number of transistors and the frequency of microprocessors has had important implications
+34. what has brought about this increase in computational power? integrated circuit packages have seen phenomenal improvement e.g first intel microprocessor in 1971 (intel 4004) contained 2300 transistors and operated at 106 KHz; one of the latest intel microprocessors Core i9-13900K contains a reported 25.9 billion transistors and and can operate at a frequency of 5.8 GHz. this factor of one million since 1971 in both the number of transistors and the frequency of microprocessors has had important implications
 
 35. what are these implications? the fact that each operation can be performed in one millionth of the time it took in 1971 means that the processor can do one million things today in the time it took to do one thing in 1971. the fact that there are more than a million times as many transistors on a chip means we can do a lot more things at the same time today than we could do in 1971
 
@@ -164,7 +163,7 @@ of 1's and 0's
 
 42. why are analogue machines difficult to work with? it is very hard to increase their accuracy 
 
-43. why did digital machines (machines that perform computations by manipulating a fixed finite set of digits or letters) come to dominate computing by ? it is easy to increase their accuracy
+43. why did digital machines (machines that perform computations by manipulating a fixed finite set of digits or letters) come to dominate computing by? it is easy to increase their accuracy
 
 44. what limitations did digital machines of yesteryear (adding machines or abacus) have? the mechanical or electro-mechanical devices could only perform a specific type of computation
 
@@ -195,7 +194,7 @@ turing machine was to make a machine U that could simulate all turing machines. 
 
 57. what is the second level of transformation? convert the problem expressed in natural language into an algorithm thereby getting rid of the ambiguity inherent in natural language. an algorithm is a step by step procedure that is guaranteed to terminate
 
-58. what are the three characteristics of an algorithm? finiteness (guaranteed to terminate), definteness (each step is precisely stated), and effective computability (can be carried out by a computer)
+58. what are the three characteristics of an algorithm? finiteness (guaranteed to terminate), definiteness (each step is precisely stated), and effective computability (can be carried out by a computer)
 
 59. For every problem there are usually many diﬀerent algorithms for solving that problem. One algorithm may require the fewest steps. Another algorithm may allow some steps to be performed concurrently. A computer that allows more than one thing to be done at a time can often solve the problem in less time, even though it is likely that the total number of steps to be performed has increased.
 
@@ -233,21 +232,21 @@ executing it? compiler
 74. what is the 5th level of transformation? the implementation of the ISA referred to as its micro-architecture which is about what goes on underneath the hood
 
 75. using the automobile analogy from earlier where the automobile ISA describes what the driver needs to know as he/she sits inside
-the automobile to make the automobile carry out the driver's wishes, how can you use it to describe the microarchitecture that implements the ISA? since microarchitecture is about what goes on underneath the hood, here all automobile models can be different depending on the cost  and performance tradeoffs made by the designer of the car
+the automobile to make the automobile carry out the driver's wishes, how can you use it to describe the microarchitecture that implements the ISA? since microarchitecture is about what goes on underneath the hood, here all automobile models can be different depending on the cost and performance tradeoffs made by the designer of the car
 
 76. previously you were introduced to a number of ISAs (x86 intel, powerpc IBM and motorola, thumb arm), what can you say about the implementation of these ISAs? each has been implemented by many different microarchitectures e.g. x86 original implementation was in 1979 was the 8086 followed by 80286, 80386 amongst others in the 1980s. more recently in 2015, intel introduced skylake. each of these x86 microprocessors has its own microarchitecture
 
-77. Each microarchitecture is an opportunity for computer designers to make different tradeoﬀs between the cost of the microprocessor, the performance that the microprocessor will provide, and the energy that is required to power the micro- processor. Computer design is always an exercise in tradeoﬀs, as the designer opts for higher (or lower) performance, more (or less) energy required, at greater (or lesser) cost.
+77. Each microarchitecture is an opportunity for computer designers to make different tradeoﬀs between the cost of the microprocessor, the performance that the microprocessor will provide, and the energy that is required to power the micro-processor. Computer design is always an exercise in tradeoﬀs, as the designer opts for higher (or lower) performance, more (or less) energy required, at greater (or lesser) cost.
 
 78. what is the 6th level of transformation? logic circuits i.e. implement each component of the microarchitecture out of simple logic circuits
 
 79. are there choices to be made in the 6th level? yes, the logic designer decides how to best make the tradeoffs between cost and performance so for example even for operation as simple as addition, there are several choices of logic circuits to perform the operation at differing speeds and energy costs.
 
-80. what is 7th level of transformation? each logic circuits is implemented in accordance with the requirements of the particular  device technologies used e.g. CMOS circuits, NMOS circuits, and gallium arsenide circuits all differ from each other
+80. what is 7th level of transformation? each logic circuits is implemented in accordance with the requirements of the particular device technologies used e.g. CMOS circuits, NMOS circuits, and gallium arsenide circuits all differ from each other
 
 81. what else does ISA specify (apart from opcodes, operands, and addressing modes)? number of unique locations that comprise the computers memory (address space) and the number of bits contained in each location (addressability)
 
-82. At each level of transformation, there are choices as to how to proceed. Our handling of those choices determines the resulting cost and performance of our computer. this book describe each of these transformations. We show how tran- sistors combine to form logic circuits, how logic circuits combine to form the microarchitecture, and how the microarchitecture implements a particular ISA.
+82. At each level of transformation, there are choices as to how to proceed. Our handling of those choices determines the resulting cost and performance of our computer. this book describe each of these transformations. We show how transistors combine to form logic circuits, how logic circuits combine to form the microarchitecture, and how the microarchitecture implements a particular ISA.
 In our case, the ISA is the LC-3. We complete the process by going from the English-language description of a problem to a C or C++ program that solves the problem, and we show how that C or C++ program is translated (i.e., compiled) to the ISA of the LC-3.
 
 
@@ -292,7 +291,7 @@ numbers)? each takes half the amount of bits available
 
 16. how do signed magnitude, 1's complement, and 2's complement encode information? see figure 2.1
 
-17. The ﬁrst thought that usually comes to mind is: If a leading 0 signiﬁes a positive integer, how about letting a leading 1 signify a negative integer? The result is the signed-magnitude data type. A second thought (which was actually used on some early computers such as the Control Data Corpora- tion 6600) was the following: Let a negative number be represented by taking the representation of the positive number having the same magnitude, and “ﬂipping” all the bits. That is, if the original representation had a 0, replace it with a 1; if it originally had a 1, replace it with a 0. This data type is referred to in the computer engineering community as 1’s complement 
+17. The ﬁrst thought that usually comes to mind is: If a leading 0 signiﬁes a positive integer, how about letting a leading 1 signify a negative integer? The result is the signed-magnitude data type. A second thought (which was actually used on some early computers such as the Control Data Corporation 6600) was the following: Let a negative number be represented by taking the representation of the positive number having the same magnitude, and “ﬂipping” all the bits. That is, if the original representation had a 0, replace it with a 1; if it originally had a 1, replace it with a 0. This data type is referred to in the computer engineering community as 1’s complement 
 
 18. can a computer designer assign any bit pattern he wants to represent any integer he wants? yes
 
@@ -307,7 +306,7 @@ see example21.png
 
 23. algorithm for binary to decimal conversion see binaryToDecimal.png example22.png
 
-24. algorith for the conversion of decimal to binary see decimalToBinary
+24. algorithm for the conversion of decimal to binary see decimalToBinary
 
 25. algorithm to convert fractional binary to fractional decimal see binaryFractionToDecimal.png 
 
@@ -320,7 +319,7 @@ see example21.png
 29. what must you watch out for when dealing with overflow in signed encoding e.g. 2's complement? addition of positive numbers that
 result in overflow into msb which indicate the sign of the value. since the result is negative, this is easy to detect. likewise when adding two negative numbers and the msb overflows and becomes zero, detection would be easy since the result of the ALU operation would positive
 
-30. what are the basic logical operations performed by the ALU? binary logical AND function that requires two source operands see example26 and example27, binary logical OR function that aalso requires two source operands see example28, unary logical function NOT which operates on only one source operand (also known as the complement operation), the binary logical XOR function that requires two source operands see example29 and example210
+30. what are the basic logical operations performed by the ALU? binary logical AND function that requires two source operands see example26 and example27, binary logical OR function that also requires two source operands see example28, unary logical function NOT which operates on only one source operand (also known as the complement operation), the binary logical XOR function that requires two source operands see example29 and example210
 
 31. what do you call an m-bit pattern where each bit has a logical value (0 or 1) independent of the other bits? a bit vector. It is a convenient mechanism for identifying a property such that some of the bits identify the presence of the property and other bits identify the absence of the property.
 
@@ -361,7 +360,7 @@ here S, fraction, and exponent are the binary numbers in the fields of figure 2.
 
 47. what values does the sign bit take? it is a single binary digit; 0 for positive numbers and 1 for negative numbers. it evaluates to +1 if S=0 and -1 if S=1
 
-48. what do the 23 fraction bits form a part of in normalised form? a 24 bit quantity represnted by 1.fraction as the normalised form demands exactly one none zero binary digit to the left of the binary point. this one non zero bit does not need to be explicitly stored in the 32 bit floating point format. This is infact how we get 24 bits of precision
+48. what do the 23 fraction bits form a part of in normalised form? a 24 bit quantity represented by 1.fraction as the normalised form demands exactly one none zero binary digit to the left of the binary point. this one non zero bit does not need to be explicitly stored in the 32 bit floating point format. This is infact how we get 24 bits of precision
 
 49. how are the 8 exponent bits (the range) in the format? in excess code
 
@@ -389,7 +388,7 @@ here S, fraction, and exponent are the binary numbers in the fields of figure 2.
 
 61. why are subnormal numbers used? allows very, very tiny numbers to be represented
 
-62. wht are ASCII codes used for? transferring characters between main computer processing unit and the input and output devices
+62. what are ASCII codes used for? transferring characters between main computer processing unit and the input and output devices
 
 63. how many bits is the ASCII code made up of? 8 bits
 
@@ -436,9 +435,9 @@ If either A or B is supplied with 1.2 volts, the corresponding P-type transistor
 
 On the other hand, if both A and B are supplied with 1.2 volts, then both of their corresponding P-type transistors are open. However, their corresponding N-type transistors act like pieces of wire, providing a direct connection from C to ground. Because C is at ground, the rightmost P-type transistor acts like a closed circuit, forcing D to 1.2 volts.
 
-17. The gates just discussed are very common in digital logic circuits and in digital computers. There are billions of inverters (NOT gates) in Intel’s Skylake microprocessor. As a convenience, we can represent each of these gates by stan- dard symbols, as shown in Figure 3.9. The bubble shown in the inverter, NAND, and NOR gates signiﬁes the complement (i.e., NOT) function.
+17. The gates just discussed are very common in digital logic circuits and in digital computers. There are billions of inverters (NOT gates) in Intel’s Skylake microprocessor. As a convenience, we can represent each of these gates by standard symbols, as shown in Figure 3.9. The bubble shown in the inverter, NAND, and NOR gates signiﬁes the complement (i.e., NOT) function.
 
-18. Gates with More Than Two Inputs: the notion of AND, OR, NAND, and NOR gates extends to larger numbers of inputs. One could build a three-input AND gate or a four-input OR gate, for example. An n-input AND gate has an output value of 1 only if ALL n input variables have values of 1. If anyofthen inputs has a value of 0, the output of the n-input AND gate is 0. An n-input OR gate has an output value of 1 if ANY of the n input variables has a value of 1. That is, an n-input OR gate has an output value of 0 only if ALL n input variables have values of 0. see figure310
+18. Gates with More Than Two Inputs: the notion of AND, OR, NAND, and NOR gates extends to larger numbers of inputs. One could build a three-input AND gate or a four-input OR gate, for example. An n-input AND gate has an output value of 1 only if ALL n input variables have values of 1. If any of the inputs has a value of 0, the output of the n-input AND gate is 0. An n-input OR gate has an output value of 1 if ANY of the n input variables has a value of 1. That is, an n-input OR gate has an output value of 0 only if ALL n input variables have values of 0. see figure310
 
 19. Now that we understand the workings of the basic logic gates, what is the next step? build some of the logic structures that are important components of the microarchitecture of a computer.
 

@@ -73,9 +73,7 @@ ISA’s don’t change much between successive generations, because of the need 
 
 chapter 2.
 
-2.1  Given n bits, how many distinct combinations of the n bits exist?
-
-2^n
+2.1  Given n bits, how many distinct combinations of the n bits exist? 2^n
 
 2.2  There are 26 characters in the alphabet we use for writing English. What is the least number of bits needed to give each character a unique bit pattern? 5
 
