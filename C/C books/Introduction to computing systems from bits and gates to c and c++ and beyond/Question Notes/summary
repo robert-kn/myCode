@@ -11,7 +11,7 @@ which leads to the memorisation of technical details without an understanding of
 how does the book approach mastering computing fundamentals? a bottom up approach where it continually builds on what is 
 covered (scaffolding)
 
-what is technique is widely pervasive when it comes to teaching students any subject? information hiding approach
+what technique is widely pervasive when it comes to teaching students any subject? information hiding approach
 
 why is it used? because it is a useful productivity enhancer and allows the student to hit the ground running
 
@@ -39,15 +39,13 @@ understood in order to be used effectively. They wanted an ISA that was clean wi
 opcodes as necessary so that you the student spends all your time on the fundamental concepts of the course and very little 
 time on the nuances of the instruction set
 
-the lc-3 instruction set with only 15 four-bit opcodes, is small enough that the students can absorb the ISA without struggling
-too much
+the lc-3 instruction set with only 15 four-bit opcodes, is small enough that the students can absorb the ISA without struggling too much
 
 what are the stand out observations of the approach taken in the book?
 
 (a) understanding and not memorising: bottom up learning approach leads to less memorisation of seemingly arbitrary rules
 which is prevalent in traditional programming courses. by the time a topic is taught, you will have an understanding of how
-the topic is implemented at the levels below it. this approach is good for design courses where understanding of and insights
-gained from fundamentals are essential to making the required design trade offs.
+the topic is implemented at the levels below it. this approach is good for design courses where understanding of and insights gained from fundamentals are essential to making the required design trade offs.
 (b) you get to debug your own programs
 (c) preparation for the future: cutting through protective layers; as a professional, if you are ignorant of what is going
 on inside computers you will likely discover the hard way that the effectiveness of your solutions is impacted adversely by
@@ -212,9 +210,9 @@ execute the program.
 
 65. what does ISA specify? the interface between the source code and the hardware of the machine that will be used to execute the program
 
-66. with regards to ISA, use the automobile and driver analogy to help better understand the concept? the human driver of a car represents the computer program represented as 0's and 1's in the computer; the car corresponds to the microprocessor hardware. the ISA of the automobile is the specification of everything the human needs to know in order to get the car to move and everything the car needs to know to carry out the tasks specified by the human driver
+66. with regards to ISA, use the automobile and driver analogy to help better understand the concept. the human driver of a car represents the computer program represented as 0's and 1's in the computer; the car corresponds to the microprocessor hardware. the ISA of the automobile is the specification of everything the human needs to know in order to get the car to move and everything the car needs to know to carry out the tasks specified by the human driver
 
-67. what do opcode and operand mean in relation to ISA of a computer? opcode refers to and operation the computer can perform whilst operand is an individual data value
+67. what do opcode and operand mean in relation to ISA of a computer? opcode refers to an operation the computer can perform whilst operand is an individual data value
 
 68. ISA specifies the acceptable representations for operands, what are the operands called? data types (is a representation of an operand such that the computer can perform operations on that representation)
 
@@ -222,7 +220,7 @@ execute the program.
 
 70. are the number of opcodes, operands and addressing modes unique to each ISA? yes
 
-71. name a few ISAs in use today? x86 by intel (currently also developed by AMD an other companies), SPARC oracle, power (IBM), arm and thumb (ARM)
+71. name a few ISAs in use today? x86 by intel (currently also developed by AMD and other companies), SPARC oracle, power (IBM), arm and thumb (ARM)
 
 72. what is the name of the program that is used to translate source code into the ISA of the machine that will be responsible for 
 executing it? compiler
@@ -234,7 +232,7 @@ executing it? compiler
 75. using the automobile analogy from earlier where the automobile ISA describes what the driver needs to know as he/she sits inside
 the automobile to make the automobile carry out the driver's wishes, how can you use it to describe the microarchitecture that implements the ISA? since microarchitecture is about what goes on underneath the hood, here all automobile models can be different depending on the cost and performance tradeoffs made by the designer of the car
 
-76. previously you were introduced to a number of ISAs (x86 intel, powerpc IBM and motorola, thumb arm), what can you say about the implementation of these ISAs? each has been implemented by many different microarchitectures e.g. x86 original implementation was in 1979 was the 8086 followed by 80286, 80386 amongst others in the 1980s. more recently in 2015, intel introduced skylake. each of these x86 microprocessors has its own microarchitecture
+76. previously you were introduced to a number of ISAs (x86 intel, powerpc IBM and motorola, thumb arm), what can you say about the implementation of these ISAs? each has been implemented by many different microarchitectures e.g. x86 original implementation in 1979 was the 8086 followed by 80286, 80386 amongst others in the 1980s. more recently in 2015, intel introduced skylake. each of these x86 microprocessors has its own microarchitecture
 
 77. Each microarchitecture is an opportunity for computer designers to make different tradeoﬀs between the cost of the microprocessor, the performance that the microprocessor will provide, and the energy that is required to power the micro-processor. Computer design is always an exercise in tradeoﬀs, as the designer opts for higher (or lower) performance, more (or less) energy required, at greater (or lesser) cost.
 
@@ -255,7 +253,7 @@ chapter 2
 1. how is a computer organised? as a system with several levels of transformation i.e. a problem stated in a natural language is
 actually solved by electrons moving around inside the components of a computer
 
-2. what do you call the tiny little devices inside computer that control the movement of said electrons by reacting to the presence or absence of voltages in electronic circuits?
+2. what do you call the tiny little devices inside computer that control the movement of said electrons by reacting to the presence or absence of voltages in electronic circuits? transistors
 
 3. could these tiny devices be designed to detect actual value of voltages instead of the presence or absence of them? yes
 
@@ -392,7 +390,7 @@ here S, fraction, and exponent are the binary numbers in the fields of figure 2.
 
 63. how many bits is the ASCII code made up of? 8 bits
 
-64. how does ascii work? Each key on the keyboard is identiﬁed by its unique ASCII code. When you type a key on the keyboard, the corresponding eight-bit code is stored and made available to the computer (PC?). Most keys are associated with more than one code. For example, the ASCII code for the letter E is 01000101, and the ASCII code for the letter e is 01100101.
+64. how does ascii work? Each key on the keyboard is identiﬁed by its unique ASCII code. When you type a key on the keyboard, the corresponding eight-bit code is stored and made available to the processor. Most keys are associated with more than one code. For example, the ASCII code for the letter E is 01000101, and the ASCII code for the letter e is 01100101.
 
 
 chapter 3
