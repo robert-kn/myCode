@@ -452,7 +452,7 @@ Socket data type
 
 In UNIX, a socket descriptor is represented by a standard file descriptor. This means you can use any of the standard UNIX file I/O functions on sockets. This isn't true on Windows, so we simply avoid these functions to maintain portability.
 
-Additionally, in UNIX, all file descriptors (and therefore socket descriptors) are small, non- negative integers. In Windows, a socket handle can be anything. Furthermore, in UNIX, the socket() function returns an int, whereas in Windows it returns a SOCKET. SOCKET is a typedef for an unsigned int in the Winsock headers. As a workaround, I find it useful to either typedef int SOCKET or #define SOCKET int on non-Windows platforms. That way, you can store a socket descriptor as a SOCKET type on all platforms:
+Additionally, in UNIX, all file descriptors (and therefore socket descriptors) are small, non-negative integers. In Windows, a socket handle can be anything. Furthermore, in UNIX, the socket() function returns an int, whereas in Windows it returns a SOCKET. SOCKET is a typedef for an unsigned int in the Winsock headers. As a workaround, I find it useful to either typedef int SOCKET or #define SOCKET int on non-Windows platforms. That way, you can store a socket descriptor as a SOCKET type on all platforms:
 
 #if !defined(_WIN32) 
 #define SOCKET int 
