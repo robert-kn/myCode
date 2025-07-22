@@ -542,7 +542,7 @@ Keep in mind that the socket needs to be initially created as an IPv6 socket. Th
 Networking with inetd
 
 On Unix-like systems, such as Linux or macOS, a service called inetd can be used to turn console-only applications into networked ones. You can configure inetd (with /etc/inetd.conf) with your program's location, port number, protocol (TCP or UDP), and the user you want it to run as. inetd will then listen for connections on your desired port. After an incoming connection is accepted by inetd, it will start your program and redirect all socket input/output through stdin and stdout.
-what is a console only application? is a computer program dessigned to be used via a text only computer interface. These applications typically run in a command line interface or terminal and do not have a GUI option.
+what is a console only application? is a computer program designed to be used via a text only computer interface. These applications typically run in a command line interface or terminal and do not have a GUI option.
 
 Using inetd, we could have time_console.c behave like time_server.c with very minimal changes. We would only need to add in an extra printf() function with the HTTP response header, read from stdin, and configure inetd.
 
