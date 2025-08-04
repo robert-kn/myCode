@@ -716,7 +716,7 @@ the LC-3 instruction being processed determines what activities must be carried 
 
 48. what does the ADD operate require? at least one of the two source operands must be stored in one of the 8 registers; the result should also be written to one of the 8 registers
 
-49. since the LC-3 has 8 registers, how many bits are necessry to identify each register? 3
+49. since the LC-3 has 8 registers, how many bits are necessary to identify each register? 3
 
 50. how many forms does the 16-bit LC-3 ADD instruction have? 2 forms
 
@@ -758,11 +758,11 @@ the LC-3 instruction being processed determines what activities must be carried 
 
 69. which structure contains the address of the next instruction to be processed? the program counter
 
-70. what are the steps taken in the FETCH phase? First the MAR is loaded with the contents of the PC, and simultaneously  increment  the  PC; Next, the memory  is interrogated, which results in the next instruction being placed by the memory into the MDR; Finally, the IR is loaded with the contents of the MDR.
+70. what are the steps taken in the FETCH phase? First the MAR is loaded with the contents of the PC, and simultaneously increment the PC; Next, the memory is interrogated, which results in the next instruction being placed by the memory into the MDR; Finally, the IR is loaded with the contents of the MDR.
 
 71. Each of these steps in the FETCH phase is under the direction of the control unit; how many clock cycles does each take? Step 1 takes one clock cycle. Step 2 could take one clock cycle or many clock cycles, depending on how long it takes to access the computer’s memory. Step 3 takes one clock cycle.
 
-72. in a modern digital computer, how long is a clock cycle? a very small fraction of a second; indeed, a 3.1 GHz Intel Core i7 completes 3.1 billion clock cycles in one second. Said another way, one clock cycle takes 0.322 billionths of a second (0.322 nanoseconds).
+72. in a modern digital computer, how long is a clock cycle? a very small fraction of a second; a 3.1 GHz Intel Core i7 completes 3.1 billion clock cycles in one second. Said another way, one clock cycle takes 0.322 billionths of a second (0.322 nanoseconds).
 
 73. what does the decode phase of the instruction life cycle do? examines an instruction to figure out what the micro architecture is being asked to do. 
 
