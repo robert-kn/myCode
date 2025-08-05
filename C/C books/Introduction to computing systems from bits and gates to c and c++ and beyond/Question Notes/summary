@@ -778,7 +778,7 @@ the LC-3 instruction being processed determines what activities must be carried 
 
 79. Once the instruction cycle has been completed, the control unit begins the instruction cycle for the next instruction, starting from the top with the FETCH phase. Since the PC was updated during the previous instruction cycle, it contains at this point the address of the instruction stored in the next sequential memory location. Thus, the next sequential instruction is fetched next. Processing continues in this way until something breaks this sequential ﬂow, or the program ﬁnishes execution.
 
-80. It is worth noting again that although the instruction cycle consists of six phases, not all instructions require all six phases. As already pointed out, the LC- 3 ADD instruction does not require a separate EVALUATE ADDRESS phase or a separate STORE RESULT phase. The LC-3 LD instruction does not require an EXECUTE phase. On the other hand, there are instructions in other ISAs that require all six phases. see example44
+80. It is worth noting again that although the instruction cycle consists of six phases, not all instructions require all six phases. As already pointed out, the LC-3 ADD instruction does not require a separate EVALUATE ADDRESS phase or a separate STORE RESULT phase. The LC-3 LD instruction does not require an EXECUTE phase. On the other hand, there are instructions in other ISAs that require all six phases. see example44
 
 81. Everything we have said thus far happens when a computer program is executed in sequence. That is, the ﬁrst instruction is executed, then the second instruction is executed, followed by the third instruction, and so on.
 
@@ -822,13 +822,25 @@ the LC-3 instruction being processed determines what activities must be carried 
 
 101. What is misleading about the name program counter? The program counter does not maintain a count of any sort. 
 
-100. Why is the name instruction pointer more insightful? The value stored in the program counter is the address of the next instruction 
-to be processed. Hence the name ’Instruction Pointer’is more appropriate for it.
+100. Why is the name instruction pointer more insightful? The value stored in the program counter is the address of the next instruction to be processed. Hence the name ’Instruction Pointer’is more appropriate for it.
 
 101. If a HALT instruction can clear the RUN latch, thereby stopping the instruction cycle, what instruction is needed to set the RUN 
 latch, thereby reinitiating the instruction cycle? Once the RUN latch is cleared, the clock stops, so no instructions can be processed. 
 Thus, no instruction can be used to set the RUN latch. In order to re-initiate the instruction cycle, an external input must be applied. 
 This can be in the form of an interrupt signal or a front panel switch, for example.
+
+102. we now have enough to write our first program since we have two operate instructions (AND and ADD), one control instruction (BR), and a system call to halt the execution of a user program (TRAP instruction). Suppose the computer does not know how to multiply two positive integers. Suppose we wanted to multiply 5 times 4. Even if we do not know how to multiply, if we know that 5 times 4 is 5+5+5+5, and the computer has an ADD instruction, we can write a program that can multiply. All we have to do is add 5 to itself four times. Figure 4.6 illustrates the process.
+
+103. Let us assume that memory location x3007, abbreviated M[x3007], contains the value 5, and M[x3008] contains the value 4. We start by copying the two values from memory to the two registers R1 and R2. We are going to accumulate the results of the additions in R3, so we initialize R3 to 0. Then we add 5 to R3, and subtract 1 from R2 so we will know how many more times we will need to add 5 to R3. We keep doing this (adding 5 to R3 and subtracting 1 from R2) until R2 contains the value 0. That tells us that we have added 5 to R3 four times and we are done, so we HALT the computer. R3 contains the value 20, the result of our multiplication.
+
+104. Figure 4.7 shows the actual LC-3 program, stored in memory locations x3000 to x3008. The program counter, which keeps track of the next instruction to be executed, initially contains the address x3000. To move the data from memory locations M[x3007] and M[x3008] to R1 and R2, we use the data movement instruction LD. The LC-3 computer executes the LD instruction in M[x3000] by sign-extending the oﬀset (in this case 6) to 16 bits, adding it to the incremented PC (in this case x3001 since we incremented the PC during the FETCH phase of this instruction), fetching the data from M[x3007], and loading it  in R1. The LD instruction in M[x3001] is executed in the same way.
+
+105. R3 is initialized to 0 by performing a bit-wise AND of the contents of R3 with the sign-extended immediate value 0 and loading the result into R3. Next the computer executes the ADD instructions at M[x3003] and M[x3004]. The ADD instruction at M[x3003] adds the contents of R1 to the contents of R3 and loads the result into R3. The ADD instruction at M[x3004] adds
+−1 to the contents of R2, which keeps track of how many times the value 5 has been added to R3.
+
+106. At this point, the PC contains the address x3005. The BR instruction in M[x3005] loads the PC with the address x3003 if the result of the previous instruction (the one in M[x3004]) is not 0. If the result of the previous instruction is 0, the BR instruction does nothing, and so the next instruction to be executed is the instruction at M[x3006], i.e., the incremented PC is x3006.
+
+107. Thus, the two ADD instructions execute again and again, until the result of executing the instruction in M[x3004] produces the value 0, indicating that the value 5 has been added four times. Finally, the TRAP instruction in M[x3006] is executed, which is a call to the operating system to halt the computer.
 
 chapter 5
 
