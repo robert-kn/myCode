@@ -854,14 +854,14 @@ chapter 5
 
 5. what do you call the number of bits stored in a register? a word. In the LC-3, this means 16 bits.
 
-6. Registers must be uniquely identiﬁable. The LC-3 speciﬁes eight GPRs, each identiﬁed by a three-bit register number. They are referred to as R0, R1, … R7. Figure 5.1 shows a snapshot of the LC-3’s register set, sometimes called a register ﬁle, with the eight values 1, 3, 5, 7, −2, −4, −6, and −8 stored in R0, … R7, respectively. Figure 5.2 shows the contents of the register ﬁle of Figure 5.1 AFTER the instruction ADD  R2,  R1,  R0 is exucuted
+6. Registers must be uniquely identiﬁable. The LC-3 speciﬁes eight GPRs, each identiﬁed by a three-bit register number. They are referred to as R0, R1, … R7. Figure 5.1 shows a snapshot of the LC-3’s register set, sometimes called a register ﬁle, with the eight values 1, 3, 5, 7, −2, −4, −6, and −8 stored in R0, … R7, respectively. Figure 5.2 shows the contents of the register ﬁle of Figure 5.1 AFTER the instruction ADD  R2,  R1,  R0 is executed
 
 7. what is an instruction made up of? opcode (what the instruction is asking the computer to do)
 and its operands (what the computer is expected to do it to)
 
 8. what is the instruction set defined by? by its set of opcodes, data types, and addressing modes
 
-9. what does the addressing mode determine? where operands are located. The instruction ADD R2, R0, R1 has an opcode ADD, one addressing mode (register mode), and one data type (2’s complement integer). The instruction directs the computer to perform a 2’s complement integer addition and speci- ﬁes the locations (GPRs) where the computer is expected to ﬁnd the operands and the location (a GPR) where the computer is to write the result.
+9. what does the addressing mode determine? where operands are located. The instruction ADD R2, R0, R1 has an opcode ADD, one addressing mode (register mode), and one data type (2’s complement integer). The instruction directs the computer to perform a 2’s complement integer addition and speciﬁes the locations (GPRs) where the computer is expected to ﬁnd the operands and the location (a GPR) where the computer is to write the result.
 
 10. We saw in Chapter 4 that the ADD instruction can also have two addressing modes (register mode and immediate mode), where one of the two operands is literally contained in bits [4:0] of the instruction. Figure 5.3 lists all the instructions of the LC-3, the bit encoding [15:12] for each opcode, and the format of each instruction. 
 
@@ -917,9 +917,9 @@ and its operands (what the computer is expected to do it to)
 
 36. in the NOT instruction, what must bits 5:0 contain? all 1's
 
-37. Figure 5.4 shows the key parts of the data path that are used to perform the NOT instruction shown here. Since NOT is a unary operation, only the A input of the ALU is relevant. It is sourced from R5. The control signal to the ALU directs the ALU to perform the bit-wise complement operation. The output of the ALU (the result of the operation) is stored in R3 and the condition codes are set, completing the execution of the NOT instruction.
+37. Figure 5.4 shows the key parts of the data path that are used to perform the NOT instruction. Since NOT is a unary operation, only the A input of the ALU is relevant. It is sourced from R5. The control signal to the ALU directs the ALU to perform the bit-wise complement operation. The output of the ALU (the result of the operation) is stored in R3 and the condition codes are set, completing the execution of the NOT instruction.
 
-38. Recall from Chapter 4 that the ADD (opcode = 0001) and AND (opcode = 0101) instructions both perform binary operations; they require two 16-bit source operands. The ADD instruction performs a 2’s complement addition of its two source operands. The AND instruction performs a bit-wise AND of each pair of bits of its two 16-bit operands. Like the NOT, the ADD and AND use the register addressing mode for one of the source operands and for the destina- tion operand. Bits [8:6] specify the source register, and bits [11:9] specify the destination register (where the result will be written).
+38. Recall from Chapter 4 that the ADD (opcode = 0001) and AND (opcode = 0101) instructions both perform binary operations; they require two 16-bit source operands. The ADD instruction performs a 2’s complement addition of its two source operands. The AND instruction performs a bit-wise AND of each pair of bits of its two 16-bit operands. Like the NOT, the ADD and AND use the register addressing mode for one of the source operands and for the destination operand. Bits [8:6] specify the source register, and bits [11:9] specify the destination register (where the result will be written).
 
 39. what 2 addressing modes can be used to specify the second source operand for the AND and ADD instructions? register mode for one of the source operands and the destination operand; second operand is specified by either register mode or as an immediate operand
 
@@ -935,7 +935,7 @@ and its operands (what the computer is expected to do it to)
 
 45. what implication does using immediate addressing mode present? since the literal operand must fit into bits 4:0 of the instruction, not all 2 complement integers can be used as immediate operands
 
-46. Which integers are OK (i.e., which integers can be used as immediate operands)? range of -16 through to 8 see example51, example52, example53
+46. Which integers are OK (i.e., which integers can be used as immediate operands)? range of 16 through to -1 see example51, example52, example53
 
 47. can a register can be used as a source and also as a destination in the same instruction? yes
 
@@ -981,7 +981,7 @@ Bits [8:0] contain the address generation bits. That is, bits [8:0] contain info
 
 64. what happens after either the LD or ST instruction has been executed? the N, Z, P condition codes are set depending on whether the value loaded is negative, positive, or zero.
 
-65. what stands about the address generated in pc-relative addressing mode using bits 8:0? the range is limited to within ranges 256 and -256 f0r the ld and st instruction. If a load instruction needs to access a memory location further away from the load instruction, one of the other two addressing modes must be used. 
+65. what stands about the address generated in pc-relative addressing mode using bits 8:0? the range is limited to within ranges 256 and -256 for the ld and st instruction. If a load instruction needs to access a memory location further away from the load instruction, one of the other two addressing modes must be used. 
 
 66. which two instructions use indirect addressing mode? LDI and STI
 
