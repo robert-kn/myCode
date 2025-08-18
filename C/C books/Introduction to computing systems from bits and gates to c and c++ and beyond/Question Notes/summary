@@ -1365,7 +1365,7 @@ chapter 8
 
 1. what do you call complex items of information? abstract data types or more colloquially data structures.
 
-2. subroutines: Figure 8.1 provides a simple illustration of a part of a program—call it “piece- of-code-A”—containing fragments that must be executed multiple times within piece-of-code-A. Let’s ignore everything about it except the three-instruction sequences starting at symbolic addresses L1, L2, L3, and L4. Each of these four 3-instruction sequences does the following:
+2. subroutines: Figure 8.1 provides a simple illustration of a part of a program—call it “piece-of-code-A”—containing fragments that must be executed multiple times within piece-of-code-A. Let’s ignore everything about it except the three-instruction sequences starting at symbolic addresses L1, L2, L3, and L4. Each of these four 3-instruction sequences does the following:
 
 label       LDI     R3,DSR
             BRzp    label 
@@ -1415,7 +1415,7 @@ If the following JSR instruction is stored in location x4200, its execution will
 0     1   0    0  |  1  |  1    0    0    0    0    0    0    0    1    0    0
      JSRR            A                        PCoﬀset1
 
-20. how does the JSRR instruction differ from the JSR instruction? the addressing mode used;  it obtains the starting address of a subroutine in exactly the same way that the JMP instruction  does i.e. bits 8:6 identify the base register that contains the address to be loaded into the PC
+20. how does the JSRR instruction differ from the JSR instruction? the addressing mode used; it obtains the starting address of a subroutine in exactly the same way that the JMP instruction  does i.e. bits 8:6 identify the base register that contains the address to be loaded into the PC
 
 If the following JSRR instruction is stored in location x420A, and if R5 contains x3002, the execution of the JSRR will cause R7 to be loaded with x420B and the PC to be loaded with x3002.
 
@@ -1427,8 +1427,8 @@ What important feature does the JSRR instruction provide that the JSR instructio
 
 21. We have known for a long time that every time an instruction loads a value into a register, the value that was previously in that register is lost. Thus, we need to save the value in a register
 
-if that value will be destroyed by some subsequent instruction, and
-if we will need it after that subsequent instruction.
+- if that value will be destroyed by some subsequent instruction, and
+- if we will need it after that subsequent instruction.
 
 22. what problems do subroutines pose when it comes to registers? they overwrite the contents of a register and therefore if the contents that were overwritten are needed by the caller program then you have a major problem at hand
 
@@ -1464,7 +1464,7 @@ if we will need it after that subsequent instruction.
 
 38. Figure 8.9a shows an initially empty stack. Since there are no values on the stack, the stack pointer contains the address x4000, the address of the memory location just after the memory locations reserved for the stack. Why this makes sense will be clear after we show the actual code for pushing values onto and popping values off of the stack. Figure 8.9b shows the stack after pushing the value 18. Note that the stack pointer contains the address x3FFF, which is the new top of the stack.
 
-39. Figure 8.9c shows the stack after pushing the values 31, 5, and 12, in that order. Note that the values inserted into the stack are stored in memory loca- tions having decreasing addresses. We say the stack grows toward zero. Finally, Figure 8.9d shows the stack after popping the top two elements oﬀ the stack. Note that those two elements (the values 5 and 12) that were popped are still present in memory locations x3FFD and x3FFC. However, as we will see momentarily, those values 5 and 12 cannot be accessed from memory, as long as every access to memory is controlled by the stack mechanism.
+39. Figure 8.9c shows the stack after pushing the values 31, 5, and 12, in that order. Note that the values inserted into the stack are stored in memory locations having decreasing addresses. We say the stack grows toward zero. Finally, Figure 8.9d shows the stack after popping the top two elements oﬀ the stack. Note that those two elements (the values 5 and 12) that were popped are still present in memory locations x3FFD and x3FFC. However, as we will see momentarily, those values 5 and 12 cannot be accessed from memory, as long as every access to memory is controlled by the stack mechanism.
 
 40. when values are pushed and popped to and from a stack implemented in sequential memory locations, the data already stored on the stack does not physically move.
 
