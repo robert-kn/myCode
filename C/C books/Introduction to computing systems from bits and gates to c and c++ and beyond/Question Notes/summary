@@ -1537,7 +1537,7 @@ PUSH      LD      R1,MAX
           RET
 MAX       .FILL   xC005        ; MAX  <-- negative of x3FFB
 
-56. In the same way that it is useful to have the POP routine return to the calling program with success/failure information, rather than immediately jumping to the UNDERFLOW routine, it is useful to have the PUSH routine act similarly. We augment the PUSH routine with instructions to store 0 (success) or 1 (failure) in R5, depending on whether or not the push completed success- fully. Upon return from the PUSH routine, the calling program would examine R5 to determine whether the PUSH completed successfully (R5 = 0) or not (R5 = 1).
+56. In the same way that it is useful to have the POP routine return to the calling program with success/failure information, rather than immediately jumping to the UNDERFLOW routine, it is useful to have the PUSH routine act similarly. We augment the PUSH routine with instructions to store 0 (success) or 1 (failure) in R5, depending on whether or not the push completed successfully. Upon return from the PUSH routine, the calling program would examine R5 to determine whether the PUSH completed successfully (R5 = 0) or not (R5 = 1).
 
 57. Note again that since the PUSH routine reports success or failure in R5, we have another example of a caller-save situation. That is, since whatever was stored in R5 before the PUSH routine was called is lost, it is the job of the calling program to save the contents of R5 before the JSR instruction is executed if the value stored in R5 will be needed later.
 
@@ -1566,9 +1566,9 @@ MAX       .FILL   xC005      ;  MAX  <--- x3FFB
 
 64. If n does not equal 1, we save the value in R1, so we can store n in R1, load R0 with n-1 and JSR FACT. When FACT returns with (n-1)! in R0, we multiply it by n (which was stored in R1), producing n!, which we load into R0, restore R1 to the value expected by the calling program, and RET.
 
-FACT      ST       R1, Save1       ; Callee  save  R1
-          ADD      R1,R0,#-1       ; Test  if  R0=1
-          BRz      DONE            ; If  R0=1, R0 also contains (1)!, so we are done
+FACT      ST       R1, Save1       ; Callee save R1
+          ADD      R1,R0,#-1       ; Test if R0=1
+          BRz      DONE            ; If R0=1, R0 also contains (1)!, so we are done
           ADD      R1,R0,#0        ; Save n in R1, to be used after we compute (n-1)!
           ADD      R0,R1,#-1       ; Set R0 to n-1, and then call FACT
 B         JSR      FACT            ; On RET, R0 will contain (n-1)!
@@ -1583,7 +1583,7 @@ Save1     .BLKW    1
 
 67. how can we solve this problem? by pushing the address A+1 onto a stack before executing JSR FACT at address B. After we subsequently return to address B+1, we can then pop the stack and load the address A+1 into R7 before we execute the instruction RET back to the main program.
 
-68. what else is wrong with the assembly program in number 64? instruction ADD R1,R0,#0 in #1 loads the value n into R1, and in #2, the instruction ADD R1,R0,#0 loads the value n-1 into R1, thereby wiping out the value n that had been put there by the code in #1. Thus, when the instruction ﬂow gets back to #1, where the value n is needed by the instruction MUL R0,R0,R1, it is no longer there. It was previously wiped out. Again, very, very bad!
+68. what else is wrong with the assembly program in number 64? Also, note that the instruction ADD R1,R0,#0 in #1 loads the value n into R1, and in #2, the instruction ADD R1,R0,#0 loads the value n-1 into R1, thereby wiping out the value n that had been put there by the code in #1. Thus, when the instruction ﬂow gets back to #1, where the value n is needed by the instruction MUL R0,R0,R1, it is no longer there. It was previously wiped out. Again, very, very bad!
 
 69. how can we solve this problem? instead of moving the value n to R1 before loading n-1 into R0, we push n onto the stack and then pop it when we need it after returning from the subroutine with (n-1)! in R0.
 
@@ -1694,9 +1694,9 @@ SKIP_2    STR      R0,R4,#0  ; R0 gets the front of the queue
 LAST      .FILL    x7FFB     ; LAST contains the negative of 8005
 FIRST     .FILL    x8000
 
-100. How Many Elements Can We Store in a Queue? Let’s look again at Figure 8.25d. There are four values in the queue: 2, 74, 10, and 20. Suppose we insert 30 and 40 at the rear of the queue, producing Figure 8.25e. Both R3 and R4 contain the same address (x8002), and the queue is full. Now suppose we start removing elements from the front of the queue. If we remove 2, which is at the front of the queue, R3 will contain the address x8003. If we remove the remaining ﬁve elements in the queue, we will have what is shown in Figure 8.25f. Note that the FRONT and REAR pointers for e and f are identi- cal, yet Figure 8.25e describes a full queue and Figure 8.25f describes an empty queue! Clearly that is not acceptable.
+100. How Many Elements Can We Store in a Queue? Let’s look again at Figure 8.25d. There are four values in the queue: 2, 74, 10, and 20. Suppose we insert 30 and 40 at the rear of the queue, producing Figure 8.25e. Both R3 and R4 contain the same address (x8002), and the queue is full. Now suppose we start removing elements from the front of the queue. If we remove 2, which is at the front of the queue, R3 will contain the address x8003. If we remove the remaining ﬁve elements in the queue, we will have what is shown in Figure 8.25f. Note that the FRONT and REAR pointers for e and f are identical, yet Figure 8.25e describes a full queue and Figure 8.25f describes an empty queue! Clearly that is not acceptable.
 
-101. how do we prevent this from happening? allow a queue to store only n-1 elements if space for n ele- ments has been allocated. That is, if inserting an nth element into the queue would cause FRONT to equal REAR, we do not allow that insertion. We declare the queue full when there are n-1 elements in the queue.
+101. how do we prevent this from happening? allow a queue to store only n-1 elements if space for n elements has been allocated. That is, if inserting an nth element into the queue would cause FRONT to equal REAR, we do not allow that insertion. We declare the queue full when there are n-1 elements in the queue.
 
 102. Let’s look again at the queue in Figure 8.25d. There are four elements in the queue, from front to rear: 2, 74, 10, and 20, and two empty slots, x8001 and x8002. We can insert 30 in x8001, producing Figure 8.26a. That is, 30 is the ﬁfth element inserted in the queue. Since six words have been allocated for the queue, and we now have ﬁve elements in the queue, we declare the queue full and do not allow a sixth element to be inserted. 
 
