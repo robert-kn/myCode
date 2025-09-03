@@ -1899,7 +1899,7 @@ DDR       .FILL   xFE06        ; Address of DDR
 
 68. what does the computer do to let a person sitting at the keyboard know that the program is waiting for input from the keyboard? prints a message on the monitor known as a prompt. The symbols that are displayed by your operating system (e.g., % or C:) or by your editor (e.g., :) are examples of prompts.
 
-69. The program fragment shown in Figure 9.7 obtains keyboard input via polling. It also includes a prompt to let the person sitting at the keyboard know when it is time to type a key. You are already familiar with lines 13 through 19 and lines 25 through 28 which correspond to the code for inputting a character via the keyboard and echoing it on the monitor. You are also familiar with the need to save and restore registers if those reg- isters are needed by instructions in the input routine. This leaves lines 05 through 08, 0A through 11, 1A through 1C, 29 and 2A. These lines serve to alert the person sitting at the keyboard that it is time to type a character. Lines 05 through 08 write the ASCII code x0A to the monitor. This is the ASCII code for a new line.
+69. The program fragment shown in Figure 9.7 obtains keyboard input via polling. It also includes a prompt to let the person sitting at the keyboard know when it is time to type a key. You are already familiar with lines 13 through 19 and lines 25 through 28 which correspond to the code for inputting a character via the keyboard and echoing it on the monitor. You are also familiar with the need to save and restore registers if those registers are needed by instructions in the input routine. This leaves lines 05 through 08, 0A through 11, 1A through 1C, 29 and 2A. These lines serve to alert the person sitting at the keyboard that it is time to type a character. Lines 05 through 08 write the ASCII code x0A to the monitor. This is the ASCII code for a new line.
 
 70. Do most ASCII codes correspond to characters that are visible on the screen? yes
 
@@ -2026,7 +2026,7 @@ LD   R2,Newline
 
 in order to move the “newline” character into R2. The subroutine Writechar forwards it from R2 to the DDR.
 
-107. PUTS: Writing a Character String to the Monitor; note the code on lines 08 through 0C. This fragment of the service routine is used to write the sequence of characters Input a character to the monitor. A sequence of characters is often referred to as a string of characters or a character string. This fragment is also present in Figure 9.14, with the result that Halting the machine is written to the monitor. In fact, it is so often the case that a user program needs to write a string of characters to the monitor that this function is given its own trap service routine in the LC-3 operating system. Thus, if a user program requires a character string to be written to the monitor, it need only provide (in R0) the starting address of the character string, and then invoke TRAP x22. In LC-3 assembly language this TRAP is called PUTS.
+107. PUTS: Writing a Character String to the Monitor; note the code on lines 08 through 0C in figure915. This fragment of the service routine is used to write the sequence of characters Input a character to the monitor. A sequence of characters is often referred to as a string of characters or a character string. This fragment is also present in Figure 9.14, with the result that Halting the machine is written to the monitor. In fact, it is so often the case that a user program needs to write a string of characters to the monitor that this function is given its own trap service routine in the LC-3 operating system. Thus, if a user program requires a character string to be written to the monitor, it need only provide (in R0) the starting address of the character string, and then invoke TRAP x22. In LC-3 assembly language this TRAP is called PUTS.
 
 108. PUTS (or TRAP x22) causes control to be passed to the operating system, and the trap routine shown in Figure 9.16 is executed. Note that PUTS is the code of lines 08 through 0C of Figure 9.15, with a few minor adjustments.
 
@@ -2042,7 +2042,7 @@ in order to move the “newline” character into R2. The subroutine Writechar f
 
 a. The I/O device must want service.
 b. The device must have the right to request the service.
-c. The device request mustbemoreurgentthan what the processor is currently doing.
+c. The device request must be more urgent than what the processor is currently doing.
 
 If all three elements are present, the processor stops executing the program that is running and takes care of the interrupt.
 

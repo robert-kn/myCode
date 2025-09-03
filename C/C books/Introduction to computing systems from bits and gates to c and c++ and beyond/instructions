@@ -19,3 +19,4 @@
 trapvector = x23 -> Input a character from the keyboard (trapvector = x23)
 trapvector = x21 -> Output a character to the monitor (trapvector = x21)
 trapvector = x25 -> Halt the program
+trapvector = x22 -> print character(s) to screen
