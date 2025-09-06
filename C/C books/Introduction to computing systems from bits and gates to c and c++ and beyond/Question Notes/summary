@@ -2141,7 +2141,7 @@ chapter 10
 
 3. the calculator simulation consists of a main program and eleven separate subroutines
 
-4. two topics have not been discussed that are needed to understand the workings of the calculator simulator. what are they? the conversion of integers between ASCII strings and 2s complement numbers; and arithmentic using a stack (the method most calculators use)
+4. two topics have not been discussed that are needed to understand the workings of the calculator simulator. what are they? the conversion of integers between ASCII strings and 2s complement numbers; and arithmetic using a stack (the method most calculators use)
 
 5. what is the reason for the two data types and conversion between them? we need one data type for input/output and another for doing arithmetic. numbers entered via the keyboard and displayed on the monitor use ascii codes to represent the numbers. arithmetic uses 2's complement integers
 
@@ -2149,7 +2149,7 @@ chapter 10
 
 7. With respect to the way calculators perform arithmetic, the mechanism used by most calculators is very diﬀerent from the way most desktop and laptop computers perform arithmetic. The ISAs of most desktops and laptops are like the LC-3, where arithmetic instructions get their source operands from general purpose registers and store the results of the arithmetic operations in general purpose registers. 
 
-8. Our simulation of a calculator, like most calculators, does not use general purpose registers. Instead it uses a stack. Source operands are popped from the stack, and the result of the operation is pushed back onto the stack.
+8. Our simulation of a calculator, like most calculators, does not use general purpose registers. Instead it uses a stack. Source operands are poped from the stack, and the result of the operation is pushed back onto the stack.
 
 9. I have already been exposed to several data types: unsigned integers for address arithmetic, 2’s complement integers for integer arithmetic, 16-bit binary strings for logical operations, ﬂoating point numbers for scientiﬁc computation, and ASCII codes for interaction with input and output devices. 
 
