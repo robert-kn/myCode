@@ -1193,3 +1193,133 @@ In contrast to TCP, UDP is not a stream protocol. With UDP, a packet is received
 
 4. Establishing UDP Connections
 
+The socket API for UDP sockets is only very slightly different than what we've already learned for TCP. In fact, they are similar enough that we can take the TCP client from the last chapter and turn it into a fully functional UDP client by changing only one line of code:
+
+1. Take tcp_client.c from Chapter 3, An In-Depth Overview of TCP Connections, and find the following line of code:
+
+hints.ai_socktype = SOCK_STREAM;
+
+2. Change the preceding code to the following:
+
+hints.ai_socktype = SOCK_DGRAM;
+
+You can recompile the program using the same commands as before, and you'll get a fully functional UDP client.
+Unfortunately, changing the TCP servers of the previous chapters to UDP won't be as easy. TCP and UDP server code are different enough that a slightly different approach is needed.
+Also, don't assume that because we had to change only one line of the code that the client behaves exactly the same way – this won't happen. The two programs are using a different protocol, after all.
+
+Remember from Chapter 2, Getting to Grips with Socket APIs that UDP does not try to be a reliable protocol. Lost packets are not automatically re-transmitted, and packets may be received in a different order than they were sent. It is even possible for one packet to erroneously arrive twice! TCP attempts to solve all these problems, but UDP leaves you to your own devices.
+
+Despite UDP's (lack of) reliability, it is still appropriate for many applications. Let's look at the methods that are used by UDP clients and servers.
+
+UDP client methods
+
+Sending data with TCP requires calling connect() to set the remote address and establish the TCP connection. Thus, we use send() with TCP sockets, as shown in the following code:
+
+connect(tcp_socket, peer_address, peer_address_length);
+send(tcp_socket, data, data_length, 0);
+
+UDP is a connectionless protocol. Therefore, no connection is established before sending data. A UDP connection is never established. With UDP, data is simply sent and received. We can call connect() and then send(), as we mentioned previously, but the socket API provides an easier way for UDP sockets in the form of the sendto() function. It works like this:
+
+sendto(udp_socket, data, data_length, 0, peer_address, peer_address_length);
+
+connect() on a UDP socket works a bit differently. All connect() does with a UDP socket is associate a remote address. Thus, while connect() on a TCP socket involves a handshake for sending packets over the network, connect() on a UDP socket only stores an address locally.
+
+So, a UDP client can be structured in two different ways, depending on whether you use connect(), send(), and recv(), or instead use sendto() and recvfrom().
+
+The following diagram compares the program flow of a TCP Client to a UDP Client using either method: see Chapter 4: Establishing UDP Connections
+
+Note that, while using connect(), the UDP Client only receives data from the peer having the IP address and the port that is given to connect(). However, when not using connect(), the recvfrom() function returns data from any peer that addresses us! Of course, that peer would need to know our address and port. Unless we call bind(), our local address and port is assigned automatically by the operating system.
+
+UDP server methods
+
+Programming a UDP server is a bit different than TCP. TCP requires managing a socket for each peer connection. With UDP, our program only needs one socket. That one socket can communicate with any number of peers.
+
+While the TCP program flow required us to use listen() and accept() to wait for and establish new connections, these functions are not used with UDP. Our UDP server simply binds to the local address, and then it can immediately start sending and receiving data.
+
+The program flow of a TCP Server compared to a UDP Server is as follows: see diagram
+
+With either a TCP or UDP server, we use select() when we need to check/wait for incoming data. The difference is that a TCP Server using select() is likely monitoring many separate sockets, while a UDP Server often only needs to monitor one socket. If your program uses both TCP and UDP sockets, you can monitor them all with only one call to select().
+
+A first UDP client/server
+
+To keep things simple, we will create a UDP client program that simply sends the Hello World string to 127.0.0.1 on port 8080. Our UDP server listens on 8080. It prints any data it receives, along with the sender's address and port number.
+
+A simple UDP server
+
+We will start with the server, since we already have a usable UDP client, that
+is, udp_client.c.
+
+Like all of our networked programs, we will begin by including the necessary headers, starting with the main() function, and initializing Winsock as follows:
+
+#include "chap04.h"
+
+int main() {
+#if defined(_WIN32)
+
+    WSADATA d;
+    if (WSAStartup(MAKEWORD(2, 2), &d)) {         
+        fprintf(stderr, "Failed to initialize.\n");         
+        return 1;
+    }
+#endif
+
+Then, we must configure the local address that our server listens on. We use getaddrinfo() for this, as follows:
+
+printf("Configuring local address...\n");
+struct addrinfo hints;
+memset(&hints, 0, sizeof(hints));
+hints.ai_family = AF_INET;
+hints.ai_socktype = SOCK_DGRAM;
+hints.ai_flags = AI_PASSIVE;
+struct addrinfo *bind_address;
+getaddrinfo(0, "8080", &hints, &bind_address);
+
+This differs only slightly from how we've done it before. Notably, we set hints.ai_socktype = SOCK_DGRAM. Recall that SOCK_STREAM was used there for TCP connections. We are still setting hints.ai_family = AF_INET here. This makes our server listen for IPv4 connections. We could change that to AF_INET6 to make our server listen for IPv6 connections instead.
+
+After we have our local address information, we can create the socket, as follows:
+
+printf("Creating socket...\n");
+SOCKET socket_listen;
+socket_listen = socket(bind_address->ai_family, bind_address->ai_socktype, bind_address->ai_protocol);    
+if(!ISVALIDSOCKET(socket_listen)) {
+    fprintf(stderr, "socket() failed. (%d)\n", GETSOCKETERRNO());         
+    return 1;
+}
+
+This code is exactly the same as in the TCP case. The call to socket() uses our address information from getaddrinfo() to create the proper type of socket.
+
+We must then bind the new socket to the local address that we got from getaddrinfo(). This is as follows:
+
+printf("Binding socket to local address...\n");     
+if (bind(socket_listen, bind_address->ai_addr, bind_address->ai_addrlen)) {         
+    fprintf(stderr, "bind() failed. (%d)\n", GETSOCKETERRNO());         
+    return 1;
+}
+freeaddrinfo(bind_address);
+
+Again, that code is exactly the same as in the TCP case.
+
+Here is where the UDP server diverges from the TCP server. Once the local address is bound, we can simply start to receive data. There is no need to call listen() or accept(). We listen for incoming data using recvfrom(), as shown here:
+
+struct sockaddr_storage client_address;
+socklen_t client_len = sizeof(client_address);
+char read[1024];
+int bytes_received = recvfrom(socket_listen, read, 1024, 0, (struct sockaddr*) &client_address, &client_len);
+
+In the previous code, we created a struct sockaddr_storage to store the client's address. We also defined socklen_t client_len to hold the address size. This keeps our code robust in the case that we change it from IPv4 to IPv6. Finally, we created a buffer, char read[1024], to store incoming data.
+
+recvfrom() is used in a similar manner to recv(), except that it returns the sender's address, as well as the received data. You can think of recvfrom() as a combination of the TCP server accept() and recv().
+
+Once we've received data, we can print it out. Keep in mind that the data may not be null terminated. It can be safely printed with the %.*s printf() format specifier, as shown in the following code:
+
+printf("Received (%d bytes): %.*s\n", bytes_received, bytes_received, read);
+
+It may also be useful to print the sender's address and port number. We can use the getnameinfo() function to convert this data into a printable string, as shown in the following code:
+
+printf("Remote address is: ");
+char address_buffer[100];
+char service_buffer[100];
+getnameinfo(((struct sockaddr*)&client_address), client_len, address_buffer, sizeof(address_buffer),
+            service_buffer, sizeof(service_buffer), NI_NUMERICHOST | NI_NUMERICSERV);
+printf("%s %s\n", address_buffer, service_buffer);
+
