@@ -126,6 +126,71 @@ to hold data that are likely to be accessed often, we can perform most memory op
 
 Storage Devices Form a Hierarchy
 
+The main idea of a memory hierarchy is that storage at one level serves as a cache for storage at the next lower 
+level. Thus, the register file is a cache for the L1 cache. Caches L1 and L2 are caches for L2 and L3, respectively. 
+The L3 cache is a cache for the main memory, which is a cache for the disk. On some networked systems with 
+distributed file systems, the local disk serves as a cache for data stored on the disks of other systems.
+
+The Operating System Manages the Hardware
+
+We can think of the operating system as a layer of software interposed between the application program and the 
+hardware, as shown in Figure 1.10. All attempts by an application program to manipulate the hardware must go 
+through the operating system. The operating system has two primary purposes: (1) to protect the hardware from 
+misuse by runaway applications and (2) to provide applications with simple and uniform mechanisms for manipulating 
+complicated and often wildly different low-level hardware devices. The operating system achieves both goals via the 
+fundamental abstractions shown in Figure 1.11: processes, virtual memory, and files. As this figure suggests, files 
+are abstractions for I/O devices, virtual memory is an abstraction for both the main memory and disk I/O devices, 
+and processes are abstractions for the processor, main memory, and I/O devices.
+
+Processes
+
+When a program such as hello runs on a modern system, the operating system provides the illusion that the program 
+is the only one running on the system. The program appears to have exclusive use of both the processor, main 
+memory, and I/O devices. The processor appears to execute the instructions in the program, one after the other, 
+without interruption. And the code and data of the program appear to be the only objects in the system's memory. 
+These illusions are provided by the notion of a process.
+
+A process is the operating system's abstraction for a running program. Multiple processes can run concurrently on 
+the same system, and each process appears to have exclusive use of the hardware. By concurrently, we mean that the 
+instructions of one process are interleaved with the instructions of another process. In most systems, there are 
+more processes to run than there are CPUs to run them.
+
+Traditional systems could only execute one program at a time, while newer multi-core processors can execute several 
+programs simultaneously. In either case, a single CPU can appear to execute multiple processes concurrently by 
+having the processor switch among them. The operating system performs this interleaving with a mechanism known as 
+context switching. 
+
+The operating system keeps track of all the state information that the process needs in order to run. This state, 
+which is known as the context, includes information such as the current values of the PC, the register file, and 
+the contents of main memory. At any point in time, a uniprocessor system can only execute the code for a single 
+process. When the operating system decides to transfer control from the current process to some new process, it 
+performs a context switch by saving the context of the current process, restoring the context of the new process, 
+and then passing control to the new process. Figure 1.12 shows the basic idea for our example scenario.
+
+There are two concurrent processes in our example scenario: the shell process and the process. Initially, the 
+shell process is running alone, waiting for input on the command line. When we ask it to run the program, the shell 
+carries out our request by invoking a special function known as a system call that passes control to the operating 
+system. The operating system saves the shell's context, creates a new process and its context, and then passes 
+control to the new process. After terminates, the operating system restores the context of the shell process and 
+passes control back to it, where it waits for the next command-line input.
+
+As Figure 1.12 indicates, the transition from one process to another is managed by the operating system kernel. 
+The kernel is the portion of the operating system code that is always resident in memory. When an application 
+program requires some action by the operating system, such as to read or write a file, it executes a special 
+system call instruction, transferring control to the kernel. The kernel then performs the requested operation and 
+returns back to the application program. Note that the kernel is not a separate process. Instead, it is a 
+collection of code and data structures that the system uses to manage all the processes.
+
+Threads
+
+Although we normally think of a process as having a single control flow, in modern systems a process can actually 
+consist of multiple execution units, called threads, each running in the context of the process and sharing the 
+same code and global data. Threads are an increasingly important programming model because of the requirement for 
+concurrency in network servers, because it is easier to share data between multiple threads than between multiple 
+processes, and because threads are typically more efficient than processes. Multi-threading is also one way to make 
+programs run faster when multiple processors are available.
+
+Virtual Memory
 
 
 

@@ -1323,3 +1323,21 @@ getnameinfo(((struct sockaddr*)&client_address), client_len, address_buffer, siz
             service_buffer, sizeof(service_buffer), NI_NUMERICHOST | NI_NUMERICSERV);
 printf("%s %s\n", address_buffer, service_buffer);
 
+The last argument to getnameinfo() (NI_NUMERICHOST | NI_NUMERICSERV) tells getnameinfo() that we want both the client address and port number to be in numeric form. Without this, it would attempt to return a hostname or protocol name if the port number matches a known protocol. If you do want a protocol name, pass in the NI_DGRAM flag to tell getnameinfo() that you're working on a UDP port. This is important for the few protocols that have different ports for TCP and UDP.
+
+It's also worth noting that the client will rarely set its local port number explicitly. So, the port number returned here by getnameinfo() is likely to be a high number that's chosen randomly by the client's operating system. Even if the client did set its local port number, the port number we can see here might have been changed by network address translation (NAT).
+
+In any case, if our server were to send data back, it would need to send it to the address and port stored in client_address. This would be done by passing client_address to sendto().
+
+Once the data has been received, we'll end our simple UDP server by closing the connection, cleaning up Winsock, and ending the program:
+
+CLOSESOCKET(socket_listen);
+
+#if defined(_WIN32)
+    WSACleanup();
+#endif
+
+printf("Finished.\n");
+
+return EXIT_SUCCESS;
+
