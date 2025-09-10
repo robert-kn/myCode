@@ -1340,4 +1340,142 @@ CLOSESOCKET(socket_listen);
 printf("Finished.\n");
 
 return EXIT_SUCCESS;
+}
+
+A simple UDP client
+
+Let's begin the same way we begin each program, by including the necessary headers, starting main(), and initializing Winsock, as follows:
+
+#include "chap04.h"
+
+int main() {
+#if defined(_WIN32)
+    WSADATA d;
+    if (WSAStartup(MAKEWORD(2, 2), &d)) {         
+        fprintf(stderr, "Failed to initialize.\n");         
+        return 1;
+    } 
+#endif
+
+We then configure the remote address using getaddrinfo(). In this minimal example, we use 127.0.0.1 as the remote address and 8080 as the remote port. This means that it connects to the UDP server only if it's running on the same computer.
+
+printf("Configuring remote address...\n");
+struct addrinfo hints;
+memset(&hints, 0, sizeof(hints));
+hints.ai_socktype = SOCK_DGRAM;
+struct addrinfo *peer_address;
+
+Notice that we hardcoded 127.0.0.1 and 8080 into the call to getaddrinfo(). Also, notice that we've set hints.ai_socktype = SOCK_DGRAM. This tells getaddrinfo() that we are connecting over UDP. Notice that we did not set AF_INET or AF_INET6. This allows getaddrinfo() to return the appropriate address for IPv4 or IPv6. In this case, it is IPv4 because the address, 127.0.0.1, is an IPv4 address.
+
+We can print the configured address using getnameinfo(). The call to getnameinfo() is the same as in the previous UDP server, udp_recvfrom.c. It works as follows:
+
+printf("Remote address is: ");
+char address_buffer[100];
+char service_buffer[100];
+getnameinfo(peer_address->ai_addr, peer_address->ai_addrlen, address_buffer, sizeof(address_buffer),    
+            service_buffer, sizeof(service_buffer), NI_NUMERICHOST  | NI_NUMERICSERV);
+printf("%s %s\n", address_buffer, service_buffer);
+
+Now that we've stored the remote address, we are ready to create our socket with a call to socket(). We pass in fields from peer_address to create the appropriate socket type. The code for this is as follows:
+
+printf("Creating socket...\n");
+SOCKET socket_peer;
+socket_peer = socket(peer_address->ai_family, peer_address->ai_socktype, peer_address->ai_protocol);     
+if (!ISVALIDSOCKET(socket_peer)) {
+    fprintf(stderr, "socket() failed. (%d)\n", GETSOCKETERRNO());         
+    return 1;
+}
+
+Once the socket has been created, we can go straight to sending data with sendto(). There is no need to call connect(). Here is the code to send Hello World to our UDP server:
+
+const char *message = "Hello World";
+printf("Sending: %s\n", message);
+int bytes_sent = sendto(socket_peer, message, strlen(message),0,peer_address->ai_addr,peer_address->ai_addrlen);
+printf("Sent %d bytes.\n", bytes_sent);
+
+Notice that sendto() is much like send(), except that we need to pass in an address as the last parameter.
+
+It is also worth noting that we do not get an error back if sending fails. send() simply tries to send a message, but if it gets lost or is misdelivered along the way, there is nothing we can do about it. If the message is important, it is up to the application protocol to implement the corrective action.
+
+After we've sent our data, we could reuse the same socket to send data to another address (as long as it's the same type of address, which is IPv4 in this case). We could also try to receive a reply from the UDP server by calling recvfrom(). Note that if we did call recvfrom() here, we could get data from anybody that sends to us – not necessarily the server we just transmitted to.
+
+When we sent our data, our socket was assigned with a temporary local port number by the operating system. This local port number is called the ephemeral port number. From then on, our socket is essentially listening for a reply on this local port. If the local port is important, you can use bind() to associate a specific port before calling send().
+
+If multiple applications on the same system are connecting to a remote server at the same port, the operating system uses the local ephemeral port number to keep replies separate. Without this, it wouldn't be possible to know which application should receive which reply.
+
+We'll end our example program by freeing the memory for peer_address, closing the socket, cleaning up Winsock, and finishing main(), as follows:
+
+freeaddrinfo(peer_address);
+    CLOSESOCKET(socket_peer);
+#if defined(_WIN32)
+    WSACleanup();
+#endif
+    printf("Finished.\n");
+    return EXIT_SUCCESS;
+
+}
+
+To test it out, first, start udp_recvfrom in a separate terminal. With udp_recvfrom already running, you can start udp_sendto. It should look as follows: see image
+
+If no server is running on port 8080, udp_sendto still produces the same output. udp_sendto doesn't know that the packet was not delivered.
+
+A UDP server
+
+It will be useful to look at a UDP server that's been designed to service many connections. Fortunately for us, the UDP socket API makes this very easy.
+
+Our server begins by setting up the socket and binding to our local address. It then waits to receive data. Once it has received a data string, it converts the string into all uppercase and sends it back.
+
+The program flow looks as follows: see image
+
+If you compare the flow of this program to the TCP server from the last chapter (Chapter 3, An In-Depth Overview of TCP Connections), you will find that it's much simpler. With TCP, we had to use listen() and accept(). With UDP, we skip those calls and go straight into receiving data with recvfrom(). With our TCP server, we had to monitor a listening socket for new connections while simultaneously monitoring an additional socket for each connected client. Our UDP server only uses one socket, so there is much less to keep track of.
+
+Our UDP server program begins by including the necessary headers, starting the main() function, and initializing Winsock, as follows:
+
+#include "chap04.h"
+
+#include <ctype.h>
+
+int main() {
+#if defined(_WIN32)
+    WSADATA d;
+    if (WSAStartup(MAKEWORD(2, 2), &d)) {
+        fprintf(stderr, "Failed to initialize.\n");
+        return 1;
+    }
+#endif
+
+We then find our local address that we should listen on, create the socket, and bind to it. This is all exactly the same as in our earlier server, udp_recvfrom.c. The only difference between this code and the TCP servers in Chapter 3, An In-Depth Overview of TCP Connections, is that we use SOCK_DGRAM instead of SOCK_STREAM. Recall that SOCK_DGRAM specifies that we want a UDP socket.
+
+printf("Configuring local address...\n");     
+struct addrinfo hints;
+memset(&hints, 0, sizeof(hints));
+hints.ai_family = AF_INET;
+hints.ai_socktype = SOCK_DGRAM;
+hints.ai_flags = AI_PASSIVE;
+struct addrinfo *bind_address;
+getaddrinfo(0, "8080", &hints, &bind_address);
+
+printf("Creating socket...\n");
+SOCKET socket_listen;
+socket_listen = socket(bind_address->ai_family,bind_address->ai_socktype, bind_address->ai_protocol);     
+
+if (!ISVALIDSOCKET(socket_listen)) {
+    fprintf(stderr, "socket() failed. (%d)\n", GETSOCKETERRNO());         
+    return EXIT_SUCCESS;
+}
+
+Binding the new socket to the local address is done as follows:
+
+printf("Creating socket...\n");
+SOCKET socket_listen;
+socket_listen = socket(bind_address->ai_family,bind_address->ai_socktype, bind_address->ai_protocol);     
+
+if (!ISVALIDSOCKET(socket_listen)) {
+    fprintf(stderr, "socket() failed. (%d)\n", GETSOCKETERRNO());         
+    return EXIT_SUCCESS;
+}
+
+Because our server uses select(), we need to create a new fd_set to store our listening socket. We zero the set using FD_ZERO(), and then add our socket to this set using FD_SET(). We also maintain the maximum socket in the set using max_socket:
+
+Note that we don't really have to use select() for this program, and omitting it would make the program simpler (see udp_server_toupper_simple.c). However, we are going to use select() because it makes our code more flexible. We could easily add in an additional socket (if we needed to listen on multiple ports, for example), and we could add in a select() timeout if our program needs to perform other functions. Of course, our program doesn't do those things, so we don't need select(), but I think that most programs do, so we will show it that way.
 
