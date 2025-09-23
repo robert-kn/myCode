@@ -424,3 +424,131 @@ within the words being in reverse order for the receiving program. To avoid such
 networking applications must follow established conventions for byte ordering to make sure the sending machine 
 converts its internal representation to the network standard, while the receiving machine converts the network 
 standard to its internal representation.
+
+figure2.4.c shows C code that uses casting to access and print the byte representations of different program objects. 
+We use typedef to define data type byte_pointer as a pointer to an object of type unsigned char. Such a byte pointer 
+references a sequence of bytes where each byte is considered to be a nonnegative integer. The first routine show_bytes
+is given the address of a sequence of bytes, size_t indicated by a byte pointer, and a byte count. The byte count 
+is specified as having data type size_t, the preferred data type for expressing the sizes of data structures. It prints 
+the individual bytes in hexadecimal. The C formatting directive indicates that an integer should be printed in 
+hexadecimal with at least 2 digits.
+
+Procedures show_int, show_float, and show_pointer demonstrate how to use procedure show_bytes to print the byte 
+representations of C program objects of type int, float, and void *, respectively. Observe that they simply pass
+show_bytes a pointer &x to their argument x, casting the pointer to be of type unsigned char *. This cast indicates 
+to the compiler that the program should consider the pointer to be to a sequence of bytes rather than to an object 
+of the original data type. This pointer will then be to the lowest byte address occupied by the object.
+
+These procedures use the C size of operator to determine the number of bytes used by the object. In general, the 
+expression sizeof(T) returns the number of bytes required to store an object of type T. Using sizeof rather than a 
+fixed value is one step toward writing code that is portable across different machine types.
+
+The code in figure2-4.c was run on different machines as shown below:
+
+Linux 32  Intel IA32 processor running Linux.
+Windows   Intel IA32 processor running Windows.
+Sun       Sun Microsystems SPARC processor running Solaris. (These machines are now produced by Oracle.)
+Linux 64  Intel x86–64 processor running Linux.
+
+The results are shown in figure2-6.png
+
+Our argument 12,345 has hexadecimal representation 0x00003039. For the int data, we get identical results for all 
+machines, except for the byte ordering. In particular, we can see that the least significant byte value of 0x39
+is printed first for Linux 32, Windows, and Linux 64, indicating little-endian machines, and last for Sun, 
+indicating a big-endian machine. Similarly, the bytes of the float data are identical, except for the byte ordering.
+On the other hand, the pointer values are completely different. The different machine/operating system 
+configurations use different conventions for storage allocation. One feature to note is that the Linux 32, Windows, 
+and Sun machines use 4-byte addresses, while the Linux 64 machine uses 8-byte addresses. 
+
+Observe that although the floating-point and the integer data both encode the numeric value 12,345, they have very 
+different byte patterns: 0x00003039 for the integer and 0x4640E400 for floating point. In general, these two 
+formats use different encoding schemes. If we expand these hexadecimal patterns into binary form and shift them 
+appropriately, we find a sequence of 13 matching bits, indicated by a sequence of asterisks, as follows: see 
+shifting-bits.png
+
+This is not coincidental. 
+
+Practice Problem 2.5
+
+Consider the following three calls to show_bytes:
+
+int val = 0x87654321;
+byte_pointer valp = (byte_pointer) &val; 
+show_bytes(valp, 1); /* A. */ 
+show_bytes(valp, 2); /* B. */ 
+show_bytes(valp, 3); /* C. */
+
+Indicate the values that will be printed by each call on a little-endian machine and on a big-endian machine:
+
+A.  Little endian: 21                 Big endian: 87
+B.  Little endian: 2143               Big endian: 8765
+C.  Little endian: 214365             Big endian: 876543
+
+
+Practice Problem 2.6 
+
+Using show_int and show_float, we determine that the integer 3510593 has hexadecimal representation 0x00359141,
+while the floating-point number 3510593.0 has hexadecimal representation 0x4A564504.
+
+A.  Write the binary representations of these two hexadecimal values.
+
+0x00359141 - 0000 0000 0011 0101 1001 0001 0100 0001
+
+0x4A564504 - 0100 1010 0101 0110 0100 0101 0000 0100
+
+B. Shift these two strings relative to one another to maximize the number of matching bits. How many bits match?
+
+0x00359141 - 00000000001101011001000101000001
+0x4A564504 -   01001010010101100100010100000100
+
+21 bits match
+
+C.  What parts of the strings do not match?
+
+0x4A564504 -   010010100
+0x00359141 - 00000000001
+
+2.1.4 Representing Strings
+
+A string in C is encoded by an array of characters terminated by the null (having value 0) character. Each 
+character is represented by some standard encoding, with the most common being the ASCII character code. Thus, if 
+we run our routine show_bytes with arguments “12345” and 6 (to include the terminating character), we get the 
+result 31 32 33 34 35 00. Observe that the ASCII code for decimal digit x happens to be 0x3x, and that the 
+terminating byte has the hex representation 0x00. This same result would be obtained on any system using ASCII as 
+its character code, independent of the byte ordering and word size conventions. As a consequence, text data are 
+more platform independent than binary data.
+
+Practice Problem 2.7 
+
+What would be printed as a result of the following call to show_bytes?
+
+const char *s = “abcdef”;
+show_bytes((byte_pointer) s, strlen(s));
+
+Note that letters ‘a' through ‘z' have ASCII codes 0x61 through 0x7A.
+
+displays 61626364656600
+
+2.1.5 Representing Code
+
+Consider the following C function:
+
+int sum(int x, int y) {
+    return x + y;
+}
+
+When compiled on our sample machines, we generate machine code having the following byte representations:
+
+Linux 32        55 89 e5 8b 45 0c 03 45 08 c9 c3
+Windows         55 89 e5 8b 45 0c 03 45 08 5d c3
+Sun             81 c3 e0 08 90 02 00 09
+Linux 64        55 48 89 e5 89 7d fc 89 75 f8 03 45 fc c9 c3
+
+Here we find that the instruction codings are different. Different machine types use different and incompatible 
+instructions and encodings. Even identical processors running different operating systems have differences in 
+their coding conventions and hence are not binary compatible. Binary code is seldom portable across different 
+combinations of machine and operating system.
+
+A fundamental concept of computer systems is that a program, from the perspective of the machine, is simply a 
+sequence of bytes. The machine has no information about the original source program, except perhaps some auxiliary 
+tables maintained to aid in debugging. 

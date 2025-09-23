@@ -2415,7 +2415,7 @@ the contents of another ﬁle.
 
 54. if a header file includes double quotes (" ") around the ﬁlename, it tells the preprocessor that the header ﬁle can be found in the same directory as the C source ﬁle or in some other directory known to the compiler.
 
-chapter 12
+chapter 12 (done and questions as well)
 
 1. Variables hold the values upon which a program acts, and operators are the language constructs for manipulating these values.
 
@@ -2467,7 +2467,7 @@ bool test = false;      // Initialized to false, which is symbolically defined t
 
 20. our C compiler keeps track of variables in a program with a symbol table. Whenever the compiler reads a variable declaration, it creates a new entry in its symbol table corresponding to the variable being declared. The entry contains enough information for the compiler to manage the storage allocation for the variable and generation of the proper sequence of machine code whenever the variable is used in the program. For now, we’ll consider that each symbol table entry for a variable contains (1) its identifier, (2) its type, (3) the place in memory the variable has been allocated storage, and (4) the scope of the variable, which for our purposes will be the line numbers in the code corresponding to where the variable is in scope. Figure 12.5 shows the symbol table entries corresponding to the variables declared in the network rate calculation program in Figure 12.4. 
 
-21. Since this program contains six variable declarations, the compiler ends up with six entries in its symbol table, one for each. Notice that the compiler records a variable’s location in memory as an oﬀset, with most oﬀsets being negative. This oﬀset indicates the relative position of the variable within the region of memory in which it is allocated. Important concept. 
+21. Since this program contains six variable declarations, the compiler ends up with six entries in its symbol table, one for each. Notice that the compiler records a variable’s location in memory as an oﬀset, with most oﬀsets being negative. This oﬀset indicates the relative position of the variable within the region of memory in which it is allocated.
 
 22. Allocating Space for Variables: There are two regions of memory in which declared variables in C are allocated storage: the global data section and the run-time stack. Variables that are global are allocated storage in the global data section. Local variables are allocated storage on the run-time stack. The oﬀset ﬁeld in the symbol table enables the compiler to precisely locate those variables in either of those two regions. The oﬀset ﬁeld indicates how many locations from the base of the section a variable is allocated storage.
 
@@ -2501,7 +2501,7 @@ LDR R0, R5, #-5
 
 35. Because the size of the three basic C types is closely tied to the types supported by the underlying ISA, many compilers only support these modiﬁers long and short if the device’s ISA supports these size variations. Even though a variable can be declared as a long int, it may be equivalent to a regular int if the underlying ISA has no support for longer versions of the integer data type.
 
-36. Another useful variation of the basic int data type is the unsigned integer. We can declare an unsigned integer using the unsigned type modiﬁer. With unsigned integers, all bits are used to represent nonnegative integers (i.e., posi- tive numbers and zero). 
+36. Another useful variation of the basic int data type is the unsigned integer. We can declare an unsigned integer using the unsigned type modiﬁer. With unsigned integers, all bits are used to represent nonnegative integers (i.e., positive numbers and zero). 
 
 37. In C, variables can also be declared as constants by adding the const qualiﬁer before the type speciﬁer. These constants are types whose values cannot be modiﬁed during the execution of a program; they are read-only. 
 
