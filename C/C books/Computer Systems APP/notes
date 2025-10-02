@@ -1,3 +1,9 @@
+Many systems are written from a builder's perspective, describing how to implement the hardware or the systems software, 
+including the operating system, compiler, and network interface. This book is written from a programmer's perspective, 
+describing how application programmers can use their knowledge of a system to write better programs. 
+
+This book focuses on systems that execute x86-64 machine code.
+
 1. A Tour of Computer Systems
 
 All information in a system—including disk files, programs stored in memory, user data stored in memory, and data 

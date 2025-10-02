@@ -2382,3 +2382,1279 @@ freeaddrinfo(peer_address);
 }
 
 That concludes the dns_query program.
+
+Try running dns_query with different domain names and different record types. In particular, try it with mx and txt records. If you're brave, try running it with the any record type. You may find the results interesting.
+
+Note that UDP is not always reliable. If our DNS query is lost in transit, then dns_query hangs while waiting forever for a reply that never comes. This could be fixed by using the select() function to time out and retry.
+
+Questions
+
+Which function fills in an address needed for socket programming in a portable and protocol-independent way? getaddrinfo
+
+Which socket programming function can be used to convert an IP address back into a name? getnameinfo
+
+A DNS query converts a name into an address, and a reverse DNS query converts an address back into a name. If you run a DNS query on a name, and then a reverse DNS query on the resulting address, do you always get back the name you started with? no because reverse dns may not have been set up for the prior hostname. Also multiple domain names may be associated 
+
+What are the DNS record types used to return IPv4 and IPv6 addresses for a name? 1 and 28 
+
+Which DNS record type stores special information about email servers? TXT
+
+Does getaddrinfo() always return immediately? or can it block? it returns immediately
+
+What happens when a DNS response is too large to fit into a single UDP packet? falls back to use TCp
+
+
+Section 2 - An Overview of Application Layer Protocols
+
+chapter 6 building a simple web client
+
+Hypertext Transfer Protocol (HTTP) is the application protocol that powers the World Wide Web (WWW). Whenever you fire up your web browser to do an internet search, browse Wikipedia, or make a post on social media, you are using HTTP. Many mobile apps also use HTTP behind the scenes. It's safe to say that HTTP is one of the most widely used protocols on the internet.
+
+The HTTP protocol
+
+HTTP is a text-based client-server protocol that runs over TCP. Plain HTTP runs over TCP port 80.
+
+It should be noted that plain HTTP is mostly deprecated for security reasons. Today, sites should use HTTPS, the secure version of HTTP. HTTPS secures HTTP by merely running the HTTP protocol through a Transport Layer Security (TLS) layer. Therefore, everything we cover in this chapter regarding HTTP also applies to HTTPS.
+
+HTTP works by first having the web client send an HTTP request to the web server. Then, the web server responds with an HTTP response. Generally, the HTTP request indicates which resource the client is interested in, and the HTTP response delivers the requested resource.
+
+Visually, the transaction is illustrated in the following graphic: see diagram
+
+The preceding graphic illustrates a GET request. A GET request is used when the Web Client simply wants the Web Server to send it a document, image, file, web page, and so on. GET requests are the most common. They are what your browser sends to a
+Web Server while loading up a web page or downloading a file.
+
+There are a few other request types that are also worth mentioning.
+
+HTTP request types
+
+Although GET requests are the most common, there are, perhaps, three request types that are commonly used. The three common HTTP request types are as follows:
+
+GET is used when the client wants to download a resource.
+
+HEAD is just like GET, except that the client only wants information about the resource instead of the resource itself. For example, if the client only wants to know the size of a hosted file, it could send a HEAD request.
+
+POST is used when the client needs to send information to the server. Your web browser typically uses a POST request when you submit an online form, for example. A POST request will typically cause a web server to change its state somehow. A web server could send an email, update a database, or change a file in response to a POST request.
+
+In addition to GET, HEAD, and POST, there are a few more HTTP request types that are rarely used. They are as follows:
+
+PUT is used to send a document to the web server. PUT is not commonly used. POST is almost universally used to change the web server state.
+
+DELETE is used to request that the web server should delete a document or resource. Again, in practice, DELETE is rarely used. POST is commonly used to communicate web server updates of all types.
+
+TRACE is used to request diagnostic information from web proxies. Most web requests don't go through a proxy, and many web proxies don't fully support TRACE. Therefore, it's rare to need to use TRACE.
+
+CONNECT is sometimes used to initiate an HTTP connection through a proxy server.
+
+OPTIONS is used to ask which HTTP request types are supported by the server for a given resource. A typical web server that implements OPTIONS may respond with something similar to Allow: OPTIONS, GET, HEAD, POST. Many common web servers don't support OPTIONS.
+
+If you send a request that the web server doesn't support, then the server should respond with a 400 Bad Request code.
+
+HTTP request format
+
+If you open your web browser and navigate to http://www.example.com/page1.htm, your browser will need to send an HTTP request to the web server at www.example.com. That HTTP request may look like this:
+
+GET /page1.htm HTTP/1.1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 
+Accept-Language: en-US
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8 
+Accept-Encoding: gzip, deflate
+Host: example.com
+Connection: Keep-Alive
+
+As you can see, the browser sends a GET request by default. This GET request is asking the server for the document /page1.htm. A GET request consists of HTTP headers only. There is no HTTP body because the client isn't sending data to the server. The client is only requesting data from the server. In contrast, a POST request would contain an HTTP body.
+
+The first line of an HTTP request is called the request line. The request line consists of three parts – the request type, the document path, and the protocol version. Each part is separated by a space. In the preceding example, the request line is GET /page1.htm HTTP/1.1. We can see that the request type is GET, the document path is /page1.htm, and the protocol version is HTTP/1.1.
+
+When dealing with text-based network protocols, it is always important to be explicit about line endings. This is because different operating systems have standardized on different line-ending conventions. Each line of an HTTP message ends with a carriage return, followed by a newline character. In C, this looks like \r\n. In practice, some web servers may tolerate other line endings. You should ensure that your clients always send a proper \r\n line ending for maximum compatibility.
+
+After the request line, there are various HTTP header fields. Each header field consists of its name followed by a colon, and then its value. Consider the User-Agent: Mozilla/5.0
+(Windows NT 10.0; Win64; x64) AppleWebKit/537.36 line. This User-Agent line is telling the web server what software is contacting it. Some web servers will serve different documents to different user agents. For example, it is common for some websites to serve full documents to search engine spiders while serving paywalls to actual visitors. The server generally uses the user-agent HTTP header field to determine which is which. At the same time, there is a long history of web clients lying in the user-agent field. I suggest you take the high road in your applications and clearly identify your application with a unique user-agent value.
+
+The only header field that is actually required is Host. The Host field tells the web server which web host the client is requesting the resource from. This is important because one web server may be hosting many different websites. The request line tells the web server that the /page1.htm document is wanted, but it doesn't specify which server that page is on. The Host field fills this role.
+
+The Connection: Keep-Alive line tells the web server that the HTTP client would like to issue additional requests after the current request finishes. If the client had sent Connection: Close instead, that would indicate that the client intended to close the TCP connection after the HTTP response was received.
+
+The web client must send a blank line after the HTTP request header. This blank line is how the web server knows that the HTTP request is finished. Without this blank line, the web server wouldn't know whether any additional header fields were still going to being sent. In C, the blank line looks like this: \r\n\r\n.
+
+Let's now consider what the web server would send in reply to an HTTP request.
+
+HTTP response format
+
+Like the HTTP request, the HTTP response also consists of a header part and a body part. Also similar to the HTTP request, the body part is optional. Most HTTP responses do have a body part, though.
+
+The server at www.example.com could respond to our HTTP request with the following reply:
+
+HTTP/1.1 200 OK
+Cache-Control: max-age=604800 
+Content-Type: text/html; charset=UTF-8 
+Date: Fri, 14 Dec 2018 16:46:09 GMT
+Etag: "1541025663+gzip"
+Expires: Fri, 21 Dec 2018 16:46:09 GMT 
+Last-Modified: Fri, 09 Aug 2013 23:54:35 GMT 
+Server: ECS (ord/5730)
+Vary: Accept-Encoding
+X-Cache: HIT
+Content-Length: 1270
+
+<!doctype html>
+<html>
+<head>
+    <title>Example Domain</title>
+...
+
+The first line of an HTTP response is the status line. The status line consists of the protocol version, the response code, and the response code description. In the preceding example, we can see that the protocol version is HTTP/1.1, the response code is 200, and the response code description is OK. 200 OK is the typical response code to an HTTP GET request when everything goes ok. If the server couldn't find the resource the client has requested, it might respond with a 404 Page Not Found response code instead.
+
+Many of the HTTP response headers are used to assist with caching. The Date, Etag, Expires, and Last-Modified fields can all be used by the client to cache documents.
+
+The Content-Type field tells the client what type of resource it is sending. In the preceding example, it is an HTML web page, which is specified with text/html. HTTP can be used to send all types of resources, such as images, software, and videos. Each resource type has a specific Content-Type, which tells the client how to interpret the resource.
+
+The Content-Length field specifies the size of the HTTP response body in bytes. In this case, we see that the requested resource is 1270 bytes long. There are a few ways to determine the body length, but the Content-Length field is the simplest. We will look at other ways in the Response Body Length section later in this chapter.
+
+The HTTP response header section is delineated from the HTTP response body by a blank line. After this blank line, the HTTP body follows. Note that the HTTP body is not necessarily text-based. For example, if the client requested an image, then the HTTP body would likely be binary data. Also consider that, if the HTTP body is text-based, such as an HTML web page, it is free to use its own line-ending convention. It doesn't have to use the \r\n line ending required by HTTP.
+
+If the client had sent a HEAD request type instead of GET, then the server would respond with exactly the same HTTP headers as before, but it would not include the HTTP body.
+
+With the HTTP response format defined, let's look at some of the most common HTTP response types.
+
+HTTP response codes
+
+There are many different types of HTTP response codes.
+
+If the request was successful, then the server responds with a code in the 200 range:
+
+200 OK: The client's request is successful, and the server sends the requested resource
+
+If the resource has moved, the server can respond with a code in the 300 range. These codes are commonly used to redirect traffic from an unencrypted connection to an encrypted one, or to redirect traffic from a www subdomain to a bare one. They are also used if a website has undergone restructuring, but wants to keep incoming links working. The common 300 range codes are as follows:
+
+301 Moved Permanently: The requested resource has moved to a new location. This location is indicated by the server in the Location header field. All future requests for this resource should use this new location.
+
+307 Moved Temporarily: The requested resource has moved to a new location. This location is indicated by the server in the Location header field. This move may not be permanent, so future requests should still use the original location.
+
+Errors are indicated by 400 or 500 range response codes. Some common ones are as follows:
+
+400 Bad Request: The server doesn't understand/support the client's request 
+401 Unauthorized: The client isn't authorized for the requested resource
+403 Forbidden: The client is forbidden to access the requested resource
+500 Internal Server Error: The server encountered an error while trying to fulfill the client's request
+
+In addition to a response type, the HTTP server must also be able to unambiguously communicate the length of the response body.
+
+Response body length
+
+The HTTP body response length can be determined a few different ways. The simplest is if the HTTP server includes a Content-Length header line in its response. In that case, the server simply states the body length directly.
+
+If the server would like to begin sending data before the body's length is known, then it can't use the Content-Length header line. In this case, the server can send a Transfer-Encoding: chunked header line. This header line indicates to the client that the response body will be sent in separate chunks. Each chunk begins with its chunk length, encoded in base-16 (hexadecimal), followed by a newline, and then the chunk data. The entire HTTP body ends with a zero-length chunk.
+
+Let's consider an HTTP response example that uses chunked encoding:
+
+HTTP/1.1 200 OK
+Content-Type: text/plain; charset=ascii
+Transfer-Encoding: chunked
+
+44
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eius
+37
+mod tempor incididunt ut labore et dolore magna aliqua.
+0
+
+In the preceding example, we see the HTTP body starts with 44 followed by a newline. This 44 should be interpreted as hexadecimal. We can use the built-in C strtol() function to interpret hexadecimal numbers.
+
+Hexadecimal numbers are commonly written with a 0x prefix to disambiguate them from decimal. We identify them with this prefix here, but keep in mind that the HTTP protocol does not add this prefix.
+
+The 0x44 hexadecimal number is equal to 68 in decimal. After the 44 and newline, we see 68 characters that are part of the requested resource. After the 68 character chunk, the server sends a newline.
+
+The server then sent 37. 0x37 is 55 in decimal. After a newline, 55 characters are sent as chunk data. The server then sends a zero-length chunk to indicate that the response is finished.
+
+The client should interpret the complete HTTP response after it has decoded the chunking as Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+There are a few other ways to indicate the HTTP response body length besides Content-Length and Transfer-Encoding: chunked. However, the server is limited to those two unless the client explicitly states support for additional encoding types in the HTTP request.
+
+You may sometimes see a server that simply closes the TCP connection when it has finished transmitting a resource. That was a common way to indicate resource size in HTTP/1.0. However, this method shouldn't be used with HTTP/1.1. The issue with using a closed connection to indicate response length is that it's ambiguous as to why the connection was closed. It could be because all data has been sent, or it could be because of some other reason. Consider what would happen if a network cable is unplugged while data is being sent.
+
+What's in a URL
+
+Uniform Resource Locators (URL), also known as web addresses, provide a convenient way to specify particular web resources. You can navigate to a URL by typing it into your web browser's address bar. Alternately, if you're browsing a web page and click on a link, that link is indicated with a URL.
+
+Consider the http://www.example.com:80/res/page1.php?user=bob#account URL. Visually, the URL can be broken down like this: see image
+
+The URL can indicate the protocol, the host, the port number, the document path, and hash. However, the host is the only required part. The other parts can be implied.
+
+We can parse the example URL from the preceding diagram:
+
+http://: The part before the first :// indicates the protocol. In this example, the protocol is http, but it could be a different protocol such as ftp:// or https://. If the protocol is omitted, the application will generally make an assumption. For example, your web browser would assume the protocol to be http.
+
+www.example.com: This specifies the hostname. It is used to resolve an IP address that the HTTP client can connect to. This hostname must also appear in the HTTP request Host header field. This is required since multiple hostnames can resolve to the same IP address. This part can also be an IP address instead of a name. IPv4 addresses are used directly (http://192.168.50.1/), but IPv6 addresses should be put inside square brackets (http://[::1]/).
+
+:80: The port number can be specified explicitly by using a colon after the hostname. If the port number is not specified, then the client uses the default port number for the given protocol. The default port number for http is 80, and the default port number for https is 443. Non-standard port numbers are common for testing and development.
+
+/res/page1.php?user/bob: This specifies the document path. The HTTP server usually makes a distinction between the part before and after the question mark, but the HTTP client should not assign significance to this. The part after the question mark is often called the query string.
+
+#account: This is called the hash. The hash specifies a position within a document, and the hash is not sent to the HTTP server. It instead allows a browser to scroll to a particular part of a document after the entire document is received from the HTTP server.
+
+Parsing a URL
+
+We will write a C function to parse a given URL.
+
+The function takes as input a URL, and it returns as output the hostname, the port number, and the document path. To avoid needing to do manual memory management, the outputs are returned as pointers to specific parts of the input URL. The input URL is modified with terminating null pointers as required.
+
+Our function begins by printing the input URL. This is useful for debugging. The code for that is as follows:
+
+void parse_url(char *url, char **hostname, char **port, char** path) {     
+    printf("URL: %s\n", url);
+
+The function then attempts to find :// in the URL. If found, it reads in the first part of the URL as a protocol. Our program only supports HTTP. If the given protocol is not HTTP, then an error is returned. The code for parsing the protocol is as follows:
+
+char *p;
+p = strstr(url, "://");
+
+char *protocol = 0;
+if (p) {
+    protocol = url;
+    *p = 0;
+    p += 3;
+} else {
+    p = url;
+}
+if (protocol) {
+    if (strcmp(protocol, "http")) {
+        fprintf(stderr, "Unknown protocol '%s'. Only 'http' is supported.\n", protocol);
+        exit(1);
+    }
+}
+
+In the preceding code, a character pointer, p, is declared. protocol is also declared and set to 0 to indicate that no protocol has been found. strstr() is called to search for :// in the URL. If it is not found, then protocol is left at 0, and p is set to point back to the beginning of the URL. However, if :// is found, then protocol is set to the beginning of the URL, which contains the protocol. p is set to one after ://, which should be where the hostname begins.
+
+If protocol was set, the code then checks that it points to the text http.
+
+At this point in the code, p points to the beginning of the hostname. The code can save the hostname into the return variable, hostname. The code must then scan for the end of the hostname by looking for the first colon, slash, or hash. The code for this is as follows:
+
+*hostname = p;
+while (*p && *p != ':' && *p != '/' && *p != '#') 
+    ++p;
+
+Once p has advanced to the end of the hostname, we must check whether a port number was found. A port number starts with a colon. If a port number is found, our code returns it in the port variable; otherwise, a default port number of 80 is returned. The code to check for a port number is as follows:
+
+*port = "80";
+if (*p == ':') {
+    *p++ = 0;
+    *port = p;
+}
+while (*p && *p != '/' && *p != '#') 
+    ++p;
+
+After the port number, p points to the document path. The function returns this part of the URL in the path variable. Note that our function omits the first / in the path. This is for simplicity because it allows us to avoid allocating any memory. All document paths start with /, so the function caller can easily prepend that when the HTTP request is constructed.
+
+The code to set the path variable is as follows:
+
+*path = p;
+if (*p == '/') {
+    *path = p + 1;
+}
+*p = 0;
+
+The code then attempts to find a hash, if it exists. If it does exist, it is overwritten with a terminating null character. This is because the hash is never sent to the web server and is ignored by our HTTP client.
+
+The code that advances to the hash is as follows:
+
+while (*p && *p != '#') 
+    ++p;
+if (*p == '#') 
+    *p = 0;
+
+Our function has now parsed out the hostname, port number, and document path. It then prints out these values for debugging purposes and returns. The final code for the parse_url() function is as follows:
+
+printf("hostname: %s\n", *hostname);
+printf("port: %s\n", *port);
+printf("path: %s\n", *path);
+}
+
+Now that we have code to parse a URL, we are one step closer to building an entire HTTP client.
+
+Implementing a web client
+
+We will now implement an HTTP web client. This client takes as input a URL. It then attempts to connect to the host and retrieve the resource given by the URL. The program displays the HTTP headers that are sent and received, and it attempts to parse out the requested resource content from the HTTP response.
+
+Our program begins by including the chapter header, chap06.h:
+
+#include "chap06.h"
+
+We then define a constant, TIMEOUT. Later in our program, if a HTTP response is taking more than TIMEOUT seconds to complete, then our program abandons the request. You can define TIMEOUT as you like, but we give it a value of five seconds here:
+
+#define TIMEOUT 5.0
+
+Now, please include the entire parse_url() function as given in the previous section. Our client needs parse_url() to find the hostname, port number, and document path from a given URL.
+
+Another helper function is used to format and send the HTTP request. We call it send_request(), and its code is given next:
+
+void send_request(SOCKET s, char *hostname, char *port, char *path) {     
+    char buffer[2048];
+
+    sprintf(buffer, "GET /%s HTTP/1.1\r\n", path);
+    sprintf(buffer + strlen(buffer), "Host: %s:%s\r\n", hostname, port);     
+    sprintf(buffer + strlen(buffer), "Connection: close\r\n");     
+    sprintf(buffer + strlen(buffer), "User-Agent: honpwc web_get 1.0\r\n");     
+    sprintf(buffer + strlen(buffer), "\r\n");
+    send(s, buffer, strlen(buffer), 0);
+    printf("Sent Headers:\n%s", buffer);
+}
+
+send_request() works by first defining a character buffer in which to store the HTTP request. It then uses the sprintf() function to write to the buffer until the HTTP request is complete. The HTTP request ends with a blank line. This blank line tells the server that the entire request header has been received.
+
+Once the request is formatted into buffer, buffer is sent over an open socket using send(). buffer is also printed to the console for debugging purposes. We define one more helper function for our web client. This function, connect_to_host(), takes in a hostname and port number and attempts to establish a new TCP socket connection to it.
+
+In the first part of connect_to_host(), getaddrinfo() is used to resolve the hostname. getnameinfo() is then used to print out the server IP address for debugging purposes. The code for this is as follows:
+
+SOCKET connect_to_host(char *hostname, char *port) {
+    printf("Configuring remote address...\n");
+    struct addrinfo hints;
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_socktype = SOCK_STREAM;
+    struct addrinfo *peer_address;
+    if (getaddrinfo(hostname, port, &hints, &peer_address)) {         
+        fprintf(stderr, "getaddrinfo() failed. (%d)\n", GETSOCKETERRNO());
+        exit(1);
+    }
+
+    printf("Remote address is: ");
+    char address_buffer[100];
+    char service_buffer[100];
+    getnameinfo(peer_address->ai_addr, peer_address->ai_addrlen, address_buffer, sizeof(address_buffer), service_buffer, sizeof(service_buffer), NI_NUMERICHOST);
+    printf("%s %s\n", address_buffer, service_buffer);
+
+In the second part of connect_to_host(), a new socket is created with socket(), and a TCP connection is established with connect(). If everything goes well, the function returns the created socket. The code for the second half of connect_to_host() is as follows:
+
+    printf("Creating socket...\n");
+    SOCKET server;
+    server = socket(peer_address->ai_family,peer_address->ai_socktype, peer_address->ai_protocol);    
+    if (!ISVALIDSOCKET(server)) {
+        fprintf(stderr, "socket() failed. (%d)\n", GETSOCKETERRNO());         
+        exit(1);
+    }
+    printf("Connecting...\n");
+    if (connect(server,peer_address->ai_addr, peer_address->ai_addrlen)) {         
+        fprintf(stderr, "connect() failed. (%d)\n", GETSOCKETERRNO());         
+        exit(1);
+    }
+    freeaddrinfo(peer_address);
+    printf("Connected.\n\n");
+    return server;
+}
+
+If you've been working through this book from the beginning, the code in connect_to_host() should be very familiar by now. 
+
+With our helper functions out of the way, we can now begin to define the main() function. We begin main() with the following code:
+
+int main(int argc, char *argv[]) {
+#if defined(_WIN32)
+    WSADATA d;
+    if (WSAStartup(MAKEWORD(2, 2), &d)) {
+        fprintf(stderr, "Failed to initialize.\n");
+        return 1;
+    }
+#endif
+    if (argc < 2) {
+        fprintf(stderr, "usage: web_get url\n");
+        return 1;
+    }
+    char *url = argv[1];
+
+In the preceding code, Winsock is initialized, if needed, and the program's arguments are checked. If a URL is given as an argument, it is stored in the url variable.
+We can then parse the URL into its hostname, port, and path parts with the following code:
+
+    char *hostname, *port, *path;
+    parse_url(url, &hostname, &port, &path);
+
+The program then continues by establishing a connection to the target server and sending the HTTP request. This is made easy by using the two helper functions we defined previously, connect_to_host() and send_request(). The code for this is as follows:
+
+    SOCKET server = connect_to_host(hostname, port);     
+    send_request(server, hostname, port, path);
+
+One feature of our web client is that it times out if a request takes too long to complete. In order to know how much time has elapsed, we need to record the start time. This is done using a call to the built-in clock() function. We store the start time in the start_time variable with the following:
+
+    const clock_t start_time = clock();
+
+It is now necessary to define some more variables that can be used for bookkeeping while receiving and parsing the HTTP response. The requisite variables are as follows:
+
+#define RESPONSE_SIZE 8192
+    char response[RESPONSE_SIZE+1];
+    char *p = response, *q;
+    char *end = response + RESPONSE_SIZE;
+    char *body = 0;
+    enum {length, chunked, connection};
+    int encoding = 0;
+    int remaining = 0;
+
+In the preceding code, RESPONSE_SIZE is the maximum size of the HTTP response we reserve memory for. Our program is unable to parse HTTP responses bigger than this. If you extend this limit, it may be useful to use malloc() to reserve memory on the heap instead of the stack.
+
+response is a character array that holds the entire HTTP response. p is a char pointer that keeps track of how far we have written into response so far. q is an additional char pointer that is used later. We define end as a char pointer, which points to the end of the response buffer. end is useful to ensure that we don't attempt to write past the end of our reserved memory.
+
+The body pointer is used to remember the beginning of the HTTP response body once received.
+
+If you recall, the HTTP response body length can be determined by a few different methods. We define an enumeration to list the method types, and we define the encoding variable to store the actual method used. Finally, the remaining variable is used to record how many bytes are still needed to finish the HTTP body or body chunk.
+
+We then start a loop to receive and process the HTTP response. This loop first checks that it hasn't taken too much time and that we still have buffer space left to store the received data. The first part of this loop is as follows:
+
+while(1) {
+    if ((clock() - start_time) / CLOCKS_PER_SEC > TIMEOUT) {             
+        fprintf(stderr, "timeout after %.2f seconds\n", TIMEOUT);             
+        return 1;
+    }
+    if (p == end) {
+        fprintf(stderr, "out of buffer space\n");            
+        return 1;
+    }
+
+We then include the code to receive data over the TCP socket. Our code uses select() with a short timeout. This allows us to periodically check that the request hasn't timed out. You may recall from previous chapters that select() involves creating fd_set and timeval structures. The following code creates these objects and calls select():
+
+    fd_set reads;
+    FD_ZERO(&reads);
+    FD_SET(server, &reads);
+    struct timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 200000;
+    if (select(server+1, &reads, 0, 0, &timeout) < 0) {             
+        fprintf(stderr, "select() failed. (%d)\n",GETSOCKETERRNO());             
+        return 1;
+    }
+
+select() returns when either the timeout has elapsed, or new data is available to be read from the socket. Our code needs to use FD_ISSET() to determine whether new data is available to be read. If so, we read the data into the buffer at the p pointer.
+
+Alternatively, when attempting to read new data, we may find that the socket was closed by the web server. If this is the case, we check whether we were expecting a closed connection to indicate the end of the transmission. That is the case if encoding == connection. If so, we print the HTTP body data that was received.
+
+The code for reading in new data and detecting a closed connection is as follows:
+
+if (FD_ISSET(server, &reads)) {
+    int bytes_received = recv(server, p, end - p, 0);             
+    if (bytes_received < 1) {
+        if (encoding == connection && body) {                     
+            printf("%.*s", (int)(end - body), body);                 
+        }
+        printf("\nConnection closed by peer.\n");                 
+        break;
+    }
+    /*printf("Received (%d bytes): '%.*s'", bytes_received, bytes_received, p);*/
+    p += bytes_received;
+    *p = 0;
+
+Note that, in the preceding code, the p pointer is advanced to point to the end of received data. *p is set to zero, so our received data always ends with a null terminator. This allows us to use standard functions on the data that expect a null-terminated string. For example, we use the built-in strstr() function to search through the received data, and strstr() expects the input string to be null-terminated.
+
+Next, if the HTTP body hasn't already been found, our code searches through the received data for a blank line that indicates the end of the HTTP header. A blank line is encoded by two consecutive line endings. HTTP defines a line ending as \r\n, so our code detects a blank line by searching for \r\n\r\n.
+
+The following code finds the end of the HTTP header (which is the beginning of the HTTP body) using strstr(), and updates the body pointer to point to the beginning of the HTTP body:
+
+if (!body && (body = strstr(response, "\r\n\r\n"))) {                 
+    *body = 0;
+    body += 4;
+
+It may be useful to print the HTTP header for debugging. This can be done with the following code:
+
+printf("Received Headers:\n%s\n", response);
+
+Now that the headers have been received, we need to determine whether the HTTP server is using Content-Length or Transfer-Encoding: chunked to indicate body length. If it doesn't send either, then we assume that the entire HTTP body has been received once the connection is closed.
+
+If the Content-Length is found using strstr(), we set encoding = length and store the body length in the remaining variable. The actual length is read from the HTTP header using the strtol() function.
+
+If Content-Length is not found, then the code searches for Transfer-Encoding: chunked. If found, we set encoding = chunked. remaining is set to 0 to indicate that we haven't read in a chunk length yet.
+
+If neither Content-Length or Transfer-Encoding: chunked is found, then encoding = connection is set to indicate that we consider the HTTP body received when the connection is closed.
+
+The code for determining which body length method is used is as follows:
+
+q = strstr(response, "\nContent-Length: ");                 
+if (q) {
+    encoding = length;
+    q = strchr(q, ' ');
+    q += 1;
+    remaining = strtol(q, 0, 10);
+} 
+else 
+{
+    q = strstr(response, "\nTransfer-Encoding: chunked");                     
+    if (q) {
+        encoding = chunked;                         
+        remaining = 0;                     
+    } 
+    else 
+    {                         
+        encoding = connection;                     
+    }
+}
+printf("\nReceived Body:\n");
+}
+
+The preceding code could be made more robust by doing case-insensitive searching, or by allowing for some flexibility in spacing. However, it should work with most web servers as is, and we're going to continue to keep it simple.
+
+If the HTTP body start has been identified, and encoding == length, then the program simply needs to wait until remaining bytes have been received. The following code checks for this:
+
+if (body) {
+    if (encoding == length) {
+        if (p - body >= remaining) {                         
+            printf("%.*s", remaining, body);                         
+            break;
+        }
+
+In the preceding code, once remaining bytes of the HTTP body have been received, it prints the received body and breaks from the while loop.
+
+If Transfer-Encoding: chunked is used, then the receiving logic is a bit more complicated. The following code handles this:
+
+} else if (encoding == chunked) {
+    do {
+        if (remaining == 0) {
+            if ((q = strstr(body, "\r\n"))) {                                 
+                remaining = strtol(body, 0, 16);                                 
+                if (!remaining) goto finish;                                 
+                body = q + 2;                             
+            } 
+            else 
+            {                                 
+                break;                             
+            }
+                        
+        }
+        if (remaining && p - body >= remaining) {                             
+            printf("%.*s", remaining, body);                             
+            body += remaining + 2;                             
+            remaining = 0;                         
+        }
+    } while (!remaining);                 
+}
+            
+} //if (body)
+
+In the preceding code, the remaining variable is used to indicate whether a chunk length or chunk data is expected next. When remaining == 0, the program is waiting to receive a new chunk length. Each chunk length ends with a newline; therefore, if a newline is found with strstr(), we know that the entire chunk length has been received. In this case, the chunk length is read using strtol(), which interprets the hexadecimal chunk length. remaining is set to the expected chunk length. A chunked message is terminated by a zero-length chunk, so if 0 was read, the code uses goto finish to break out of the main loop.
+
+If the remaining variable is non-zero, then the program checks whether at least remaining bytes of data have been received. If so, that chunk is printed, and the body pointer is advanced to the end of the current chunk. This logic loops until it finds the terminating zero-length chunk or runs out of data.
+
+At this point, we've shown all of the logic to parse the HTTP response body. We only need to end our loops, close the socket, and the program is finished. Here is the final code for web_get.c:
+
+} //if FDSET
+    } //end while(1)
+finish:
+    printf("\nClosing socket...\n");
+    CLOSESOCKET(server);
+#if defined(_WIN32)
+    WSACleanup();
+#endif
+    printf("Finished.\n");
+    return 0;
+}
+
+web_get only supports the GET queries. POST queries are also common and useful. Let's now look at HTTP POST requests.
+
+HTTP POST requests
+
+An HTTP POST request sends data from the web client to the web server. Unlike an HTTP GET request, a POST request includes a body containing data (although this body could be zero-length).
+
+The POST body format can vary, and it should be identified by a Content-Type header. Many modern, web-based APIs expect a POST body to be JSON encoded.
+
+Consider the following HTTP POST request:
+
+POST /orders HTTP/1.1
+Host: example.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:64.0)
+Content-Type: application/json
+Content-Length: 56
+Connection: close
+
+{"symbol":"VOO","qty":"10","side":"buy","type":"market"}
+
+In the preceding example, you can see that the HTTP POST request is similar to an HTTP GET request. Notable differences are as follows: the request starts with POST instead of GET; a Content-Type header field is included; a Content-Length header field is present; and an HTTP message body is included. In that example, the HTTP message body is in JSON format, as specified by the Content-Type header.
+
+Encoding form data
+
+If you encounter a form on a website, such as a login form, that form likely uses a POST request to transmit its data to the web server. A standard HTML form encodes the data it sends in a format called URL encoding, also called percent encoding. When URL encoded form data is submitted in an HTTP POST request, it uses the Content-Type: application/x-www-form-urlencoded header.
+
+Consider the following HTML for a submittable form:
+
+<form method="post" action="/submission.php">
+  <label for="name">Name:</label>
+  <input name="name" type="text"><br>
+  <label for="comment">Comment:</label>   
+  <input name="comment" type="text"><br>
+  <input type="submit" value="submit">
+</form>
+
+In your web browser, the preceding HTML may render as shown in the following screenshot: see image
+
+When this form is submitted, its data is encoded in an HTTP request such as the following:
+
+POST /submission.php HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7)
+Accept-Language: en-US
+Accept-Encoding: gzip, deflate
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 31
+Connection: keep-alive
+
+name=Alice&comment=Well+Done%21
+
+In the preceding HTTP request, you can see that Content-Type: application/x-www-form-urlencoded is used. In this format, each form field and value is paired by an equal sign, and multiple form fields are chained together by ampersands.
+
+Special characters in form field names or values must be encoded. Notice that Well Done! was encoded as Well+Done%21. Spaces are encoded with plus symbols, and special characters are encoded by a percent sign followed by their two-digit hexadecimal value (thus, the exclamation point was encoded as %21). A percent sign itself would be encoded as %25.
+
+File uploads
+
+When an HTML form includes file uploads, the browser uses a different content type. In this case, Content-Type: multipart/form-data is used. When Content-Type: multipart/form-data is used, a boundary specifier is included. This boundary is a special delimiter, set by the sender, which separates parts of the submitted form data.
+
+Consider the following HTML form:
+
+<form method="post" enctype="multipart/form-data" action="/submit.php">     
+    <input name="name" type="text"><br>
+    <input name="comment" type="text"><br>
+    <input name="file" type="file"><br>
+    <input type="submit" value="submit">
+</form>
+
+If the user navigates to a web page bearing the HTML form from the preceding code, and enters the name Alice, the comment Well Done!, and selects a file to upload called upload.txt, then the following HTTP POST request could be sent by the browser:
+
+POST /submit.php HTTP/1.1
+Host: example.com
+Content-Type: multipart/form-data; boundary=-----------233121195710604 
+Content-Length: 1727
+
+-------------233121195710604
+Content-Disposition: form-data; name="name"
+
+Alice
+-------------233121195710604
+Content-Disposition: form-data; name="comment"
+
+Well Done!
+-------------233121195710604
+Content-Disposition: form-data; name="file"; filename="upload.txt"
+Content-Type: text/plain
+
+Hello.... <truncated>
+
+As you can see, when using multipart/form-data, each section of data is separated by a boundary. This boundary is what allows the receiver to delineate between separate fields or uploaded files. It is important that this boundary is chosen so that it does not appear in any submitted field or uploaded file!
+
+chapter 7 Building a Simple Web Server
+
+This chapter builds on the previous one by looking at the HTTP protocol from the server's perspective. In it, we will build a simple web server. This web server will work using the HTTP protocol, and you will be able to connect to it with any standard web browser. Although it won't be full-featured, it will be suitable for serving a few static files locally. It will be able to handle a few simultaneous connections from multiple clients at once.
+
+The HTTP server
+
+In this chapter, we are going to implement an HTTP web server that can serve static files from a local directory. HTTP is a text-based client-server protocol that uses the Transmission Control Protocol (TCP).
+
+Consider the HTTP transaction illustrated in the following diagram: see image
+
+In the preceding diagram, the client is requesting /document.htm from the server. The server finds /document.htm and returns it to the client.
+
+Our HTTP server is somewhat simplified, and we only need to look at the first line of the HTTP request. This first line is called the request line. Our server only supports GET type requests, so it needs to first check that the request line starts with GET. It then parses out the requested resource, /document.htm in the preceding example.
+
+A more full-featured HTTP server would look at several other HTTP headers. It would look at the Host header to determine which site it is hosting. Our server only supports hosting one site, so this header is not meaningful for us.
+
+A production server would also look at headers such as Accept-Encoding and Accept-Language, which could inform a proper response format. Our server just ignores these, and it instead serves files in only the most straightforward way.
+
+The internet can sometimes be a hostile environment. A production-grade web server needs to include security in layers. It should be absolutely meticulous about file access and resource allocation. In the interest of clear explanation and brevity, the server we develop in this chapter is not security-hardened, and it should not be used on the public internet for this reason.
+
+The server architecture
+
+An HTTP server is a complicated program. It must handle multiple simultaneous connections, parse a complex text-based protocol, handle malformed requests with the proper errors, and serve files. The example we develop in this chapter is greatly simplified from a production-ready server, but it is still a few hundred lines of code. We benefit from breaking the program down into separate functions and data structures.
+
+At the global level, our program stores a linked list of data structures. This linked list contains one separate data structure for each connected client. This data structure stores information about each client such as their address, their socket, and their data received so far. We implement many helper functions that work on this global linked list. These functions are used to add new clients, drop clients, wait on client data, look up clients by their socket (as sockets are returned by select()), serve files to clients, and send error messages to clients.
+
+Our server's main loop can then be simplified. It waits for new connections or new data. When new data is received, it checks whether the data consists of a complete HTTP request. If a complete HTTP request is received, the server attempts to send the requested resource. If the HTTP request is malformed or the resource cannot be found, then the server sends an error message to the connected client instead.
+
+Most of the server complexity lies in handling multiple connections, parsing the HTTP request, and handling error conditions.
+
+The server is also responsible for telling the client the content type of each resource it sends. There are a few ways to accomplish this; let's consider them next.
+
+Content types
+
+It is the HTTP server's job to tell its client the type of content being sent. This is done by the Content-Type header. The value of the Content-Type header should be a valid media type (formerly known as the MIME type) registered with the Internet Assigned Numbers Authority (IANA). See the Further reading section of this chapter for a link to the IANA list of media types.
+
+There are a few ways to determine the media type of a file. If you're on a Unix-based system, such as Linux or macOS, then your operating system already provides a utility for this.
+
+Try the following command on Linux or macOS (replace example.txt with a real filename):
+
+file --mime-type example.txt
+
+The following screenshot shows its usage: see image 
+
+As you can see in the preceding screenshot, the file utility told us the media type of index.html is text/html. It also said the media type of smile.png is image/png, and the media type of test.txt is text/plain.
+
+Our web server just uses the file's extension to determine the media type.
+
+Common file extensions and their media type are listed in the following table:
+
+Extension               Media Type
+.css                    text/css
+.csv                    text/csv
+.gif                    image/gif
+.htm                    text/html
+.html                   text/html
+.ico                    image/x-icon
+.jpeg                   image/jpeg
+.jpg                    image/jpeg
+.js                     application/javascript
+.json                   application/json
+.png                    image/png
+.pdf                    application/pdf
+.svg                    image/svg+xml
+.txt                    text/plain
+
+If a file's media type is unknown, then our server should use application/octet-stream as a default. This indicates that the browser should treat the content as an unknown binary blob.
+
+Let's continue by writing code to get Content-Type from a filename.
+
+Returning Content-Type from a filename
+
+Our server code uses a series of if statements to determine the proper media type based only on the requested file's extension. This isn't a perfect solution, but it is a common one, and it works for our purposes.
+
+The code to determine a file's media type is as follows:
+
+/*web_server.c except*/
+const char *get_content_type(const char* path) {
+    const char *last_dot = strrchr(path, '.');
+    if (last_dot) {
+        if (strcmp(last_dot, ".css") == 0) return "text/css";         
+        if (strcmp(last_dot, ".csv") == 0) return "text/csv";         
+        if (strcmp(last_dot, ".gif") == 0) return "image/gif";         
+        if (strcmp(last_dot, ".htm") == 0) return "text/html";         
+        if (strcmp(last_dot, ".html") == 0) return "text/html";
+        if (strcmp(last_dot, ".ico") == 0) return "image/x-icon";         
+        if (strcmp(last_dot, ".jpeg") == 0) return "image/jpeg";         
+        if (strcmp(last_dot, ".jpg") == 0) return "image/jpeg";         
+        if (strcmp(last_dot, ".js") == 0) return "application/javascript";         
+        if (strcmp(last_dot, ".json") == 0) return "application/json";         
+        if (strcmp(last_dot, ".png") == 0) return "image/png";         
+        if (strcmp(last_dot, ".pdf") == 0) return "application/pdf";         
+        if (strcmp(last_dot, ".svg") == 0) return "image/svg+xml";         
+        if (strcmp(last_dot, ".txt") == 0) return "text/plain";
+    }
+    return "application/octet-stream";
+}
+
+Creating the server socket
+
+Before entertaining the exciting parts of the HTTP server, such as message parsing, let's get the basics out of the way. Our HTTP server, like all servers, needs to create a listening socket to accept new connections. We define a function, create_socket(), for this purpose. This function begins by using getaddrinfo() to find the listening address:
+
+SOCKET create_socket(const char* host, const char *port) {     
+    printf("Configuring local address...\n");
+    struct addrinfo hints;
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE;
+    struct addrinfo *bind_address;
+    getaddrinfo(host, port, &hints, &bind_address);
+
+create_socket() then continues with creating a socket using socket(), binding that socket to the listening address with bind(), and having the socket enter a listening state with listen(). The following code calls these functions while detecting error conditions:
+
+    printf("Creating socket...\n");
+    SOCKET socket_listen;
+    socket_listen = socket(bind_address->ai_family, bind_address->ai_socktype, bind_address->ai_protocol);
+    if (!ISVALIDSOCKET(socket_listen)) {
+        fprintf(stderr, "socket() failed. (%d)\n", GETSOCKETERRNO());         
+        exit(1);
+    }
+
+    printf("Binding socket to local address...\n");
+    if (bind(socket_listen, bind_address->ai_addr, bind_address->ai_addrlen)) {         
+            fprintf(stderr, "bind() failed. (%d)\n", GETSOCKETERRNO());         
+            exit(1);
+    }
+    freeaddrinfo(bind_address);
+
+    printf("Listening...\n");
+    if (listen(socket_listen, 10) < 0) {
+        fprintf(stderr, "listen() failed. (%d)\n", GETSOCKETERRNO());         
+        exit(1);
+    }
+    return socket_listen;
+}
+
+Multiple connections buffering
+
+One important hurdle to overcome, when implementing any server software, is accepting and parsing requests from multiple clients simultaneously.
+
+Consider a client that sends only the beginning of an HTTP request, followed by a delay, and then the remainder of the HTTP request. In this case, we cannot respond to that client until the entire HTTP request is received. However, at the same time, we do not wish to delay servicing other connected clients while waiting. For this reason, we need to buffer up received data for each client separately. Only once we've received an entire HTTP request from a client can we respond to that client.
+
+It is useful to define a C struct to store information on each connected client. Our program uses the following:
+
+#define MAX_REQUEST_SIZE 2047
+
+struct client_info {
+    socklen_t address_length;
+    struct sockaddr_storage address;
+    SOCKET socket;
+    char request[MAX_REQUEST_SIZE + 1];
+    int received;
+    struct client_info *next;
+};
+
+This struct allows us to store information about each connected client. A client's address is stored in the address field, the address length in address_length, and the socket in the socket field. All of the data received from the client so far is stored in the request array; received indicates the number of bytes stored in that array. The next field is a pointer that allows us to store client_info structures in a linked list.
+
+To simplify our code, we store the root of our linked list in a global variable, clients. The declaration is as follows:
+
+static struct client_info *clients = 0;
+
+Declaring clients as a global variable helps to keep our code slightly shorter and clearer. However, if you require the code to be re-entrant (for example, if you want multiple servers running simultaneously), you will want to avoid the global state. This can be done by passing around the linked list root as a separate argument to each function call. This chapter's code repository includes an example of this alternative technique in the web_server2.c file.
+
+It is useful to define a number of helper functions that work on the client_info data structure and the clients linked list. We implement the following helper functions for these purposes:
+
+get_client() takes a SOCKET variable and searches our linked list for the corresponding client_info data structure.
+
+drop_client() closes the connection to a client and removes it from the clients linked list.
+
+get_client_address() returns a client's IP address as a string (character array).
+
+wait_on_clients() uses the select() function to wait until either a client has data available or a new client is attempting to connect.
+
+send_400() and send_404() are used to handle HTTP error conditions. 
+
+serve_resource() attempts to transfer a file to a connected client.
+
+Let's now implement these functions one at a time.
+
+get_client()
+
+Our get_client() function accepts a SOCKET and searches through the linked list of connected clients to return the relevant client_info for that SOCKET. If no matching client_info is found in the linked list, then a new client_info is allocated and added to the linked list. Therefore, get_client() serves two purposes—it can find an existing client_info, or it can create a new client_info.
+
+get_client() takes a SOCKET as its input and return a client_info structure. The following code is the first part of the get_client() function:
+
+struct client_info *get_client(SOCKET s) {     
+    
+    struct client_info *ci = clients;
+
+    while(ci) {         
+        if (ci->socket == s)             
+            break;         
+            
+        ci = ci->next;     
+    }
+
+    if (ci) 
+        return ci;
+
+In the preceding code, we created the get_client() function and implemented our linked list search functionality. First, the linked list root, clients, is saved into a temporary variable, ci. If ci->socket is the socket we are searching for, then the loop breaks and ci is returned. If the client_info structure for the given socket isn't found, then the code continues on and must create a new client_info structure. The following code achieves this:
+
+    struct client_info *n = (struct client_info*) calloc(1, sizeof(struct client_info));
+
+    if (!n) {
+        fprintf(stderr, "Out of memory.\n");
+        exit(1);
+    }
+
+    n->address_length = sizeof(n->address);
+    n->next = clients;
+    clients = n;
+    return n;
+}
+
+In the preceding code, the calloc() function is used to allocate memory for a new client_info structure. The calloc() function also zeroes-out the data structure, which is useful in this case. The code then checks that the memory allocation succeeded, and it prints an error message if it fails.
+
+The code then sets n->address_length to the proper size. This allows us to use accept() directly on the client_info address later, as accept() requires the maximum address length as an input.
+
+The n->next field is set to the current global linked list root, and the global linked list root, clients, is set to n. This accomplishes the task of adding in the new data structure at the beginning of the linked list.
+
+The get_client() function ends by returning the newly allocated client_info structure, n.
+
+drop_client()
+
+The drop_client() function searches through our linked list of clients and removes a given client.
+
+The entire function is given in the following code:
+
+void drop_client(struct client_info *client) {
+    CLOSESOCKET(client->socket);
+    struct client_info **p = &clients;
+    while(*p) {
+        if (*p == client) {
+            *p = client->next;
+            free(client);
+            return;
+        }
+        p = &(*p)->next;
+    }
+    fprintf(stderr, "drop_client not found.\n");
+    exit(1);
+}
+
+As you can see in the preceding code, CLOSESOCKET() is first used to close and clean up the client's connection.
+
+The function then declares a pointer-to-pointer variable, p, and sets it to clients. This pointer-to-pointer variable is useful because we can use it to change the value of clients directly. Indeed, if the client to be removed is the first element in the linked list, then clients needs to be updated, so that clients points to the second element in the list.
+
+The code uses a while loop to walk through the linked list. Once it finds that *p == client, *p, is set to client->next, which effectively removes the client from the linked list, the allocated memory is then freed and the function returns.
+
+Although drop_client() is a simple function, it is handy as it can be called in several circumstances. It must be called when we finish sending a client a resource, and it also must be called when we finish sending a client an error message.
+
+get_client_address()
+
+It is useful to have a helper function that converts a given client's IP address into text. This function is given in the following code snippet:
+
+const char *get_client_address(struct client_info *ci) {
+    static char address_buffer[100];
+    getnameinfo((struct sockaddr*)&ci->address, ci->address_length, address_buffer, sizeof(address_buffer), 0, 0,NI_NUMERICHOST);
+    return address_buffer;
+}
+
+get_client_address() is a simple function. It first allocates a char array to store the IP address in. This char array is declared static, which ensures that its memory is available after the function returns. This means that we don't need to worry about having the caller free() the memory. The downside to this method is that get_client_address() has a global state and is not re-entrant-safe. See web_server2.c for an alternative version that is re-entrant-safe.
+
+After a char buffer is available, the code simply uses getnameinfo() to convert the binary IP address into a text address.
+
+wait_on_clients()
+
+Our server is capable of handling many simultaneous connections. This means that our server must have a way to wait for data from multiple clients at once. We define a function, wait_on_clients(), which blocks until an existing client sends data, or a new client attempts to connect. This function uses select() as described in previous chapters. 
+
+The wait_on_clients() function is defined as follows:
+
+fd_set wait_on_clients(SOCKET server) {     
+    fd_set reads;
+    FD_ZERO(&reads);
+    FD_SET(server, &reads);
+    SOCKET max_socket = server;
+
+    struct client_info *ci = clients;
+    while(ci) {
+        FD_SET(ci->socket, &reads);
+        if (ci->socket > max_socket)
+            max_socket = ci->socket;
+        ci = ci->next;
+    }
+    if (select(max_socket+1, &reads, 0, 0, 0) < 0) {
+        fprintf(stderr, "select() failed. (%d)\n", GETSOCKETERRNO());         
+        exit(1);
+    }
+    return reads;
+}
+
+In the preceding code, first a new fd_set is declared and zeroed-out. The server socket is then added to the fd_set first. Then the code loops through the linked list of connected clients and adds the socket for each one in turn. A variable, max_socket, is maintained throughout this process to store the maximum socket number as required by select().
+
+After all the sockets are added to fd_set reads, the code calls select(), and select() returns when one or more of the sockets in reads is ready.
+
+The wait_on_clients() function returns reads so that the caller can see which socket is ready.
+
+send_400()
+
+In the case where a client sends an HTTP request which our server does not understand, it is helpful to send a code 400 error. Because errors of this type can arise in several situations, we wrap this functionality in the send_400() function. The entire function follows:
+
+void send_400(struct client_info *client) {
+    const char *c400 = "HTTP/1.1 400 Bad Request\r\n"         
+            "Connection: close\r\n"
+            "Content-Length: 11\r\n\r\nBad Request";     
+    send(client->socket, c400, strlen(c400), 0);
+    drop_client(client); 
+}
+
+The send_400() function first declares a text array with the entire HTTP response hard-coded. This text is sent using the send() function, and then the client is dropped by calling the drop_client() function we defined earlier.
+
+send_404()
+
+In addition to the 400 Bad Request error, our server also needs to handle the case where a requested resource is not found. In this case, a 404 Not Found error should be returned. We define a helper function to return this error as follows:
+
+void send_404(struct client_info *client) {
+    const char *c404 = "HTTP/1.1 404 Not Found\r\n"
+        "Connection: close\r\n"
+        "Content-Length: 9\r\n\r\nNot Found";
+    send(client->socket, c404, strlen(c404), 0);
+    drop_client(client);
+}
+
+The send_404() function works exactly like the send_400() function defined previously.
+
+serve_resource()
+
+The serve_resource() function sends a connected client a requested resource. Our server expects all hosted files to be in a subdirectory called public. Ideally, our server should not allow access to any files outside of this public directory. However, as we shall see, enforcing this restriction may be more difficult than it first appears.
+
+Our serve_resource() function takes as arguments a connected client and a requested resource path. The function begins as follows:
+
+void serve_resource(struct client_info *client, const char *path) {     
+    printf("serve_resource %s %s\n", get_client_address(client), path);
+
+The connected client's IP address and the requested path are printed to aid in debugging. In a production server, you would also want to print additional information. Most production servers log the date, time, request method, the client's user-agent string, and the response code as a minimum.
+
+Our function then normalizes the requested path. There are a few things to check for. First, if the path is /, then we need to serve a default file. There is a tradition of serving a file called index in that case, and, indeed, this is what our code does.
+
+We also check that the path isn't too long. Once we ensure that the path is below a maximum length, we can use fixed-size arrays to store it without worrying about buffer overflows.
+
+Our code also checks that the path doesn't contain two consecutive dots—... In file paths, two dots indicate a reference to a parent directory. However, for security reasons, we want to allow access only into our public directory. We do not want to provide access to any parent directory. If we allowed paths with .., then a malicious client could send GET /../web_server.c HTTP/1.1 and gain access to our server source code!
+
+The following code is used to redirect root requests and to prevent long or obviously malicious requests:
+
+    if (strcmp(path, "/") == 0) 
+        path = "/index.html";
+    if (strlen(path) > 100) {
+        send_400(client);
+        return;
+    }
+    if (strstr(path, "..")) {
+        send_404(client);
+        return;
+    }
+
+Our code now needs to convert the path to refer to files in the public directory. This is done with the sprintf() function. First, a text-array is reserved, full_path, and then sprintf() is used to store the full path into it. We are able to reserve a fixed allocation for full_path, as our earlier code ensured that path does not exceed 100 characters in length.
+
+The code to set full_path is as follows:
+
+char full_path[128];
+sprintf(full_path, "public%s", path);
+
+It is important to note that the directory separator differs between Windows and other operating systems. While Unix-based systems use a slash (/), Windows instead uses a backslash (\) as its standard. Many Windows functions handle the conversion automatically, but the difference is sometimes important. For our simple server, the slash conversion isn't an absolute requirement. However, we include it anyway as a good practice.
+
+The following code converts slashes to backslashes on Windows:
+
+#if defined(_WIN32)
+    char *p = full_path;
+    while (*p) {
+        if (*p == '/') 
+            *p = '\\';
+        ++p;
+    }
+#endif
+
+The preceding code works by stepping through the full_path text array and detecting slash characters. When a slash is found, it is simply overwritten with a backslash. Note that the C code '\\' is equivalent to only one backslash. This is because the backslash has special meaning in C, and therefore the first backslash is used to escape the second backslash.
+
+At this point, our server can check whether the requested resource actually exists. This is done by using the fopen() function. If fopen() fails, for any reason, then our server assumes that the file does not exist. The following code sends a 404 error if the requested resource isn't available:
+
+    FILE *fp = fopen(full_path, "rb");
+    if (!fp) {         
+        send_404(client);         
+        return;
+    }
+
+If fopen() succeeds, then we can use fseek() and ftell() to determine the requested file's size. This is important, as we need to use the file's size in the Content-Length header. The following code finds the file size and stores it in the cl variable:
+
+    fseek(fp, 0L, SEEK_END);
+    size_t cl = ftell(fp);
+    rewind(fp);
+
+Once the file size is known, we also want to get the file's type. This is used in the Content-Type header. We already defined a function, get_content_type(), which makes this task easy. The content type is stored in the variable ct by the following code:
+
+const char *ct = get_content_type(full_path);
+
+Once the file has been located and we have its length and type, the server can begin sending the HTTP response. We first reserve a temporary buffer to store header fields in:
+
+#define BSIZE 1024
+    char buffer[BSIZE];
+
+Once the buffer is reserved, the server prints relevant headers into it and then sends those headers to the client. This is done using sprintf() and then send() in turn. The following code sends the HTTP response header:
+
+    sprintf(buffer, "HTTP/1.1 200 OK\r\n");     
+    send(client->socket, buffer, strlen(buffer), 0);
+    sprintf(buffer, "Connection: close\r\n");     
+    send(client->socket, buffer, strlen(buffer), 0);
+    sprintf(buffer, "Content-Length: %u\r\n", cl);     
+    send(client->socket, buffer, strlen(buffer), 0);
+    sprintf(buffer, "Content-Type: %s\r\n", ct);     
+    send(client->socket, buffer, strlen(buffer), 0);
+    sprintf(buffer, "\r\n");
+    send(client->socket, buffer, strlen(buffer), 0);
+
+Note that the last send() statement sends \r\n. This has the effect of transmitting a blank line. This blank line is used by the client to delineate the HTTP header from the beginning of the HTTP body.
+
+The server can now send the actual file content. This is done by calling fread() repeatedly until the entire file is sent:
+
+int r = fread(buffer, 1, BSIZE, fp);
+while (r) {
+    send(client->socket, buffer, r, 0);
+    r = fread(buffer, 1, BSIZE, fp);
+}
+
+In the preceding code, fread() is used to read enough data to fill buffer. This buffer is then transmitted to the client using send(). These steps are looped until fread() returns 0; this indicates that the entire file has been read.
+
+Note that send() may block on large files. In a truly robust, production-ready server, you would need to handle this case. It could be done by using select() to determine when each socket is ready to read. Another common method is to use fork() or similar APIs to create separate threads/processes for each connected client. For simplicity, our server accepts the limitation that send() blocks on large files. Please refer to Chapter 13, Socket Programming Tips and Pitfalls, for more information about the blocking behavior of send().
+
+The function can finish by closing the file handle and using drop_client() to disconnect the client:
+
+    fclose(fp);
+    drop_client(client);
+}
+
+That concludes the serve_resource() function.
+
+Keep in mind that while serve_resource() attempts to limit access to only the public directory, it is not adequate in doing so, and serve_resource() should not be used in production code without carefully considering additional access loopholes. We discuss more security concerns later in this chapter.
+
+With these helper functions out of the way, implementing our main server loop is a much easier task. We begin that next.
+
+The main loop
+
+With our many helper functions out of the way, we can now finish web_server.c. Remember to first #include chap07.h and also add in all of the types and functions we've defined so far—struct client_info, get_content_type(), create_socket(), get_client(), drop_client(), get_client_address(), wait_on_clients(), send_400(), send_404(), and serve_resource().
+
+We can then begin the main() function. It starts by initializing Winsock on Windows:
+
+int main() {
+#if defined(_WIN32)
+    WSADATA d;
+    if (WSAStartup(MAKEWORD(2, 2), &d)) {
+        fprintf(stderr, "Failed to initialize.\n");
+        return 1;
+    }
+#endif
+
+We then use our earlier function, create_socket(), to create the listening socket. Our server listens on port 8080, but feel free to change it. On Unix-based systems, listening on low port numbers is reserved for privileged accounts. For security reasons, our web server should be running with unprivileged accounts only. This is why we use 8080 as our port number instead of the HTTP standard port, 80.
+
+The code to create the server socket is as follows:
+
+SOCKET server = create_socket(0, "8080");
+
+If you want to accept connections from only the local system, and not outside systems, use the following code instead:
+
+SOCKET server = create_socket("127.0.0.1", "8080");
+
+We then begin an endless loop that waits on clients. We call wait_on_clients() to wait until a new client connects or an old client sends new data:
+
+while(1) {
+    fd_set reads;
+    reads = wait_on_clients(server);
+
+The server then detects whether a new client has connected. This case is indicated by server being set in fd_set reads. We use the FD_ISSET() macro to detect this condition:
+
+if (FD_ISSET(server, &reads)) {
+    struct client_info *client = get_client(-1);
+    client->socket = accept(server, (struct sockaddr*) &(client->address), &(client->address_length));
+    if (!ISVALIDSOCKET(client->socket)) {                 
+        fprintf(stderr, "accept() failed. (%d)\n", GETSOCKETERRNO());
+        return 1;
+    }
+    printf("New connection from %s.\n", get_client_address(client));
+}
+
+Once a new client connection has been detected, get_client() is called with the argument -1; -1 is not a valid socket specifier, so get_client() creates a new struct client_info. This struct client_info is assigned to the client variable.
+
+The accept() socket function is used to accept the new connection and place the connected clients address information into the respective client fields. The new socket returned by accept() is stored in client->socket.
+
+The client's address is printed using a call to get_client_address(). This is helpful for debugging.
+
+Our server must then handle the case where an already connected client is sending data. This is a bit more complicated. We first walk through the linked list of clients and use FD_ISSET() on each client to determine which clients have data available. Recall that the linked list root is stored in the clients global variable.
+
+We begin our linked list walk with the following:
+
+struct client_info *client = clients;
+while(client) {
+    struct client_info *next = client->next;
+    if (FD_ISSET(client->socket, &reads)) {
+
+We then check that we have memory available to store more received data for client. If the client's buffer is already completely full, then we send a 400 error. The following code checks for this condition:
+
+if (MAX_REQUEST_SIZE == client->received) {                     
+    send_400(client);
+    continue;
+}
+
+Knowing that we have at least some memory left to store received data, we can use recv() to store the client's data. The following code uses recv() to write new data into the client's buffer while being careful to not overflow that buffer:
+
+int r = recv(client->socket, client->request + client->received, MAX_REQUEST_SIZE - client->received, 0);
+
+A client that disconnects unexpectedly causes recv() to return a non-positive number. In this case, we need to use drop_client() to clean up our memory allocated for that client:
+
+if (r < 1) {
+    printf("Unexpected disconnect from %s.\n", get_client_address(client));                     
+    drop_client(client);
+
+If the received data was written successfully, our server adds a null terminating character to the end of that client's data buffer. This allows us to use strstr() to search the buffer, as the null terminator tells strstr() when to stop.
+
+Recall that the HTTP header and body is delineated by a blank line. Therefore, if strstr() finds a blank line (\r\n\r\n), we know that the HTTP header has been received and we can begin to parse it. The following code detects whether the HTTP header has been received:
+
+} 
+else 
+{
+    client->received += r;
+    client->request[client->received] = 0;
+    char *q = strstr(client->request, "\r\n\r\n");                     
+    if (q) {
+
+Our server only handles GET requests. We also enforce that any valid path should start with a slash character; strncmp() is used to detect these two conditions in the following code:
+
+if (strncmp("GET /", client->request, 5)) {                             
+    send_400(client);
+} 
+else 
+{
+    char *path = client->request + 4;                             
+    char *end_path = strstr(path, " ");                             
+    if (!end_path) {                                 
+        send_400(client);                             
+    }
+    else 
+    {
+        *end_path = 0;                                 
+        serve_resource(client, path);                             
+    }
+}
+} //if (q)
+
+
+In the preceding code, a proper GET request causes the execution of the else branch. Here, we set the path variable to the beginning of the request path, which is starting at the fifth character of the HTTP request (because C arrays start at zero, the fifth character is located at client->request + 4).
+
+The end of the requested path is indicated by finding the next space character. If found, we just call our serve_resource() function to fulfil the client's request.
+
+Our server is basically functional at this point. We only need to finish our loops and close out the main() function. The following code accomplishes this:
+
+Note that our server doesn't actually have a way to break from its infinite loop. It simply listens to connections forever. As an exercise, you may want to add in functionality that allows the server to shut down cleanly. This was omitted only to keep the code simpler. It may also be useful to drop all connected clients with this line of code—while(clients) drop_client(clients);
+
+That concludes the code for web_server.c. You can compile and run web_server.c
+
+You can also drop different files into the public folder and play around with creating more complicated websites.
+
+An alternative source file, web_server2.c, is also provided in this chapter's code repository. It behaves exactly like the code we developed, but it avoids having global state (at the expense of a little added verbosity). This may make web_server2.c more suitable for integration into more significant projects and continued development.
+
+Although the web server we developed certainly works, it does have a number of shortcomings. Please don't deploy this server (or any other network code) in the wild without very carefully considering these shortcomings, some of which we address next.
+
+Security and robustness
+
+One of the most important rules, when developing networked code, is that your program should never trust the connected peer. Your code should never assume that the connected peer sends data in a particular format. This is especially vital for server code that may communicate with multiple clients at once.
+
+If your code doesn't carefully check for errors and unexpected conditions, then it will be vulnerable to exploits.
+
+Consider the following code which receives data into a buffer until a space character is found:
+
+char buffer[1028] = {0};
+char *p = buffer;
+while (!strstr(p, " "))
+    p += recv(client, p, 1028, 0);
+
+The preceding code works simply. It reserves 1,028 bytes of buffer space and then uses recv() to write received data into that space. The p pointer is updated on each read to indicate where the next data should be written. The code then loops until the strstr() function detects a space character.
+
+That code could be useful to read data from a client until an HTTP verb is detected. For example, it could receive data until GET is received, at which point the server can begin to process a GET request.
+
+One problem with the preceding code is that recv() could write past the end of the allocated space for buffer. This is because 1028 is passed to recv(), even if some data has already been written. If a network client can cause your code to write past the end of a buffer, then that client may be able to completely compromise your server. This is because both data and executable code are stored in your server's memory. A malicious client may be able to write executable code past the buffer array and cause your program to execute it. Even if the malicious code isn't executed, the client could still overwrite other important data in your server's memory.
+
+The preceding code can be fixed by passing to recv() only the amount of buffer space remaining:
+
+char buffer[1028] = {0};
+char *p = buffer;
+while (!strstr(p, " "))
+    p += recv(client, p, 1028 - (p - buffer), 0);
+
+In this case, recv() is not be able to write more than 1,028 bytes total into buffer. You may think that the memory errors are resolved, but you would still be wrong. Consider a client that sends 1,028 bytes, but no space characters. Your code then calls strstr() looking for a space character. Considering that buffer is completely full now, strstr() cannot find a space character or a null terminating character! In that case, strstr() continues to read past the end of buffer into unallocated memory.
+
+So, you fix this issue by only allowing recv() to write 1,027 bytes total. This reserves one byte to remain as the null terminating character:
+
+char buffer[1028] = {0};
+char *p = buffer;
+while (!strstr(p, " "))
+    p += recv(client, p, 1027 - (p - buffer), 0);
+
+Now your code won't write or read past the array bounds for buffer, but the code is still very broken. Consider a client that sends 1,027 characters. Or consider a client that sends a single null character. In either case, the preceding code continues to loop forever, thus locking up your server and preventing other clients from being served.
+
+Hopefully, the previous examples illustrate the care needed to implement a server in C. Indeed, it's easy to create bugs in any programming language, but in C special care needs to be taken to avoid memory errors.
+
+Another issue with server software is that the server wants to allow access to some files on the system, but not others. A malicious client could send an HTTP request that tries to download arbitrary files from your server system. For example, if an HTTP request such as GET /../secret_file.c HTTP/1.1 was sent to a naive HTTP server, that server may send the secret_file.c to the connected client, even though it exists outside of the public directory!
+
+Our code in web_server.c detects the most obvious attempts at this by searching for requests containing .. and denying those requests.
+
+A robust server should use operating systems features to detect that requested files exist as actual files in the permitted directory. Unfortunately, there is no cross-platform way to do this, and the platform-dependent options are somewhat complicated.
+
+Please understand that these are not purely theoretical concerns, but actual exploitable bugs. For example, if you run our web_server.c program on Windows and a client sends the request GET /this_will_be_funny/PRN HTTP/1.1, what do you suppose happens?
+
+The this_will_be_funny directory doesn't exist, and the PRN file  certainly doesn't exist in that non-existent directory. These facts may lead you to think that the server simply returns a 404 Not Found error, as expected. However, that's not what happens. Under Windows, PRN is a special filename. When your server calls fopen() on this special name, Windows doesn't look for a file, but rather it connects to a printer interface! Other special names include COM1 (connects to serial port 1) and LPT1 (connects to parallel port 1), although there are others. Even if these filenames have an extension, such as PRN.txt, Windows still redirects instead of looking for a file.
+
+One generally applicable piece of security advice is this—run your networked programs under non-privileged accounts that have access to only the minimum resources needed to function. In other words, if you are going to run a networked server, create a new account to run it under. Give that account read access to only the files that server needs to serve. This is not a substitute for writing secure code, but rather running as a non-privilege user creates one final barrier. It is advice you should apply even when running hardened, industry-tested server software.
+
+Hopefully, the previous examples illustrate that programming is complicated, and safe network programming in C can be difficult. It is best approached with care. Oftentimes, it is not possible to know that you have all the loopholes covered. Operating systems don't always have adequate documentation. Operating system APIs often behave in non-obvious and non-intuitive ways. Be careful.
+
+Open source servers
+
+The code developed in this chapter is suitable for use in trusted applications on trusted networks. For example, if you are developing a video game, it can be very useful to make it serve a web page that displays debugging information. This doesn't have to be a security concern, as it can limit connections to the local machine.
+
+If you must deploy a web server on the internet, I suggest you consider using a free and open source implementation that's already available. The web servers Nginx and Apache, for example, are highly performant, cross-platform, secure, written in C, and completely free. They are also well-documented and easy to find support for.
+
+If you want to expose your program to the internet, you can communicate to a web server using either CGI or FastCGI. With CGI, the web server handles the HTTP request. When a request comes in, it runs your program and returns your program's output in the HTTP response body.
+
+Alternatively, many web servers (such as Nginx or Apache) work as a reverse proxy. This essentially puts the web server between your code and the internet. The web server accepts and forwards HTTP messages to your HTTP server. This can have the effect of slightly shielding your code from attackers.
+
+chapter 8 Making Your Program Send Email
+
