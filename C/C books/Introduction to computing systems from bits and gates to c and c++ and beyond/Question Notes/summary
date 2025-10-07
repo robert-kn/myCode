@@ -2786,7 +2786,7 @@ chapter 15 (done and questions as well)
 
 21. Most programmers today use an integrated development environment (IDE) for developing their code. These environments integrate the common tools needed to develop code, such as code repository, editor, and compilation system, into a single user interface. 
 
-chapter 16
+chapter 16 (done but not the questions)
 
 1. A pointer is simply the address of a memory object, such as a variable. With pointers, we can indirectly access these objects, which provides for some very useful capabilities. With pointers, we can create sophisticated data organizations that grow and shrink (like the run-time stack) during a program’s execution.
 
@@ -2816,15 +2816,15 @@ ptr = &object;
 
 11. Let’s examine the LC-3 code for this sequence. Both declared variables are local variables allocated on the run-time stack. Recall that R5, the base pointer, points to the ﬁrst declared local variable, or object in this case.
 
-AND R0, R0, #0 ; Clear R0
-ADD R0, R0, #4 ;R0=4
-STR R0, R5, #0 ; object = 4;
-ADD R0, R5, #0 ; Generate memory address of object
+AND R0, R0, #0  ; Clear R0
+ADD R0, R0, #4  ; R0=4
+STR R0, R5, #0  ; object = 4;
+ADD R0, R5, #0  ; Generate memory address of object
 STR R0, R5, #-1 ; Ptr = &object;
 
 12. Figure 16.3 shows the stack frame of the function containing this code immediately after the statement ptr = &object; has executed. In order to make things more concrete, each memory location is labeled with an address, which we’ve arbitrarily selected to be in the xEFF0 range. The base pointer R5 currently points to xEFF2. Notice that object contains the integer value 4 and ptr contains the memory address of object.
 
-13. The Indirection Operator *: The second pointer operator is called the indirection,ordereference, operator, and its symbol is the asterisk, *. This operator allows us to indirectly manipulate the value of a memory object. Adding to the previous C code example,
+13. The Indirection Operator *: The second pointer operator is called the indirection, or dereference, operator, and its symbol is the asterisk, *. This operator allows us to indirectly manipulate the value of a memory object. Adding to the previous C code example,
 
 int object;
 int *ptr;
@@ -2832,18 +2832,18 @@ object = 4;
 ptr = &object;
 *ptr = *ptr + 1;
 
-14. The statement *ptr = *ptr + 1; accomplishes the same thing as object = object + 1;. The expression *ptr means diﬀerent things depending on which side of the assignment operator it appears on. On the right-hand side of the assign- ment operator, it refers to the value that appears at that location (in this case the value 4). On the left-hand side, it speciﬁes the location that gets modiﬁed (in this case, the address of object).Let’s examine the LC-3 code for the last statement in the preceding code.
+14. The statement *ptr = *ptr + 1; accomplishes the same thing as object = object + 1;. The expression *ptr means diﬀerent things depending on which side of the assignment operator it appears on. On the right-hand side of the assignment operator, it refers to the value that appears at that location (in this case the value 4). On the left-hand side, it speciﬁes the location that gets modiﬁed (in this case, the address of object). Let’s examine the LC-3 code for the last statement in the preceding code.
 
 LDR R0, R5, #-1 ; R0 contains the value of ptr
-LDR R1, R0, #0 ; R1 <- *ptr
-ADD R1, R1, #1 ;*ptr+1
-STR R1, R0, #0 ; *ptr = *ptr + 1;
+LDR R1, R0, #0  ; R1 <- *ptr
+ADD R1, R1, #1  ; *ptr+1
+STR R1, R0, #0  ; *ptr = *ptr + 1;
 
 15. Notice that this code is diﬀerent from what would be generated if the ﬁnal C statement had been object = object + 1;. With the pointer dereference, the compiler generates two LDR instructions for the indirection operator on the right-hand side, one to load the value of ptr, which is a memory address, and another to get the value stored at that address. With the dereference on the left-hand side, the compiler generates a STR R1, R0, #0. Had the statement been object = *ptr + 1;, the compiler would have generated STR R1, R5, #0.
 
 16. Passing a Reference Using Pointers: Using the address and indirection operator, we can repair the Swap function from Figure 16.1, which did not quite accomplish the swap of its two input arguments. Figure 16.4 lists the same program with a revised version of Swap called NewSwap.
 
-17. The ﬁrst modiﬁcation we’ve made is that the parameters of NewSwap are no longer integers but are now pointers to integers (int *). These two parameters are the memory addresses of the two variables that are to be swapped. Within the func- tion body of NewSwap, we use the indirection operator * to obtain the values that these pointers point to.
+17. The ﬁrst modiﬁcation we’ve made is that the parameters of NewSwap are no longer integers but are now pointers to integers (int *). These two parameters are the memory addresses of the two variables that are to be swapped. Within the function body of NewSwap, we use the indirection operator * to obtain the values that these pointers point to.
 
 18. Now when we call NewSwap from main, we need to supply the addresses for the two variables we want swapped, rather than the values of the variables as we did in the previous version of the code. For this, the & operator does the trick.
 
@@ -2856,7 +2856,7 @@ STR R1, R0, #0 ; *ptr = *ptr + 1;
 int *ptr;
 ptr = NULL;
 
-22. Here, we are assigning the value of NULL to the pointer variable ptr.InC,NULL is a specially deﬁned preprocessor macro that contains a value 0. So by convention, we consider a pointer that points to memory address 0 to be a special case pointer that points to nothing. 
+22. Here, we are assigning the value of NULL to the pointer variable ptr. In C, NULL is a specially deﬁned preprocessor macro that contains a value 0. So by convention, we consider a pointer that points to memory address 0 to be a special case pointer that points to nothing. 
 
 23. An Example Problem Involving Pointers: Say we want to develop a C program that calculates the quotient and remainder given an integer dividend and integer divisor. That is, our code will calculate dividend / divisor and dividend % divisor. The code in Figure 16.6 contains a function that does just that. The function IntDivide has four parameters, two of which are integers and two of which are pointers to integers. The function divides the ﬁrst parameter x by the second parameter y. 
 
@@ -2911,9 +2911,9 @@ STR R2, R1, #0      ; grid[x+1] = grid[x] + 2;
 
 24. Notice how the input parameter inputValues is speciﬁed in the declaration of the function Average. The brackets []indicate to the compiler that the corresponding parameter will be the base address to an array of the speciﬁed type, in this case an array of integers. Since arrays are passed by reference in C, any modiﬁcations to the array values made by the called function will be visible to the caller once control returns to it. 
 
-25. How would we go about passing only a single element of an array by value? How about by reference?
+25. How would we go about passing only a single element of an array by value? arr[index] How about by reference? numbers + 2
 
-26. Strings in C: Strings are sequences of characters that represent text. Strings in C are sim- ply arrays of character type, with each subsequent element containing the next character of the string. For example,
+26. Strings in C: Strings are sequences of characters that represent text. Strings in C are simply arrays of character type, with each subsequent element containing the next character of the string. For example,
 
 char word[10];
 
@@ -2963,13 +2963,13 @@ is a legal, and sometimes useful, sequence of code. Here we have assigned the po
 
 37. Table 16.1 shows the equivalence of several expressions involving pointer and array notation. Rows in the table are expressions with similar meanings.
 
-38. Problem Solving: Insertion Sort; We will write C code to sort an array of integers into ascending order. That is, the code should arrange the data in array a[] such that a[0] ≤ a[1] ≤ a[2] .... There are many algorithms for sorting, and you will encounter various techniques in later computing courses. We use insertion sort here because it parallels how we might sort items in the physical world, with real objects. 
+38. Problem Solving: Insertion Sort; We will write C code to sort an array of integers into ascending order. That is, the code should arrange the data in array a[] such that a[0] ≤ a[1] ≤ a[2] .... There are many algorithms for sorting, and you will encounter various techniques in later computing courses. We use insertion sort here because it parallels how we might sort items in the physical world, with real objects. The actual insertionsort routine is shown in figure 16.14
 
-39. Unlike some other modern programming languages, C does not provide protec- tion against exceeding the size (or bounds) of an array. Recall that C originated during an era when memory and computer processing power were precious resources, and programmers had to be very economical in the operations their code performed. In the spirit of minimizing overhead, C performs no size enforcement on arrays. This enables programs written in C to be fast and eﬃcient, but at the cost of potential bugs. Programmer beware!
+39. Unlike some other modern programming languages, C does not provide protection against exceeding the size (or bounds) of an array. Recall that C originated during an era when memory and computer processing power were precious resources, and programmers had to be very economical in the operations their code performed. In the spirit of minimizing overhead, C performs no size enforcement on arrays. This enables programs written in C to be fast and eﬃcient, but at the cost of potential bugs. Programmer beware!
 
 40. In all of our discussion of arrays up until this point, we’ve worked under the assumption that an array in C is of ﬁxed size. That is, the size of the array is ﬁxed and is known when the code is compiled. In order to allocate an array on the run-time stack, the compiler needs to know the exact size. If the exact size is not known, then the oﬀsets from the frame pointer (R5) for the array and other variables in the stack frame cannot be properly determined, and everything falls apart.
 
-41. But this particular restriction proves to be quite limiting. Often we want to size our arrays based on the particular situation we’ve encountered during execution. Starting in 1999, the ANSI C standard adopted support for variable-length arrays. Variable-length arrays are arrays whose sizes are variable integer expres- sions, rather than constants. The following code fragment
+41. But this particular restriction proves to be quite limiting. Often we want to size our arrays based on the particular situation we’ve encountered during execution. Starting in 1999, the ANSI C standard adopted support for variable-length arrays. Variable-length arrays are arrays whose sizes are variable integer expressions, rather than constants. The following code fragment
 
 int Calculate(int len)
 {
@@ -2977,7 +2977,7 @@ int data[len];
 
 illustrates the declaration of a variable-length array. The size of the array data can only be determined during execution of the code, and it is not known at compile time. The array data is still allocated on the run-time stack in this case but using a diﬀerent type of allocation scheme than with standard, statically sized arrays. This protocol requires additional instructions during allocation and access, which adds performance overheard. Variable-length arrays are a nice programming convenience at the expense of additional performance.
 
-42. Multidimensional Arrays in C: Nearly everyone alive today has taken or will take a picture with a smartphone. It’s an activity that’s simple enough for a person to accomplish, but it triggers an incredible amount of activity within a smartphone. Some of this activity involves physics and optics, as light from the scene being captured enters the lens of the phone to form an image on a device called a CMOS image sensor (think of it as the digital retina of the phone’s camera). Much of this activity is digital; the image sensor and a slew of associated software on the phone convert the signals cap- tured by the sensor into a high-quality picture. What exactly is this picture? Each element of the picture, or image, is called a pixel, and it represents the intensity of green, blue, and red at a particular point in the image. The image itself is a collection of these pixels (short for picture elements), arranged in a two-dimensional grid, with each pixel belonging to a particular row and column within the image. For example, an image might have 1080 rows and 1920 columns of pixels and would contain about two million pixels altogether.
+42. Multidimensional Arrays in C: Nearly everyone alive today has taken or will take a picture with a smartphone. It’s an activity that’s simple enough for a person to accomplish, but it triggers an incredible amount of activity within a smartphone. Some of this activity involves physics and optics, as light from the scene being captured enters the lens of the phone to form an image on a device called a CMOS image sensor (think of it as the digital retina of the phone’s camera). Much of this activity is digital; the image sensor and a slew of associated software on the phone convert the signals captured by the sensor into a high-quality picture. What exactly is this picture? Each element of the picture, or image, is called a pixel, and it represents the intensity of green, blue, and red at a particular point in the image. The image itself is a collection of these pixels (short for picture elements), arranged in a two-dimensional grid, with each pixel belonging to a particular row and column within the image. For example, an image might have 1080 rows and 1920 columns of pixels and would contain about two million pixels altogether.
 
 43. We can easily extend our idea of arrays to incorporate multidimensional concepts like images. In C, the syntax for doing so is simple:
 
@@ -2985,7 +2985,7 @@ int image[1080][1920];
 
 This declaration creates an array called image that is organized as a two-dimensional array. The ﬁrst dimension is of size 1080, or the number of rows of pixels, and the second dimension is of size 1920, and it represents the number of columns of pixels. Instead of providing a single index value to access elements of a single dimensional array, we now need to provide two, one for the row and one for the column. 
 
-44. This 2D array will need to be mapped into memory somehow, just as we did with a simple 1D array. In the 1D case, the mapping is easy because the arrangement in memory corresponds to increasing indices of the array. In the 2D case, we have two options. Either we can map consecutive elements of each column into consecutive memory locations, or we can map consecutive elements of each row into consecutive memory locations. With C and C++, consecutive elements of each column are in adjacent memory locations, which is an ordering often called row-major order. Figure 16.16 provides a diagram of how this ordering applies to the array image. The image is so large that it won’t ﬁt into the LC- 3’s 16-bit address space. The LC-3 only has 216  or 65,536 locations, and this image requires 2,073,600. We need a larger address space! So for this ﬁgure, we extended the address space to be 32 bits to make the example work.
+44. This 2D array will need to be mapped into memory somehow, just as we did with a simple 1D array. In the 1D case, the mapping is easy because the arrangement in memory corresponds to increasing indices of the array. In the 2D case, we have two options. Either we can map consecutive elements of each column into consecutive memory locations, or we can map consecutive elements of each row into consecutive memory locations. With C and C++, consecutive elements of each column are in adjacent memory locations, which is an ordering often called row-major order. Figure 16.16 provides a diagram of how this ordering applies to the array image. The image is so large that it won’t ﬁt into the LC-3’s 16-bit address space. The LC-3 only has 2^(16) or 65,536 locations, and this image requires 2,073,600. We need a larger address space! So for this ﬁgure, we extended the address space to be 32 bits to make the example work.
 
 45. Let’s take a look at a simple image processing function that operates on images represented as 2D arrays. Using our example of an image, let’s say that each element of the image array is an integer, and this integer represents the inten- sity of light at that position in the image. The higher the value, the brighter that particular pixel. As such, the value represents the “white value” of the pixel. More generally, we’d incorporate color into the representation, but for now we’ll keep it simple.
 
@@ -3184,7 +3184,7 @@ Fibonacci(1)
 55. This algorithm performs something called a depth-ﬁrst search through all the possible paths through the maze. We can represent the recursive calls as a graph, where each node in the graph corresponds to an invocation of the function ExitMaze. In the general case, each invocation of ExitMaze can make up to four recursive calls (one call for each direction). So each node can end up creating up to four new invocations of ExitMaze. Figure 17.20 provides a graphical depiction of ExitMaze in action. The initial call shows the initial maze conﬁguration, along with the starting point (maze[1][2]). That initial call generates four new calls, each evaluated one after the other. The ﬁrst call (move down) returns immediately, as does the next call (move right), as does the third call (move up). The fourth call (move left) is a move into an open space, and thus it causes new calls to be generated.
 
 
-chapter 18
+chapter 18 (done but not questions)
 
 1. Whether it be to the screen, to a ﬁle, or to another computer across a network, all useful programs perform output of some sort or another. Most programs also require some form of input. As is the case with many other modern programming languages, input and output are not directly supported by C. Instead input/output (I/O) is handled by a set of standard library functions that extend the base language. 
 
@@ -3333,7 +3333,7 @@ what do a and b contain? The answer ''(the space character) and 1 should be no s
 
 printf("Char %c.\t String %s\n Float %f\n", c, banner, pi);
 
-46. In the above printf statement the format string contains three format speciﬁcations; therefore, three argu- ments should follow it in the function call. The %c spec in the string is associated with the ﬁrst argument that follows (the variable c). The %s is associated with banner, and %f with pi. There are three values to be printed; therefore, this call contains four arguments altogether. If we want to print ﬁve values, the printf call should contain six arguments.
+46. In the above printf statement the format string contains three format speciﬁcations; therefore, three arguments should follow it in the function call. The %c spec in the string is associated with the ﬁrst argument that follows (the variable c). The %s is associated with banner, and %f with pi. There are three values to be printed; therefore, this call contains four arguments altogether. If we want to print ﬁve values, the printf call should contain six arguments.
 
 47. Recall from Chapter 14 that our LC-3 calling convention pushed items onto the run-time stack from right to left of the order in which they appear on the function call. This places the pointer to the format string immediately at the top of the stack when printf or scanf takes over. Since it is the leftmost argument, it will always be the last item pushed onto the stack before the function call (JSR instruction) occurs. Once printf or scanf takes over, it can access the ﬁrst parameter directly oﬀ the top of the stack. Once this parameter (which is the format string) is analyzed, the functions can determine the other parameters on the stack. If the arguments on a function call were pushed from left to right, it would be much more diﬃcult for printf and scanf to discern the location of the format string parameter.
 
@@ -3354,7 +3354,7 @@ FILE *infile;
 FILE *infile;
 infile = fopen("aapl_stock_prices", "r");
 
-54. The ﬁrst argument to fopen is the string aapl_stock_prices, which is the name of the ﬁle to open. The second argument is the operation we want to per- form on this ﬁle. Several useful modes are "r" for reading, "w" for writing (a ﬁle opened with this mode will lose its previous contents), "a" for appending (here, previous contents is not lost; new data is added to the end of the ﬁle), and "r+" for reading and writing. Note that both arguments must be character strings; therefore, they are surrounded by double quotes in this example. In this case, we are opening the ﬁle called "aapl_stock_prices" for reading.
+54. The ﬁrst argument to fopen is the string aapl_stock_prices, which is the name of the ﬁle to open. The second argument is the operation we want to perform on this ﬁle. Several useful modes are "r" for reading, "w" for writing (a ﬁle opened with this mode will lose its previous contents), "a" for appending (here, previous contents is not lost; new data is added to the end of the ﬁle), and "r+" for reading and writing. Note that both arguments must be character strings; therefore, they are surrounded by double quotes in this example. In this case, we are opening the ﬁle called "aapl_stock_prices" for reading.
 
 55. If the fopen call is successful, the function returns a ﬁle pointer to the phys- ical ﬁle. If the open for some reason fails (as in a case when the ﬁle cannot be found), then the function returns a null pointer. Recall that a null pointer is an invalid pointer that has the value NULL. It is always good practice to check to determine if the fopen call was successful.
 
