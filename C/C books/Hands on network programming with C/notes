@@ -4269,3 +4269,164 @@ Most commercial email servers use SPF, DKIM, and DMARC. If you're sending email 
 Finally, many popular providers assign a reputation to sending domains and servers. This puts potential emails senders in a catch-22 situation. Email can't be delivered without building a reputation, but a reputation can't be built without successfully delivering lots of emails. As spam continues to be a major problem, we may soon come to a time where only big-name, trusted SMTP servers can operate with each other. Let's hope it doesn't come to that!
 
 If your program needs to send email reliably, you should likely consider using an email service provider. One option is to allow an SMTP relay to do the final delivery. A potentially easier option is to use a mail sending service that operates an HTTP API.
+
+Chapter 9, Loading Secure Web Pages with HTTPS and OpenSSL
+
+In this chapter, we'll learn how to initiate secure connections to web servers using Hypertext Transfer Protocol Secure (HTTPS). HTTPS provides several benefits over HTTP. HTTPS gives an authentication method to identify servers and detect impostors. It also protects the privacy of all transmitted data and prevents interceptors from tampering with or forging transmitted data.
+
+In HTTPS, communication is secured using Transport Layer Security (TLS). In this chapter, we'll learn how to use the popular OpenSSL library to provide TLS functionality.
+
+Each example program in this chapter runs on Windows, Linux, and macOS. While compiling on Windows, each example program requires linking with the Winsock library. This can be accomplished by passing the -lws2_32 option to gcc. 
+
+Each example also needs to be linked against the OpenSSL libraries, libssl.a and libcrypto.a. This is accomplished by passing -lssl -lcrypto to gcc.
+
+HTTPS overview
+
+HTTPS provides security to HTTP. We covered HTTP in Chapter 6, Building a Simple Web Client. HTTPS secures HTTP by using TLS over TCP on port 443. TLS is a protocol that can provide security to any TCP connection.
+
+TLS is the successor to Secure Socket Layer (SSL), an earlier protocol also used by HTTPS. TLS and SSL are compatible, and most of the information in this chapter also applies to SSL. Generally, establishing an HTTPS connection involves the client and server negotiating which protocol to use. The ideal outcome is that the client and server agree on the most secure, mutually supported protocol and cipher.
+
+When we talk about protocol security, we are generally looking for the following three things:
+
+Authentication: We need a way to prevent impostors from posing as legitimate communication partners. TLS provides peer authentication methods for this reason.
+
+Encryption: TLS uses encryption to obfuscate transmitted data. This prevents an eavesdropper from correctly interpreting intercepted data.
+
+Integrity: TLS also ensures that received data has not been tampered with or otherwise forged.
+
+HTTP is most commonly used to transmit web pages. The text on a web page is first encoded as Hypertext Markup Language (HTML). HTML provides formatting, layout, and styling to web pages. HTTP is then used to transmit the HTML, and HTTP itself is transmitted over a TCP connection.
+
+Visually, an HTTP session is encapsulated like the following: see image
+
+TLS works inside TCP to provide a secure communication channel. HTTPS is then basically the same as the HTTP protocol, but it is sent inside a TLS channel.
+
+Visually, HTTPS is encapsulated in the following manner: see image
+
+Of course, the same abstraction still applies if HTTP is used to transmit an image, video, or other data instead of HTML.
+
+Do keep in mind that these abstractions are accurate at the conceptual level, but some details transcend layers. For example, some HTTPS headers are used to refer to security parameters of how TLS should be applied. In general, though, it is reasonable to think of TLS as securing the TCP connection used by HTTPS.
+
+Although TLS is most commonly used for HTTPS security, TLS is also used to secure many other TCP-based protocols. The email protocol, SMTP, which we covered in Chapter 8, Making Your Program Send Email, is also commonly secured by TLS.
+
+Before going into further detail about using TLS, it is useful to understand some necessary background information on encryption.
+
+Encryption basics
+
+Encryption is a method of encoding data so that only authorized parties can access it. Encryption does not prevent interception or interference, but it denies the original data to a would-be attacker.
+
+Encryption algorithms are called ciphers. An encryption cipher takes unencrypted data as input, referred to as plaintext. The cipher produces encrypted data, called ciphertext, as its output. The act of converting plaintext into ciphertext is called encryption, and the act of reversing it back is called decryption.
+
+Modern ciphers use keys to control the encryption and decryption of data. Keys are typically relatively short, pseudo-random data sequences. Ciphertext encrypted with a given key cannot be decrypted without the proper key.
+
+Broadly, there are two categories of ciphers—symmetric and asymmetric. A symmetric cipher uses the same key for both encryption and decryption, while an asymmetric cipher uses two different keys.
+
+Symmetric ciphers
+
+The following diagram illustrates a symmetric cipher: see image
+
+In the preceding diagram, the plaintext Hello! is encrypted using a symmetric cipher. A secret key is used with the cipher to produce a ciphertext. This ciphertext can then be transmitted over an insecure channel, and eavesdroppers cannot decipher it without knowledge of the secret key. The privileged receiver of the ciphertext uses the decryption algorithm and secret key to convert it back into plaintext.
+
+Some symmetric ciphers in general use (not just for TLS) are the following:
+
+American Encryption Standard (AES), also known as Rijndael
+Camellia
+Data Encryption Standard (DES)
+Triple DES
+International Data Encryption Algorithm (IDEA)
+QUAD
+RC4
+Salsa20, Chacha20
+Tiny Encryption Algorithm (TEA)
+
+One issue with symmetric encryption is that the same key must be known to both the sender and receiver. Generating and transmitting this key securely poses a problem. How can the key be sent between parties if they don't already have a secure communication channel? If they do already have a secure communication channel, why is encryption needed in the first place?
+
+Key exchange algorithms attempt to address these problems. Key exchange algorithms work by allowing both communicating parties to generate the same secret key. In general, the parties first agree on a public, non-secret key. Then, each party generates its own secret key and combines it with the public key. These combined keys are exchanged. Each party then adds its own secret to the combined keys to arrive at a combined, secret key. This combined, secret key is then known to both parties, but not derivable by an eavesdropper.
+
+The most common key exchange algorithm in use today is the Diffie-Hellman key exchange algorithm.
+
+While key exchange algorithms are resistant against eavesdroppers, they are not resilient to interception. In the case of interception, an attacker could stand in the middle of a key exchange, while posing as each corresponding party. This is called a man-in-the-middle attack.
+
+Asymmetric ciphers can be used to address some of these problems.
+
+Asymmetric ciphers
+
+Asymmetric encryption, also known as public-key encryption, attempts to solve the key exchange and authentication problems of symmetric encryption. With asymmetric encryption, two keys are used. One key can encrypt data, while the other key can decrypt it. These keys are generated together and related mathematically. However, deriving one key from the other after the fact is not possible.
+
+The following diagram shows an asymmetric cipher: see image
+
+Establishing a secure communication channel with asymmetric encryption is easier. Each party can generate its own asymmetric encryption keys. The encryption key can then be transmitted without the worry of interception, while the decryption key is kept private. In this scheme, these keys are referred to as the Public Key and the Private Key, respectively.
+
+The Rivest-Shamir-Adleman (RSA) cipher is one of the first public-key ciphers and is widely used today. Newer elliptic-curve cryptography (ECC) algorithms promise greater efficiency and are quickly gaining market share. 
+
+Asymmetric ciphers are also used to implement digital signatures. A digital signature is used to verify the authenticity of data. Digital signatures are created by using a private key to generate a signature for a document. The public key can then be used to verify that the document was signed by the holder of the private key.
+
+The following diagram illustrates a digital signing and verifying process: see image
+
+TLS uses a combination of these methods to achieve security.
+
+How TLS uses ciphers
+
+Digital signatures are essential in TLS; they are used to authenticate servers. Without digital signatures, a TLS client wouldn't be able to differentiate between an authentic server and an impostor.
+
+TLS can also use digital signatures to authenticate the client, although this is much less common in practice. Most web applications either don't care about client authentication, or use other simpler methods, such as passwords.
+
+In theory, asymmetric encryption could be used to protect an entire communication channel. However, in practice, modern asymmetric ciphers are inefficient and only able to protect small amounts of data. For this reason, symmetric ciphers are preferred whenever possible. TLS uses asymmetric ciphers only to authenticate the server. TLS uses a key exchange algorithm and symmetric ciphers to protect the actual communication.
+
+Vulnerabilities are found for encryption algorithms all the time. It is, therefore, imperative that TLS connections are able to select the best algorithms that are mutually supported by both parties. This is done using cipher suites. A cipher suite is a list of algorithms, generally a key exchange algorithm, a bulk encryption algorithm, and a message authentication algorithm (MAC).
+
+When a TLS connection is first established, the TLS client sends a list of preferred cipher suites to the server. The TLS server will select one of these cipher suites to be used for the connection. If the server doesn't support any of the cipher suites given by the client, then a secure TLS connection cannot be established.
+
+With some background information about security out of the way, we can discuss TLS in more detail.
+
+The TLS protocol
+
+After a TCP connection is established, the TLS handshake is initiated by the client. The client sends a number of specifications to the server, including which versions of SSL/TLS it is running, which cipher suites it supports, and which compression methods it would like to use.
+
+The server selects the highest mutually supported version of SSL/TLS to use. It also chooses a cipher suite and compression method from the choices given by the client.
+
+If the client and server do not support any cipher suite in common, then no TLS connection can be established. This is not uncommon when using very old browsers with newer servers.
+
+After the basic setup is done, the server sends the client its certificate. This is used by the client to verify that it's connected to a legitimate server. We'll discuss more on certificates in the next section.
+
+Once the client has verified that the server really is who it claims to be, a key exchange is initiated. After key exchange completes, both the client and server have a shared secret key. All further communication is encrypted using this key and their chosen symmetric cipher.
+
+Certificates are used to verify server identities with digital signatures. Let's explore how they work next.
+
+Certificates
+
+Each HTTPS server uses one or more certificates to verify their identity. This certificate must either be trusted by the client itself or trusted by a third party that the client trusts. In common usages, such as web browsers, it's not really possible to list all trusted certificates. For this reason, it's most common to validate certificates by verifying that a trusted third party trusts them. This trust is proven using digital signatures.
+
+For example, a popular digital certificate authority is DigiCert Inc. Suppose that you trust DigiCert Inc. and have stored a certificate from them locally; you then connect to a website, example.com. You may not trust example.com, because you haven't seen their certificate before. However, example.com shows you that their certificate has been digitally signed by the DigiCert Inc. certificate you do trust. Therefore, you trust example.com website's certificate too.
+
+In practice, certificate chains can be several layers deep. As long as you can verify digital signatures back to a certificate you trust, you are able to validate the whole chain.
+
+This method is the common one used by HTTPS to authenticate servers. It does have some issues; namely, you must entirely trust the certificate authority. This is because certificate authorities could theoretically issue a certificate to an impostor, in which case you would be forced to trust the impostor. Certificate authorities are careful to avoid this, as it would ruin their reputation.
+
+The most popular certificate authorities at the time of this writing are the following:
+
+IdenTrust
+Comodo 
+DigiCert 
+GoDaddy 
+GlobalSign
+
+The five preceding certificate authorities are responsible for over 90% of the HTTPS certificates found on the web.
+
+It is also possible to self-sign a certificate. In this case, no certificate authority is used. In these cases, a client needs to somehow reliably obtain and verify a copy of your certificate before it can be trusted.
+
+Certificates are usually matched to domain names, but it's also possible for them to identify other information, such as company names, address, and so on.
+
+In the next chapter, Chapter 10, Implementing a Secure Web Server, certificates are covered in more detail.
+It's common today for one server to host many different domains, and each domain requires its own certificate. Let's now consider how these servers know which certificate to send.
+
+Server name identification
+
+Many servers host multiple domains. Certificates are tied to domains; therefore, TLS must provide a method for the client to specify which domain it's connecting to. You may recall that the HTTP Host header servers this purpose. The problem is that the TLS connection should be established before the HTTP data is sent. Therefore, the server must decide which certificate to transmit before the HTTP Host header is received.
+
+This is accomplished using Server Name Indication (SNI). SNI is a technique that, when used by TLS, requires the client to indicate to the server which domain it is attempting to connect to. The server can then find a matching certificate to use for the TLS connection.
+
+SNI is relatively new, and older browsers and servers do not support it. Before SNI was popular, servers had two choices—they could either host only one domain per IP address, or they could send certificates for all hosted domains for each connection.
+
+It should be noted that SNI involves sending the unencrypted domain name over the network. This means an eavesdropper can see which host the client is connecting to, even though they wouldn't know which resources the client is requesting from that host. Newer protocols, such as encrypted server name identification (ESNI), address this problem but are not widely deployed yet.
+
+With a basic understanding of the TLS protocol, we're ready to look at the most popular library that implements it—OpenSSL.
