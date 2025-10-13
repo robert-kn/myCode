@@ -4430,3 +4430,2306 @@ SNI is relatively new, and older browsers and servers do not support it. Before 
 It should be noted that SNI involves sending the unencrypted domain name over the network. This means an eavesdropper can see which host the client is connecting to, even though they wouldn't know which resources the client is requesting from that host. Newer protocols, such as encrypted server name identification (ESNI), address this problem but are not widely deployed yet.
 
 With a basic understanding of the TLS protocol, we're ready to look at the most popular library that implements it—OpenSSL.
+
+OpenSSL
+
+OpenSSL is a widely used open source library that provides SSL and TLS services to applications. We use it in this chapter for secure connections required by HTTPS.
+
+OpenSSL can be challenging to install. Refer to Appendices B, Setting Up Your C Compiler on Windows, Appendices C, Setting Up Your C Compiler on Linux, and Appendices D, Setting Up Your C Compiler on macOS, for more information.
+
+You can check whether you have the OpenSSL command-line tools installed by running the following command:
+
+openssl version
+
+You'll also need to ensure that you have the OpenSSL library installed. The following program can be used to test this. If it compiles and runs successfully, then you do have the OpenSSL library installed and working:
+
+#include <openssl/ssl.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void)
+{
+    printf("openssl version: %s\n", OpenSSL_version(SSLEAY_VERSION));
+    return EXIT_SUCCESS;
+}
+
+If you're using an older version of OpenSSL, you may need to replace the OpenSSL_version() function call with SSLeay_version() instead. However, a better solution is to just upgrade to a newer OpenSSL version.
+
+The preceding openssl_version.c program is compiled on macOS and Linux using the following command:
+
+gcc openssl_version.c -o openssl_version -lcrypto
+./openssl_version
+
+On Windows, openssl_version can be compiled using MinGW and the following commands:
+
+gcc openssl_version.c -o openssl_version.exe -lcrypto
+openssl_version.exe
+
+Once the OpenSSL library is installed and usable, we are ready to begin using encrypted sockets.
+
+Encrypted sockets with OpenSSL
+
+The TLS provided by OpenSSL can be applied to any TCP socket.
+
+Before using OpenSSL in your program, it is important to initialize it. The following code does this:
+
+SSL_library_init();
+OpenSSL_add_all_algorithms(); 
+SSL_load_error_strings();
+
+In the preceding code, the call to SSL_library_init() is required to initialize the OpenSSL library. The second call (to OpenSSL_add_all_algorithms()) causes OpenSSL to load all available algorithms. Alternately, you could load only the algorithms you know are needed. For our purposes, it is easy to load them all. The third call, SSL_load_error_strings(), causes OpenSSL to load error strings. This call isn't strictly needed, but it is handy to have easily readable error messages when something goes wrong.
+
+Once OpenSSL is initialized, we are ready to create an SSL context. This is done by calling the SSL_CTX_new() function, which returns an SSL_CTX object. You can think of this object as a sort of factory for SSL/TLS connections. It holds the initial settings that you want to use for your connections. Most programs only need to create one SSL_CTX object, and they can reuse it for all their connections.
+
+The following code creates the SSL context:
+
+SSL_CTX *ctx = SSL_CTX_new(TLS_client_method());
+if (!ctx) {
+    fprintf(stderr, "SSL_CTX_new() failed.\n");
+    return 1;
+}
+
+The SSL_CTX_new() function takes one argument. We use TLS_client_method(), which indicates that we want general-purpose, version-flexible TLS methods available. Our client automatically negotiates the best mutually supported algorithm with the server upon connecting.
+
+If you're using an older version of OpenSSL, you may need to replace TLS_client_method() with TLSv1_2_client_method() in the preceding code. However, a much better solution is to upgrade to a newer OpenSSL version.
+
+To secure a TCP connection, you must first have a TCP connection. This TCP connection should be established in the normal way. The following pseudo-code shows this:
+
+getaddrinfo(hostname, port, hints, address);
+socket = socket(address, type, protocol);
+connect(socket, address, type);
+
+For more information on setting up a TCP connection, refer to Chapter 3, An In-Depth Overview of TCP Connections.
+
+Once connect() has returned successfully, and a TCP connection is established, you can use the following code to initiate a TLS connection:
+
+SSL *ssl = SSL_new(ctx);
+if (!ctx) {
+    fprintf(stderr, "SSL_new() failed.\n");
+    return 1;
+}
+if (!SSL_set_tlsext_host_name(ssl, hostname)) {
+    fprintf(stderr, "SSL_set_tlsext_host_name() failed.\n");
+    ERR_print_errors_fp(stderr);
+    return 1;
+}
+SSL_set_fd(ssl, socket);
+if (SSL_connect(ssl) == -1) {
+    fprintf(stderr, "SSL_connect() failed.\n");
+    ERR_print_errors_fp(stderr);
+    return 1;
+}
+
+In the preceding code, SSL_new() is used to create an SSL object. This object is used to track the new SSL/TLS connection.
+
+We then use SSL_set_tlsext_host_name() to set the domain for the server we are trying to connect to. This allows OpenSSL to use SNI. This call is optional, but without it, the server does not know which certificate to send in the case that it hosts more than one site.
+
+Finally, we call SSL_set_fd() and SSL_connect() to initiate the new TLS/SSL connection on our existing TCP socket.
+
+It is possible to see which cipher the TLS connection is using. The following code shows this:
+
+printf ("SSL/TLS using %s\n", SSL_get_cipher(ssl));
+
+Once the TLS connection is established, data can be sent and received using SSL_write() and SSL_read(), respectively. These functions are used in a nearly identical manner as the standard socket send() and recv() functions.
+
+The following example shows transmitting a simple message over a TLS connection:
+
+char *data = "Hello World!";
+int bytes_sent = SSL_write(ssl, data, strlen(data));
+
+Receiving data, done with SSL_read(), is shown in the following example:
+
+char read[4096];
+int bytes_received = SSL_read(ssl, read, 4096);
+printf("Received: %.*s\n", bytes_received, read);
+
+When the connection is finished, it's important to free the used resources by calling SSL_shutdown() and SSL_free(ssl). This is shown in the following code:
+
+SSL_shutdown(ssl);
+CLOSESOCKET(socket);
+SSL_free(ssl);
+
+When you're done with an SSL context, you should also call SSL_CTX_free(). In our case, it looks like this:
+
+SSL_CTX_free(ctx);
+
+If your program requires authentication of the connected peer, it is important to look at the certificates sent during the TLS initialization. Let's consider that next.
+
+Certificates
+
+Once the TLS connection is established, we can use the SSL_get_peer_certificate() function to get the server's certificate. It's also easy to print the certificate subject and issuer, as shown in the following code:
+
+X509 *cert = SSL_get_peer_certificate(ssl);
+
+if (!cert) {
+    fprintf(stderr, "SSL_get_peer_certificate() failed.\n");         
+    return 1;
+}
+
+char *tmp;
+if (tmp = X509_NAME_oneline(X509_get_subject_name(cert), 0, 0)) {         
+    printf("subject: %s\n", tmp);
+    OPENSSL_free(tmp);
+}
+
+if (tmp = X509_NAME_oneline(X509_get_issuer_name(cert), 0, 0)) {         
+    printf("issuer: %s\n", tmp);
+    OPENSSL_free(tmp);     
+}
+
+X509_free(cert);
+
+OpenSSL automatically verifies the certificate during the TLS/SSL handshake. You can get the verification results using the SSL_get_verify_result() function. Its usage is shown in the following code:
+
+long vp = SSL_get_verify_result(ssl);
+if (vp == X509_V_OK) {
+    printf("Certificates verified successfully.\n");
+} else {
+    printf("Could not verify certificates: %ld\n", vp);
+}
+
+If SSL_get_verify_result() returns X509_V_OK, then the certificate chain was verified by OpenSSL and the connection can be trusted. If SSL_get_verify_result() does not return X509_V_OK, then HTTPS authentication has failed, and the connection should be abandoned.
+
+In order for OpenSSL to successfully verify the certificate, we must tell it which certificate authorities we trust. This can be done by using the SSL_CTX_load_verify_locations() function. It must be passed the filename that stores all of the trusted root certificates. Assuming your trusted certificates are in trusted.pem, the following code sets this up:
+
+if (!SSL_CTX_load_verify_locations(ctx, "trusted.pem", 0)) {
+    fprintf(stderr, "SSL_CTX_load_verify_locations() failed.\n");     
+    ERR_print_errors_fp(stderr);
+    return 1;
+}
+
+Deciding which root certificates to trust isn't easy. Each operating system provides a list of trusted certificates, but there is no general, easy way to import these lists. Using the operating system's default list is also not always appropriate for every application. For these reasons, certificate verification has been omitted from the examples in this chapter. However, it is absolutely critical that it be implemented appropriately in order for your HTTPS connections to be secure.
+
+In addition to validating the certificate's signatures, it is also important to validate that the certificate is actually valid for the particular server you're connected with! Newer versions of OpenSSL provide functions to help with this, but with older versions of OpenSSL, you're on your own. Consult the OpenSSL documentation for more information.
+
+We've now covered enough background information about TLS and OpenSSL that we're ready to tackle a concrete example program.
+
+A simple HTTPS client
+
+To bring the concepts of this chapter together, we build a simple HTTPS client. This client can connect to a given HTTPS web server and request the root document /. 
+
+Our program begins by including the needed chapter header, defining main(), and initializing Winsock as shown here:
+
+#include "chap09.h"
+
+int main(int argc, char *argv[])
+{
+#if defined(_WIN32)
+    WSADATA d;
+    if (WSAStartup(MAKEWORD(2, 2), &d)) {
+        fprintf(stderr, "Failed to initialize.\n");
+        return 1;
+    }
+#endif
+    
+}
+
+We then initialize the OpenSSL library with the following code:
+
+SSL_library_init();
+OpenSSL_add_all_algorithms();
+SSL_load_error_strings();
+
+The SSL_load_error_strings() function call is optional, but it's very useful if we run into problems.
+
+We can also create an OpenSSL context. This is done by calling SSL_CTX_new() as shown by the following code:
+
+SSL_CTX *ctx = SSL_CTX_new(TLS_client_method());     
+if (!ctx) {
+    fprintf(stderr, "SSL_CTX_new() failed.\n");         
+    return 1;
+}
+
+If we were going to do certificate verification, this would be a good place to include the SSL_CTX_load_verify_locations() function call, as explained in the Certificates section of this chapter. We're omitting certification verification in this example for simplicity, but it is important to include it in real-world applications.
+
+Our program then checks that a hostname and a port number was passed in on the command line like so:
+
+if (argc < 3) {
+    fprintf(stderr, "usage: https_simple hostname port\n");
+    return 1;
+}
+
+char *hostname = argv[1];
+char *port = argv[2];
+
+The standard HTTPS port number is 443. Our program lets the user specify any port number, which can be useful for testing.
+
+We then configure the remote address for the socket connection. This code uses the same technique that we've been using since Chapter 3, An In-Depth Overview of TCP connections. The code for this is as follows:
+
+printf("Configuring remote address...\n");
+struct addrinfo hints;
+memset(&hints, 0, sizeof(hints));
+hints.ai_socktype = SOCK_STREAM;
+struct addrinfo *peer_address;
+if (getaddrinfo(hostname, port, &hints, &peer_address)) {         
+    fprintf(stderr, "getaddrinfo() failed. (%d)\n",GETSOCKETERRNO());         
+    exit(1);
+}
+
+printf("Remote address is: ");
+char address_buffer[100];
+char service_buffer[100];
+getnameinfo(peer_address->ai_addr, peer_address->ai_addrlen, address_buffer, sizeo(address_buffer),service_buffer, sizeof   
+            (service_buffer), NI_NUMERICHOST);
+printf("%s %s\n", address_buffer, service_buffer);
+
+We continue to create the socket using a call to socket(), and we connect it using the connect() function as follows:
+
+printf("Creating socket...\n");
+SOCKET server;
+server = socket(peer_address->ai_family,peer_address->ai_socktype, peer_address->ai_protocol);     
+if (!ISVALIDSOCKET(server)) {
+    fprintf(stderr, "socket() failed. (%d)\n", GETSOCKETERRNO());         
+    exit(1);
+}
+
+
+printf("Connecting...\n");
+if (connect(server,peer_address->ai_addr, peer_address->ai_addrlen)) {         
+    fprintf(stderr, "connect() failed. (%d)\n", GETSOCKETERRNO());         
+    exit(1);
+}
+freeaddrinfo(peer_address);
+printf("Connected.\n\n");
+
+At this point, a TCP connection has been established. If we didn't need encryption, we could communicate over it directly. However, we are going to use OpenSSL to initiate a TLS/SSL connection over our TCP connection. The following code creates a new SSL object, sets the hostname for SNI, and initiates the TLS/SSL handshake:
+
+if (!ctx) {
+    fprintf(stderr, "SSL_new() failed.\n");
+    return 1;
+}
+if (!SSL_set_tlsext_host_name(ssl, hostname)) {         
+    fprintf(stderr, "SSL_set_tlsext_host_name() failed.\n");         
+    ERR_print_errors_fp(stderr);
+    return 1;
+}
+SSL_set_fd(ssl, server);
+if (SSL_connect(ssl) == -1) {
+    fprintf(stderr, "SSL_connect() failed.\n");         
+    ERR_print_errors_fp(stderr);
+    return 1;     
+}
+
+The preceding code is explained in the Encrypted Sockets with OpenSSL section earlier in this chapter.
+
+The call to SSL_set_tlsext_host_name() is optional, but useful if you may be connecting to a server that hosts multiple domains. Without this call, the server wouldn't know which certificates are relevant to this connection.
+
+It is sometimes useful to know which cipher suite the client and server agreed upon. We can print the selected cipher suite with the following:
+
+printf("SSL/TLS using %s\n", SSL_get_cipher(ssl));
+
+It is also useful to see the server's certificate. The following code prints the server's certificate:
+
+X509 *cert = SSL_get_peer_certificate(ssl);
+if (!cert) {
+    fprintf(stderr, "SSL_get_peer_certificate() failed.\n");
+    return 1;
+}
+char *tmp;
+if ((tmp = X509_NAME_oneline(X509_get_subject_name(cert), 0, 0))) {         
+    printf("subject: %s\n", tmp);
+    OPENSSL_free(tmp);
+}
+if ((tmp = X509_NAME_oneline(X509_get_issuer_name(cert), 0, 0))) {         
+    printf("issuer: %s\n", tmp);
+    OPENSSL_free(tmp);
+}
+X509_free(cert);
+
+The certificate subject should match the domain we're connecting to. The issuer should be a certificate authority that we trust. Note that the preceding code does not validate the certificate. Refer to the Certificates section in this chapter for more information.
+
+We can then send our HTTPS request. This request is the same as if we were using plain HTTP. We begin by formatting the request into a buffer and then sending it over the encrypted connection using SSL_write(). The following code shows this:
+
+char buffer[2048];
+sprintf(buffer, "GET / HTTP/1.1\r\n");
+sprintf(buffer + strlen(buffer), "Host: %s:%s\r\n", hostname, port);     
+sprintf(buffer + strlen(buffer), "Connection:close\r\n");     
+sprintf(buffer + strlen(buffer), "User-Agent: https_simple\r\n");     
+sprintf(buffer + strlen(buffer),"\r\n");
+SSL_write(ssl, buffer, strlen(buffer));
+printf("Sent Headers:\n%s", buffer);
+
+For more information about the HTTP protocol, please refer back to Chapter 6, Building a Simple Web Client.
+
+Our client now simply waits for data from the server until the connection is closed. This is accomplished by using SSL_read() in a loop. The following code receives the HTTPS response:
+
+while(1) {
+    int bytes_received = SSL_read(ssl, buffer, sizeof(buffer));             
+    if (bytes_received < 1) {
+        printf("\nConnection closed by peer.\n");                 
+        break;
+    }
+    printf("Received (%d bytes): '%.*s'\n",bytes_received, bytes_received, buffer);
+}
+
+The preceding code also prints any data received over the HTTPS connection. Note that it does not parse the received HTTP data, which would be more complicated. See the https_get.c program in this chapter's code repository for a more advanced program that does parse the HTTP response.
+
+Our simple client is almost done. We only have to shut down the TLS/SSL connection, close the socket, and clean up. This is done by the following code:
+
+    printf("\nClosing socket...\n");
+    SSL_shutdown(ssl);
+    CLOSESOCKET(server);
+    SSL_free(ssl);
+    SSL_CTX_free(ctx);
+#if defined(_WIN32)
+    WSACleanup();
+#endif
+    printf("Finished.\n");
+    return 0;
+}
+
+That concludes https_simple.c.
+
+You should be able to compile and run it on Windows using MinGW and the following commands:
+
+gcc https_simple.c -o https_simple.exe -lssl -lcrypto -lws2_32
+https_simple example.org 443
+
+If you're using certain older versions of OpenSSL, you may also need an additional linker option—-lgdi32.
+
+Compiling and executing on macOS and Linux can be done using the following:
+
+gcc https_simple.c -o https_simple -lssl -lcrypto
+./https_simple example.org 443
+
+If you run into linker errors, you should check that your OpenSSL library is properly installed. You may find it helpful to attempt compiling the openssl_version.c program first.
+
+The https_simple program should serve as an elementary example of the techniques of connecting as an HTTPS client. These same techniques can be applied to any TCP connection.
+
+It's easy to apply these techniques to some of the programs developed earlier in the book, such as tcp_client and web_get.
+
+It is also worth mentioning that, while TLS works only with TCP connections, Datagram Transport Layer Security (DTLS) aims to provide many of the same guarantees for User Datagram Protocol (UDP) datagrams. OpenSSL provides support for DTLS too.
+
+Other examples
+
+A few other examples are included in this chapter's repository. They are the following: 
+
+tls_client.c: This is tcp_client.c from Chapter 3, An In-Depth Overview of TCP Connections, but it has been modified to make TLS connections.
+
+https_get.c: This is the web_get.c program from Chapter 6, Building a Simple Web Client, but it has been modified for HTTPS. You can think of it as the extended version of https_simple.c.
+
+tls_get_cert.c: This is like https_simple.c, but it simply prints the connected server's certificate and exits.
+
+Keep in mind that none of the examples in this chapter perform certification verification. This is an important step that must be added before using these programs in the field.
+
+chapter 10 Implementing a Secure Web Server
+
+In this chapter, we will build a simple HTTPS server program. This serves as the counterpart to the HTTPS client we worked on in the previous chapter.
+
+HTTPS is powered by Transport Layer Security (TLS). HTTPS servers, unlike HTTPS clients, are expected to identify themselves with certificates. We'll cover how to listen for HTTPS connections, provide certificates, and send an HTTP response over TLS.
+
+This chapter continues where Chapter 9, Loading Secure Web Pages with HTTPS and OpenSSL, left off. This chapter continues to use the OpenSSL library. It is imperative that you have the OpenSSL library installed and that you know the basics of programming with OpenSSL. 
+
+HTTPS and OpenSSL summary
+
+HTTPS uses TLS to add security to HTTP. You will recall from Chapter 6, Building a Simple Web Client, and Chapter 7, Building a Simple Web Server, that HTTP is a text-based protocol that works over TCP on port 80. The TLS protocol can be used to add security to any TCP- based protocol. Specifically, TLS is used to provide security for HTTPS. So in a nutshell, HTTPS is simply HTTP with TLS. The default HTTPS port is 443.
+
+OpenSSL is a popular open source library that provides functionality for TLS/SSL and HTTPS. We use it in this book to provide the methods needed to implement HTTPS clients and servers.
+
+Generally, HTTPS connections are first made using TCP sockets. Once the TCP connection is established, OpenSSL is used to negotiate a TLS connection over the open TCP connection. From that point forward, OpenSSL functions are used to send and receive data over the TLS connection.
+
+An important part of communication security is being able to trust that the connection is to the intended party. No amount of data encryption helps if you have connected to an impostor. TLS uses certificates to prevent against connecting to impostors and man-in-the-middle attacks.
+
+We now need to understand certificates in more detail before we can proceed with our HTTPS server.
+
+Certificates
+
+Certificates are an important part of the TLS protocol. Although certificates can be used on both the client and server side, HTTPS generally only uses server certificates. These certificates identify to the client that they are connected to a trusted server.
+
+Without certificates, a client wouldn't be able to tell whether it was connected to the intended server or an impostor server.
+
+Certificates work using a chain-of-trust model. Each HTTPS client has a few certificate authorities that they explicitly trust, and certificate authorities offer services where they digitally sign certificates. This service is usually done for a small fee, and usually only after some simple verification of the requester.
+
+When an HTTPS client sees a certificate signed by an authority it trusts, then it also trusts that certificate. Indeed, these chains of trust can run deep. For example, most certificate authorities also allow resellers. In these cases, the certificate authority signs an intermediate certificate to be used by the reseller. The reseller then uses this intermediate certificate to sign new certificates. Clients trust the intermediate certificates because they are signed by trusted certificate authorities, and clients trust the certificates signed by resellers because they trust the intermediate certificates.
+
+Certificate authorities commonly offer two types of validation. Domain validation is where a signed certificate is issued after simply verifying that the certificate recipient can be reached at the given domain. This is usually done by having the certificate requester temporarily modify a DNS record, or reply to an email sent to their whois contact.
+
+Let's Encrypt is a relatively new certificate issuer that issues certificates for free. They do this using an automated model. Domain validation is done by having the certificate requester serve a small file over HTTP or HTTPS.
+
+Domain validation is the most common type of validation. An HTTPS server using domain validation assures an HTTPS client that they are connected to the domain that they think they are. It implies that their connection wasn't silently hijacked or otherwise intercepted.
+
+Certificate authorities also offer Extended Validation (EV) certificates. EV certificates are only issued after the authority verifies the recipient's identity. This is usually done using public records and a phone call.
+
+For public-facing HTTPS applications, it is important that you obtain a certificate from a recognized certificate authority. However, this can sometimes be tedious, and it is often much more convenient to obtain a self-signed certificate for development and testing purposes. Let's do that now.
+
+Self-signed certificates with OpenSSL
+
+Certificates signed by recognized authorities are essential to establish the chain of trust needed for public websites. However, it is much easier to obtain a self-signed certificate for testing or development.
+
+It is also acceptable to use a self-signed certificate for certain private applications where the client can be deployed with a copy of the certificate, and trust only that certificate. This is called certificate pinning. Indeed, when used properly, certificate pinning can be more secure than using a certificate authority. However, it is not appropriate for public-facing websites.
+
+We require a certificate to test our HTTPS server. We use a self-signed certificate because they are the easiest to obtain. The downside to this method is that web browsers won't trust our server. We can get around this by clicking through a few warnings in the web browser.
+
+OpenSSL provides tools to make self-signing certificates very easy.
+
+The basic command to self-sign a certificate is as follows:
+
+openssl req -x509 -newkey rsa:2048 -nodes -sha256 -keyout key.pem -out cert.pem -days 365
+
+OpenSSL asks questions about what to put on the certificate, including the subject, your name, company, location, and so on. You can use the defaults on all of these as this doesn't matter for our testing purposes.
+
+The preceding command places the new certificate in cert.pem and the key for it in key.pem. Our HTTPS server needs both files. cert.pem is the certificate that gets sent to the connected client, and key.pem provides our server with the encryption key that proves that it owns the certificate. Keeping this key secret is imperative.
+
+You can also use OpenSSL to view a certificate. The following command does this:
+
+openssl x509 -text -noout -in cert.pem
+
+If you're on Windows using MSYS, you may get garbled line endings from the previous command. If so, try using unix2dos to fix it, as shown by the following command:
+
+openssl x509 -text -noout -in cert.pem | unix2dos
+
+Now that we have a usable certificate, we are ready to begin our HTTPS server programming.
+
+HTTPS server with OpenSSL
+
+Let's go over some basics of using the OpenSSL library in server applications before beginning a concrete example.
+
+Before OpenSSL can be used, it must be initialized. The following code initializes the OpenSSL library, loads the requisite encryption algorithms, and loads useful error strings:
+
+SSL_library_init();
+OpenSSL_add_all_algorithms();
+SSL_load_error_strings();
+
+Our server also needs to create an SSL context object. This object works as a sort of factory from which we can create TLS/SSL connections.
+
+The following code creates the SSL_CTX object:
+
+SSL_CTX *ctx = SSL_CTX_new(TLS_server_method()); 
+if (!ctx) {
+    fprintf(stderr, "SSL_CTX_new() failed.\n");     
+    return 1;
+}
+
+If you're using an older version of OpenSSL, you may need to replace TLS_server_method() with TLSv1_2_server_method() in the preceding code. However, a better solution is to upgrade to a newer OpenSSL version.
+
+After the SSL_CTX object is created, we can set it to use our self-signed certificate and key. The following code does this:
+
+if (!SSL_CTX_use_certificate_file(ctx, "cert.pem" , SSL_FILETYPE_PEM) || !SSL_CTX_use_PrivateKey_file(ctx, "key.pem", SSL_FILETYPE_PEM)) {     
+    fprintf(stderr, "SSL_CTX_use_certificate_file() failed.\n");     
+    ERR_print_errors_fp(stderr);
+    return 1;
+}
+
+That concludes the minimal OpenSSL setup needed for an HTTPS server.
+
+The server should then listen for incoming TCP connections. This was covered in detail in Chapter 3, An In-Depth Overview of TCP Connections.
+
+After a new TCP connection is established, we use the socket returned by accept() to create our TLS/SSL socket.
+
+First, a new SSL object is created using our SSL context from earlier. The following code demonstrates this:
+
+SSL *ssl = SSL_new(ctx);
+if (!ctx) {
+    fprintf(stderr, "SSL_new() failed.\n");
+    return 1;
+}
+
+The SSL object is then linked to our open TCP socket using SSL_set_fd().
+
+The SSL_accept() function is called to establish the TLS/SSL connection. The following code demonstrates this:
+
+SSL_set_fd(ssl, socket_client);
+if (SSL_accept(ssl) <= 0) {
+    fprintf(stderr, "SSL_accept() failed.\n");     
+    ERR_print_errors_fp(stderr);
+    return 1;
+}
+
+printf ("SSL connection using %s\n", SSL_get_cipher(ssl));
+
+You may notice that this code is very similar to the HTTPS client code from Chapter 9, Loading Secure Web Pages with HTTPS and OpenSSL. The only real differences are in the setup of the SSL context object.
+
+Once the TLS connection is established, data can be sent and received using SSL_write() and SSL_read(). These functions replace the send() and recv() functions used with TCP sockets.
+
+When the connection is finished, it is important to free resources, as shown by the following code: 
+
+SSL_shutdown(ssl);
+CLOSESOCKET(socket_client);
+SSL_free(ssl);
+
+When your program is finished accepting new connections, you should also free the SSL context object. The following code shows this:
+
+SSL_CTX_free(ctx);
+
+With an understanding of the basics out of the way, let's solidify our knowledge by implementing a simple example program.
+
+Time server example
+
+In this chapter, we develop a simple time server that displays the time to an HTTPS client. This program is an adaptation of time_server.c from Chapter 2, Getting to Grips with Socket APIs, which served the time over plain HTTP. Our program begins by including the chapter header, defining main(), and initializing Winsock on Windows. The code for this is as follows:
+
+#include "chap10.h"
+int main() {
+#if defined(_WIN32)
+    WSADATA d;
+    if (WSAStartup(MAKEWORD(2, 2), &d)) {
+        fprintf(stderr, "Failed to initialize.\n");
+        return 1;
+    }
+#endif
+
+The OpenSSL library is then initialized with the following code:
+
+SSL_library_init();
+OpenSSL_add_all_algorithms();
+SSL_load_error_strings();
+
+An SSL context object must be created for our server. This is done using a call to SSL_CTX_new(). The following code shows this call:
+
+SSL_CTX *ctx = SSL_CTX_new(TLS_server_method());
+if (!ctx) {
+    fprintf(stderr, "SSL_CTX_new() failed.\n");
+    return 1;
+}
+
+If you're using an older version of OpenSSL, you may need to replace TLS_server_method() with TLSv1_2_server_method() in the preceding code. However, you should probably upgrade to a newer OpenSSL version instead.
+
+Once the SSL context has been created, we can associate our server's certificate with it. The following code sets the SSL context to use our certificate:
+
+if (!SSL_CTX_use_certificate_file(ctx, "cert.pem" , SSL_FILETYPE_PEM) || !SSL_CTX_use_PrivateKey_file(ctx, "key.pem", SSL_FILETYPE_PEM)) {         
+    fprintf(stderr, "SSL_CTX_use_certificate_file() failed.\n");         
+    ERR_print_errors_fp(stderr);
+    return 1;
+}
+
+Make sure that you've generated a proper certificate and key. Refer to the Self-signed certificate with OpenSSL section from earlier in this chapter.
+
+Once the SSL context is configured with the proper certificate, our program creates a listening TCP socket in the normal way. It begins with a call to getaddrinfo() and socket(), as shown in the following code:
+
+printf("Configuring local address...\n");
+struct addrinfo hints;
+memset(&hints, 0, sizeof(hints));
+hints.ai_family = AF_INET;
+hints.ai_socktype = SOCK_STREAM;
+hints.ai_flags = AI_PASSIVE;
+
+struct addrinfo *bind_address;
+getaddrinfo(0, "8080", &hints, &bind_address);
+
+printf("Creating socket...\n");
+SOCKET socket_listen;
+socket_listen = socket(bind_address->ai_family,bind_address->ai_socktype, bind_address->ai_protocol);     
+if (!ISVALIDSOCKET(socket_listen)) {
+    fprintf(stderr, "socket() failed. (%d)\n", GETSOCKETERRNO());         
+    return 1;
+}
+
+The socket created by the preceding code is bound to the listening address with bind(). The listen() function is used to set the socket in a listening state. The following code demonstrates this:
+
+printf("Binding socket to local address...\n");
+if (bind(socket_listen, bind_address->ai_addr, bind_address->ai_addrlen)) {         
+    fprintf(stderr, "bind() failed. (%d)\n",GETSOCKETERRNO());         
+    return 1;
+}
+
+freeaddrinfo(bind_address);
+printf("Listening...\n");
+
+if (listen(socket_listen, 10) < 0) {
+    fprintf(stderr, "listen() failed. (%d)\n", GETSOCKETERRNO());         
+    return 1;
+}
+
+Note that the preceding code sets the listening port number to 8080. The standard port for HTTPS is 443. It is often more convenient to test with a high port number, since low port numbers require special privileges on some operating systems.
+
+Our server uses a while loop to accept multiple connections. Note that this isn't true multiplexing, as only one connection is handled at a time. However, it proves convenient for testing purposes to be able to handle multiple connections serially. Our self-signed certificate causes mainstream browsers to reject our connection on the first try. The connection only succeeds after an exception is added. By having our code loop, it makes adding this exception easier.
+
+Our while loop begins by using accept() to wait for new connections. This is done by the following code:
+
+while (1) {
+    printf("Waiting for connection...\n");
+    struct sockaddr_storage client_address;
+    socklen_t client_len = sizeof(client_address);
+    SOCKET socket_client = accept(socket_listen, (struct sockaddr*) &client_address, client_len);         
+    if (!ISVALIDSOCKET(socket_client)) {
+        fprintf(stderr, "accept() failed. (%d)\n", GETSOCKETERRNO());             
+        return 1;
+    }
+
+Once the connection is accepted, we use getnameinfo() to print out the client's address. This is sometimes useful for debugging purposes. The following code does this:
+
+    printf("Client is connected... ");
+    char address_buffer[100];
+    getnameinfo((struct sockaddr*)&client_address, client_len, address_buffer, sizeof(address_buffer), 0, 0,                
+                NI_NUMERICHOST);
+    printf("%s\n", address_buffer);
+
+Once the TCP connection is established, an SSL object needs to be created. This is done with a call to SSL_new(), as shown by the following code:
+
+    SSL *ssl = SSL_new(ctx);
+    if (!ctx) {
+        fprintf(stderr, "SSL_new() failed.\n");             
+        return 1;
+    }
+
+The SSL object is associated with the open socket by a call to SSL_set_fd(). Then, a TLS/SSL connection can be initialized with a call to SSL_accept(). The following code shows this:
+
+    SSL_set_fd(ssl, socket_client);
+    if (SSL_accept(ssl) <= 0) {
+        fprintf(stderr, "SSL_accept() failed.\n");
+        ERR_print_errors_fp(stderr);
+
+        SSL_shutdown(ssl);
+        CLOSESOCKET(socket_client);
+        SSL_free(ssl);
+
+        continue;
+    }
+
+    printf ("SSL connection using %s\n", SSL_get_cipher(ssl));
+
+In the preceding code, the call to the SSL_accept() function can fail for many reasons. For example, if the connected client doesn't trust our certificate, or the client and server can't agree on a cipher suite, then the call to SSL_accept() fails. When it fails, we just clean up the allocated resources and use continue to repeat our listening loop.
+
+Once the TCP and TLS/SSL connections are fully open, we use SSL_read() to receive the client's request. Our program ignores the content of this request. This is because our program only serves the time. It doesn't matter what the client has asked for—our server responds with the time.
+
+The following code uses SSL_read() to wait on and read the client's request:
+
+    printf("Reading request...\n");
+    char request[1024];
+    int bytes_received = SSL_read(ssl, request, 1024);         
+    printf("Received %d bytes.\n", bytes_received);
+
+The following code uses SSL_write() to transmit the HTTP headers to the client:
+
+    printf("Sending response...\n");         
+    const char *response =  
+        "HTTP/1.1 200 OK\r\n"
+        "Connection: close\r\n"
+        "Content-Type: text/plain\r\n\r\n"
+        "Local time is: ";
+    int bytes_sent = SSL_write(ssl, response, strlen(response));         
+    printf("Sent %d of %d bytes.\n", bytes_sent, (int)strlen(response));
+
+The time() and ctime() functions are then used to format the current time. Once the time is formatted in time_msg, it is also sent to the client using SSL_write(). The following code shows this:
+
+    time_t timer;
+    time(&timer);
+    char *time_msg = ctime(&timer);
+    bytes_sent = SSL_write(ssl, time_msg, strlen(time_msg));         
+    printf("Sent %d of %d bytes.\n", bytes_sent, (int)strlen(time_msg));
+
+Finally, after the data is transmitted to the client, the connection is closed, and the loop repeats. The following code shows this:
+
+    printf("Closing connection...\n");
+    SSL_shutdown(ssl);
+    CLOSESOCKET(socket_client);
+    SSL_free(ssl);
+}
+
+If the loop terminates, it would be useful to close the listening socket and clean up the SSL context, as demonstrated by the following code:
+
+printf("Closing listening socket...\n");     
+CLOSESOCKET(socket_listen);
+SSL_CTX_free(ctx);
+
+Finally, Winsock should be cleaned up if necessary:
+
+#if defined(_WIN32)     
+    WSACleanup();
+#endif
+
+    printf("Finished.\n");
+    return 0;
+}
+
+That concludes tls_time_server.c.
+
+You can compile and run the program using the following commands on macOS or Linux:
+
+gcc tls_time_server.c -o tls_time_server -lssl -lcrypto
+./tls_time_server
+
+On Windows, compiling and running the program is done with the following commands:
+
+gcc tls_time_server.c -o tls_time_server.exe -lssl -lcrypto -lws2_32
+tls_time_server
+
+If you have linker errors, please be sure that the OpenSSL library is installed correctly. You may find it helpful to attempt to compile openssl_version.c from Chapter 9, Loading Secure Web Pages with HTTPS and OpenSSL.
+
+The following screenshot shows what running tls_time_server might look like: see image
+
+You can connect to the time server by navigating your web browser to
+https://127.0.0.1:8080. Upon the first connection, your browser will reject the self- signed certificate. The following screenshot shows what this rejection looks like in Firefox: see image
+
+To access the time server, you need to add an exception in the browser. The method for this is different in each browser, but generally, there is an Advanced button that leads to an option to either add a certificate exception or otherwise proceed with the insecure connection.
+
+Once the browser connection is established, you will be able to see the current time as given by our tls_time_server program: see image
+
+The tls_time_server program proved useful to show how a TLS/SSL server can be set up without getting bogged down in the details of actualizing a complete HTTPS server. However, this chapter's code repository also includes a more substantial HTTPS server.
+
+A full HTTPS server
+
+Included in this chapter's code repository is https_server.c. This program is a modification of web_server.c from Chapter 7, Building a Simple Web Server. It can be used to serve a simple static website over HTTPS.
+
+In the https_server.c program, the basic TLS/SSL connection is set up and established the same way as shown in tls_time_server.c. Once the secure connection is established, the connection is simply treated as HTTP.
+
+https_server is compiled using the same technique as for tls_time_server. The following screenshot shows how to compile and run https_server: see image
+
+Once https_server is running, you can connect to it by navigating your web browser to https://127.0.0.1:8080. You will likely need to add a security exception when connecting for the first time. The code is set up to serve the static pages from the chap07 directory.
+
+The following screenshot was taken of a web browser connected to https_server: see image
+
+This chapter's example programs illustrate the basics of HTTPS servers. However, implementing a genuinely robust HTTPS server does involve additional challenges. Let's consider some of these now.
+
+HTTPS server challenges
+
+This chapter should serve only as an introduction to TLS/SSL server programming. There is much more to learn about secure network programming. Before deploying a secure HTTPS server with OpenSSL, it is essential to review all the OpenSSL documentation carefully. Many OpenSSL functions have edge cases that were ignored in the illustrative code for this chapter.
+
+Multiplexing can also be complicated with OpenSSL. In typical TCP servers, we have been using the select() function to indicate when data is available to be read.
+The select() function works directly on the TCP socket. Using select() on a server secured with TLS/SSL can be tricky. This is because select() indicates when data is available at the TCP level. This usually, but not always, indicates that data is available to be read with SSL_read(). It is important that you carefully consult the OpenSSL documentation for SSL_read() if you are going to use it with select(). The example program in this chapter ignores these possibilities for reasons of simplicity.
+
+There are also alternatives to OpenSSL. Let's consider some of them now.
+
+OpenSSL alternatives
+
+Although OpenSSL is one of the oldest and most widely deployed libraries implementing TLS, many alternative libraries have sprung up in recent years. Some of these alternatives aim to offer better features, performance, or quality control compared to OpenSSL.
+
+The following table contains a number of alternative open source TLS libraries:
+
+TLS Library                                     Website
+cryptlib                                        https://www.cryptlib.com/
+GnuTLS                                          https://www.gnutls.org/
+LibreSSL                                        https://www.libressl.org/
+mbed TLS                                        https://tls.mbed.org/
+Network Security Services                       https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS
+s2n                                             https://github.com/awslabs/s2n
+wolfSSL                                         https://www.wolfssl.com/
+
+There are also alternatives to doing TLS termination directly in your application, and this can simplify program design. Let's consider this next.
+
+Alternatives to TLS
+
+Getting everything right when implementing an HTTPS server can prove difficult, and missing even a minor detail can compromise security entirely.
+
+As an alternative to using TLS directly in our server itself, it is sometimes a better idea to use a reverse proxy server. A reverse proxy server can be configured to accept secure connections from clients and then forward these connections as plain HTTP to your program.
+
+Nginx and Apache are two popular open source servers that can work well as HTTPS reverse proxies.
+
+This setup is illustrated by the following diagram: see imaage
+
+A reverse proxy server configured in this way is also called a TLS termination proxy. An even better alternative may be to create your program using the CGI or FastCGI standard. In this case, your program communicates directly with a standard web server. The web server handles all of the HTTPS and HTTP details. This can greatly simplify program design, and, in some cases, reduce maintenance costs too.
+
+If you do use an off-the-shelf HTTPS server, it is still important to use caution. It can be easy to inadvertently compromise security through misconfiguration.
+
+chapter 11 Establishing SSH Connections with libssh
+
+This chapter is all about programming with the Secure Shell (SSH) protocol. SSH is a secure network protocol used to authenticate with remote servers, grant command-line access, and securely transfer files.
+
+SSH is widely used for the configuration and management of remote servers. Oftentimes, web servers aren't connected to monitors or keyboards. For many of these servers, SSH provides the only method of command-line access and administration.
+
+Each example program in this chapter runs on Windows, Linux, and macOS.
+
+Each example needs to be linked against the libssh library. This is accomplished by passing the -lssh option to gcc.
+
+The SSH protocol
+
+Most servers providing a service (such as websites and emails) over the modern internet aren't attached to keyboards or monitors. Even when servers do have local input/output hardware, remote access is often much more convenient.
+
+Various protocols have been used to provide remote command-line access to servers. One of the first such protocols was Telnet. With Telnet, a client remotely connects to a server using plaintext over TCP port 23. The server provides more-or-less direct access to the operating system command-line through this Transmission Control Protocol (TCP) connection. The client sends plaintext commands to the server, and the server executes these commands. The command-line output is sent back from the server to the client.
+
+Telnet has a major security shortcoming: it does not encrypt any data sent over the network. Even user passwords are sent as plaintext when using Telnet. This means that any network eavesdropper could obtain user credentials!
+
+The SSH protocol has now largely replaced Telnet. The SSH protocol works over TCP using port 22. SSH uses strong encryption to protect against eavesdropping.
+
+SSH allows clients to verify servers' identities using public-key authentication. Without public-key authentication of the server, an impostor could masquerade as a legitimate server and attempt to trick a client into connecting. Once connected, the client would send its credentials to the impostor server.
+
+SSH also provides many methods for client authentication with severs. These include sending a password or using public-key authentication. We look at these methods in detail later.
+
+SSH is a complicated protocol. So, instead of attempting to implement it ourselves, we use an existing library to provide the needed functionality.
+
+libssh
+
+libssh is a widely used open source C library implementing the SSH protocol. It allows us to remotely execute commands and transfer files using the SSH protocol.
+
+libssh is structured in a way that abstracts network connections. We won't need to bother with the low-level networking APIs we've been using so far. The libssh library handles hostname resolution and creation of the needed TCP sockets for us.
+
+Testing out libssh
+
+Before continuing with this chapter, it is essential that you have the libssh library installed and available. Please refer to Appendix B, Setting Up Your C Compiler on Windows, Appendix C, Setting Up Your C Compiler on Linux, and Appendix D, Setting Up Your C Compiler on macOS, for libssh installation.
+
+Our first program using libssh is designed to ensure that it's installed correctly. This program merely prints the libssh library version. The program is as follows:
+
+If you receive an error message about libssh.h not being found, you should check that you have the libssh library headers in your compiler's include directory search path. If you see an error message about an undefined reference to ssh_version, then please check that you didn't forget to pass the -lssh option to your compiler.
+
+The next step to understanding libssh is to establish an actual SSH connection.
+
+Establishing a connection
+
+Now that we've ensured that libssh is correctly installed, it's time to attempt an actual SSH connection.
+
+You'll need to have access to an SSH server before continuing. OpenSSH is a popular server that is available for Linux, macOS, and Windows 10. It works well for testing but be sure to understand the security implementations before installing it on your device. Refer to your operating system's documentation for more information.
+
+If you would rather test with a remote system, Linux Virtual Private Servers (VPS) running OpenSSH are available from many providers. They typically cost only a few dollars a month.
+
+Let's continue by implementing a program that uses libssh to open an SSH connection.
+
+We structure the rest of the programs in this chapter to take the SSH server's hostname and port number as command-line arguments. Our program starts with the following code, which checks these arguments:
+
+#include "chap11.h"
+int main(int argc, char *argv[])
+{
+    const char *hostname = 0;
+    int port = 22;
+    if (argc < 2) {
+        fprintf(stderr, "Usage: ssh_connect hostname port\n");
+        return 1;
+    }
+    hostname = argv[1];
+    if (argc > 2) 
+        port = atol(argv[2]);
+
+In the preceding code, argc is checked to see whether at least the hostname was passed in as a command-line argument. If it wasn't, a usage message is displayed instead. Otherwise, the server's hostname is stored in the hostname variable. If a port number was passed in, it is stored in the port variable. Otherwise, the default port 22 is stored instead.
+
+SSH often provides complete and total access to a server. For this reason, some internet criminals randomly scan IP addresses for SSH connections. When they successfully establish a connection, they attempt to guess login credentials, and if successful, they take control of the server. These attacks aren't successful against properly secured servers, but they are a common nuisance, nonetheless. Using SSH on a port other than the default (22) often avoids these automated attacks. This is one reason why we want to ensure our programs work well with non-default port numbers.
+
+Once our program has obtained the hostname and connection port number, we continue by creating an SSH session object. This is done with a call to ssh_new() as shown in the following code:
+
+    ssh_session ssh = ssh_new();
+    if (!ssh) {
+        fprintf(stderr, "ssh_new() failed.\n");
+        return 1;
+    }
+
+The preceding code creates a new SSH session object and stores it in the ssh variable.
+
+Once the SSH session is created, we need to specify some options before completing the connection. The ssh_options_set() function is used to set options. The following code shows setting the remote hostname and port:
+
+    ssh_options_set(ssh, SSH_OPTIONS_HOST, hostname);
+    ssh_options_set(ssh, SSH_OPTIONS_PORT, &port);
+
+libssh includes useful debugging tools. By setting the SSH_OPTIONS_LOG_VERBOSITY option, we tell libssh to print almost everything it does. The following code causes libssh to log a lot of information about which actions it takes:
+
+    int verbosity = SSH_LOG_PROTOCOL;
+    ssh_options_set(ssh, SSH_OPTIONS_LOG_VERBOSITY, &verbosity);
+
+This logging is useful to see, but it can also be distracting. I recommend you try it once and then disable it unless you run into problems. The rest of this chapter's examples won't use it.
+
+We can now use ssh_connect() to initiate the SSH connection. The following code shows this:
+
+    int ret = ssh_connect(ssh);
+    if (ret != SSH_OK) {
+        fprintf(stderr, "ssh_connect() failed.\n%s\n", ssh_get_error(ssh));         
+        return -1;
+    }
+
+Note that ssh_connect() returns SSH_OK on success. On failure, we use the ssh_get_error() function to detail what went wrong.
+
+Next, our code prints out that the connection was successful:
+
+printf("Connected to %s on port %d.\n", hostname, port);
+
+The SSH protocol allows servers to send a message to clients upon connecting. This message is called the banner. It is typically used to identify the server or provide short access rules. We can print the banner using the following code:
+
+printf("Banner:\n%s\n", ssh_get_serverbanner(ssh));
+
+This is as far as our ssh_connect.c example goes. Our program simply disconnects and frees the SSH session before terminating. The following code concludes ssh_connect.c:
+
+    ssh_disconnect(ssh);
+    ssh_free(ssh);
+    return 0;
+}
+
+You can compile ssh_connect.c with the following command on Windows using MinGW:
+gcc ssh_connect.c -o ssh_connect.exe -lssh
+
+On Linux and macOS, the command to compile ssh_connect.c is as follows:
+gcc ssh_connect.c -o ssh_connect -lssh
+
+The following screenshot shows ssh_connect.c being successfully compiled and run on Linux: see image
+
+In the preceding screenshot, you can see that ssh_connect was able to connect to the OpenSSH server running locally.
+
+Now that we've established a connection, let's continue by authenticating with the server.
+
+SSH authentication
+
+SSH provides authentication methods for both the server (host) and the client (user). It should be obvious why the server must authenticate the client. The server wants to only provide access to authorized users. Otherwise, anyone could take over the server.
+
+However, the client also needs to authenticate the server. If the client fails to authenticate the server properly, then the client could be tricked into sending its password to an impostor!
+
+In SSH, servers are authenticated using public key encryption. Conceptually, this is very similar to how HTTPS provides server authentication. However, SSH doesn't typically rely on certificate authorities. Instead, when using SSH, most clients simply keep a list of the public keys (or hashes of the public keys) that they trust. How the clients obtain this list in the first place varies. Generally, if a client connects to a server under trusted circumstances, then it can trust that public key in the future too.
+
+libssh implements features to remember trusted servers' public keys. In this way, once a server has been connected to and trusted once, libssh remembers that it's trusted in the future.
+
+Some SSH deployments also use other methods to validate SSH hosts' public keys. For example, a Secure Shell fingerprint (SSHFP) record is a type of DNS record used to validate SSH public keys. Its use requires secure DNS access.
+
+Regardless of how you decide to trust (or not trust) a server's public key, you'll need to obtain the server's public key in the first place. Let's look at how libssh provides access to the server authentication functionality.
+
+Server authentication
+
+Once the SSH session is established, we can get the server's public key using the ssh_get_server_publickey() function. The following code illustrates this function call:
+
+    ssh_key key;
+    if (ssh_get_server_publickey(ssh, &key) != SSH_OK) {
+        fprintf(stderr, "ssh_get_server_publickey() failed.\n%s\n",                 
+        ssh_get_error(ssh));
+        return -1;
+    }
+
+It is often useful to obtain and display a hash of the server's SSH public key. Users can look at hashes and compare these to known keys. The libssh library provides the ssh_get_publickey_hash() function for this purpose.
+
+The following code prints out an SHA1 hash of the public key obtained earlier:
+
+    unsigned char *hash;
+    size_t hash_len;
+    if (ssh_get_publickey_hash(key, SSH_PUBLICKEY_HASH_SHA1, &hash, &hash_len) != SSH_OK)
+    {
+        fprintf(stderr, "ssh_get_publickey_hash() failed.\n%s\n", ssh_get_error(ssh));
+        return -1;
+    }
+
+    printf("Host public key hash:\n");
+    ssh_print_hash(SSH_PUBLICKEY_HASH_SHA1, hash, hash_len);
+
+libssh prints SHA1 hashes using Base64. It also prepends the hash type first. For example, the preceding code might print the following:
+
+Host public key hash:
+SHA1:E348CMNeCGGec/bQqEX7aocDTfI
+
+When you've finished with the public key and hash, free their resources with the following code:
+
+    ssh_clean_pubkey_hash(&hash);
+    ssh_key_free(key);
+
+libssh provides the ssh_session_is_known_server() function to determine whether a server's public key is known. The following code shows an example of using this code:
+
+    enum ssh_known_hosts_e known = ssh_session_is_known_server(ssh);     
+    switch (known) {
+        case SSH_KNOWN_HOSTS_OK: 
+            printf("Host Known.\n"); 
+            break;
+        case SSH_KNOWN_HOSTS_CHANGED: 
+            printf("Host Changed.\n");  
+            break;         
+        case SSH_KNOWN_HOSTS_OTHER: 
+            printf("Host Other.\n"); 
+            break;         
+        case SSH_KNOWN_HOSTS_UNKNOWN: 
+            printf("Host Unknown.\n"); 
+            break;         
+        case SSH_KNOWN_HOSTS_NOT_FOUND: 
+            printf("No host file.\n"); 
+            break;
+        case SSH_KNOWN_HOSTS_ERROR:
+            printf("Host error. %s\n", ssh_get_error(ssh)); 
+            return 1;
+        default: printf("Error. Known: %d\n", known); 
+            return 1;     
+    }
+
+If the server's public key is known (previously trusted), then ssh_session_is_known_server() returns SSH_KNOWN_HOSTS_OK. Otherwise, ssh_session_is_known_server() can return other values with various meanings.
+
+SSH_KNOWN_HOSTS_UNKNOWN indicates that the server is unknown. In this case, the user should verify the server's hash.
+
+SSH_KNOWN_HOSTS_NOT_FOUND means that libssh didn't find a hosts file, and one is created automatically. This should generally be treated in the same way as SSH_KNOWN_HOSTS_UNKNOWN.
+
+SSH_KNOWN_HOSTS_CHANGED indicates that the server is returning a different key than was previously known, while SSH_KNOWN_HOSTS_OTHER indicates that the server is returning a different type of key than was previously used. Either of these could indicate a potential attack! In a real-world application, you should be more explicit about notifying the user of these risks.
+
+If the user has verified that a host is to be trusted, use ssh_session_update_known_hosts() to allow libssh to save the servers public key hash. This allows ssh_session_is_known_server() to return SSH_KNOWN_HOSTS_OK for the next connection.
+
+The following code illustrates prompting the user to trust a connection and using ssh_session_update_known_hosts():
+
+    if (known == SSH_KNOWN_HOSTS_CHANGED ||
+            known == SSH_KNOWN_HOSTS_OTHER ||
+            known == SSH_KNOWN_HOSTS_UNKNOWN ||
+            known == SSH_KNOWN_HOSTS_NOT_FOUND) 
+    {
+        printf("Do you want to accept and remember this host? Y/N\n");         
+        char answer[10];
+        fgets(answer, sizeof(answer), stdin);
+        if (answer[0] != 'Y' && answer[0] != 'y') {
+            return 0;
+        }
+        ssh_session_update_known_hosts(ssh);
+    }
+
+Please see ssh_auth.c in this chapter's code repository for a working example. Consult the libssh documentation for more information.
+
+After the client has authenticated the server, the server needs to authenticate the client.
+
+Client authentication
+
+SSH offers several methods of client authentication. These methods include the following:
+
+No authentication: This allows any user to connect
+Password authentication: This requires the user to provide a username and password
+Public key: This uses public key encryption methods to authenticate
+Keyboard-interactive: This authenticates by having the user answer several prompts
+Generic Security Service Application Program Interface (GSS-API): This allows authentication through a variety of other services
+
+Password authentication is the most common method, but it does have some drawbacks. If an impostor server tricks a user into sending their password, then that user's password is effectively compromised. Public key user authentication doesn't suffer from this attack to the same degree. With public key authentication, the server issues a unique challenge for each authentication attempt. This prevents a malicious impostor server from replaying a previous authentication to the legitimate server.
+
+Once public key authentication is set up, libssh makes using it very simple. In many cases, it's as easy as calling the ssh_userauth_publickey_auto() function. However, setting up public key authentication in the first place can be a tedious process.
+
+Although public key authentication is more secure, password authentication is still in common use. Password authentication is also more straightforward and easier to test. For these reasons, we continue the examples in this chapter by using password authentication.
+
+Regardless of the user authentication method, the SSH server must know what user you are trying to authenticate as. The libssh library lets us provide this information using the ssh_set_options() function that we saw earlier. It should be called before using ssh_connect(). To set the user, call ssh_options_set() with SSH_OPTIONS_USER as shown in the following code:
+
+ssh_options_set(ssh, SSH_OPTIONS_USER, "alice"); After the SSH session has been established, a password can be provided with the ssh_userauth_password() function. The following code prompts for a password and sends it to the connected SSH server:
+
+    printf("Password: ");
+    char password[128];
+    fgets(password, sizeof(password), stdin);
+    password[strlen(password)-1] = 0;
+
+    if (ssh_userauth_password(ssh, 0, password) != SSH_AUTH_SUCCESS) {         
+        fprintf(stderr, "ssh_userauth_password() failed.\n%s\n", ssh_get_error(ssh));
+        return 0;
+    } else {
+        printf("Authentication successful!\n");
+    }
+
+The preceding code uses the fgets() function to obtain the password from the user. The fgets() function always includes the newline character with the input, which we don't want. The password[strlen(password)-1] = 0 code effectively shortens the password by one character, thus removing the newline character.
+
+Note that using fgets() causes the entered password to display on the screen. This isn't secure, and it would be an improvement to hide the password while it's being entered. Unfortunately, there isn't a cross-platform way to do this. If you're using Linux, consider using the getpass() function in place of fgets().
+
+See ssh_auth.c in this chapter's code repository for a working example of authenticating with a server using user password authentication.
+
+You can compile and run ssh_auth.c with the following commands on Windows using MinGW:
+gcc ssh_auth.c -o ssh_auth.exe -lssh ssh_auth example.com 22 alice
+
+On Linux and macOS, the commands to compile and run ssh_auth.c are as follows:
+gcc ssh_auth.c -o ssh_auth -lssh
+./ssh_auth example.com 22 alice
+
+The following screenshot shows compiling ssh_auth and using it to connect to a locally running SSH server on Linux: see image
+
+In the preceding screenshot, ssh_auth was used to successfully authenticate with the locally running SSH server. The ssh_auth program used password authentication with the username alice and the password password123. Needless to say, you need to change the username and password as appropriate for your SSH server. Authentication will be successful only if you use the username and password for an actual user account on the server you connect to.
+
+After authenticating, we're ready to run a command over SSH.
+
+Executing a remote command
+
+The SSH protocol works using channels. After we've established an SSH connection, a channel must be opened to do any real work. The advantage is that many channels can be opened over one connection. This potentially allows an application to do multiple things (seemingly) simultaneously.
+
+After the SSH session is open and the user is authenticated, a channel can be opened. A new channel is opened by calling the ssh_channel_new() function. The following code illustrates this:
+
+/*ssh_command.c excerpt*/
+
+    ssh_channel channel = ssh_channel_new(ssh);
+    if (!channel) {
+        fprintf(stderr, "ssh_channel_new() failed.\n");
+        return 0;
+    }
+
+The SSH protocol implements many types of channels. The session channel type is used for executing remote commands and transferring files. With libssh, we can request a session channel by using the ssh_channel_open_session() function. The following code shows calling ssh_channel_open_session():
+
+    if (ssh_channel_open_session(channel) != SSH_OK) {
+        fprintf(stderr, "ssh_channel_open_session() failed.\n");
+        return 0;
+    }
+
+Once the session channel is open, we can issue a command to run with the ssh_channel_request_exec() function. The following code uses fgets() to prompt the user for a command and ssh_channel_request_exec() to send the command to the remote host:
+
+    printf("Remote command to execute: ");
+    char command[128];
+    fgets(command, sizeof(command), stdin);
+    command[strlen(command)-1] = 0;
+    if (ssh_channel_request_exec(channel, command) != SSH_OK) {         
+        fprintf(stderr, "ssh_channel_open_session() failed.\n");
+        return 1;
+    }
+
+Once the command has been sent, our program uses ssh_channel_read() to receive the command output. The following code loops until the entire output is read:
+
+    char output[1024];
+    int bytes_received;
+    while ((bytes_received = ssh_channel_read(channel, output, sizeof(output), 0))) {         
+        if (bytes_received < 0) {
+            fprintf(stderr, "ssh_channel_read() failed.\n");
+            return 1;
+        }
+        printf("%.*s", bytes_received, output);
+    }
+
+The preceding code first allocates a buffer, output, to hold the received data from the command's output. The ssh_channel_read() function returns the number of bytes read, but it returns 0 when the read is complete or a negative number for an error. Our code loops while ssh_channel_read() returns data.
+
+After the entire output from the command has been received, the client should send an end-of-file (EOF) over the channel, close the channel, and free the channel resources. The following code shows this:
+
+    ssh_channel_send_eof(channel);
+    ssh_channel_close(channel);
+    ssh_channel_free(channel);
+
+If your program is also done with the SSH session, be sure to call ssh_disconnect() and ssh_free() as well.
+
+The ssh_command.c program included in this chapter's code repository is a simple utility that connects to a remote SSH host and executes a single command.
+
+You can compile ssh_command.c with the following command on Windows using MinGW:
+gcc ssh_command.c -o ssh_command.exe -lssh
+On Linux and macOS, the command to compile ssh_command.c is as follows:
+gcc ssh_command.c -o ssh_command -lssh
+
+The following screenshot shows ssh_command.c being compiled and run on Linux: see image
+
+The preceding screenshot shows connecting to the local OpenSSH server and executing the ls -l command. The ssh_command code faithfully prints the output of that command (which is a file listing for the user's home directory).
+
+The libssh library function ssh_channel_request_exec() is useful to execute a single command. However, SSH also supports methods for opening a fully interactive remote shell. Generally, a session channel is opened as shown previously. Then the libssh library function ssh_channel_request_pty() is called to initialize a remote shell.
+The libssh library provides many functions to send and receive data this way. Please refer to the libssh documentation for more information.
+
+Now that you're able to execute a remote command and receive its output, it may also be useful to transfer files. Let's consider that next.
+
+Downloading a file
+
+The Secure Copy Protocol (SCP) provides a method to transfer files. It supports both uploading and downloading files.
+libssh makes using SCP easy. This chapter's code repository contains an example, ssh_download.c, which shows the basic method for downloading a file over SCP with libssh.
+
+After the SSH session is started and the user is authenticated, ssh_download.c prompts the user for the remote filename using the following code:
+
+    /*ssh_download.c excerpt*/
+    printf("Remote file to download: ");
+    char filename[128];
+    fgets(filename, sizeof(filename), stdin);
+    filename[strlen(filename)-1] = 0;
+
+A new SCP session is initialized by calling the libssh library function ssh_scp_new(), as shown in the following code:
+
+    ssh_scp scp = ssh_scp_new(ssh, SSH_SCP_READ, filename);
+    if (!scp) {
+        fprintf(stderr, "ssh_scp_new() failed.\n%s\n",
+                ssh_get_error(ssh));
+        return 1;
+    }
+
+In the preceding code, SSH_SCP_READ is passed to ssh_scp_new(). This specifies that we are going to use the new SCP session for downloading files. The SSH_SCP_WRITE option would be used to upload files. The libssh library also provides the
+SSH_SCP_RECURSIVE option to assist with uploading or downloading entire directory trees.
+
+After the SCP session is created successfully, ssh_scp_init() must be called to initialize the SCP channel. The following code shows this:
+
+/*ssh_download.c excerpt*/
+    if (ssh_scp_init(scp) != SSH_OK) {
+        fprintf(stderr, "ssh_scp_init() failed.\n%s\n", ssh_get_error(ssh));
+        return 1;
+    }
+
+ssh_scp_pull_request() must be called to begin the file download. This function returns SSH_SCP_REQUEST_NEWFILE to indicate that the remote host is going to begin sending a new file. The following code shows this:
+
+    if (ssh_scp_pull_request(scp) != SSH_SCP_REQUEST_NEWFILE) {
+        fprintf(stderr, "ssh_scp_pull_request() failed.\n%s\n", ssh_get_error(ssh));
+        return 1;
+    }
+
+libssh provides some methods we can use to retrieve the remote filename, file size, and permissions. The following code retrieves these values and prints them to the console:
+
+    int fsize = ssh_scp_request_get_size(scp);
+    char *fname = strdup(ssh_scp_request_get_filename(scp));
+    int fpermission = ssh_scp_request_get_permissions(scp);
+    printf("Downloading file %s (%d bytes, permissions 0%o\n", fname, fsize, fpermission);
+    free(fname);
+
+Once the file size is known, we can allocate space to store it in memory. This is done using malloc() as shown in the following code:
+
+    char *buffer = malloc(fsize);
+    if (!buffer) {
+        fprintf(stderr, "malloc() failed.\n");
+        return 1;
+    }
+
+Our program then accepts the new file request with ssh_scp_accept_request() and downloads the file with ssh_scp_read(). The following code shows this:
+
+    ssh_scp_accept_request(scp);
+    if (ssh_scp_read(scp, buffer, fsize) == SSH_ERROR) {         
+        fprintf(stderr, "ssh_scp_read() failed.\n%s\n", ssh_get_error(ssh));
+        return 1;     
+    }
+
+The downloaded file can be printed to the screen with a simple call to printf(). When we're finished with the file data, it's important to free the allocated space too. The following code prints out the file's contents and frees the allocated memory:
+
+    printf("Received %s:\n", filename);
+    printf("%.*s\n", fsize, buffer);
+    free(buffer);
+
+An additional call to ssh_scp_pull_request() should return SSH_SCP_REQUEST_EOF. This indicates that we received the entire file from the remote host. The following code checks for the end-of-file request from the remote host:
+
+    if (ssh_scp_pull_request(scp) != SSH_SCP_REQUEST_EOF) {         
+        fprintf(stderr, "ssh_scp_pull_request() unexpected.\n%s\n", ssh_get_error(ssh));
+        return 1;
+    }
+
+The preceding code is simplified a bit. The remote host could also return other values which aren't necessarily errors. For example, if ssh_scp_pull_request() returns SSH_SCP_REQUEST_WARNING, then the remote host has sent a warning. This warning can be read by calling ssh_scp_request_get_warning(), but, in any case, ssh_scp_pull_request() should be called again.
+
+After the file is received, ssh_scp_close() and ssh_scp_free() should be used to free resources as shown in the following code excerpt:
+
+    ssh_scp_close(scp);
+    ssh_scp_free(scp);
+
+After your program is done with the SSH session, don't forget to call ssh_disconnect() and ssh_free() as well.
+
+The entire file-downloading example is included with this chapter's code as
+ssh_download.c.
+You can compile ssh_download.c with the following command on Windows using MinGW:
+gcc ssh_download.c -o ssh_download.exe -lssh
+On Linux and macOS, the command to compile ssh_download.c is as follows:
+gcc ssh_download.c -o ssh_download -lssh
+The following screenshot shows ssh_download.c being successfully compiled and used on Linux to download a file: see image
+
+As you can see from the preceding screenshot, downloading a file using SSH and SCP is pretty straightforward. This can be a useful way to transfer data between computers securely.
+
+Section 4 - Odds and Ends
+
+In this final section, we will study network testing and review common mistakes to watch out for in socket application programming. We will end with an exploration of the design considerations for Internet of Things connected devices.
+
+chapter 12 Network Monitoring and Security
+
+In this chapter, we will look at common tools and techniques for network monitoring. These techniques can be useful to both alert us to developing problems, and to help troubleshoot existing problems. Network monitoring can be important from a network security standpoint, where it may be useful to detect, log, or even prevent network intrusions.
+
+The utilities and tools used in this chapter are either built in to your operating system or are available as free, open source software. We'll provide instructions for each tool as it is introduced.
+
+The purpose of network monitoring
+
+Network monitoring is a common IT term that has a broad implication. Network monitoring can refer to the practice, techniques, and tools used to provide insight into the status of a network. These techniques are used to monitor the availability and performance of networked systems and troubleshoot problems.
+
+Some reasons you may want to practice network monitoring include the following:
+To detect the reachability of networked systems
+To measure the availability of networked systems
+To determine the performance of networked systems
+To inform decisions about network resource allocation
+To aid in troubleshooting
+To benchmark performance
+To reverse engineer a protocol
+To debug a program
+
+In this chapter, we look at a small subset of conventional network monitoring techniques that may be useful when implementing networked programs.
+
+When developing or deploying networked programs, it is often the case that you run into problems. When this happens, you are faced with two possibilities. The first possibility is that your program could have a bug in it. The second possibility is that your problem is caused by a network issue. The methods covered in this chapter help to identify and troubleshoot network problems.
+
+One of the most fundamental questions you could ask is, can this system reach that system? The Ping utility, which is perhaps the most elementary network tool, is designed to answer just that question. Let's consider its usage next.
+
+Testing reachability
+
+Perhaps the most basic network monitoring tool is Ping. Ping uses the Internet Control Message Protocol (ICMP) to check whether a host is reachable. It also commonly reports the total round-trip time (latency). Ping is available as a built-in command or utility for all common operating systems.
+
+The ICMP defines a set of special IP messages that are typically useful for diagnostic and control purposes. Ping works by using two of these messages: echo request and echo reply. The Ping utility sends an echo request ICMP message to a destination host. When that host receives the echo request, it should respond with an echo reply message.
+
+When the echo reply is received, Ping knows that the destination host is reachable. Ping can also report the round-trip time from when the echo request was sent to when the echo reply was received. ICMP echo messages are usually small and easy to process, so this round-trip time often serves as a best-case estimate of network latency.
+
+The Ping utility takes one argument: the hostname or address you're requesting a response from. Ping on Unix-based systems will send packets continuously. On Windows, pass in the -t flag for this behavior. Press Ctrl +C to stop.
+
+The following screenshot shows using the Ping utility on example.com: see image
+
+In the preceding screenshot, you can see that several ping messages were sent, and each received a response. The round-trip time is reported for each ping message, and a summary of all sent packets is also reported. The summary includes the minimum, average, and maximum round-trip message time.
+
+It is also possible to use ping to send larger messages. On Linux and macOS, the -s flag specifies packet size. On Windows, the -l flag is used. It is sometimes interesting to see how packet size affects latency and reliability.
+
+The following screenshot shows pinging example.com with a larger 1,000-byte ping message: see image
+
+If ping fails to receive an echo reply, it does not necessarily mean that the target host is unreachable. It only means that ping did not receive the expected reply. This could be because the target machine ignored the echo request. However, most systems are set up to respond to ping requests properly, and an echo request timeout usually means the target system is unreachable.
+
+Sometimes, just knowing that a host is reachable is enough, but sometimes you'll want more information. It can be useful to know the exact path an IP packet takes through the network. The traceroute utility provides this information.
+
+Checking a route
+
+Although we briefly introduced traceroute in Chapter 1, Introducing Networks and Protocols, it is worth revisiting in more detail.
+
+While Ping can tell us whether a network path exists between two systems, traceroute can reveal what this path actually is.
+
+Traceroute is used with one argument: the hostname or address you want to map a route to.
+
+On Windows, traceroute is called tracert. Tracert works in a very similar way to the traceroute utility found on Linux and macOS.
+The following screenshot shows the traceroute utility printing the routers used to deliver data to example.com. The -n flag tells traceroute not to perform reverse-DNS lookups for each hop. These lookups are rarely useful and omitting them saves a bit of time and screen space: see image
+
+The preceding screenshot shows that there are four or five routers (or hops) between us and the destination system at example.com. Traceroute also shows the round-trip time to each intermediate router.
+
+Traceroute sends three messages to each router. This often exposes multiple network paths, and there is no guarantee that any two messages will take precisely the same path.
+
+In the preceding example, we see that the message must first pass through 23.92.28.3. From there, it goes to one of three different systems, which are listed. The message continues until it reaches the destination at hop five or six, depending on the exact path it takes through the network.
+
+This illustrates an interesting point: you shouldn't assume that two consecutive packets take the same network path.
+
+How traceroute works
+
+To understand how traceroute works, we must understand a detail of the Internet Protocol (IP). Each IP packet header contains a field called Time to Live (TTL). TTL is the maximum number of seconds that a packet should live on the network before being discarded. This is important to keep an IP packet from simply persisting (which is, going in an endless loop) over the network.
+
+TTL time intervals under one second are rounded up. This means that, in practice, each router that handles an IP packet decrements the TTL field by 1. Therefore, TTL is often used as a hop-count. That is to say that the TTL field simply represents the number of hops a packet can still take over the network.
+
+The traceroute utility uses TTL to identify intermediate routers in a network. Traceroute begins by addressing a message (for example, a UDP datagram or an ICMP echo request) to the destination host. However, traceroute sets the TTL field to a value of 1. When the very first router in the connection path receives this message, it decrements TTL to zero. The router then realizes that the message has expired and discards it. A well-behaved router then sends an ICMP Time Exceeded message back to the original sender. Traceroute uses this Time Exceeded message to identify the first router in the connection.
+
+Traceroute repeats this same process with additional messages. The second message is sent using a TTL of 2, and that message identifies the second hop in the network path. The third message is sent using a TTL of 3, and so on. Eventually, the message reaches its final destination and traceroute has mapped the entire network path.
+
+The following diagram illustrates the method used by traceroute: see image
+
+In the preceding diagram, the first message is sent with a TTL of 1. Router 1 doesn't forward this message, but instead returns an ICMP Time Exceeded message. The second message is sent with a TTL of 2. It makes it to the second router before timing out. The third message makes it to the destination, which replies with an Echo Reply message. (If this traceroute were UDP-based, it would expect to receive an ICMP Port Unreachable message instead.)
+
+Not all routers return an ICMP Time Exceeded message, and some networks filter out these messages. In these cases, traceroute will have no way to know these routers' addresses. Traceroute prints an asterisk instead. Theoretically, if a router exists in the connection path that doesn't decrement the TTL field, then traceroute has no way of knowing that this router exists.
+
+Now that we've covered the way ping and traceroute work, you may be wondering how they could be implemented in C code. Unfortunately, despite their simple algorithms, this is easier said than done. Keep reading to learn more.
+
+Raw sockets
+
+You may be interested in implementing your own network testing tools. The ping tool seems pretty simple, and it is. Unfortunately, the socket programming APIs we've been working with do not provide access at the IP level that the ICMP is built on.
+
+The socket programming API does provide access to raw sockets, in theory. With raw sockets, a C program can construct the exact IP packet to send. That is, a C programmer could construct an ICMP packet from scratch and send it over the network. Raw sockets also allow for programs to receive uninterpreted packets from the network directly. In this case, the user program would be responsible for deconstructing and interpreting the ICMP packet, not the operating system.
+
+On systems with raw socket support, getting started can be as simple as changing your socket() function invocation to the following:
+
+socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
+
+However, the problem is that raw sockets aren't universally supported. It is a difficult subject to approach in a cross-platform way. Windows, in particular, has varying support for raw sockets depending on the OS version. Recent versions of Windows have virtually no support for raw sockets. For this reason, we won't cover raw sockets in any more detail here.
+
+Now that we've covered two basic tools for network troubleshooting, let's next look at tools that inform us about our own system's relationship to the network.
+
+Checking local connections
+
+It is often useful to know what connections are being made on your local machine. The netstat command can help with that. Netstat is available on Linux, macOS, and Windows. Each version differs a little in the command-line options and output, but the general usage principles are the same.
+
+I recommend running netstat with the -n flag. This flag prevents netstat from doing reverse-DNS lookups on each address and has the effect of speeding it up significantly.
+
+On Linux, we can use the following command to show open TCP connections:
+
+netstat -nt
+
+The following screenshot shows the result of running this command on Linux: see image
+
+In the preceding screenshot, you can see that netstat shows six columns. These columns display the protocol, the sending and receiving queue, the local address, the foreign address, and the connection state. In this example, we see that there are three connections to port 80. It is likely that this computer is loading up three web pages (as HTTP uses port 80).
+
+On Windows, the netstat -n -p TCP command shows the same information, except it omits the socket queue information.
+
+The queue information, displayed on Unix-based systems, represents how many bytes the kernel has queued up waiting for the program to read, or the number of bytes sent but not acknowledged by the foreign host. Small numbers are healthy, but if these numbers became large, it could indicate a problem with the network or a bug in the program.
+
+It is also useful to see which program is responsible for each connection. Use the -p flag on Unix-based systems for this. On Windows, the -o flag shows PID and the -b flag shows executable names.
+
+If you're working on a server, it is often useful to see which listening sockets are open. The -l flag instructs Unix-based netstat to show only listening sockets. The following screenshot shows listening TCP server sockets, including the program name: see image
+
+In the preceding screenshot, we can see that this system is running a DNS resolver (systemd-resolve on port 53, IPv4 only), an SSH daemon (sshd on port 22), a printer service (cupsd on port 631), and a web server (apache2 on port 80, IPv6 only).
+
+On Windows, netstat doesn't have an easy way to display only listening sockets. Instead, you can use the -a flag to display everything. Filtering out only listening TCP sockets can be accomplished with the following command:
+
+netstat -nao -p TCP | findstr LISTEN
+
+With an idea of what programs are communicating from our machine, it may also be useful to see what they are communicating. Tools such as tcpdump and tshark specialize in this, and we will cover them next.
+
+Snooping on connections
+
+In addition to seeing which sockets are open on our computer, we can also capture the exact data being sent and received.
+We have a few tooling options for this:
+
+tcpdump is a commonly used program for packet capture on Unix-based systems. It is not available on modern Windows systems, however.
+
+Wireshark is a very popular network protocol analyzer that includes a very nice GUI. Wireshark is free software, released under the GNU GPL license, and available on many platforms (including Windows, Linux, and macOS).
+
+Included with Wireshark is Tshark, a command-line-based tool that allows us to dump and analyze network traffic. Programmers often prefer command-line tools for their simple interfaces and ease of scripting. They have the additional benefit on being usable on systems where GUIs may not be available. For these reasons, we focus on using Tshark in this section.
+
+Tshark can be obtained from https://www.wireshark.org.
+
+If you're running Linux, it is likely that your distro provides a package for Tshark. For example, on Ubuntu Linux, the following commands will install Tshark:
+
+sudo apt-get update
+sudo apt-get install tshark
+
+Once installed, Tshark is very easy to use.
+
+You first need to decide which network interface(s) you want to use to capture traffic. The desired interface or interfaces are passed to tshark with the -i flag. On Linux, you can listen to all interfaces by passing -i any. However, Windows doesn't provide the any interface. To listen on multiple interfaces with Windows, you need to enumerate them separately, for example, -i 1 -i 2 -i 3.
+
+Tshark lists the available interfaces with the -D flag. The following screenshot shows Tshark on Windows enumerating the available network interfaces: see image
+
+If you want to monitor local traffic (that is., where the communication is between two programs on the same computer), you will want to use the Loopback adapter.
+
+Once you've identified the network interface you would like to monitor, you can start Tshark with the -i flag and begin capturing traffic. Use Ctrl + C to stop capturing. The following screenshot shows Tshark in use: see image
+
+The preceding screenshot represents only a few seconds of running Tshark on a typical Windows desktop. As you can see, there is a lot of traffic into and out of an even relatively idle system.
+
+To cut down on the noise, we need to use a capture filter. Tshark implements a small language that allows easy specification of which packets to capture and which to ignore.
+
+Explaining filters may be easiest by way of example.
+
+For example, if we want to capture only traffic to or from the IP address 8.8.8.8, we will use the host 8.8.8.8 filter.
+
+In the following screenshot, we've run Tshark with the host 8.8.8.8 filter: see image
+
+You can see that while Tshark was running, it captured two packets. The first packet is a DNS request sent to 8.8.8.8. Tshark informs us that this DNS request is for the A record of example.com. The second packet is the DNS response received from 8.8.8.8. Tshark shows that the DNS query response indicators that the A record for example.com is 93.184.216.34.
+
+Tshark filters also support the Boolean operators and, or, and not. For example, to capture only traffic involving the IP addresses 8.8.8.8 and 8.8.4.4 you can use the host 8.8.8.8 filter or the host 8.8.4.4 filter.
+
+Filtering by port number is also very useful and can be done with port. For example, the following screenshot shows Tshark being used to capture traffic to 93.184.216.34 on port 80: see image
+
+In the preceding screenshot, we see that Tshark was run with the tshark -i 5 host 93.184.216.34 and port 80 command. This has the effect of capturing all traffic on network interface 5 that is to or from 93.184.216.34 port 80.
+
+TCP connections are sent as a series of packets. Although Tshark reports capturing 11 packets, these are all associated with only one TCP connection.
+
+So far, we've been using Tshark in a way that causes it to display a summary of each packet. Often this is enough, but sometimes you will want to be able to see the entire contents of a packet.
+
+Deep packet inspection
+
+If we pass tshark the -x flag, it displays an ASCII and hex dump of every packet captured. The following screenshot shows this usage: see image
+
+In the preceding screenshot, you can see that entire IP packets are being dumped. In this case, we see the first three packets represent a new TCP connection's three-way handshake. The fourth packet contains an HTTP request.
+
+This direct insight into each packet's contents isn't always convenient. It's often more practical to capture packets to a file and do the analysis later. The -w option is used with tshark to capture packets to a file. You may also want to use the -c option to limit the number of packets captured. This simple precaution protects against accidentally filling your entire hard drive with network traffic.
+
+The following screenshot shows using Tshark to capture 50 packets to a file named capture.pcap: see image
+
+Once the traffic is written to a file, we can use Tshark to analyze it at our leisure. Simply run tshark -r capture.pcap to get started. For text-based protocols (such as HTTP or SMTP), it is also often useful to open the capture file in a text editor for analysis.
+
+The ultimate way to analyze captured traffic is with Wireshark. Wireshark allows you to load a capture file produced with tshark or tcpdump and analyze it with a very nice GUI. Wireshark is also able to understand many standard protocols.
+
+The following screenshot shows using Wireshark to display the traffic captured from Tshark: see image
+
+If the system you need to capture traffic on has a GUI, you can also use Wireshark to capture your traffic directly.
+
+If you play around with tshark and Wireshark, you will quickly see that it is easy to inspect network protocols at a deep level. You may even find some questionable security choices made by software running on your own system.
+
+Although we've been focusing on monitoring only network traffic on our local system, it is also possible to monitor all local network traffic.
+
+Capturing all network traffic
+
+tshark is only able to see traffic that arrives on your machine. This usually means you can only use it to monitor traffic from applications on your computer.
+
+To capture all internet traffic on your network, you must somehow arrange for that traffic to arrive at your system, even though it usually wouldn't. There are two basic methods to do this.
+
+The first method is by using a router that supports mirroring. This feature makes it mirror all traffic to a given Ethernet port. If you are using such a router, you can configure it to mirror all network traffic to a particular port, and then plug your computer into that port. From that point, any traffic capturing tool, such as tcpdump or tshark, can be used to record this traffic.
+
+The second way to sniff all internet traffic is to install a hub (or a switch with port mirroring) between your router and internet modem. Hubs work by mirroring all traffic to all ports. Hubs used to be a common way to build a network. However, they have mostly been replaced by more efficient switches.
+
+With a hub installed between your router and Internet modem, you can then connect your system directly to this hub. With that setup, you can receive all the internet traffic into or out of the network.
+
+To monitor all network traffic (such as, even traffic between devices on the same network), you need to build your network with either a hub or a switch that supports port mirroring.
+
+It should also be noted, that with the right modem, you can potentially capture all Wi-Fi traffic wirelessly.
+
+From a security perspective, let this be instructive. You should never consider any network traffic to be secret. Only traffic which is secured appropriately using encryption is resistant to monitoring.
+
+Now that we've shown several tools and techniques for testing and monitoring network traffic, let's consider the important topic of network security next.
+
+Network security
+
+Network security encompasses the tools, techniques, and practices to protect a network from threats. These tools include both hardware and software and can protect against a variety of threats.
+
+Although the topic is too broad for much detail here, we will cover a few topics that you are likely to encounter.
+
+Firewalls are one of the most common network security techniques. Firewalls act as a barrier between one network and another. As commonly used, they monitor network traffic and allow or block traffic based on a defined set of rules.
+
+Firewalls come in two types: software and hardware. Most operating systems provide software firewalls now. Software firewalls are typically configured to deny incoming connections unless a rule is set up to allow it explicitly.
+
+It is also possible to configure software firewalls to deny outgoing traffic by default. In this case, programs aren't allowed to establish new connections unless a specific rule is added to the firewall configuration first.
+
+Do be careful about assuming that firewalls catch all traffic. For example, the Windows 10 firewall can be configured to deny all outgoing traffic by default, but it still lets DNS requests through. An attacker could take advantage of this by using DNS requests to exfiltrate data even though the user thinks that they are protected via the Windows firewall.
+
+Hardware firewalls come with various capabilities. Often, they are configured to block any incoming connections that don't match predefined rules. On networks without firewalls, routers often implicitly serve this same purpose. If your router provides network address translation, then it wouldn't even know what to do with an incoming connection unless a port forwarding rule has been pre-established for it.
+
+Although it is important to understand the basics of network security on a wide level, as C programmers, we are often more concerned with the security of our own programs. Security is not something that the C language makes easy, so let's consider application-level security in more detail now.
+
+Application security and safety
+
+When programming in C, special consideration must be given to security. This is because C is a low-level programming language that gives direct access to system resources. Memory management, for example, must be done manually in C, and a mistake in memory management could allow a network attacker to write and execute arbitrary code.
+
+With C, it is vital to ensure that allocated memory buffers aren't written past the end. That is, whenever you copy data from the network into memory, you must ensure that enough memory was allocated to store the data. If your program misses this even once, it potentially allows a window for an attacker to gain control of your program.
+
+Memory management, from a security perspective, isn't a concern with many higher-level programming languages. In many programming languages, it isn't even possible to write outside of allocated memory. Of course, these languages also can't provide the precise control of memory layout and data structures that C programmers enjoy.
+
+Even if you are careful to manage memory perfectly, there are still many more security gotchas to be on the lookout for. When implementing any network protocol, you should never assume that the data your program receives will adhere to the protocol specification. If your program does make these assumptions, it will be open to attack by a rogue program that doesn't. These protocol bugs are a concern in any programming language, not just C. Again, though, the thing about C is that these protocol implementation errors can quickly lead to memory errors, and memory errors quickly become serious.
+
+If you're implementing a C program intended to run as a server, you should employ a defense in depth approach. That is, you should set up your program in such a manner that multiple defenses must be overcome before an attacker could cause damage.
+
+The first layer of defense is writing your program without bugs. Whenever dealing with received network data, carefully consider what would happen if the received data was not at all what you're expecting. Make sure your program does the appropriate thing.
+
+Also, don't run your program with any more privileges than needed for its functionality. If your program doesn't need access to a sensitive set of files, make sure your operating system doesn't allow it to access those files. Never run server software as root.
+
+If you're implementing an HTTP or HTTPS server, consider not connecting your program directly to the internet. Instead, use a reverse proxy server as the first point of contact to the internet, and have your software interface only with the proxy server. This provides an additional layer of isolation against attacks.
+
+Finally, consider not writing networked code in C at all, if you can find an alternative. Many C servers can be rewritten as CGI programs that don't directly interact with the network at all. TCP or UDP servers can often be rewritten to use inetd, and thus avoid the socket programming interface altogether. If your program needs to load web pages, consider using a well-tested library, such as libcurl, for that purpose instead of rolling your own.
+
+We've covered a few network testing techniques so far. When deploying these techniques on live networks, it is important to be considerate. Let's finish with a note on etiquette.
+
+Network-testing etiquette
+
+When network testing, it is always important to behave responsibly and ethically. Generally speaking, don't test someone else's network without their explicit permission. Doing otherwise could cause embarrassment at best, and land you in serious legal trouble at worst.
+
+You should also be aware that some network testing techniques can set off alarms. For example, many network administrators monitor their network's load and performance characteristics. If you decide to load-test these networks without notice, you might set off automated alarms causing inconvenience.
+
+Some other testing techniques can look like attacks. Port scanning, for example, is a useful technique where a tester tries establishing many connections on different ports. It's used to discover which ports on a system are open. However, it is a common technique used by malicious attackers to find weaknesses. Some system administrators consider port scans to be an attack, and you should never port scan a system without permission.
+
+chapter 13 Socket Programming Tips and Pitfalls
+
+Socket programming can be complicated. There are many pitfalls to avoid and subtle programming techniques to implement. In this chapter, we consider some nuanced details of network programming that are essential for writing robust programs.
+
+Error handling
+
+Error handling can be a problematic topic in C as it does not "hold the programmer's hand". Any memory or resources allocated must be manually released, and this can be tricky to get exactly right in every situation.
+
+When a networked program encounters an error or unexpected situation, the normal program flow is interrupted. This is made doubly difficult when designing a multiplexed system that handles many connections concurrently.
+
+The example programs in the book take a shortcut to error handling. Almost all of them simply terminate after an error is detected. While this is sometimes a valid strategy in real- world programs, real-world programs usually need more complicated error recovery.
+
+Sometimes, you can get away with merely having your client program terminate after encountering an error. This behavior is often the correct response for simple command-line utilities. At other times, you may need to have your program automatically try again.
+
+Event-driven programming can provide the technique needed to simplify this logic a bit. Mainly, your program is structured so that a data structure is allocated to store information about each connection. Your program uses a main loop that checks for events, such as a readable or writable socket, and then handles those events. When structuring your program in this way, it is often easier to flag a connection as needing an action, rather than calling a function to process that action immediately.
+
+With careful design, errors can be handled as a simple matter of course, instead of as exceptions to the normal program flow.
+
+Ultimately, error handling is a very specialized process, and careful care needs to be taken to consider application requirements. What's appropriate for one system is not necessarily correct for another.
+
+In any case, a robust program design dictates that you carefully consider how to handle errors. Many programmers focus only on the happy path. That is, they take care to design the program flow based on the assumption that everything goes correctly. For robust programs, this is a mistake. It is equally important to consider the program flow in cases where everything goes wrong.
+
+Throughout the rest of this chapter, we touch on places where network programming can go wrong. Network programming can be subtle, and many of these failure modes are surprising. However, with proper consideration, they are all capable of being handled.
+
+Before diving into all the weird ways a connection can fail, let's first focus on making error logging a bit easier. In this book, so far, we've been dealing with numeric error codes. It is often more useful to obtain a text description of an error. We look at a method for this next.
+
+Obtaining error descriptions
+
+In Chapter 2, Getting to Grips with Socket APIs,  we developed the GETSOCKETERRNO() macro as a cross-platform way to obtain the error code after a failed system call.
+
+The GETSOCKETERRNO() macro is repeated here for your convenience:
+
+#if defined(_WIN32)
+#define GETSOCKETERRNO() (WSAGetLastError()) #else
+#define GETSOCKETERRNO() (errno) #endif
+
+The preceding code has served us well throughout this book. It has the advantage of being short and simple.
+
+In a real-world program, you may want to display a text-based error message in addition to the error code. Windows and Unix-based systems both provide functions for this purpose.
+
+We can build a simple function to return the last error message as a C string. The code for this function is the following:
+
+/*error_text.c excerpt*/
+
+const char *get_error_text() {
+#if defined(_WIN32)
+    static char message[256] = {0};
+    FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS, 0, WSAGetLastError(), 0, message, 256, 0);
+    char *nl = strrchr(message, '\n');
+    if (nl) 
+        *nl = 0;
+    return message;
+#else
+    return strerror(errno);
+#endif
+}
+
+The preceding function formats the error as text using FormatMessage() on Windows and strerror() on other operating systems.
+
+Unix-based systems provide the strerror() function. This function takes the error code as its only parameter, and it returns a pointer to an error message string.
+
+Getting an error code description on Windows is a bit more involved. We use the FormatMessage() function to obtain the text description. This function has many options, but the parameters used in the preceding code snippet work well for our purposes. Note that Windows error descriptions are generally returned ending with a newline. Our function uses strrchr() to find the last line-feed character and truncate the description at that point.
+
+This chapter's code includes a program called error_text.c that demonstrates this method. This program calls the socket() function with invalid parameters, and then uses get_error_text() to display the error message:
+
+    printf("Calling socket() with invalid parameters.\n");
+    socket(0, 0, 0);
+    printf("Last error was: %s\n", get_error_text());
+
+Note that error codes and descriptions vary greatly between operating systems. The next two screenshots show the error message displayed by this program on both Windows and Linux.
+
+The following screenshot shows error_text running on Windows: see image
+
+The next screenshot shows error_text running on an Ubuntu Linux desktop: see image
+
+As you can see from the preceding two screenshots, different operating systems don't often report errors in the same way.
+
+Now that we have a better way to investigate errors, let's move on to consider some ways that TCP sockets can fail.
+
+TCP socket tips
+
+The Transmission Control Protocol (TCP) is a fantastic protocol, and TCP sockets provide a beautiful abstraction. They present discrete packets on an unreliable network as a reliable, continuous stream of data. To the programmer, sending and receiving data from a peer anywhere in the world is made nearly as easy as reading and writing to a file.
+
+TCP works very well to hide network shortcomings. When a flaky network drops a few packets, TCP faithfully sorts out the mess and retransmits as needed. The application using TCP receives the data in perfect order. The application doesn't even know there was a network problem, and it certainly doesn't need to address the problem.
+
+With this abstraction, like all abstractions, comes some inherent risk. TCP tries very hard to make networks look reliable. It usually succeeds, but sometimes, abstractions leak. What happens if your network cable is cut? What happens if the application you are connected to crashes? TCP isn't magic. It can't fix these problems.
+
+Of course, it's evident that the abstraction must break when faced with severe problems such as a total network outage. However, sometimes, more subtle problems can arise from details thought to be abstracted away. For example, what happens when you try to send a lot of data, but the peer that you are connected to isn't reading it? (Answer: the data gets backed up.)
+
+In this section, we look at TCP in a little more detail. We're especially interested in the behavior of TCP sockets in these edge cases.
+
+A TCP connection lifespan can be divided into three distinct phases. They are as follows: 
+
+The setup phase
+The data-transfer phase
+The tear-down phase
+
+Problems can arise in each step.
+
+In the setup phase, we have to consider what happens if the target system doesn't respond. By default, connect() sometimes waits a long time, attempting to establish a TCP connection. Sometimes, that is what you want, but often it isn't.
+
+For the data-transfer phase, we must be careful to prevent deadlocks. An awareness of TCP congestion control mechanisms can also help us to prevent degenerate cases where our connection becomes slow or uses a lot more bandwidth than necessary.
+
+Finally, knowing the details of the tear-down phase helps us to ensure that we haven't lost data at the end of a connection. Details of how sockets are terminated can also cause operating systems to hold on to half-dead connections long after they've disconnected. These lingering sockets can prevent new programs from binding to their local ports.
+
+Let's begin with some information about the three-way handshake that establishes TCP connections and how to timeout a connect() call.
+
+Timeout on connect()
+
+Usually, when we call connect() on a TCP socket, connect() blocks until the connection is established.
+
+The following diagram illustrates the TCP three-way handshake that establishes a typical TCP connection and how it relates to a standard, blocking connect() call: see image
+
+The standard TCP three-way handshake consists of three parts. First, the Client sends a Synchronize (SYN) message to the Server. Then the Server responds with an SYN Message of its own, combined with an Acknowledged (ACK) message of the Client's SYN Message. The Client then responds with an acknowledgment of the Server's SYN Message. The connection is then open and ready for data transmission.
+
+When the connect() function is called on the Client side, the first SYN Message is sent, and the connect() function blocks until the SYN+ACK Message is received from the Server. After the SYN+ACK Message is received, connect() enqueues the final ACK Message and returns.
+
+This means that connect() blocks for at least one round-trip network time. That is, it blocks from the time that its SYN Message is sent to the time that the SYN+ACK Message is received. While one round-trip network time is the best-case scenario, in the worst case, it could block for much longer. Consider what happens when an overloaded Server receives an SYN Message. The Server could take some time to reply with the SYN+ACK Message.
+
+If connect() cannot establish a connection successfully (that is, SYN+ACK Message is never received), then the connect() call eventually times out. This timeout period is controlled by the operating system. The exact timeout period varies, but 20 seconds is about typical.
+
+There is no standard way to extend the timeout period of connect(), but you can always call connect() again if you want to keep trying.
+
+There are a few ways to make connect() timeout early. One way is to use multiple processes and kill the child process if it doesn't connect in time. Another way is to use SIGALARM in Unix-based systems.
+
+A cross-platform connect() timeout can be achieved by using select(). Recall from Chapter 3, An In-Depth Overview of TCP Connections, that select() allows us to wait on a socket operation with a specified timeout.
+
+select() also has the additional benefit of allowing your program to do useful work while waiting for the TCP connection to be established. That is, select() can be used to wait on multiple connect() calls, and other socket events besides. It can work well for a client that needs to connect to several servers in parallel.
+
+Using select() to timeout a connect() call involves a few steps. They are as follows:
+
+1. Set the socket to non-blocking operation. This is done using fcntl(O_NONBLOCK) on Unix-based systems and ioctlsocket(FIONBIO) on Windows.
+2. Call connect(). This call returns immediately, provided that step 1 was successful.
+3. Check the return code from connect(). A return value of zero indicates that the connection was successful, which probably indicates that non-blocking mode was set incorrectly. A non-zero return value from connect() means we should check the error code (that is, WSAGetLastError() on Windows and errno on other platforms). An error code of EINPROGRESS (WSAEWOULDBLOCK on Windows) indicates that the TCP connection is in progress. Any other value indicates an actual error.
+4. Set up and call select() with the desired timeout.
+5. Set the socket back to blocking mode.
+6. Check to see whether the socket connected successfully.
+
+Step 1, setting the socket to non-blocking mode, can be accomplished with the following code:
+
+#if defined(_WIN32)
+    unsigned long nonblock = 1;
+    ioctlsocket(socket_peer, FIONBIO, &nonblock);
+#else
+    int flags;
+    flags = fcntl(socket_peer, F_GETFL, 0);
+    fcntl(socket_peer, F_SETFL, flags | O_NONBLOCK);
+#endif
+
+The preceding code works a bit differently depending on whether it is running on Windows. On Windows, the ioctlsocket() function is used with the FIONBIO flag to indicate non-blocking socket operation. On non-Windows systems, the fcntl() function is used to set the O_NONBLOCK flag for the same purpose.
+
+In step 2 and step 3, the call to connect() is done normally. The only difference is that you should expect an error code of EINPROGRESS on Unix-based systems and WSAEWOULDBLOCK on Windows.
+
+In step 4, the setup for select() is straightforward. The select() function is used in the same way as described in previous chapters. For your convenience, the following code shows one way to use select() for this purpose:
+
+fd_set set;
+FD_ZERO(&set);
+FD_SET(socket_peer, &set);
+struct timeval timeout;
+timeout.tv_sec = 5; 
+timeout.tv_usec = 0;
+select(socket_peer+1, 0, &set, 0, &timeout);
+
+Notice in the preceding code that we set a timeout of five seconds. Therefore, this select() call returns after either the connection is established, the connection has an error, or 5 seconds have elapsed.
+
+In step 5, setting the socket back to non-blocking mode is accomplished with the following code:
+
+#if defined(_WIN32)
+    nonblock = 0;
+    ioctlsocket(socket_peer, FIONBIO, &nonblock);
+#else
+    fcntl(socket_peer, F_SETFL, flags);
+#endif
+
+In step 6, we are looking to see whether the call to select() timed out, returned early from an error, or returned early because our socket has successfully connected.
+
+Surprisingly, there is no easy, robust, cross-platform way to check whether the socket is connected at this point. My advice is to simply assume that any socket marked by select() as writable has connected successfully. Just try to use the socket. Most TCP client programs will want to call send() after connecting, anyway. The return value from this first send() call indicates whether you have a problem.
+
+If you really do want to try and determine the socket state without resorting to send(), you should be aware of some differences in how select() signals in this situation. On Unix- based systems, select() signals a socket as writable once the connection is established. If an error has occurred, select() signals the socket as both writable and readable. However, if the socket has connected successfully and data has arrived from the remote peer, this also produces both the readable and writable situation. In that case, the getsockopt() function can be used to determine whether an error has occurred. On Windows, select() marks a socket as excepted if an error occurred.
+
+Please refer to connect_timeout.c in this chapter's code repository for a working example of the connect() timeout method using select(). An additional example, connect_blocking.c, is also included for comparison.
+
+Once a new connection is established, our concern moves to preventing data-transfer problems. In the worst case, our program could get deadlocked with its peer, preventing any data transfer. We'll consider this in more detail next.
+
+TCP flow control and avoiding deadlock
+
+When designing application protocols and writing network code, we need to be careful to prevent a deadlock state. A deadlock is when both sides on a connection are waiting for the other side to do something. The worst-case scenario is when both sides end up waiting indefinitely.
+
+A trivial example of a deadlock is if both the client and server call recv() immediately after the connection is established. In that case, both sides wait forever for data that is never going to come.
+
+A less obvious deadlock situation can happen if both parties try to send data at the same time. Before we can consider this situation, we must first understand a few more details of how TCP connections operate.
+
+When data is sent over a TCP connection, this data is broken up into segments. A few segments are sent immediately, but additional segments aren't sent over the network until the first few segments are acknowledged as being received by the connected peer. This is part of TCP's flow-control scheme, and it helps to prevent a sender from transmitting data faster than a receiver can handle.
+
+Consider the following diagram: see image
+
+In the preceding diagram, the Client sends three TCP segments of data to the Server. The Client has additional DATA ready to send, but it must wait until the already-sent data is acknowledged. Once the ACK Message is received, the Client resumes sending its remaining DATA.
+
+This is the TCP flow-control mechanism that ensures that the sender isn't transmitting faster than the receiver can handle.
+
+Now, keeping in mind that a TCP socket can send only a limited amount of data before requiring acknowledgment of receipt, imagine what happens if both parties to a TCP connection try to send a bunch of data at the same time. In this case, both parties send the first few TCP segments. They both then wait until their peer acknowledges receipt before sending more. However, if neither party is reading data, then neither party acknowledges receiving data. This is a deadlock state. Both parties are stuck waiting forever.
+
+Many application protocols prevent this problem by design. These protocols naturally alternate between sending and receiving data. For example, in HTTP, the client sends a request, and then the server sends a reply. The server only starts sending data after the client has finished sending.
+
+However, TCP is a full-duplex protocol. Applications that do need to send data in both directions simultaneously should take advantage of TCP's ability to do so.
+
+As a motivating example, imagine implementing a file-transfer program where both peers to a TCP connection are sending large parts of a file at the same time. How do we prevent the deadlock condition?
+
+The solution to this is straightforward. Both sides should alternate calls to send() with calls to recv(). The liberal use of select() will help us do this efficiently.
+
+Recall that select() indicates which sockets are ready to be read from and which sockets are ready to be written to. The send() function should be called only when you know that a socket is ready to be written to. Otherwise, you risk that send() may block. In the worst case, send() will block indefinitely.
+
+Thus, one procedure to send a large amount of data is as follows:
+1.  Call send() with your remaining data.
+2.  The return value of send() indicates how many bytes were actually consumed by send(). If fewer bytes were sent than you intended, then your next call to send() should be used to transmit the remainder.
+3. Call select() with your socket in both the read and write sets.
+4.  If select() indicates that the socket is ready to be read from, call recv() on it and handle the received data as needed.
+5.  If select() indicates that the socket is ready to write to again, go to step 1 and call send() with the remaining data to be sent.
+
+The important point is that calls to send() are interspersed with calls to recv(). In this way, we can be sure that no data is lost, and this deadlock condition does not occur.
+
+This method also neatly extends to applications with many open sockets. Each socket is added to the select() call, and ready sockets are serviced as needed. Your application will need to keep track of which data is remaining to be sent for each connection.
+
+It should also be noted that setting sockets to a non-blocking mode can simplify your program's logic in some cases. Even with non-blocking sockets, select() can still be used as a central blocking point to wait for socket events.
+
+Two files are included with this chapter's code repository that can help to demonstrate the deadlock state and how select() can be used to prevent it. The first file, server_ignore.c, implements a simple TCP server that accepts connections and then ignores them. The second file, big_send.c, initiates a TCP connection and then attempts to send lots of data. By using the big_send program to connect to the server_ignore program, you can investigate the blocking behavior of send() for yourself.
+
+Deadlocks represent only one way a TCP connection can unexpectedly fail. While deadlocks can be very difficult to diagnose, they are preventable with careful programming. Besides the risk for deadlock, TCP also presents other data transfer pitfalls. Let's consider another common performance problem next.
+
+Congestion control
+
+As we've just seen, TCP implements flow control to prevent a sender from overwhelming a receiver. This flow control works by allowing only a limited number of TCP segments to be sent before requiring an acknowledgment of receipt.
+
+TCP also implements congestion control methods as part of a network congestion- avoidance scheme. While flow control is vital to prevent overwhelming the receiver, congestion control is essential to prevent overwhelming the network.
+
+One way TCP congestion control works is by allowing only a limited amount of data to be sent before pausing to wait for an acknowledgment of receipt. This data limit is decreased when network congestion is detected. In this way, TCP doesn't try putting more data over the network than the network can handle.
+
+Another way TCP implements congestion control is through the TCP slow start algorithm. This method provides a way for TCP to ramp-up a connection to its full potential, instead of immediately dumping a lot of data on the network all at once.
+
+It works like this—when a new TCP connection is established, only a minimal amount of data is allowed to be sent unacknowledged. When this data is acknowledged, the limit is increased. Each time a new acknowledgment is received, the limit is increased further until packet loss happens or the limit reaches the desired maximum.
+
+The following diagram shows a TCP slow-start in action: see image
+
+In the preceding diagram, you can see that the Client starts by sending only a little data. Once that data is acknowledged, the Client is willing to send a larger amount of data before requiring another acknowledgment. Once that acknowledgment is received, the Client increases its limit again, and so on.
+
+The slow-start algorithm can cause problems for short-lived connections. In practice, if a connection needs to send only a small amount of data, that connection won't ever reach its full potential. This has caused many protocols to be designed around keeping connections open for longer. For example, it used to be common for an HTTP connection to transmit only one resource. Now it is far more common for an HTTP connection to be held open for additional resources, one after another. This connection reuse avoids the overhead of the TCP three-way handshake and slow start.
+
+In addition to avoiding congestion, TCP also provides methods to increase bandwidth efficiency.
+
+The Nagle algorithm
+
+One technique used by TCP increase efficiency is the Nagle algorithm. The Nagle algorithm works to make the sender pool small amounts of data together until it has enough to justify sending.
+
+Consider sending just one byte of data over a TCP connection. Each TCP segment uses 20 bytes to transmit TCP bookkeeping. An additional 20 bytes are needed for the IPv4 header. So, this 1 byte of application data becomes 41 bytes on the network. That's an overhead of 4,000%, and we are not even counting the overhead from lower layers (for example, the Ethernet frame overhead) yet!
+
+The Nagle algorithm states that only one small, unacknowledged TCP segment may be outstanding at any given time. A small segment is considered any segment less than the Maximum Segment Size (MSS).
+
+Let's see how this applies to a program doing small writes. Consider the following code called on a connected, but otherwise idle, TCP socket:
+
+    send(my_socket, "a", 1, 0);
+    send(my_socket, "b", 1, 0);
+
+After the first send() call, the a data is packed into a TCP message and sent off, along with its 40 bytes of TCP and IPv4 overhead.
+
+The second send() call returns immediately, but the b data isn't actually sent immediately. The Nagle algorithm causes the b data to be queued-up by the operating system. It won't be sent until either the first TCP message is acknowledged or send() is called again with enough additional data to fill up an entire max-size TCP segment.
+
+For both a and b to be received by the recipient, it will take the duration of one round-trip network time, plus an additional one-way network time.
+
+We can easily get this 1.5 round-trip network time down to 0.5 round-trip network time by just using the following code:
+
+send(my_socket, "ab", 2, 0);
+
+For this reason, you should always prefer doing one large write to send() instead of many small ones, whenever possible. Doing one large write allows ab to be sent in the same TCP message, thereby sidestepping the Nagle algorithm altogether.
+
+In some applications, you really do need to send a small packet followed by another small packet immediately after. For example, in a real-time multiplayer video game, you can't queue up player commands; they must be sent continuously. In these cases, it makes sense to disable the Nagle algorithm for reduced latency, at the expense of decreased bandwidth efficiency.
+
+Disabling the Nagle algorithm can be done using the setsockopt() function. The following code shows this method in action:
+
+int yes = 1;
+if (setsockopt(my_socket, IPPROTO_TCP, TCP_NODELAY,(void*)&yes, sizeof(yes)) < 0) {
+    fprintf(stderr, "setsockopt() failed. (%d)\n", GETSOCKETERRNO());
+}
+
+Be sure to consider all your options before disabling Nagle. When faced with a poorly performing network program, some programmers will disable the Nagle algorithm as a first step. In reality, the decision to disable the Nagle algorithm should be approached cautiously. Disabling the Nagle algorithm in real-time applications often makes sense. Disabling it in other contexts rarely does.
+
+For example, imagine that you've implemented an HTTP client. It seems a bit sluggish, and so you try disabling the Nagle algorithm. You do that and find that it runs much faster now. However, by disabling the Nagle algorithm, you've increased network overhead. You could have gotten the same improvement by simply pooling together your send() calls.
+
+If you're implementing a real-time algorithm that does need to send small time-critical packets, using TCP_NODELAY may still not be the right method for you. TCP can introduce delays in many other ways. For example, if one TCP packet is lost over the network, no further data can be delivered until that packet is retransmitted. This can have the effect of delaying many packets because of one hold-up.
+
+Many real-time applications prefer using UDP over TCP. Each UDP packet is entirely independent of any other packets sent before or after. Of course, the trade-off is that there is a lesser guarantee of reliable delivery; messages may arrive in a different order than they were set, and some messages may arrive twice. Nonetheless, many applications can tolerate this. Real-time video streaming, for example, can use UDP, where each packet stores a very short, time-stamped part of the video. If a packet is lost, there is no need to retransmit; the video stutters for a moment and resumes when the next packet arrives. Packets received late, or out of order, are safely ignored.
+
+Although the Nagle algorithm often works well to improve network utilization, not understanding how it works can lead to problems. In addition to the Nagle algorithm, TCP implements many other methods to limit the needless waste of network resources. Sometimes, these other methods work poorly with one another. The delayed ACK is one such method that can work badly with the Nagle algorithm.
+
+Delayed acknowledgment
+
+We've seen that many client-server protocols work by having the client send a request and then the server send a response. We've also seen that when a TCP peer reads data off the network, it sends an acknowledgment to let the sender know that the data was received successfully.
+
+A typical client-server interchange might, therefore, look like the following: see image
+
+In the preceding diagram, the Client first sends a request to the Server. The Server reads this request, and a TCP ACK Message is sent back to the Client. The Server then processes the request data and replies with its response.
+
+Some TCP stacks implement a delayed acknowledgment method to reduce network congestion. This technique works by delaying the acknowledgment of received data. The hope is that the receiver is going to send a response very soon anyway, and that the acknowledgment can piggyback on this response. When it works, which is often, it conserves bandwidth.
+
+If the receiver doesn't send a reply, the acknowledgment is sent after a short delay; 200 milliseconds is typical.
+
+If the server from before implements delayed acknowledgment, the client-server interchange might look like the following: see image
+
+This is when delayed acknowledgment works well.
+
+Now, consider combining the Nagle algorithm with delayed acknowledgment. If the client transmits its request in two small messages, then the sending channel is blocked for not only the round-trip time. It is also blocked for the additional acknowledgment delay time.
+
+This is illustrated in the following diagram: see image
+
+In the preceding diagram, we see that the Client sent the first part of its request in a small packet. The Nagle algorithm prevents it from sending the second part of its request until it receives an acknowledgment from the Server. Meanwhile, the Server receives the request, but it delays acknowledgment in the hope that it can piggyback the ACK Message on the reply. The Server processes the first part of the request and sees that it doesn't have the full request yet, so it cannot send a reply. After the delay period elapses, the Server does eventually send an ACK Message. The Client receives this ACK Message and sends the rest of the reply. The Server replies with its response.
+
+In this degenerate case, the interaction of the Nagle algorithm and the delayed acknowledgment technique cased the Client-Server interaction to take two full round-trip network times plus the delayed acknowledgment time (which could itself be many round- trip times).
+
+Some programmers jump in these situations to disable the Nagle algorithm. Sometimes that is needed, but often it is the wrong solution.
+
+In our example, merely passing larger data buffers to send() completely solves the degenerate interaction. Passing the entire request to send() in one call reduces the transaction time from two round-trips plus delay to one round-trip and no delay.
+
+My advice is to prefer calling send() with one large write instead of multiple small writes, whenever possible. Of course, if you're implementing a real-time application with TCP, then you can't pool send() calls. In that case, disabling the Nagle algorithm can be the correct call.
+
+For the sake of completeness, it should be noted that a delayed ACK can usually be disabled. This is done by passing TCP_QUICKACK to setsockopt() on systems that support it. Again, this is not usually needed.
+
+Now that we've reviewed a few hidden problems that can crop up with active TCP connections, it's time to move on to connection teardown.
+
+Connection tear-down
+
+The way a TCP connection transitions from an established connection to a closed one is nuanced. Let's consider this in more detail.
+
+TCP connections are full-duplex. This means that the data being sent is independent of the data being received. Data is sent and received simultaneously. This also implies that the connection must be closed by both sides before it is truly disconnected.
+
+To close a TCP connection, each side sends a Finish (FIN) message and receives an ACK message from their peer.
+
+The exact tear-down process, from the perspective of each peer, depends on whether it sent a FIN first, or received a FIN first. There are three basic connection tear-down cases. They are as follows:
+
+1.  You initiate the tear-down by sending the first FIN message
+2.  You receive a FIN message from your connected peer
+3.  You and your peer send FIN messages simultaneously
+
+In case 3, where both sides send a FIN message simultaneously, each side thinks that it is in case 1. That is, each side thinks that it has sent the first FIN message, and each side tears down its socket as in case 1. In practice, this is pretty rare, but certainly possible.
+
+When a TCP socket is open for full-duplex communication, it is said to be in the ESTABLISHED state. The closing initiator sends a FIN message to its peer. The peer replies with an ACK. At this point, the connection is only half closed. The initiator can no longer send data, but it can still receive data. The peer has the option to continue to send more data to the closing initiator. When the peer is ready to finish closing the connection, it sends its own FIN message. The initiator then responds with the final ACK message, and the connection is fully closed.
+
+The TCP connection state transitions on the initiator are ESTABLISHED, FIN-WAIT-1, FIN- WAIT-2, TIME-WAIT, and CLOSED. The TCP connection state transitions on the receiving peer are ESTABLISHED, CLOSE-WAIT, LAST-ACK, and CLOSED.
+
+The following diagram illustrations the normal TCP four-way closing handshake: see image 
+
+It is sometimes possible for the Peer to combine its ACK Message and FIN Message into one message. In that case, the connection can be torn down with only three messages, instead of four.
+
+In the case where both sides initiate the tear-down simultaneously, both sides follow the state transition of the Initiator. The messages sent and received are the same.
+
+Networks are inherently unreliable, so there is a chance that the final ACK Message sent by the Initiator will be lost. In this case, the Peer, having not received an ACK Message, resends its FIN Message. If the Initiator had completely CLOSED its socket after sending the final ACK Message, then it would be impossible to reply to this resent FIN Message. For this reason, the Initiator enters a TIME-WAIT state after sending the last ACK Message. During this TIME-WAIT state, it responds to any retransmitted FIN Message from the Peer with an ACK Message. After a delay, the Initiator leaves the TIME-WAIT state and fully closes its socket.
+
+The TIME-WAIT delay is usually on the order of one minute, but it could be configured for much longer.
+
+In this book, we've used only the close() function (closesocket() on Windows) to disconnect a socket. This function, although simple to use, has the disadvantage of always fully closing a socket. That is, no data can be sent or received on a socket called with close(). The TCP teardown handshake does allow for data to be received after a FIN message has been sent. Let's next consider how to do this programmatically.
+
+The shutdown() function
+
+As we've just seen, TCP connections are torn down in two steps. The first one side sends a FIN message, and then the other side does. However, each side is allowed to continue to send data until it has sent its own FIN message.
+
+We've used the close() function (closesocket() on Windows) to disconnect sockets because of its simplicity. The close() function, however, closes both sides of a socket. If you use close() in your application, and the remote peer tries to send more data, it will cause an error. Your system will then transmit a Reset (RST) message to indicate to the peer that the connection was not closed in an orderly manner.
+
+If you want to close your sending channel, but still leave the option for receiving more data, you should use the shutdown() function instead. The shutdown() function takes two parameters. The first parameter is a socket, and the second is an int indicating how to shut down the socket.
+
+In theory, shutdown() supports three options—closing the sending side of a connection, closing the receiving side, and closing both sides. However, the TCP protocol itself doesn't reflect these options, and it is rarely useful to use shutdown() for closing the receiving side.
+
+There is a small portability issue about shutdown() functions parameters. Under windows, you want to call it with SD_SEND. On other systems, you should use SHUT_WR. Both values are defined as 1, so you can also call it that way.
+
+The code to shutdown the sending channel of a socket in a cross-platform manner is as follows:
+
+if (shutdown(my_socket, 1) /* 1 = SHUT_WR, SD_SEND */) {
+    fprintf(stderr, "shutdown() failed. (%d)\n", GETSOCKETERRNO());
+}
+
+This use of shutdown() causes the TCP FIN message to be transmitted after the transmission queued is emptied.
+
+You may wonder, if you're receiving data from a peer, and recv() returns 0, how you know whether your peer has called shutdown() or close()? Unfortunately, you can't know, except by prior agreement. If they have used shutdown() only to close their sending data channel, then they are still receptive to additional data. If they instead used close(), additional data will trigger an error state.
+
+Although half-closed connections have their uses, it is often easier to use an application protocol that clearly indicates the end of the transaction. For example, consider the HTTP protocol covered in Chapter 6, Building a Simple Web Client. With the HTTP protocol, the client indicates the end of its request with a blank line. The server knows it has the full request when it sees this blank line. The server then specifies how much data it will be sending with the Content-Length header. Once the client has received that much data, it knows that it hasn't missed anything. The client can then call close() and be confident that the server won't be sending additional data.
+
+In many applications, knowing whether the shutdown was orderly isn't always useful. Consider the chat room program (tcp_serve_chat.c) from Chapter 3, An In-Depth Overview of TCP Connections. This program has no real application protocol. That program simply sends messages from one client to every other client. When a client decides to disconnect, it isn't important that it continues to receive data from the server. Guaranteeing an orderly TCP release would provide no benefit.
+
+So, when is shutdown() useful? Basically, a TCP orderly release is useful when the application protocol doesn't have a way to signal that it has finished sending data, and your application isn't tolerant of missed data. In that case, shutdown() is a useful signal.
+
+Please note that if you're using threading or forking, there are additional differences to the behavior of close() versus shutdown() that must be considered. When shutdown() is called, it always affects the socket. The close() function, by contrast, has no effect if additional processes also hold handles to the socket.
+
+Finally, note that close() must still eventually be called on a socket closed with shutdown() in order to release associated system resources.
+
+Another issue that comes up around the TCP tear-down procedure is the long delay for the side that initiated the close to remain in the TIME-WAIT state. This can sometimes cause problems for TCP servers. Let's look at that next.
+
+Preventing address-in-use errors
+
+If you do TCP server programming for very long, you will eventually run into the following scenario—your TCP server has one or more open connections, and then you terminate it (or it crashes). You restart the server, but the call to bind() fails with an EADDRINUSE (WSAEADDRINUSE on Windows) error.
+
+When this happens, you can wait a few moments, try it again, and it works. What's going on here?
+
+Essentially, when an application initiates a TCP socket close (or causes the disconnection by crashing), that socket goes into the TIME-WAIT state. The operating system continues to keep track of this socket for some time, potentially minutes.
+
+An example program, server_noreuse.c, is included in this chapter's code repo. You can reproduce this address-in-use problem by running it, accepting a connection, and then terminating server_noreuse. To reproduce the problem, it is vital that the server is the one to terminate the open connection, not the client.
+
+If you immediately start server_noreuse again, you will see the bind() error.
+
+The following screenshot shows this on a Linux desktop: see image
+
+You can use the netstat command to see these half-dead connections that are preventing our server from starting. The following command shows which connections are stuck in the TIME-WAIT state on Linux:
+
+netstat -na | grep TIME
+
+As long as one of these connections is hanging on, it prevents any new process from calling bind() on the same local port and address.
+
+This failure of the bind() call can be prevented by setting the SO_REUSEADDR flag on the server socket before calling bind().
+
+The following code demonstrates this:
+
+int yes = 1;
+if (setsockopt(my_socket, SOL_SOCKET, SO_REUSEADDR, (void*)&yes, sizeof(yes)) < 0) {
+    fprintf(stderr, "setsockopt() failed. (%d)\n", GETSOCKETERRNO());
+}
+
+Once the SO_REUSEADDR flag is set, bind() succeeds even if a few TIME-WAIT connections are still hanging on to the same local port and address.
+
+An example program, server_reuse.c, is included to demonstrate this technique.
+
+I suggest that you always use SO_REUSEADDR for TCP servers because there are few downsides. The only real drawback is that using SO_REUSEADDR allows your program to bind to a specific interface even if another program has already bound to the wildcard address. Usually, this isn't a problem, but it is something to keep in mind.
+
+You may sometimes see programs that attempt to fix this issue by killing sockets in the TIME-WAIT state. This can be accomplished by setting the socket linger option. This is dangerous! The TIME-WAIT state is essential to TCP's reliability, and interfering with it can lead to severe problems.
+
+Why is this address-in-use only a problem for servers and not clients? Because the problem manifests itself when calling bind(). Client programs don't usually call bind(). If they do, this can also be a problem on the client-side.
+
+While we are still on the topic of disconnected sockets, what happens when you try to send data to a peer that has already called close()? Let's consider that next.
+
+Sending to a disconnected peer
+
+There are three basic ways a TCP connection can fail. They are as follows:
+
+A network outage
+The peer application crashes
+The peer's system crashes
+
+A network outage prevents data from reaching your peer. In this case, TCP tries to retransmit data. If connectivity is re-established, TCP simply picks back up where it left off. Otherwise, the connection eventually times out. This timeout can be on the order of 10 minutes.
+
+The second way a TCP connection can fail is if the connected peer application crashes. In this case, the peer's operating system sends a FIN message. This case is indistinguishable from the peer calling close() on their end. If your application continues to send data after having received the FIN message, the peer's system will send an RST message to indicate an error.
+
+Finally, a connection could fail because the peer's whole system has crashed. In this case, it won't be able to send a FIN message. This case looks the same as a network outage, and the TCP connection would eventually timeout. However, consider what happens if the crashed system reboots before the connection times out. In that case, the rebooted system will eventually receive a TCP message from the original connection. The rebooted system will not recognize the TCP connection and will send an RST message in response to indicate an error condition.
+
+To reiterate, if you use send() on a socket that your peer thinks is closed, that peer will respond with an RST message. This state is easily detected by the return value of recv().
+
+A more serious issue to consider is what happens when send() is called on a socket that has already received an RST message from its peer. On Unix-based systems, the default is to send a SIGPIPE signal to your program. If you don't handle this signal, the operating system will terminate your program.
+
+It is therefore essential for TCP servers to either handle or disable the SIGPIPE signal. Failure to handle this case means that a rude client could kill your server.
+
+Signals are complicated. If you're already using signals in your program, you may want to handle SIGPIPE. Otherwise, I recommend you just disable it by setting the SIGPIPE handler to SIG_IGN.
+
+The following code disables SIGPIPE on Unix-based systems:
+
+#if !defined(_WIN32)
+#include <signal.h>
+#endif
+#if !defined(_WIN32)
+signal(SIGPIPE, SIG_IGN);
+#endif
+
+As an alternative, you can use MSG_NOSIGNAL with send() as shown in the following code: 
+
+send(my_socket, buffer, sizeof(buffer), MSG_NOSIGNAL);
+
+If the signal is ignored or MSG_NOSIGNAL is used, send() returns -1 and sets errno to EPIPE.
+
+On Windows, attempting to call send() on a closed socket generally results in WSAGetLastError() returning WSAECONNRESET.
+
+An example program, server_crash.c, is included in this chapter's code repository. This program accepts TCP connections on port 8080. It then waits for the client to disconnect, and then attempts two sends to that disconnected client. This program is useful as a tool to explore the return values, error codes, and function behavior in different scenarios.
+
+Socket's local address
+
+When implementing servers, for both TCP and UDP, it is important to bind the listening socket to a local address and port. If the socket isn't bound, then clients can't know where to connect.
+
+It is also possible to use bind() on the client side to associate a socket with a particular address and port. It is sometimes useful to use bind() in this manner on machines that have multiple network interfaces. The use of bind() can allow the selection of which network address to use for the outgoing connection.
+
+Sometimes, bind() is used to set the local port for an outgoing connection. This is usually a bad idea for a few reasons. First, it very seldom serves any purpose. The port number presented to the connected server is likely to be different because of network address translation regardless. Binding to a local port also invites the error of selecting a port that is already in use. Usually, the operating system takes care of selecting a free port. This use of bind() also raises the issue with TIME-WAIT, which would prevent a new connection from being established after a closed one without a substantial delay.
+
+We have used bind() in this book mostly for binding servers to a particular port number. It can also be used to associate servers to a particular address. If a server has multiple network interfaces, it may be the case that you only care to listen on connections at one address. In this case, bind() can easily be used to limit the connections to that address. It can also be used to limit connections to the local machine by binding sockets to 127.0.0.1. This can be an important security measure for some applications.
+
+We have employed the select() function for many purposes—timing out connect(), signaling when data is available, and preventing send() from blocking. However, select() is only suitable for monitoring a limited number of sockets. Let's look at this limitation, and how to circumvent it, next.
+
+Multiplexing with a large number of sockets
+
+We've used select() in this book to multiplex between open sockets.
+The select() function is great because it is available on many platforms. However, if you have a large number of open sockets, you can quickly run into the limitations of select().
+
+There is a maximum number of sockets you can pass to select(). This number is available through the FD_SETSIZE macro.
+
+This chapter's code repository includes a program, setsize.c, which prints the value of FD_SETSIZE.
+
+The following screenshot shows this program being compiled and run on Windows 10: see image
+
+The preceding screenshot shows FD_SETSIZE is 64 on this system. Although Windows's default size for FD_SETSIZE is quite low, it is common to see higher values on other systems. The default value of FD_SETSIZE on Linux is 1024.
+
+On Windows, it is possible to increase FD_SETSIZE easily. You only need to define FD_SETSIZE yourself before including the winsock2.h header. For example, the following code increases FD_SETSIZE to 1024 on Windows:
+
+#ifndef FD_SETSIZE
+#define FD_SETSIZE 1024
+#endif
+#include <winsock2.h>
+
+This works because Winsock uses FD_SETSIZE to build the fd_set type.
+
+On Linux, this trick does not work. Linux defines fd_set as a bitmask, and it is not possible to increase its size without recompiling the kernel.
+
+There are possible workarounds to effectively cheat select() into accepting socket descriptors larger than 1023 on Linux. One trick that usually works is to allocate an array of fd_set variables. Setting a socket is then done like this:
+
+FD_SET(s % FD_SETSIZE, &set_array[s / FD_SETSIZE])
+
+However, if you have to resort to a hack such as the preceding code, you may be better off avoiding select() and using a different multiplexing technique. The poll() function, for example, provides the functionality of select() without a limit on the number of file descriptors it can handle.
+
+chapter 14 Web Programming for the Internet of Things
+
+In this chapter, we turn our attention to the Internet of Things (IoT). The IoT is an exciting new trend where internet connectivity is added to everyday physical objects. When combined with embedded electronics and sensors, internet access allows physical objects to interact with one another and be controlled and monitored from anywhere in the world.
+
+What is the IoT?
+
+We now live in a world where almost anything that can be connected to the internet, has been. These devices make up the IoT, and they are in every part of our lives.
+
+In the industrial sector, IoT devices are central to Industry 4.0, commonly considered the fourth industrial revolution. Using internet connectivity to interconnect every device in the manufacturing supply chain has allowed for unprecedented optimizations in efficiency.
+
+The IoT is even affecting the way we grow food. In agriculture, IoT devices allow farmers to monitor relevant weather conditions, such as temperature, humidity, sunlight, rainfall, and wind speed. This information informs decisions improving yield and quality.
+
+When adding internet connectivity to a device, you have several options. There are certainly pros and cons to each connection option. We review them next.
+
+Connectivity options
+
+Once you've figured out what your device does, and that it benefits from an internet connection, you still have to decide how to connect it. There are many options with various trade-offs.
+
+Wi-Fi
+Perhaps Wi-Fi needs no introduction. Almost every modern home with internet access has Wi-Fi available. This is in large part because residential Internet Service Providers (ISPs) typically use modems with built-in Wi-Fi. If your IoT device is deployed indoors, there is a good chance that a Wi-Fi network is available. This is particularly true for residential and commercial devices.
+
+Wi-Fi is the most popular Wireless Local Area Network (WLAN) technology and is based around the IEEE 802.11 standards. It typically operates on either a 2.4 GHZ or a 5 GHZ radio frequency.
+
+Two main operation modes are provided by Wi-Fi. In ad hoc mode, devices communicate directly to one another. However, infrastructure mode is much more common. In infrastructure mode, devices on a WLAN all connect to a Wireless Access Point (WAP). The WAP then generally provides internet access for the whole WLAN.
+
+Wi-Fi provides good bandwidth, low latency, and basic security features, but it has higher power needs than other short-range wireless standards. Although newer versions of Wi-Fi can achieve speeds of 1 Gbps, these are not yet commonly seen in practice. In any case, for an IoT device application, we are typically concerned about internet access. The Wi-Fi performance of the IoT device's connection to the local router is not usually the bottleneck, but rather, the available internet service to the router is.
+
+One downside to using Wi-Fi connectivity in your IoT device is in the setup difficulty. Most Wi-Fi networks are secured with a password, and therefore your device needs to somehow obtain the network name and password before being able to connect. If your device has a built-in screen and keyboard (or touchscreen), then entering the network password is trivial.
+
+However, for IoT devices without large screens, getting the network password configured can sometimes be complicated. One solution is to have your end user put the configuration information on an SD card or USB storage device. Your device then reads the password from this storage and can connect to the network. The problem with this solution is that it is tedious, and many users may not be technically capable of completing this setup.
+
+An alternative setup is to first connect the device to a computer or smartphone (perhaps through Bluetooth) for the initial configuration. This has the downside of requiring the user to obtain such a setup device (not everyone has a smartphone), as well as requiring extra work in developing the setup application.
+
+A third setup method is to have the IoT device initially provide its own Wi-Fi network. In other words, the device acts as a temporary access point. The user then utilizes a laptop or smartphone to connect directly to the device. The user opens a browser, and the device serves a web page on which the user can configure the device. Once the parameters are entered, the IoT device connects to the local Wi-Fi hotspot and is now configured for internet access.
+
+The following diagram illustrates this setup method: see image
+
+The advantage of this setup method is that no special software needs to be developed for the setup. Any device that can connect to a Wi-Fi network and has a standard web browser will work.
+Keep in mind that Wi-Fi networks change occasionally. It is good security practice to change Wi-Fi passwords from time to time, and each time this happens, the IoT device will need to be reconfigured.
+Although Wi-Fi is convenient, if a wired connection is available, it's often easier and better.
+
+Ethernet
+
+A wired Ethernet connection is ideal for any IoT device, if it's available. Ethernet provides easy setup and extreme reliability. The newest standards allow for a bandwidth of 400 Gbps, and its low latency is unrivaled. It is even possible to provide power over Ethernet in some cases, further simplifying deployment.
+
+The downside to Ethernet connections is, of course, that a physical cable is required. Many offices already have Ethernet run to each room, and Ethernet-connected IoT devices work well there. In residential and industrial settings, however, running new wires can be tedious. Wireless connections are, therefore, often easier in those settings.
+
+When available, Ethernet setup is easy. Oftentimes, a device only needs to be plugged in and it's ready to work.
+
+Keep in mind that, with Ethernet, as with Wi-Fi, you're relying on internet access being available at your IoT device installation site. This internet access is generally much slower than the Ethernet connection you will have on the local network. As this internet access is provided by your customer, its quality can vary greatly.
+
+What if Wi-Fi and Ethernet aren't available? What if your device needs to be mobile? In those cases, cellular internet access may be your best option.
+
+Cellular
+
+Cellular (mobile networks) can be a great connection option for IoT devices. It is particularly useful for two reasons. First, cellular service is available nearly everywhere. This makes cellular ideal for mobile IoT devices. Second, all network setup can be completed at the time of manufacture. This makes deployment easy, hassle-free, and can lower ongoing support costs when compared to other options.
+
+The drawback to cellular connectivity is higher cost. First, the IoT device must contain a cellular modem. Cellular modems are costlier than Wi-Fi modems and Ethernet transceivers. In addition, certain testing and certification is required before a device is allowed on operator networks.
+
+Cellular devices must also pay for access. With Wi-Fi or Ethernet, an IoT device is assumed to be able to leech off local internet access. With cellular, someone must pay the bill for each specific device. Usually, it makes sense for the IoT device manufacturer to provision and maintain service for each device. For devices requiring low bandwidth, an LTE cellular connection can be maintained for well under $1.00 (USD) per device per month. Any device that requires significant bandwidth is much more costly to service.
+
+An additional benefit of cellular is that many mobile network providers can route your traffic through a Virtual Private Network (VPN). This is done by the network operator, and you won't be billed for the additional bandwidth of the VPN overhead. A VPN isolates your IoT devices from the internet and allows communication only with your trusted servers. It is convenient because many of your security concerns are taken care of by the cellular provider.
+
+We've covered three options for direct internet access, but many IoT devices don't need to access the internet directly. Some work in conjunction with a computer or smartphone for access. One wireless technology commonly used with this method is Bluetooth.
+
+Bluetooth
+
+Bluetooth is a popular short-range wireless technology standard for use in Wireless Personal Area Networks (WPAN). Like Wi-Fi, Bluetooth operates on the 2.4 GHz radio band.
+
+Bluetooth can be used for direct internet access, but this is uncommon in practice. Bluetooth is usually used to connect an IoT device to another device that has internet access. For example, many smartwatches use Bluetooth to pair with smartphones. The smartphone then has internet access through either a Wi-Fi or cellular connection.
+
+The following diagram shows a Bluetooth smart watch connection: see image
+
+This works very well for the smart watch, as it is usually expected to be in close proximity to a smartphone.
+
+Of course, you may object philosophically to the smart watch being considered an IoT device. In this case, it's more of a sensor for a smartphone app than a standalone IoT device. Nonetheless, it fits into the ecosystem of the IoT. This type of piggy-back connectivity can be a good option and should not be overlooked.
+
+As a similar technology to Bluetooth, IEEE 802.15.4-based wireless networks are commonly deployed to allow a whole network of IoT devices to intercommunicate.
+
+IEEE 802.15.4 WPANs
+
+IEEE 802.15.4 is a technical standard for low-rate wireless personal area networks (LR-WPAN). The standard was first defined in 2003, and it provides the foundation that other protocols are built on. For example, the Zigbee, 6LoWPAN, Thread,
+ISA100.1, WirelessHART, WiSUN, and MiFi protocols are all based on the IEEE 802.15.4 standard, just to name a few.
+
+IEEE 802.15.4-based protocols are useful for low-power, limited-range applications. Typical ranges extend to about 10 meters with a transfer rate of 250 Kbps. Because of the low power requirements, battery-powered devices are often able to operate for multiple years on a single charge.
+
+Some protocols built on IEEE 802.15.4, such as 6LoWPAN, allow devices to communicate using IP directly, similar to how Wi-Fi is typically used. Other protocols are commonly used only to send data to a central hub device. This hub is then responsible for processing IoT device data and communicating over the internet, if needed.
+
+As a concrete example, home automation networks are often built on the IEEE 802.15.4 standard. In many cases, these networks are seldom used to provide direct internet access to each IoT device. Instead, a hub is commonly used to allow a network of devices to communicate. The hub then coordinates the data and forwards it on to the internet.
+
+A mesh network topology is common in IEEE 802.15.4-based setups. This allows devices remote from the hub to communicate through closer devices.
+
+The following diagram illustrates a mesh network for home automation: see image
+
+In the preceding diagram, we see an IEEE 802.15.4-based network for a home automation setup. Various IoT devices, such as lights and kitchen gadgets, communicate with a Coordinator/Hub. This hub controls and coordinates the connected devices. The hub itself uses Wi-Fi to connect to the local network, and this internet connection allows for remote control and monitoring of IoT devices.
+
+Now that we've covered a few of the most popular connection options, let's turn our attention to IoT hardware choices.
+
+Hardware choices
+
+When designing an IoT device, there are many choices for hardware. In many cases, these choices ultimately must be made based on the functionality of the device, and not on their connectivity options. Remember, IoT devices need to have a useful purpose besides just connecting to the internet.
+
+Let's look at three options for hardware—single-board computers, microcontrollers, and Field-Programmable Gate Arrays (FPGAs).
+
+Single-board computers
+
+Single-Board Computers (SBCs) are complete computers built on a single circuit board. They include all the usual pieces of a functional computer—the Central Processing Unit (CPU), Random Access Memory (RAM), non-volatile storage, and input/output ports.
+
+SBCs are capable of running full-featured operating systems. Linux is commonly used. 
+
+The Raspberry Pi Zero W, for example, is an SBC measuring just 2.6 by 1.2 inches. It has 512 MB of RAM built-in and uses a micro SD card for storage. Wi-Fi and Bluetooth connectivity is also included. The Raspberry Pi Zero W currently retails for about $10 (USD).
+
+The following photo shows a Raspberry Pi Zero W: see image
+
+Because SBCs run normal desktop operating systems, such as Linux, programming them is easy. In fact, all of the network programs we've developed throughout this book are applicable.
+
+In addition to standard computer connectors for video, audio, and USB, SBCs usually have some General-Purpose Input/Output (GPIO) pins to work with. This gives them some basic microcontroller-like functionality. These GPIO pins are capable of reading a digital input signal and providing a digital output signal. On the Raspberry Pi, some pins are also able to provide Pulse Width Modulation (PWM) outputs, as well as various board-level serial protocols—Serial Peripheral Interface (SPI), Inter-Integrated Circuit (I2C), and Asynchronous Serial.
+
+Although SBCs are very easy to get started with, they do have a few drawbacks. They are relatively expensive, they require a lot of power, and their use of general-purpose operating systems isn't always ideal for embedded systems. Microcontrollers, by comparison, are much cheaper and optimized to handle real-time performance constraints.
+
+Microcontrollers
+
+A microcontroller is a small computer contained on a single integrated circuit. Microcontrollers contain all the parts needed for a functional computer, including a CPU, RAM, and non-volatile storage.
+
+While SBCs usually have processor speeds in the hundreds or thousands of MHz, it is common for microcontrollers to be clocked at less than 100 MHz. It's not uncommon to see microcontrollers clocked at even 1 MHz or less. Microcontrollers often have RAM varying from between a few dozen bytes to a few megabytes. These humble specifications also mean that microcontrollers can get by on very little power. It's not uncommon to see microcontrollers needing only a few nano-amps when in sleep mode.
+
+Microcontrollers usually come with lots of GPIO pins and useful peripherals, such as timers, real-time clocks, communication interfaces, Pulse Width Modulation (PWM) outputs, Analog-to-Digital Converter (ADC) comparators, Digital-to-Analog Converter (DAC), Watch-Dog Timers (WDT), serial transceivers, and more.
+
+These microcontroller peripherals are often vital to the functioning of an IoT device core functionality. For example, a PWM generator peripheral can be used for precise motor control, while an ADC may be needed to read a sensor. Remember, the internet part of an IoT device is largely secondary; the device must perform some useful function first. What use is an internet-connected thermostat if it can't sense the temperature?
+
+Microcontrollers come in various architectures and bus widths. 8-bit, 16-bit, and 32-bit controllers are all common. Although for IoT devices, 8-bit controllers are probably under-powered.
+
+Modern desktop computers almost always use the Von Neumann architecture, but many microcontrollers use the Harvard architecture.
+
+In the Von Neumann architecture, which dominates the desktop processor market, memory stores both data and instructions. This necessitates that processor instructions are the same width as the data they are processing. Harvard architecture machines, by contrast, use completely separate memories to store instructions and data. It is common for Harvard architecture microcontrollers to use different word sizes for instructions compared to data. For example, a 16-bit Harvard architecture microcontroller may process data in 16-bit words, but its instructions could be encoded as 24-bit words. While data is stored in RAM, instructions are read directly from non-volatile memory, such as FLASH or EEPROM.
+
+It is also possible to find microcontrollers with built-in networking functionality, including support for Wi-Fi, Ethernet, Bluetooth, IEEE 802.15.4, and others.
+
+As an example, the ESP8266 32-bit microcontroller, produced by Espressif Systems, comes with Wi-Fi transceiver and TCP/IP stack.
+
+The following diagram shows an ESP8266 microcontroller on a breakout board: see image
+
+Microcontrollers that don't have built-in transceivers can be connected to external modems with those capabilities.
+
+Microcontrollers are often programmed directly, without an operating system. Some programmers prefer operating systems, and many different microcontroller operating systems are available. These operating systems often make it easier for a microcontroller to perform various tasks while simplifying program layout and retaining real-time capabilities. It should be noted that these microcontroller operating systems generally lack memory segmentation and other safety features taken for granted in desktop operating systems.
+
+Microcontrollers are great when you don't need much processing power, but do require real-time processing guarantees. What about when you need both processing power and real-time guarantees? See FPGAs.
+
+FPGAs
+
+Field-Programmable Gate Arrays (FPGAs) are integrated circuits containing arrays of programmable logic blocks. These logic blocks can be programmed and combined to implement complex functions. Essentially, any logic that an Application-Specific Integrated Circuit (ASIC) can perform can also be done on an FPGA.
+
+FPGAs are useful for highly demanding processing tasks requiring real-time guarantees, especially tasks that benefit from highly-parallel processing. For example, a video-processing algorithm that is too demanding for a single-board computer, much less a microcontroller, may be trivial for an FPGA.
+
+FPGAs are programmed using Hardware Description Languages (HDL). The two most common languages used are Verilog and VHSIC Hardware Description Language (VHDL). These languages are much different than C. While C is an imperative language that gives the steps to take to complete a calculation, HDLs are declarative languages, giving descriptions of how logic gates should be connected.
+
+In practice, it is common to implement a soft microprocessor core in an FPGA. This soft processor can then be programmed like any other microprocessor and is used for sundry tasks that don't require much processing power. For example, an FPGA that processes video may implement a microprocessor that is responsible for the setup and configuration functions of the system. These soft processors are commonly programmed in C.
+
+Regardless of which type of hardware your IoT device uses, if it doesn't have suitable built-in communication, you will need an external transceiver or modem.
+
+External transceivers and modems
+
+External transceivers and modems are available for Wi-Fi, cellular, Ethernet, Bluetooth, and any other protocol you can think of.
+
+The following photo shows an industrial IoT device that uses a cellular modem: see image
+
+In the preceding diagram, the lower circuit board implements the functionality of the device (monitoring cryogenic liquids, in this case). On this board, the power supply system, sensor electronics, and a low-cost, 16-bit microcontroller are found. A cellular modem is located on the top circuit board, which plugs into a socket on the lower board.
+
+External modems often communicate with their host (microcontroller) through asynchronous serial. The protocols used vary considerably among systems.
+
+One common protocol family for communicating with modems is the Hayes command set also called AT commands. These commands consist of short text-based messages. AT commands were more or less standardized for placing phone calls, but have been extended to managing internet connections. Unfortunately, almost every modem manufacturer does the extension differently.
+
+If you're using an external modem, you need to consult that modem's documentation for the exact protocol used to communicate with it. Socket-style drivers are often not available, but many of the core networking concepts explored in this book still apply.
+
+With connectivity out of the way, let's turn our attention to IoT device protocols.
+
+IoT protocols
+
+Most IoT devices work by sending their data to a few central servers—the cloud. These servers process and store the IoT device data and allow remote access and configuration.
+
+For example, take a smart thermostat. It continuously sends temperature data to a central server. This server stores the data. If a user wants to view the data, they connect their personal computer or smartphone to that central server. They don't connect directly to the IoT device itself. When they want to change their thermostat settings, they send this change to the central server, which then relays it to the IoT thermostat.
+
+The following diagram illustrates this concept: see image
+
+In the preceding diagram, note that all communication goes through the server. There is never direct communication from the smartphone to the IoT device.
+
+Using a central server has several advantages. It allows the IoT device to do much less processing. The server can further process that data and format it into graphs and such. The server can also send emails or other alerts, and the server is able to store much more data than the IoT device is capable of. Furthermore, the server gives both the IoT device and the user's device (a laptop or smartphone) a place to connect to. Without a central server, getting the user's device to connect to the IoT device would be its own challenge.
+
+The actual protocols used by IoT devices vary. Many devices use HTTPS. In these cases, the device usually requests an HTTPS page while passing collected data. The web server will then collect the data and return any needed information to the IoT device.
+
+There are a few protocol standards aimed specifically for IoT devices, such as Constrained Application Protocol (CoAP) and Message Queuing Telemetry Transport (MQTT). However, custom designed TCP and UDP protocols are also common. These custom protocols can achieve a much higher level of efficiency where bandwidth is a concern.
+
+Perhaps we will see more protocol standardization in the coming years. This could have an enormous advantage in allowing devices to better interoperate. As it is now, devices rarely interoperate with devices from different manufacturers.
+Another important consideration when deploying an IoT device is how to update the code after the device is shipped.
+
+Firmware updates
+
+IoT devices are connected to the internet, and this gives us an advantage for product updates. When new functionality or bug fixes are developed, we can use the internet to push updates to our IoT devices.
+
+This process is easy when using an SBC. You just push the update as you would for any software.
+
+If your product uses a microcontroller or FPGA, then things get a bit more complicated. Your device will need to download a firmware image, and then transfer that into non- volatile memory as required.
+
+If the device's power is interrupted during the firmware update phase, the device could be left in an unusable state. This can be prevented through careful design. If the device has enough memory to store the firmware twice, it is possible to download the entire firmware update without overwriting the original. In this case, the device can detect the failed update (by using a checksum, watchdog timer, or someother mechanism) and revert to the previous state.
+
+In any case, there are a few practices that should be followed by any IoT device doing remote updates.
+
+First, it is essential for security that any firmware update is authenticated. If this step is missed, then an attacker could send a fake update to your device. Once your device is running the attacker's code, nothing else you do for security matters. We will discuss security in more detail later in this chapter.
+
+Despite the focus on authentication, you should consider allowing your device's owner to install unauthenticated firmware. It is a basic user freedom to run the code they want to run on their own devices, and some consider it unethical to attempt to prevent this. In any case, it is not technically possible to retain control of a device that's not physically under your control. In other words, if you attempt to prevent a user from installing their own firmware through Digital Rights Management (DRM), you should expect your efforts to be eventually defeated.
+
+It is often considered good practice to allow the device to return to its original factory configuration. This usually means storing the factory firmware in a separate non-volatile memory, such as a low-cost flash chip. This is important in the rare case that a firmware update fails. If a firmware update fails, the device may be unable to boot. If a redundant firmware copy was stored, then the device can be rolled back to its original factory state with some sort of physical reset mechanism. From this state, the update can be retried.
+
+Now that we've covered some technical considerations of IoT design, let's turn our attention to a few ethical concerns.
+
+Ethics of IoT
+
+Much criticism has been leveled at the IoT concept regarding privacy, security, and other ethical concerns. This isn't surprising, given these devices' pervasive presence in our lives. 
+
+Most IoT devices work in conjunction with a central server. This server gets essentially all of the collected data from the IoT devices it services. This raises questions about data ownership and privacy.
+
+Privacy and data collection
+
+Many IoT devices collect lots of data as part of their operation. For example, a smart thermostat collects temperature data about its environment. This is required for it to function. This data may seem harmless at first glance, but once you consider how people use smart thermostats, you realize that the data is more important than it first appears.
+
+In the smart thermostat example, people will set different temperatures based on when they expect to be awake, asleep, or away. From this data, you can infer approximately at what time someone leaves for work in the morning and what time they get back. When a person leaves their house for a week-long holiday, it will be clearly reflected in the data.
+
+If even a seemingly innocuous smart thermostat gives great insight into a person's behavior, imagine how much more data a smartphone or home assistant collects!
+
+If we accept that this data collection is inherent to the device's functionality, then its collection seems justified. Consider, then, if the IoT company has an obligation to the user to keep their data secure or confidential. Then who owns this data? Is it owned by the company collecting it, or does the customer who provides that data own it? The old understanding was that the data was solely the property of the company collecting it, but there is a recent push to reclassify that. Legal opinions vary, and this is still mostly uncharted territory.
+
+In any case, if you're collecting data, even seemingly innocuous data, please treat it with respect. Please also allow your users the freedom to see and download copies of that data you are storing on them.
+
+End-of-life planning
+
+Another consideration when designing an IoT device is what happens when that device is no longer being manufactured? Many IoT companies will simply stop supporting their old devices after a while, and these devices then become useless. This is because they often require connecting to a central server to function, and once this central server goes offline, they literally cannot function.
+
+There is an alternative. When designing an IoT device, it is possible to make it function in a reduced capacity even without internet connectivity. For example, it is possible to design a smart thermostat to continue working as a manual thermostat even when it cannot establish a connection to its central server.
+
+When designing your IoT device, please take into consideration if you can keep it useful even after your company discontinues support for it. In some cases, this isn't possible, but in many cases, it appears that companies purposely limit their devices only to spite their customers. Don't be like those companies.
+
+Security
+
+In recent years, a lot of IoT devices have been deployed with little thought given to security. As companies rush to push devices to market quickly, security too often doesn't even enter the equation. The situation has gotten so bad that there is now a common saying: "The S in IoT stands for security."
+
+The security problem may be compounded by the fact that insecure IoT devices don't often expose the device developers to liability. For example, if you develop an insecure server, then your company is open to attack. However, if you develop an insecure IoT device, your company is fine; it's just your customers who are open to attack.
+
+If you're developing an IoT device, I implore you—do the right thing and think about security early and often.
+According to the Open Web Application Security Project (OWASP), the top ten IoT security problems are as follows:
+
+1.  Weak, guessable, or hardcoded passwords
+2.  Insecure network services
+3.  Insecure ecosystem interfaces
+4.  Lack of secure update mechanism
+5.  Use of insecure or outdated components
+6.  Insufficient privacy protection
+7.  Insecure data transfer and storage
+8.  Lack of device management
+9.  Insecure default settings
+10.  Lack of physical hardening
+
+You can find more information from the OWASP Foundation at https://owasp.org/.
+
+Many of the preceding problems are easily addressable simply by caring. For example, many devices are still shipped with hardcoded passwords or backdoors. There isn't much to say about this problem from a technical perspective—just don't ship your products with hardcoded passwords or backdoors.
+
+Some advocate that all IoT devices should use HTTPS to provide a basic level of security—the so-called Secure Hypertext Internet of Things (SHIoT). See Chapter 9, Loading Secure Web Pages with HTTPS and OpenSSL, for information about HTTPS from the client's perspective.
+
+For embedded HTTPS, you may find the OpenSSL library too heavyweight. Consider using a TLS implementation designed for embedded use. These embedded-first libraries are also able to take advantage of encryption hardware built in to common microcontrollers. wolfSSL is one such open-source library. In addition to TLS for TCP, wolfSSL also supports DTLS for securing UDP-based protocols.
+
+Using TLS can go a long way to secure an IoT device, but it is not a panacea. In particular, certificates must be carefully managed. Don't make the mistake of assuming that encryption is good enough. Encryption only protects against passive attacks; both encryption and authentication are needed to protect against active attacks.
+
+Sometimes, minimizing bandwidth is a priority.  This is particularly true for cellular connections. In many use-cases, an IoT device with limited bandwidth will find TLS and DTLS too heavyweight. Establishing a new TLS or DTLS connection can take several kilobytes on average.
+
+If your cellular provider is able to tunnel your traffic over a secure VPN, without metering the VPN overhead, you may be able to forgo implementing secure communication at the application level. In this case, your device can use TCP or UDP directly, and the VPN connection ensures that this traffic will never be visible over the internet. This level of security isn't appropriate for all use-cases, as your traffic is still visible to your network provider.
+
+In the case that you must secure a protocol yourself, you may take advantage of the fact that you have control over the manufacturing of your IoT device. It is possible to assign each device a unique encryption key at the time of manufacture. This technique is called Pre-Shared Key (PSK). With PSK, devices can secure their communication using symmetric ciphers, avoiding much of the overhead required by TLS, DTLS, and other heavyweight solutions. If doing symmetric encryption, keep in mind that encryption is useless against an active attacker unless you also implement authentication. This is done using a Message Authentication Code (MAC).
+
+If you do use PSK, be sure to use a unique key for each individual device. Reusing the same key is not appropriate.
+
+In any case, it is advisable to run your security scheme by a security professional before and during implementation. Even a small, nearly insignificant mistake with encryption or authentication can compromise an entire system.
