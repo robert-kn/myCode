@@ -4,39 +4,25 @@ describing how application programmers can use their knowledge of a system to wr
 
 This book focuses on systems that execute x86-64 machine code.
 
-1. A Tour of Computer Systems
+chapter 1. A Tour of Computer Systems
 
-All information in a system—including disk files, programs stored in memory, user data stored in memory, and data 
-transferred across a network—is represented as a bunch of bits. The only thing that distinguishes different data 
-objects is the context in which we view them.
+All computer systems have similar hardware and software components that perform similar functions. This book will focus on how these components work and how they affect the performance and correctness of programs. All information in a system—including disk files, programs stored in memory, user data stored in memory, and data transferred across a network—is represented as a bunch of bits. The only thing that distinguishes different data objects is the context in which we view them.
 
-On a Unix system, the translation from source file to object file is performed by a compiler driver. see helloc 
-and figure1.3
+machine representations of numbers are finite approximations that can behave in unexpected ways.
+
+On a Unix system, the translation from source file to execucatble object file (stored as a binary disk file) is performed by a compiler driver. see helloc and figure1.3
 
 The translation is performed in the sequence of four phases shown in Figure 1.3    
 
-1. Preprocessing phase: The preprocessor (cpp) modifies the original C program according to directives that begin 
-with the ` #' character. For example, the #include <stdio.h> command in line hello.c stdio.h 1 of tells the 
-preprocessor to read the contents of the system header file and insert it directly into the program text. The 
-result is another C program, typically with the .i suffix.
+1. Preprocessing phase: The preprocessor (cpp) modifies the original C program according to directives that begin with the `#' character. For example, the #include <stdio.h> command in line 1 of hello.c stdio.h tells the preprocessor to read the contents of the system header file and insert it directly into the program text. The result is another C program, typically with the .i suffix.
 
-2. Compilation phase. The compiler (cc1) translates the text file hello.i into the text file hello.s, which 
-contains an assembly-language program. Assembly language is useful because it provides a common output language 
-for different compilers for different high-level languages.
+2. Compilation phase. The compiler (cc1) translates the text file hello.i into the text file hello.s, which contains an assembly-language program. Assembly language is useful because it provides a common output language for different compilers for different high-level languages.
 
-3. Assembly phase. Next, the assembler (as) translates hello.s into machine-language instructions, packages them 
-in a form known as a relocatable object program, and stores the result in the object file hello.o. This file is a 
-binary file containing 17 bytes to encode the instructions for function main. If we were to view hello.o with a 
-text editor, it would appear to be gibberish.
+3. Assembly phase. Next, the assembler (as) translates hello.s into machine-language instructions, packages them in a form known as a relocatable object program, and stores the result in the object file hello.o. This file is a binary file containing 17 bytes to encode the instructions for function main. If we were to view hello.o with a text editor, it would appear to be gibberish.
 
-4. Linking phase. Notice that our hello program calls the printf function, which is part of the standard C library 
-provided by every C compiler. The printf function resides in a separate precompiled object file called printf.o, 
-which must somehow be merged with our hello.o program. The linker (ld) handles this merging. The result is the 
-hello file, which is an executable object file (or simply executable) that is ready to be loaded into memory and 
-executed by the system.
+4. Linking phase. Notice that our hello program calls the printf function, which is part of the standard C library provided by every C compiler. The printf function resides in a separate precompiled object file called printf.o, which must somehow be merged with our hello.o program. The linker (ld) handles this merging. The result is the hello file, which is an executable object file (or simply executable) that is ready to be loaded into memory and executed by the system.
 
-why it pays to understand how compilation systems work; there are some important reasons why programmers need to 
-understand how compilation systems work:
+why it pays to understand how compilation systems work; there are some important reasons why programmers need to understand how compilation systems work:
 
 1. Optimizing program performance. Modern compilers are sophisticated tools that usually produce good code. As 
 programmers, we do not need to know the inner workings of the compiler in order to write efficient code. However, 
@@ -62,8 +48,7 @@ on the program stack.
 
 The shell is a command-line interpreter that prints a prompt, waits for you to type a command line, and then 
 performs the command. If the first word of the command line does not correspond to a built-in shell command, then 
-the shell assumes that it is the name of an executable file that it should load and run. So in this case, the 
-shell loads and runs the program and then waits for it to terminate. 
+the shell assumes that it is the name of an executable file that it should load and run. 
 
 Hardware Organization of a System
 
@@ -97,18 +82,13 @@ counter (PC), interprets the bits in the instruction, performs some simple opera
 and then updates the PC to point to the next instruction, which may or may not be contiguous in memory to the 
 instruction that was just executed.
 
-Running the hello Program: As we type the characters ./hello at the keyboard, the shell program reads each one 
-into a register and then stores it in memory, as shown in Figure 1.5. When we hit the enter key on the keyboard, 
-the shell knows that we have finished typing the command. The shell then loads the executable hello file by 
-executing a sequence of instructions that copies the code and data in the hello object file from disk to main 
-memory. The data includes the string of characters hello, world\n that will eventually be printed out. Using a 
-technique known as direct memory access (DMA, discussed in Chapter 6), the data travel directly from disk to main 
-memory, without passing through the processor. This is shown in figure1.6
+There are only a few of these simple operations, and they revolve around main memory, the register file, and the arithmetic/logic unit (ALU). The register file is a small storage device that consists of a collection of word-size registers, each with its own unique name. The ALU computes new data and address values.
 
-Once the code and data in the object file are loaded into memory, the processor begins executing the 
-machine-language instructions in the hello program's main routine. These instructions copy the bytes in the hello, 
-world\n string from memory to the register file, and from there to the display device, where they are displayed on
-the screen. This step is shown in Figure 1.7.
+Running the hello Program: 
+
+As we type the characters ./hello at the keyboard, the shell program reads each one  into a register and then stores it in memory, as shown in Figure 1.5. When we hit the enter key on the keyboard, the shell knows that we have finished typing the command. The shell then loads the executable hello file by executing a sequence of instructions that copies the code and data in the hello object file from disk to main memory. The data includes the string of characters hello, world\n that will eventually be printed out. Using a technique known as direct memory access (DMA, discussed in Chapter 6), the data travel directly from disk to main memory, without passing through the processor. This is shown in figure1.6
+
+Once the code and data in the object file are loaded into memory, the processor begins executing the machine-language instructions in the hello program's main routine. These instructions copy the bytes in the hello, world\n string from memory to the register file, and from there to the display device, where they are displayed on the screen. This step is shown in Figure 1.7.
 
 Caches Matter: a system spends a lot of time moving information from one place to another. From a programmer's 
 perspective, much of this copying is overhead that slows down the "real work" of the program. Thus, a major goal 
@@ -128,14 +108,14 @@ than accessing the main memory. The L1 and L2 caches are implemented with a hard
 random access memory (SRAM). Newer and more powerful systems even have three levels of cache: L1, L2, and L3. The 
 idea behind caching is that a system can get the effect of both a very large memory and a very fast one by 
 exploiting locality, the tendency for programs to access data and code in localized regions. By setting up caches 
-to hold data that are likely to be accessed often, we can perform most memory operations using the fast caches.
+to hold data that are likely to be accessed often, we can perform most memory operations using the fast caches. see figure1.8
 
 Storage Devices Form a Hierarchy
 
 The main idea of a memory hierarchy is that storage at one level serves as a cache for storage at the next lower 
 level. Thus, the register file is a cache for the L1 cache. Caches L1 and L2 are caches for L2 and L3, respectively. 
 The L3 cache is a cache for the main memory, which is a cache for the disk. On some networked systems with 
-distributed file systems, the local disk serves as a cache for data stored on the disks of other systems.
+distributed file systems, the local disk serves as a cache for data stored on the disks of other systems. see figure1.9
 
 The Operating System Manages the Hardware
 
@@ -194,7 +174,7 @@ consist of multiple execution units, called threads, each running in the context
 same code and global data. Threads are an increasingly important programming model because of the requirement for 
 concurrency in network servers, because it is easier to share data between multiple threads than between multiple 
 processes, and because threads are typically more efficient than processes. Multi-threading is also one way to make 
-programs run faster when multiple processors are available.
+programs run faster when multiple processors are available. Multi-threading is also one way to make programs run faster when multiple processors are available
 
 Virtual Memory
 

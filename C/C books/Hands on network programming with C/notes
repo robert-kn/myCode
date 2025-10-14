@@ -252,7 +252,9 @@ Each of these listed port numbers is assigned by the Internet Assigned Numbers A
 Clients and servers
 
 In the telephone analogy, a call must be initiated first by one party. The initiating party dials the number for the receiving party, and the receiving party answers.
+
 This is also a common paradigm in networking called the client-server model. In this model, a server listens for connections. The client, knowing the address and port number that the server is listening on, establishes the connection by sending the first packet.
+
 For example, the web server at example.com listens on port 80 (HTTP) and port 443 (HTTPS). A web browser (client) must establish the connection by sending the first packet to the web server address and port.
 
 Putting it together
