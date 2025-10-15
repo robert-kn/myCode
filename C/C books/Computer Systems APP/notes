@@ -186,11 +186,11 @@ the address space holds the code and data defined by the user's process. Note th
 increase from the bottom to the top.
 
 The virtual address space seen by each process consists of a number of well-defined areas, each with a specific 
-purpose.
+purpose. You will learn more about these areas later in the book, but it will be helpful to look briefly at each, starting with the lowest addresses and working our way up:
 
 Program code and data: Code begins at the same fixed address for all processes, followed by data locations that 
 correspond to global C variables. The code and data areas are initialized directly from the contents of an 
-executable object file—in our case, the hello executable.
+executable object file.
 
 Heap: The code and data areas are followed immediately by the run-time heap. Unlike the code and data areas, which 
 are fixed in size once the process begins running, the heap expands and contracts dynamically at run time as a 
@@ -205,7 +205,7 @@ function calls. Like the heap, the user stack expands and contracts dynamically 
 program. In particular, each time we call a function, the stack grows. Each time we return from a function, it 
 contracts. 
 
-Kernel virtual memory. The top region of the address space is reserved for the kernel. Application programs are 
+Kernel virtual memory: The top region of the address space is reserved for the kernel. Application programs are 
 not allowed to read or write the contents of this area or to directly call functions defined in the kernel code. 
 Instead, they must invoke the kernel to perform these operations.
 
@@ -217,12 +217,7 @@ Files
 
 A file is a sequence of bytes, nothing more and nothing less. Every I/O device, including disks, keyboards, 
 displays, and even networks, is modeled as a file. All input and output in the system is performed by reading and 
-writing files, using a small set of system calls known as Unix I/O.
-
-This simple and elegant notion of a file is nonetheless very powerful because it provides applications with a 
-uniform view of all the varied I/O devices that might be contained in the system. For example, application 
-programmers who manipulate the contents of a disk file are blissfully unaware of the specific disk technology. 
-Further, the same program will run on different systems that use different disk technologies. 
+writing files, using a small set of system calls known as Unix I/O. 
 
 Systems Communicate with Other Systems Using Networks
 
