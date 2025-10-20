@@ -245,15 +245,13 @@ In our case, the ISA is the LC-3. We complete the process by going from the Engl
 
 chapter 2
 
-1. how is a computer organised? as a system with several levels of transformation i.e. a problem stated in a natural language is
-actually solved by electrons moving around inside the components of a computer
+1. how is a computer organised? as a system with several levels of transformation i.e. a problem stated in a natural language is actually solved by electrons moving around inside the components of a computer
 
 2. what do you call the tiny little devices inside computer that control the movement of said electrons by reacting to the presence or absence of voltages in electronic circuits? transistors
 
 3. could these tiny devices be designed to detect actual value of voltages instead of the presence or absence of them? yes
 
-4. why is this not done? it would make the control and detection circuits more complex than they need to be; it is much easier to
-detect whether or not a voltage exists at a point in a circuit than it is to measure exactly what that voltage is
+4. why is this not done? it would make the control and detection circuits more complex than they need to be; it is much easier to detect whether or not a voltage exists at a point in a circuit than it is to measure exactly what that voltage is
 
 5. how do we symbollicaly represent the presence of a voltage? 1
 
@@ -261,15 +259,11 @@ detect whether or not a voltage exists at a point in a circuit than it is to mea
 
 7. what word is used to refer to each 0 and each 1? bit which is a shortened form binary digit
 
-8. is it the case that computers differentiate the absolute presence of a voltage (i.e. 1) from the absolute absence of a voltage
-(i.e. 0)? no, electronic circuits in the computer differentiate voltages very close to 0 from voltages very far from 0
+8. is it the case that computers differentiate the absolute presence of a voltage (i.e. 1) from the absolute absence of a voltage (i.e. 0)? no, electronic circuits in the computer differentiate voltages very close to 0 from voltages very far from 0
 
-9. how many things can we differentiate with one wire and what values are assigned to them? two things; one of them can be assigned
-the value 0 and the other can be assigned a value of 1
+9. how many things can we differentiate with one wire and what values are assigned to them? two things; one of them can be assigned the value 0 and the other can be assigned a value of 1
 
-10. in order to get useful work done by a computer, it is necessary to be able to distinguish a large number of distinct values and assign each of them a unique representation. what is done in order to achieve this? combining many wires, that is, many bits. for
-example, if we use eight bits (corresponding to the voltage present on each of eight wires), we can represent one particular value as 01001110, and another value as 11100111. In fact, if we are limited to eight bits, we can differentiate at most only 256 (i.e.
-2^8) different things 
+10. in order to get useful work done by a computer, it is necessary to be able to distinguish a large number of distinct values and assign each of them a unique representation. what is done in order to achieve this? combining many wires, that is, many bits. for example, if we use eight bits (corresponding to the voltage present on each of eight wires), we can represent one particular value as 01001110, and another value as 11100111. In fact, if we are limited to eight bits, we can differentiate at most only 256 (i.e. 2^8) different things 
 
 11. what qualifies a representation of information as a data type? if there are operations in the computer that can operate on information encoded in that representation
 
@@ -279,8 +273,7 @@ example, if we use eight bits (corresponding to the voltage present on each of e
 
 14. describe the unsigned integer representation?
 
-15. describe the signed integer number representation (how many bits are assigned to positive numbers and how many bits to negative 
-numbers)? each takes half the amount of bits available
+15. describe the signed integer number representation (how many bits are assigned to positive numbers and how many bits to negative numbers)? each takes half the amount of bits available
 
 16. how do signed magnitude, 1's complement, and 2's complement encode information? see figure 2.1
 
@@ -294,8 +287,7 @@ numbers)? each takes half the amount of bits available
 
 21. almost all computers use the same mechanism to perform addition, what is it called? ALU
 
-22. if you know the bit representation of integer A, what is a short cut you can use to work out -A? flip all of the bits and add 1
-see example21.png 
+22. if you know the bit representation of integer A, what is a short cut you can use to work out -A? flip all of the bits and add 1 see example21.png 
 
 23. algorithm for binary to decimal conversion see binaryToDecimal.png example22.png
 
@@ -309,8 +301,7 @@ see example21.png
 
 28. what happens if the sum of two integers is not small enough to be represented by the available bits? overflow of the msb occurs
 
-29. what must you watch out for when dealing with overflow in signed encoding e.g. 2's complement? addition of positive numbers that
-result in overflow into msb which indicate the sign of the value. since the result is negative, this is easy to detect. likewise when adding two negative numbers and the msb overflows and becomes zero, detection would be easy since the result of the ALU operation would positive
+29. what must you watch out for when dealing with overflow in signed encoding e.g. 2's complement? addition of positive numbers that result in overflow into msb which indicate the sign of the value. since the result is negative, this is easy to detect. likewise when adding two negative numbers and the msb overflows and becomes zero, detection would be easy since the result of the ALU operation would positive
 
 30. what are the basic logical operations performed by the ALU? binary logical AND function that requires two source operands see example26 and example27, binary logical OR function that also requires two source operands see example28, unary logical function NOT which operates on only one source operand (also known as the complement operation), the binary logical XOR function that requires two source operands see example29 and example210
 
@@ -318,8 +309,7 @@ result in overflow into msb which indicate the sign of the value. since the resu
 
 32. There are many uses for bit vectors. The most common use is a bit mask. The bit mask is a bit vector, where our choice of 0 or 1 for each bit allows us to isolate the bits we are interested in focusing on and ignore the bits that don’t matter. Another common use of bit vectors involves managing a complex system made up of several units, each of which is individually and independently either busy or available. The system could be a manufacturing plant where each unit is a particular machine. Or the system could be a taxicab network where each unit is a particular taxicab. In both cases, it is important to identify which units are busy and which are available so that work can be properly assigned. Say we have m such units. We can keep track of these m units with a bit vector, where a bit is 1 if the unit is free and 0 if the unit is busy. see example211
 
-33. There are many other representations of information that are used in computers. can you name two that are among the most useful?
-ASCII and floating point representation
+33. There are many other representations of information that are used in computers. can you name two that are among the most useful? ASCII and floating point representation
 
 34. what encoding format does the lc-3 use to represent integers? 16 bit 2's complement where the msb (most significant bit) identifies whether the number is positive or negative and the rest of the bits represent the magnitude of the value. with 16 bits used this way, we can express integer values between -32768 and 32767, that is between -2^(15) and (2^15) - 1.
 

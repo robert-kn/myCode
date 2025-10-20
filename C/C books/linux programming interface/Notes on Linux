@@ -10,15 +10,15 @@ The term kernel is often used as a synonym for the second meaning, and it is wit
 
 Although it is possible to run programs on a computer without a kernel, the presence of a kernel greatly simplifies the writing and use of other programs, and increases the power and flexibility available to programmers. The kernel does this by providing a software layer to manage the limited resources of a computer.
 
-The Linux kernel executable typically resides at the pathname /boot/vmlinuz, or something similar. The derivation of this filename is historical. On early UNIX implementations, the kernel was called unix. Later UNIX implementa- tions, which implemented virtual memory, renamed the kernel as vmunix. On Linux, the filename mirrors the system name, with the z replacing the final x to signify that the kernel is a compressed executable.
+The Linux kernel executable typically resides at the pathname /boot/vmlinuz, or something similar. The derivation of this filename is historical. On early UNIX implementations, the kernel was called unix. Later UNIX implementations, which implemented virtual memory, renamed the kernel as vmunix. On Linux, the filename mirrors the system name, with the z replacing the final x to signify that the kernel is a compressed executable.
 
 Tasks performed by the kernel
 
 Among other things, the kernel performs the following tasks:
 
-Process scheduling: A computer has one or more central processing units (CPUs), which execute the instructions of programs. Like other UNIX systems, Linux is a preemptive multitasking operating system, Multitasking means that multiple processes (i.e., running programs) can simultaneously reside in mem- ory and each may receive use of the CPU(s). Preemptive means that the rules governing which processes receive use of the CPU and for how long are deter- mined by the kernel process scheduler (rather than by the processes themselves).
+Process scheduling: A computer has one or more central processing units (CPUs), which execute the instructions of programs. Like other UNIX systems, Linux is a preemptive multitasking operating system, Multitasking means that multiple processes (i.e., running programs) can simultaneously reside in memory and each may receive use of the CPU(s). Preemptive means that the rules governing which processes receive use of the CPU and for how long are determined by the kernel process scheduler (rather than by the processes themselves).
 
-Memory management: While computer memories are enormous by the stan- dards of a decade or two ago, the size of software has also correspondingly grown, so that physical memory (RAM) remains a limited resource that the ker- nel must share among processes in an equitable and efficient fashion. Like most modern operating systems, Linux employs virtual memory management (Section 6.4), a technique that confers two main advantages:
+Memory management: While computer memories are enormous by the standards of a decade or two ago, the size of software has also correspondingly grown, so that physical memory (RAM) remains a limited resource that the kernel must share among processes in an equitable and efficient fashion. Like most modern operating systems, Linux employs virtual memory management (Section 6.4), a technique that confers two main advantages:
 
 - Processes are isolated from one another and from the kernel, so that one process can’t read or modify the memory of another process or the kernel. 
 - Only part of a process needs to be kept in memory, thereby lowering the memory requirements of each process and allowing more processes to be held in RAM simultaneously. This leads to better CPU utilization, since it increases the likelihood that, at any moment in time, there is at least one process that the CPU(s) can execute.
@@ -37,17 +37,17 @@ In addition to the above features, multiuser operating systems such as Linux gen
 
 Kernel mode and user mode
 
-Modern processor architectures typically allow the CPU to operate in at least two different modes: user mode and kernel mode (sometimes also referred to as supervisor mode). Hardware instructions allow switching from one mode to the other. Corre- spondingly, areas of virtual memory can be marked as being part of user space or kernel space. When running in user mode, the CPU can access only memory that is marked as being in user space; attempts to access memory in kernel space result in a hardware exception. When running in kernel mode, the CPU can access both user and kernel memory space.
+Modern processor architectures typically allow the CPU to operate in at least two different modes: user mode and kernel mode (sometimes also referred to as supervisor mode). Hardware instructions allow switching from one mode to the other. Correspondingly, areas of virtual memory can be marked as being part of user space or kernel space. When running in user mode, the CPU can access only memory that is marked as being in user space; attempts to access memory in kernel space result in a hardware exception. When running in kernel mode, the CPU can access both user and kernel memory space.
 
-Certain operations can be performed only while the processor is operating in kernel mode. Examples include executing the halt instruction to stop the system, accessing the memory-management hardware, and initiating device I/O opera- tions. By taking advantage of this hardware design to place the operating system in kernel space, operating system implementers can ensure that user processes are not able to access the instructions and data structures of the kernel, or to perform operations that would adversely affect the operation of the system.
+Certain operations can be performed only while the processor is operating in kernel mode. Examples include executing the halt instruction to stop the system, accessing the memory-management hardware, and initiating device I/O operations. By taking advantage of this hardware design to place the operating system in kernel space, operating system implementers can ensure that user processes are not able to access the instructions and data structures of the kernel, or to perform operations that would adversely affect the operation of the system.
 
 Process versus kernel views of the system
 
-In many everyday programming tasks, we are accustomed to thinking about pro- gramming in a process-oriented way. However, when considering various topics covered later in this book, it can be useful to reorient our perspective to consider things from the kernel’s point of view. To make the contrast clear, we now consider how things look first from a process viewpoint and then from a kernel viewpoint.
+In many everyday programming tasks, we are accustomed to thinking about programming in a process-oriented way. However, when considering various topics covered later in this book, it can be useful to reorient our perspective to consider things from the kernel’s point of view. To make the contrast clear, we now consider how things look first from a process viewpoint and then from a kernel viewpoint.
 
 A running system typically has numerous processes. For a process, many things happen asynchronously. An executing process doesn’t know when it will next time out, which other processes will then be scheduled for the CPU (and in what order), or when it will next be scheduled. The delivery of signals and the occurrence of interprocess communication events are mediated by the kernel, and can occur at any time for a process. Many things happen transparently for a process. A process doesn’t know where it is located in RAM or, in general, whether a particular part of its memory space is currently resident in memory or held in the swap area (a reserved area of disk space used to supplement the computer’s RAM). Similarly, a process doesn’t know where on the disk drive the files it accesses are being held; it simply refers to the files by name. A process operates in isolation; it can’t directly communicate with another process. A process can’t itself create a new process or even end its own existence. Finally, a process can’t communicate directly with the input and output devices attached to the computer.
 
-By contrast, a running system has one kernel that knows and controls everything. The kernel facilitates the running of all processes on the system. The kernel decides which process will next obtain access to the CPU, when it will do so, and for how long. The kernel maintains data structures containing information about all running processes and updates these structures as processes are created, change state, and terminate. The kernel maintains all of the low-level data structures that enable the filenames used by programs to be translated into physical locations on the disk. The kernel also maintains data structures that map the virtual memory of each process into the physical memory of the computer and the swap area(s) on disk. All communication between processes is done via mechanisms provided by the kernel. In response to requests from processes, the kernel creates new pro- cesses and terminates existing processes. Lastly, the kernel (in particular, device drivers) performs all direct communication with input and output devices, transfer- ring information to and from user processes as required.
+By contrast, a running system has one kernel that knows and controls everything. The kernel facilitates the running of all processes on the system. The kernel decides which process will next obtain access to the CPU, when it will do so, and for how long. The kernel maintains data structures containing information about all running processes and updates these structures as processes are created, change state, and terminate. The kernel maintains all of the low-level data structures that enable the filenames used by programs to be translated into physical locations on the disk. The kernel also maintains data structures that map the virtual memory of each process into the physical memory of the computer and the swap area(s) on disk. All communication between processes is done via mechanisms provided by the kernel. In response to requests from processes, the kernel creates new processes and terminates existing processes. Lastly, the kernel (in particular, device drivers) performs all direct communication with input and output devices, transferring information to and from user processes as required.
 
 The Shell
 
@@ -57,7 +57,7 @@ The term login shell is used to denote the process that is created to run a shel
 
 Whereas on some operating systems the command interpreter is an integral part of the kernel, on UNIX systems, the shell is a user process. Many different shells exist, and different users (or, for that matter, a single user) on the same computer can simultaneously use different shells. A number of important shells have appeared over time:
 
-Bourne shell (sh): This is the oldest of the widely used shells, and was written by Steve Bourne. It was the standard shell for Seventh Edition UNIX. The Bourne shell contains many of the features familiar in all shells: I/O redirection, pipe- lines, filename generation (globbing), variables, manipulation of environment variables, command substitution, background command execution, and func- tions. All later UNIX implementations include the Bourne shell in addition to any other shells they might provide.
+Bourne shell (sh): This is the oldest of the widely used shells, and was written by Steve Bourne. It was the standard shell for Seventh Edition UNIX. The Bourne shell contains many of the features familiar in all shells: I/O redirection, pipelines, filename generation (globbing), variables, manipulation of environment variables, command substitution, background command execution, and functions. All later UNIX implementations include the Bourne shell in addition to any other shells they might provide.
 
 C shell (csh): This shell was written by Bill Joy at the University of California at Berkeley. The name derives from the resemblance of many of the flow-control constructs of this shell to those of the C programming language. The C shell provided several useful interactive features unavailable in the Bourne shell, including command history, command-line editing, job control, and aliases. The C shell was not backward compatible with the Bourne shell. Although the standard interactive shell on BSD was the C shell, shell scripts (described in a moment) were usually written for the Bourne shell, so as to be portable across all UNIX implementations.
 
@@ -80,18 +80,18 @@ The password record may also include the user’s password, in encrypted form. H
 
 Groups
 
-For administrative purposes—in particular, for controlling access to files and other system resources—it is useful to organize users into groups. For example, the people in a team working on a single project, and thus sharing a common set of files, might all be made members of the same group. In early UNIX implementations, a user could be a member of only one group. BSD allowed a user to simultaneously belong to multiple groups, an idea that was taken up by other UNIX implementa- tions and the POSIX.1-1990 standard. Each group is identified by a single line in the system group file, /etc/group, which includes the following information:
+For administrative purposes—in particular, for controlling access to files and other system resources—it is useful to organize users into groups. For example, the people in a team working on a single project, and thus sharing a common set of files, might all be made members of the same group. In early UNIX implementations, a user could be a member of only one group. BSD allowed a user to simultaneously belong to multiple groups, an idea that was taken up by other UNIX implementations and the POSIX.1-1990 standard. Each group is identified by a single line in the system group file, /etc/group, which includes the following information:
          Group name: the (unique) name of the group.
          Group ID (GID): the numeric ID associated with this group.
          User list: a comma-separated list of login names of users who are members of this group (and who are not otherwise identified as members of the group by virtue of the group ID field of their password file record).
 
 Superuser
 
-One user, known as the superuser, has special privileges within the system. The superuser account has user ID 0, and normally has the login name root. On typical UNIX systems, the superuser bypasses all permission checks in the system. Thus, for example, the superuser can access any file in the system, regardless of the per- missions on that file, and can send signals to any user process in the system. The system administrator uses the superuser account to perform various administrative tasks on the system.
+One user, known as the superuser, has special privileges within the system. The superuser account has user ID 0, and normally has the login name root. On typical UNIX systems, the superuser bypasses all permission checks in the system. Thus, for example, the superuser can access any file in the system, regardless of the permissions on that file, and can send signals to any user process in the system. The system administrator uses the superuser account to perform various administrative tasks on the system.
 
 Single Directory Hierarchy, Directories, Links, and Files
 
-The kernel maintains a single hierarchical directory structure to organize all files in the system. (This contrasts with operating systems such as Microsoft Windows, where each disk device has its own directory hierarchy.) At the base of this hier- archy is the root directory, named / (slash). All files and directories are children or further removed descendants of the root directory. 
+The kernel maintains a single hierarchical directory structure to organize all files in the system. (This contrasts with operating systems such as Microsoft Windows, where each disk device has its own directory hierarchy.) At the base of this hierarchy is the root directory, named / (slash). All files and directories are children or further removed descendants of the root directory. 
 
 Within the file system, each file is marked with a type, indicating what kind of file it is. One of these file types denotes ordinary data files, which are usually called regular or plain files to distinguish them from other file types. These other file types include devices, pipes, sockets, directories, and symbolic links.
 
@@ -103,7 +103,7 @@ A directory is a special file whose contents take the form of a table of filenam
 
 Directories may contain links both to files and to other directories. The links between directories establish the directory hierarchy shown in Figure 2-1.
 
-Every directory contains at least two entries: . (dot), which is a link to the direc- tory itself, and .. (dot-dot), which is a link to its parent directory, the directory above it in the hierarchy. Every directory, except the root directory, has a parent. For the root directory, the dot-dot entry is a link to the root directory itself (thus, /.. equates to /).
+Every directory contains at least two entries: . (dot), which is a link to the directory itself, and .. (dot-dot), which is a link to its parent directory, the directory above it in the hierarchy. Every directory, except the root directory, has a parent. For the root directory, the dot-dot entry is a link to the root directory itself (thus, /.. equates to /).
 
 Symbolic links
 
@@ -117,7 +117,7 @@ On most Linux file systems, filenames can be up to 255 characters long. Filename
 
 Current working directory
 
-Each process has a current working directory (sometimes just referred to as the pro- cess’s working directory or current directory). This is the process’s “current location” within the single directory hierarchy, and it is from this directory that relative path- names are interpreted for the process.
+Each process has a current working directory (sometimes just referred to as the process’s working directory or current directory). This is the process’s “current location” within the single directory hierarchy, and it is from this directory that relative path-names are interpreted for the process.
 
 A process inherits its current working directory from its parent process. A login shell has its initial current working directory set to the location named in the home directory field of the user’s password file entry. The shell’s current working directory can be changed with the cd command.
 
@@ -153,7 +153,7 @@ Programs normally exist in two forms. The first form is source code, human-reada
 
 Filters
 
-A filter is the name often applied to a program that reads its input from stdin, per- forms some transformation of that input, and writes the transformed data to stdout. Examples of filters include cat, grep, tr, sort, wc, sed, and awk.
+A filter is the name often applied to a program that reads its input from stdin, performs some transformation of that input, and writes the transformed data to stdout. Examples of filters include cat, grep, tr, sort, wc, sed, and awk.
 
 Processes
 
@@ -171,11 +171,11 @@ A process is logically divided into the following parts, known as segments:
 
 Process creation and program execution
 
-A process can create a new process using the fork() system call. The process that calls fork() is referred to as the parent process, and the new process is referred to as the child process. The kernel creates the child process by making a duplicate of the parent process. The child inherits copies of the parent’s data, stack, and heap seg- ments, which it may then modify independently of the parent’s copies. (The program text, which is placed in memory marked as read-only, is shared by the two processes.)
+A process can create a new process using the fork() system call. The process that calls fork() is referred to as the parent process, and the new process is referred to as the child process. The kernel creates the child process by making a duplicate of the parent process. The child inherits copies of the parent’s data, stack, and heap segments, which it may then modify independently of the parent’s copies. (The program text, which is placed in memory marked as read-only, is shared by the two processes.)
 
 The child process goes on either to execute a different set of functions in the same code as the parent, or, frequently, to use the execve() system call to load and execute an entirely new program. An execve() call destroys the existing text, data, stack, and heap segments, replacing them with new segments based on the code of the new program.
 
-Several related C library functions are layered on top of execve(), each provid- ing a slightly different interface to the same functionality. All of these functions have names starting with the string exec, and where the differences don’t matter, we’ll use the notation exec() to refer generally to these functions. Be aware, how- ever, that there is no actual function with the name exec().
+Several related C library functions are layered on top of execve(), each providing a slightly different interface to the same functionality. All of these functions have names starting with the string exec, and where the differences don’t matter, we’ll use the notation exec() to refer generally to these functions. Be aware, however, that there is no actual function with the name exec().
 
 Commonly, we’ll use the verb to exec to describe the operation performed execve() and the library functions layered on top of it.
 
@@ -185,9 +185,9 @@ Each process has a unique integer process identifier (PID). Each process also ha
 
 Process termination and termination status
 
-A process can terminate in one of two ways: by requesting its own termination using the _exit() system call (or the related exit() library function), or by being killed by the delivery of a signal. In either case, the process yields a termination status, a small nonnegative integer value that is available for inspection by the parent pro- cess using the wait() system call. In the case of a call to _exit(), the process explicitly specifies its own termination status. If a process is killed by a signal, the termination status is set according to the type of signal that caused the death of the process. (Sometimes, we’ll refer to the argument passed to _exit() as the exit status of the pro- cess, as distinct from the termination status, which is either the value passed to _exit() or an indication of the signal that killed the process.)
+A process can terminate in one of two ways: by requesting its own termination using the _exit() system call (or the related exit() library function), or by being killed by the delivery of a signal. In either case, the process yields a termination status, a small nonnegative integer value that is available for inspection by the parent process using the wait() system call. In the case of a call to _exit(), the process explicitly specifies its own termination status. If a process is killed by a signal, the termination status is set according to the type of signal that caused the death of the process. (Sometimes, we’ll refer to the argument passed to _exit() as the exit status of the process, as distinct from the termination status, which is either the value passed to _exit() or an indication of the signal that killed the process.)
 
-By convention, a termination status of 0 indicates that the process succeeded, and a nonzero status indicates that some error occurred. Most shells make the ter- mination status of the last executed program available via a shell variable named $?.
+By convention, a termination status of 0 indicates that the process succeeded, and a nonzero status indicates that some error occurred. Most shells make the termination status of the last executed program available via a shell variable named $?.
 
 Process user and group identifiers (credentials)
 
@@ -203,15 +203,15 @@ Privileged processes
 
 Traditionally, on UNIX systems, a privileged process is one whose effective user ID is 0 (superuser). Such a process bypasses the permission restrictions normally applied by the kernel. By contrast, the term unprivileged (or nonprivileged) is applied to processes run by other users. Such processes have a nonzero effective user ID and must abide by the permission rules enforced by the kernel.
 
-A process may be privileged because it was created by another privileged pro- cess—for example, by a login shell started by root (superuser). Another way a process may become privileged is via the set-user-ID mechanism, which allows a process to assume an effective user ID that is the same as the user ID of the program file that it is executing.
+A process may be privileged because it was created by another privileged process—for example, by a login shell started by root (superuser). Another way a process may become privileged is via the set-user-ID mechanism, which allows a process to assume an effective user ID that is the same as the user ID of the program file that it is executing.
 
 Capabilities
 
-Since kernel 2.2, Linux divides the privileges traditionally accorded to the super- user into a set of distinct units called capabilities. Each privileged operation is asso- ciated with a particular capability, and a process can perform an operation only if it has the corresponding capability. A traditional superuser process (effective user ID of 0) corresponds to a process with all capabilities enabled.
+Since kernel 2.2, Linux divides the privileges traditionally accorded to the super-user into a set of distinct units called capabilities. Each privileged operation is associated with a particular capability, and a process can perform an operation only if it has the corresponding capability. A traditional superuser process (effective user ID of 0) corresponds to a process with all capabilities enabled.
 
 Granting a subset of capabilities to a process allows it to perform some of the operations normally permitted to the superuser, while preventing it from performing others.
 
-In the remainder of the book, when noting that a particular operation can be performed only by a privi- leged process, we’ll usually identify the specific capability in parentheses. Capabil- ity names begin with the prefix CAP_, as in CAP_KILL.
+In the remainder of the book, when noting that a particular operation can be performed only by a privileged process, we’ll usually identify the specific capability in parentheses. Capability names begin with the prefix CAP_, as in CAP_KILL.
 
 The init process
 
@@ -228,7 +228,7 @@ Examples of daemon processes include syslogd, which records messages in the syst
 
 Environment list
 
-Each process has an environment list, which is a set of environment variables that are maintained within the user-space memory of the process. Each element of this list consists of a name and an associated value. When a new process is created via fork(), it inherits a copy of its parent’s environment. Thus, the environment provides a mechanism for a parent process to communicate information to a child pro- cess. When a process replaces the program that it is running using exec(), the new program either inherits the environment used by the old program or receives a new environment specified as part of the exec() call.
+Each process has an environment list, which is a set of environment variables that are maintained within the user-space memory of the process. Each element of this list consists of a name and an associated value. When a new process is created via fork(), it inherits a copy of its parent’s environment. Thus, the environment provides a mechanism for a parent process to communicate information to a child prcess. When a process replaces the program that it is running using exec(), the new program either inherits the environment used by the old program or receives a new environment specified as part of the exec() call.
 
 Environment variables are created with the export command in most shells (or the setenv command in the C shell), as in the following example:
 
@@ -256,9 +256,9 @@ A file mapping maps a region of a file into the calling process’s virtual memo
 
 By contrast, an anonymous mapping doesn’t have a corresponding file. Instead, the pages of the mapping are initialized to 0.
 
-The memory in one process’s mapping may be shared with mappings in other pro- cesses. This can occur either because two processes map the same region of a file or because a child process created by fork() inherits a mapping from its parent.
+The memory in one process’s mapping may be shared with mappings in other processes. This can occur either because two processes map the same region of a file or because a child process created by fork() inherits a mapping from its parent.
 
-When two or more processes share the same pages, each process may see the changes made by other processes to the contents of the pages, depending on whether the mapping is created as private or shared. When a mapping is private, modifications to the contents of the mapping are not visible to other processes and are not carried through to the underlying file. When a mapping is shared, modifica- tions to the contents of the mapping are visible to other processes sharing the same mapping and are carried through to the underlying file.
+When two or more processes share the same pages, each process may see the changes made by other processes to the contents of the pages, depending on whether the mapping is created as private or shared. When a mapping is private, modifications to the contents of the mapping are not visible to other processes and are not carried through to the underlying file. When a mapping is shared, modifications to the contents of the mapping are visible to other processes sharing the same mapping and are carried through to the underlying file.
 
 Memory mappings serve a variety of purposes, including initialization of a process’s text segment from the corresponding segment of an executable file, allocation of new (zero-filled) memory, file I/O (memory-mapped I/O), and inter-process communication (via a shared mapping).
 
@@ -268,7 +268,7 @@ An object library is a file containing the compiled object code for a (usually l
 
 Static libraries
 
-Static libraries (sometimes also known as archives) were the only type of library on early UNIX systems. A static library is essentially a structured bundle of compiled object modules. To use functions from a static library, we specify that library in the link command used to build a program. After resolving the various function refer- ences from the main program to the modules in the static library, the linker extracts copies of the required object modules from the library and copies these into the resulting executable file. We say that such a program is statically linked.
+Static libraries (sometimes also known as archives) were the only type of library on early UNIX systems. A static library is essentially a structured bundle of compiled object modules. To use functions from a static library, we specify that library in the link command used to build a program. After resolving the various function references from the main program to the modules in the static library, the linker extracts copies of the required object modules from the library and copies these into the resulting executable file. We say that such a program is statically linked.
 
 The fact that each statically linked program includes its own copy of the object modules required from the library creates a number of disadvantages. One is that the duplication of object code in different executable files wastes disk space. A corresponding waste of memory occurs when statically linked programs using the same library function are executed at the same time; each program requires its own copy of the function to reside in memory. Additionally, if a library function requires modification, then, after recompiling that function and adding it to the static library, all applications that need to use the updated function must be relinked against the library.
 
@@ -276,17 +276,17 @@ Shared libraries
 
 Shared libraries were designed to address the problems with static libraries.
 
-If a program is linked against a shared library, then, instead of copying object modules from the library into the executable, the linker just writes a record into the executable to indicate that at run time the executable needs to use that shared library. When the executable is loaded into memory at run time, a program called the dynamic linker ensures that the shared libraries required by the executable are found and loaded into memory, and performs run-time linking to resolve the function calls in the executable to the corresponding definitions in the shared libraries. At run time, only a single copy of the code of the shared library needs to be resi- dent in memory; all running programs can use that copy.
+If a program is linked against a shared library, then, instead of copying object modules from the library into the executable, the linker just writes a record into the executable to indicate that at run time the executable needs to use that shared library. When the executable is loaded into memory at run time, a program called the dynamic linker ensures that the shared libraries required by the executable are found and loaded into memory, and performs run-time linking to resolve the function calls in the executable to the corresponding definitions in the shared libraries. At run time, only a single copy of the code of the shared library needs to be resident in memory; all running programs can use that copy.
 
-The fact that a shared library contains the sole compiled version of a function saves disk space. It also greatly eases the job of ensuring that programs employ the newest version of a function. Simply rebuilding the shared library with the new function definition causes existing programs to automatically use the new defini- tion when they are next executed.
+The fact that a shared library contains the sole compiled version of a function saves disk space. It also greatly eases the job of ensuring that programs employ the newest version of a function. Simply rebuilding the shared library with the new function definition causes existing programs to automatically use the new definition when they are next executed.
 
 Interprocess Communication and Synchronization
 
 A running Linux system consists of numerous processes, many of which operate independently of each other. Some processes, however, cooperate to achieve their intended purposes, and these processes need methods of communicating with one another and synchronizing their actions.
 
-One way for processes to communicate is by reading and writing informa- tion in disk files. However, for many applications, this is too slow and inflexible.
+One way for processes to communicate is by reading and writing information in disk files. However, for many applications, this is too slow and inflexible.
 
-Therefore, Linux, like all modern UNIX implementations, provides a rich set of mech- anisms for interprocess communication (IPC), including the following:
+Therefore, Linux, like all modern UNIX implementations, provides a rich set of mechanisms for interprocess communication (IPC), including the following:
 
 - signals, which are used to indicate that an event has occurred;
 - pipes (familiar to shell users as the | operator) and FIFOs, which can be used to transfer data between processes;
@@ -314,13 +314,13 @@ When a process receives a signal, it takes one of the following actions, dependi
 
 A signal handler is a programmer-defined function that is automatically invoked when the signal is delivered to the process. This function performs some action appropriate to the condition that generated the signal.
 
-In the interval between the time it is generated and the time it is delivered, a signal is said to be pending for a process. Normally, a pending signal is delivered as soon as the receiving process is next scheduled to run, or immediately if the pro- cess is already running. However, it is also possible to block a signal by adding it to the process’s signal mask. If a signal is generated while it is blocked, it remains pending until it is later unblocked (i.e., removed from the signal mask).
+In the interval between the time it is generated and the time it is delivered, a signal is said to be pending for a process. Normally, a pending signal is delivered as soon as the receiving process is next scheduled to run, or immediately if the process is already running. However, it is also possible to block a signal by adding it to the process’s signal mask. If a signal is generated while it is blocked, it remains pending until it is later unblocked (i.e., removed from the signal mask).
 
 Threads
 
 In modern UNIX implementations, each process can have multiple threads of execution. One way of envisaging threads is as a set of processes that share the same virtual memory, as well as a range of other attributes. Each thread is executing the same program code and shares the same data area and heap. However, each thread has it own stack containing local variables and function call linkage information.
 
-Threads can communicate with each other via the global variables that they share. The threading API provides condition variables and mutexes, which are primi- tives that enable the threads of a process to communicate and synchronize their actions, in particular, their use of shared variables. Threads can also communicate with one another using the IPC and synchronization mechanisms.
+Threads can communicate with each other via the global variables that they share. The threading API provides condition variables and mutexes, which are primitives that enable the threads of a process to communicate and synchronize their actions, in particular, their use of shared variables. Threads can also communicate with one another using the IPC and synchronization mechanisms.
 
 The primary advantages of using threads are that they make it easy to share data (via global variables) between cooperating threads and that some algorithms transpose more naturally to a multithreaded implementation than to a multiprocess implementation. Furthermore, a multithreaded application can transparently take advantage of the possibilities for parallel processing on multiprocessor hardware.
 
@@ -334,19 +334,19 @@ All major shells, except the Bourne shell, provide an interactive feature called
 
 Each process in a process group has the same integer process group identifier, which is the same as the process ID of one of the processes in the group, termed the process group leader.
 
-The kernel allows for various actions, notably the delivery of signals, to be per- formed on all members of a process group. Job-control shells use this feature to allow the user to suspend or resume all of the processes in a pipeline, as described in the next section.
+The kernel allows for various actions, notably the delivery of signals, to be performed on all members of a process group. Job-control shells use this feature to allow the user to suspend or resume all of the processes in a pipeline, as described in the next section.
 
 Sessions, Controlling Terminals, and Controlling Processes
 
 A session is a collection of process groups (jobs). All of the processes in a session have the same session identifier. A session leader is the process that created the session, and its process ID becomes the session ID.
 
-Sessions are used mainly by job-control shells. All of the process groups cre- ated by a job-control shell belong to the same session as the shell, which is the session leader.
+Sessions are used mainly by job-control shells. All of the process groups created by a job-control shell belong to the same session as the shell, which is the session leader.
 
-Sessions usually have an associated controlling terminal. The controlling termi- nal is established when the session leader process first opens a terminal device. For a session created by an interactive shell, this is the terminal at which the user logged in. A terminal may be the controlling terminal of at most one session.
+Sessions usually have an associated controlling terminal. The controlling terminal is established when the session leader process first opens a terminal device. For a session created by an interactive shell, this is the terminal at which the user logged in. A terminal may be the controlling terminal of at most one session.
 
 As a consequence of opening the controlling terminal, the session leader becomes the controlling process for the terminal. The controlling process receives a SIGHUP signal if a terminal disconnect occurs (e.g., if the terminal window is closed).
 
-At any point in time, one process group in a session is the foreground process group (foreground job), which may read input from the terminal and send output to it. If the user types the interrupt character (usually Control-C) or the suspend character (usually Control-Z) on the controlling terminal, then the terminal driver sends a signal that kills or suspends (i.e., stops) the foreground process group. A session can have any number of background process groups (background jobs), which are created by ter- minating a command with the ampersand (&) character.
+At any point in time, one process group in a session is the foreground process group (foreground job), which may read input from the terminal and send output to it. If the user types the interrupt character (usually Control-C) or the suspend character (usually Control-Z) on the controlling terminal, then the terminal driver sends a signal that kills or suspends (i.e., stops) the foreground process group. A session can have any number of background process groups (background jobs), which are created by terminating a command with the ampersand (&) character.
 
 Job-control shells provide commands for listing all jobs, sending signals to jobs, and moving jobs between the foreground and background.
 
@@ -360,7 +360,7 @@ Two types of time are of interest to a process:
 
 Real time is measured either from some standard point (calendar time) or from some fixed point, typically the start, in the life of a process (elapsed or wall clock time). On UNIX systems, calendar time is measured in seconds since midnight on the morning of January 1, 1970, Universal Coordinated Time (usually abbreviated UTC), and coordinated on the base point for timezones defined by the longitudinal line passing through Greenwich, England. This date, which is close to the birth of the UNIX system, is referred to as the Epoch.
 
-Process time, also called CPU time, is the total amount of CPU time that a process has used since starting. CPU time is further divided into system CPU time, the time spent executing code in kernel mode (i.e., executing system calls and per- forming other kernel services on behalf of the process), and user CPU time, the time spent executing code in user mode (i.e., executing normal program code).
+Process time, also called CPU time, is the total amount of CPU time that a process has used since starting. CPU time is further divided into system CPU time, the time spent executing code in kernel mode (i.e., executing system calls and performing other kernel services on behalf of the process), and user CPU time, the time spent executing code in user mode (i.e., executing normal program code).
 
 The time command displays the real time, the system CPU time, and user CPU time taken to execute the processes in a pipeline.
 
@@ -390,7 +390,7 @@ The /proc File System
 
 Linux provides a /proc file system, which consists of a set of directories and files mounted under the /proc directory.
 
-The /proc file system is a virtual file system that provides an interface to kernel data structures in a form that looks like files and directories on a file system. This provides an easy mechanism for viewing and changing various system attributes. In addition, a set of directories with names of the form /proc/PID, where PID is a pro- cess ID, allows us to view information about each process running on the system.
+The /proc file system is a virtual file system that provides an interface to kernel data structures in a form that looks like files and directories on a file system. This provides an easy mechanism for viewing and changing various system attributes. In addition, a set of directories with names of the form /proc/PID, where PID is a process ID, allows us to view information about each process running on the system.
 
 The contents of /proc files are generally in human-readable text form and can be parsed by shell scripts. A program can simply open and read from, or write to, the desired file. In most cases, a process must be privileged to modify the contents of files in the /proc directory.
 
@@ -401,3 +401,29 @@ System Calls
 A system call is a controlled entry point into the kernel, allowing a process to request that the kernel perform some action on the process’s behalf. The kernel makes a range of services accessible to programs via the system call application programming interface (API).
 
 A system call changes the processor state from user mode to kernel mode, so that the CPU can access protected kernel memory. The set of system calls is fixed. Each system call is identified by a unique number. Each system call may have a set of arguments that specify information to be transferred from user space (i.e., the process’s virtual address space) to kernel space and vice versa.
+
+From a programming point of view, invoking a system call looks much like calling a C function. However, behind the scenes, many steps occur during the execution of a system call. They are as follows:
+
+- The application program makes a system call by invoking a wrapper function in the C library.
+- The wrapper function must make all of the system call arguments available to the system call trap-handling routine. These arguments are passed to the wrapper via the stack, but the kernel expects them in specific registers. The wrapper function copies the arguments to these registers.
+- Since all system calls enter the kernel in the same way, the kernel needs some method of identifying the system call. To permit this, the wrapper function copies the system call number into a specific CPU register (%eax).
+- The wrapper function executes a trap machine instruction (int 0x80), which causes the processor to switch from user mode to kernel mode and execute code pointed to by location 0x80 (128 decimal) of the system’s trap vector.
+
+More recent x86-32 architectures implement the sysenter instruction, which provides a faster method of entering kernel mode than the conventional int 0x80 trap instruction. The use of sysenter is supported in the 2.6 kernel and from glibc 2.3.2 onward.
+
+- In response to the trap to location 0x80, the kernel invokes its system_call() routine (located in the assembler file arch/i386/entry.S) to handle the trap. This handler:
+(a)   Saves register values onto the kernel stack.
+(b)   Checks the validity of the system call number.
+(c)   Invokes the appropriate system call service routine, which is found by using the system call number to index a table of all system call service routines (the kernel variable sys_call_table). If the system call service routine has any arguments, it first checks their validity; for example, it checks that addresses point to valid locations in user memory. Then the service routine performs the required task, which may involve modifying values at addresses specified in the given arguments and transferring data between user memory and kernel memory (e.g., in I/O operations). Finally, the service routine returns a result status to the system_call() routine.
+(d)   Restores register values from the kernel stack and places the system call return value on the stack.
+(e)   Returns to the wrapper function, simultaneously returning the processor to user mode.
+
+- If the return value of the system call service routine indicated an error, the wrapper function sets the global variable errno (see Section 3.4) using this value. The wrapper function then returns to the caller, providing an integer return value indicating the success or failure of the system call.
+
+On Linux, system call service routines follow a convention of returning a nonnegative value to indicate success. In case of an error, the routine returns a negative number, which is the negated value of one of the errno constants. When a negative value is returned, the C library wrapper function negates it (to make it positive), copies the result into errno, and returns –1 as the function result of the wrapper to indicate an error to the calling program.
+
+This convention relies on the assumption that system call service routines don’t return negative values on success. However, for a few of these routines, this assumption doesn’t hold. Normally, this is not a problem, since the range of negated errno values doesn’t overlap with valid negative return values. However, this convention does cause a problem in one case: the F_GETOWN operation of the fcntl() system call, which we describe in Section 63.3.
+
+Figure 3-1 illustrates the above sequence using the example of the execve() system call. On Linux/x86-32, execve() is system call number 11 (__NR_execve). Thus, in the sys_call_table vector, entry 11 contains the address of sys_execve(), the service routine for this system call. (On Linux, system call service routines typically have names of the form sys_xyz(), where xyz() is the system call in question.)
+
+Since, from the point of view of a C program, calling the C library wrapper function is synonymous with invoking the corresponding system call service routine, in the remainder of this book, we use wording such as “invoking the system call xyz()” to mean “calling the wrapper function that invokes the system call xyz().”
