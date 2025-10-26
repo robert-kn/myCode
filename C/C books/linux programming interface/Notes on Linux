@@ -427,3 +427,103 @@ This convention relies on the assumption that system call service routines don�
 Figure 3-1 illustrates the above sequence using the example of the execve() system call. On Linux/x86-32, execve() is system call number 11 (__NR_execve). Thus, in the sys_call_table vector, entry 11 contains the address of sys_execve(), the service routine for this system call. (On Linux, system call service routines typically have names of the form sys_xyz(), where xyz() is the system call in question.)
 
 Since, from the point of view of a C program, calling the C library wrapper function is synonymous with invoking the corresponding system call service routine, in the remainder of this book, we use wording such as “invoking the system call xyz()” to mean “calling the wrapper function that invokes the system call xyz().”
+
+Library Functions
+
+A library function is simply one of the multitude of functions that constitutes the standard C library. Many library functions don’t make any use of system calls (e.g., the string- manipulation functions). On the other hand, some library functions are layered on top of system calls. For example, the fopen() library function uses the open() system call to actually open a file. Often, library functions are designed to provide a more caller-friendly interface than the underlying system call. For example, the printf() function provides output formatting and data buffering, whereas the write() system call just outputs a block of bytes. 
+
+The Standard C Library; The GNU C Library (glibc)
+
+There are different implementations of the standard C library on the various UNIX implementations. The most commonly used implementation on Linux is the GNU C library ( glibc, http://www.gnu.org/software/libc/).
+
+Determining the version of glibc on the system
+
+Sometimes, we need to determine the version of glibc on a system. From the shell, we can do this by running the glibc shared library file as though it were an executable program. When we run the library as an executable, it displays various text, including its version number:
+
+/lib/libc.so.6
+
+In some Linux distributions, the GNU C library resides at a pathname other than /lib/libc.so.6. One way of determining the location of the library is to run the ldd (list dynamic dependencies) program against an executable linked dynamically against glibc (most executables are linked in this manner). We can then inspect the resulting library dependency list to find the location of the glibc shared library:
+
+ldd myprog | grep libc
+
+There are two means by which an application program can determine the version of the GNU C library present on the system: by testing constants or by calling a library function. From version 2.0 onward, glibc defines two constants, __GLIBC__ and __GLIBC_MINOR__, that can be tested at compile time (in #ifdef statements). On a system with glibc 2.12 installed, these constants would have the values 2 and 12. However, these constants are of limited use in a program that is compiled on one system but run on another system with a different glibc. To handle this possibility, a program can call the gnu_get_libc_version() function to determine the version of glibc available at run time.
+
+#include <gnu/libc-version.h> 
+const char *gnu_get_libc_version(void);
+Returns pointer to null-terminated, statically allocated string containing GNU C library version number
+
+The gnu_get_libc_version() function returns a pointer to a string, such as 2.12.
+
+We can also obtain version information by using the confstr() function to retrieve the value of the (glibc-specific) _CS_GNU_LIBC_VERSION configuration vari- able. This call returns a string such as glibc 2.12.
+
+Almost every system call and library function returns some type of status value indicating whether the call succeeded or failed. This status value should always be checked to see whether the call succeeded. If it did not, then appropriate action should be taken—at the very least, the program should display an error message warning that something unexpected occurred.
+
+Although it is tempting to save typing time by excluding these checks (especially after seeing examples of UNIX and Linux programs where status values are not checked), it is a false economy.
+
+A few system calls never fail. For example, getpid() always successfully returns the ID of a process, and _exit() always terminates a process. It is not necessary to check the return values from such system calls.
+
+Handling system call errors
+
+The manual page for each system call documents the possible return values of the call, showing which value(s) indicate an error. Usually, an error is indicated by a return of –1. Thus, a system call can be checked with code such as the following:
+
+fd = open(pathname, flags, mode);       /* system call to open a file */ 
+if (fd == -1) {
+    /* Code to handle the error */ 
+}
+
+When a system call fails, it sets the global integer variable errno to a positive value that identifies the specific error. Including the <errno.h> header file provides a declaration of errno, as well as a set of constants for the various error numbers. All of these symbolic names commence with E. The section headed ERRORS in each manual page provides a list of possible errno values that can be returned by each system call. Here is a simple example of the use of errno to diagnose a system call error:
+
+cnt = read(fd, buf, numbytes);
+if (cnt == -1) {
+    if (errno == EINTR)
+        fprintf(stderr, "read was interrupted by a signal\n");
+    else {
+        /* Some other error occurred */
+    }
+}
+
+Successful system calls and library functions never reset errno to 0, so this variable may have a nonzero value as a consequence of an error from a previous call. Furthermore, SUSv3 permits a successful function call to set errno to a nonzero value (although few functions do this). Therefore, when checking for an error, we should always first check if the function return value indicates an error, and only then examine errno to determine the cause of the error.
+
+A few system calls (e.g., getpriority()) can legitimately return –1 on success. To determine whether an error occurs in such calls, we set errno to 0 before the call, and then check it afterward. If the call returns –1 and errno is nonzero, an error occurred. (A similar statement also applies to a few library functions.)
+
+A common course of action after a failed system call is to print an error message based on the errno value. The perror() and strerror() library functions are provided for this purpose.
+
+The perror() function prints the string pointed to by its msg argument, followed by a message corresponding to the current value of errno.
+
+A simple way of handling errors from system calls would be as follows: 
+
+fd = open(pathname, flags, mode);
+if (fd == -1) {
+    perror("open");
+    exit(EXIT_FAILURE);
+}
+
+The strerror() function returns the error string corresponding to the error number given in its errnum argument.
+
+The string returned by strerror() may be statically allocated, which means that it could be overwritten by subsequent calls to strerror().
+If errnum specifies an unrecognized error number, strerror() returns a string of the form Unknown error nnn. On some other implementations, strerror() instead returns NULL in this case.
+Because perror() and strerror() functions are locale-sensitive (Section 10.4), error descriptions are displayed in the local language.
+
+Handling errors from library functions
+
+The various library functions return different data types and different values to indicate failure. (Check the manual page for each function.) For our purposes, library functions can be divided into the following categories:
+
+Some library functions return error information in exactly the same way as system calls: a –1 return value, with errno indicating the specific error. An example of such a function is remove(), which removes a file (using the unlink() system call) or a directory (using the rmdir() system call). Errors from these functions can be diagnosed in the same way as errors from system calls.
+
+Some library functions return a value other than –1 on error, but nevertheless set errno to indicate the specific error condition. For example, fopen() returns a NULL pointer on error, and the setting of errno depends on which underlying system call failed. The perror() and strerror() functions can be used to diagnose these errors.
+
+Other library functions don’t use errno at all. The method for determining the existence and cause of errors depends on the particular function and is documented in the function’s manual page. For these functions, it is a mistake to use errno, perror(), or strerror() to diagnose errors.
+
+Common header file
+
+Listing 3-1 is the header file used by nearly every program in this book. This header file includes various other header files used by many of the example programs, defines a Boolean data type, and defines macros for calculating the minimum and maximum of two numeric values. Using this header file allows us to make the example programs a bit shorter.
+
+Error-diagnostic functions
+
+To simplify error handling in our example programs, we use the error-diagnostic functions whose declarations are shown in Listing 3-2.
+
+To diagnose errors from system calls and library functions, we use errMsg(), errExit(), err_exit(), and errExitEN().
+
+The errMsg() function prints a message on standard error. Its argument list is the same as for printf(), except that a terminating newline character is automatically appended to the output string. The errMsg() function prints the error text corre- sponding to the current value of errno—this consists of the error name, such as EPERM, plus the error description as returned by strerror()—followed by the formatted output specified in the argument list.
+
+The errExit() function operates like errMsg(), but also terminates the program, either by calling exit() or, if the environment variable EF_DUMPCORE is defined with a nonempty string value, by calling abort() to produce a core dump file for use with the debugger.
