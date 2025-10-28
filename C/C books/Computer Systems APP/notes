@@ -639,13 +639,35 @@ uval	0x00FEDCBA
 
 This behavior is not guaranteed for C programs, however, and so shift amounts should be kept less than the word size.
 
+Integer Representations
+
+we describe two different ways bits can be used to encode integers—one that can only represent nonnegative numbers, and one that can represent negative, zero, and positive numbers. We will see later that they are strongly related both in their mathematical properties and their machine-level implementations. We also investigate the effect of expanding or shrinking an encoded integer to fit a representation with a different length.
+
+Integral Data Types
+
+C supports a variety of integral data types—ones that represent finite ranges of integers. These are shown in Figures 2.9 and 2.10, along with the ranges of values they can have for “typical” 32- and 64-bit programs. 
+
+As we saw in Figure 2.3, the number of bytes allocated for the different sizes varies according to whether the program is compiled for 32 or 64 bits. Based on the byte allocations, the different sizes allow different ranges of values to be represented. The only machine-dependent range indicated is for size designator long. Most 64-bit programs use an 8-byte representation, giving a much wider range of values than the 4-byte representation used with 32-bit programs.
+
+One important feature to note in Figures 2.9 and 2.10 is that the ranges are not symmetric—the range of negative numbers extends one further than the range of positive numbers.
+
+The C standards define minimum ranges of values that each data type must be able to represent. As shown in Figure 2.11, their ranges are the same or smaller than the typical implementations shown in Figures 2.9 and 2.10.
+
+Unsigned Encodings
+
+Two's-Complement Encodings
+
+Figure 2.14 shows the bit patterns and numeric values for several important numbers for different word sizes. The first three give the ranges of representable integers in terms of the values of UMaxw, TMinw, and TMaxw.
+
+A few points are worth highlighting about these numbers. First, as observed in Figures 2.9 and 2.10, the two's-complement range is asymmetric: |TMin| = |TMax| + 1; that is, there is no positive counterpart to TMin. As we shall see, this leads to some peculiar properties of two's-complement arithmetic and can be the source of subtle program bugs. This asymmetry arises because half the bit patterns (those with the sign bit set to 1) represent negative numbers, while half (those with the sign bit set to 0) represent nonnegative numbers. Since 0 is nonnegative, this means that it can represent one less positive number than negative. Second, the maximum unsigned value is just over twice the maximum two's-complement value: UMax = 2TMax + 1.
+
 This stdint.h file defines a set of data types with declarations of the form intN_t and uintN_t, specifying N-bit signed and unsigned integers, for different values of N. The exact values of N are implementation dependent, but most compilers allow values of 8, 16, 32, and 64. Thus, we can unambiguously declare an unsigned 16–bit variable by giving it type uint16_t, and a signed variable of 32 bits as int32_t.
 
 Along with these data types are a set of macros defining the minimum and maximum values for each value of N. These have names of the form INTN_MIN, INTN_MAX, and UINTN_MAX.
 
 Formatted printing with fixed-width types requires use of macros that expand into format strings in a system-dependent manner. So, for example, the values of variables x and y of type int32_t and uint64_t can be printed by the following call to printf:
 
-printf(“x = %” PRId32 “, y = %” PRIu64 “\n”, x, y);
+printf(“x = %” PRId32 “, y = %” PRIu64 “\n”, x, y); (need #include <inttypes.h>)
 
 When compiled as a 64–bit program, macro PRId32 expands to the string “d”, while PRIu64 expands to the pair of strings “l” “u”. When the C preprocessor encounters a sequence of string constants separated only by spaces (or other whitespace characters), it concatenates them together. Thus, the above call to printf becomes
 
@@ -684,6 +706,11 @@ For the lines labeled A–I (on the right) in the following listing, convert the
 
 400506:     48 8b 44 d4 b8          mov     –0x48 (%rsp,$rdx,8),%rax    I. (72)
 
+
+Conversions between Signed and Unsigned
+
+For most implementations of C, however, the answer to this question is based on a bit-level perspective, rather than on a numeric one. For most C implementations that handle conversions between signed and unsigned numbers with the same word size—the numeric values might change, but the bit patterns do not. 
+
 Practice Problem 2.19
 
 Using the table you filled in when solving Problem 2.17, fill in the following table describing the function T2U4:
@@ -707,6 +734,15 @@ Practice Problem 2.20
 
 Explain how Equation 2.5 applies to the entries in the table you generated when solving Problem 2.19.
 
+Signed versus Unsigned in C
+
+C supports both signed and unsigned arithmetic for all of its integer data types. Although the C standard does not specify a particular representation of signed numbers, almost all machines use two's complement. Generally, most numbers are signed by default. For example, when declaring a constant such as 12345 or 0xlA2B, the value is considered signed. Adding character ‘U' or ‘u' as a suffix creates an unsigned constant; for example, 12345U or 0xlA2Bu.
+
+C allows conversion between unsigned and signed. Although the C standard does not specify precisely how this conversion should be made, most systems follow the rule that the underlying bit representation does not change. 
+
+When printing numeric values with printf, the directives %d, %u, and %x are used to print a number as a signed decimal, an unsigned decimal, and in hexadecimal format, respectively.
+
+Some possibly nonintuitive behavior arises due to C's handling of expressions containing combinations of signed and unsigned quantities. When an operation is performed where one operand is signed and the other is unsigned, C implicitly casts the signed argument to unsigned and performs the operations assuming the numbers are non negative. As we will see, this convention makes little difference for standard arithmetic operations, but it leads to nonintuitive results for relational operators such as < and >. Figure 2.19 shows some sample relational expressions and their resulting evaluations, when data type int has a 32-bit, two's-complement representation.
 
 Practice Problem 2.21 
 
@@ -723,3 +759,311 @@ Expression                              Type                Evaluation
 -2147483647-1 < -2147483647             signed                 1
 
 -2147483647-1U < -2147483647            unsigned               0
+
+
+Expanding the Bit Representation of a Number
+
+One common operation is to convert between integers having different word sizes while retaining the same numeric value.
+To convert an unsigned number to a larger data type, we can simply add leading zeros to the representation; this operation is known as zero extension. For converting a two's-complement number to a larger data type, the rule is to perform a sign extension, adding copies of the most significant bit to the representation
+
+use python3 -c 'n=-5; print(format(n & 0xff, "08b"))' to convert negative decimal numbers to the bit representations in two's-complement. n & 0xff masks to 8 bits i.e. keeps only the lower 16 bits whilst format(..., "08b") prints a binary string with leading zeros upto 8 bits. you can adjust the bit width as needed 
+
+8 bits → 0xFF, "08b"
+32 bits → 0xFFFFFFFF, "032b"
+
+Practice Problem 2.23
+
+Consider the following C functions:
+
+int fun1(unsigned word) {
+    return (int) ((word << 24) >> 24);
+}
+
+int fun2(unsigned word) {
+    return ((int) word << 24) >> 24;
+}
+
+Assume these are executed as a 32–bit program on a machine that uses two's-complement arithmetic. Assume also that right shifts of signed values are performed arithmetically, while right shifts of unsigned values are performed logically.
+
+Fill in the following table showing the effect of these functions for several example arguments. You will find it more convenient to work with a hexadecimal representation. Just remember that hex digits 8 through F have their most significant bits equal to 1.
+
+w                       fun1(w)                         fun2(w)
+
+0x00000076               118                             -138
+
+0x87654321               33                              -223
+
+0x000000C9               201                             -55
+
+0xEDCBA987               135                             -121
+
+
+Truncating Numbers
+
+Suppose that, rather than extending a value with extra bits, we reduce the number of bits representing a number.
+
+say you have 
+
+int x = 53191
+
+using bc <<< "obase=2;ibase=10;53191" you know that the bit representation is
+
+00000000000000001100111111000111
+
+short sx = (short) x;	/* –12345 */”
+
+will take the lower 16 bits (thereby discarding the upper 16 bits) and place them into the short data type which is 16 bits wide. Since the data type is declared as signed, i know that the number will be negative since the msb is 1. to find out what number it is in decimal, use the following one liner in python
+
+python3 -c 'b="1100111111000111"; n=int(b,2); bits=len(b); print(n - (1<<bits) if b[0]=="1" else n)'
+
+this statement
+
+int y = sx;     /* –12345 */
+
+places the 16 bits into a wider data type (32 bits) and sign extends the msb to fill the upper (intially empty) 16 bits. the end result is that the y stores the same number as variable sx
+
+Practice Problem 2.25
+
+Consider the following code that attempts to sum the elements of an array a, where the number of elements is given by parameter length:
+
+1. “/* WARNING: This is buggy code */
+2	float sum_elements(float a[], unsigned length) {
+3		int i;
+4		float result = 0;
+5
+6		for (i = 0; i <= length–1; i++)
+7			result += a[i];
+8		return result;
+9	}
+
+When run with argument length equal to 0, this code should return 0.0. Instead, it encounters a memory error. Explain why this happens. Show how this code can be corrected. since i is signed when i <= length–1 is reached, it gets promoted to unsigned in data type before the comparison happens. Now since length can only represent unsigned numbers length - 1 cannot be used to represent -ve numbers hence it wraps around  due to integer underflow. this expression then becomes i <= 4294967295 That means the loop will try to access every possible index of a, starting from a[0] up to a[4294967295] — causing an out-of-bounds memory access on the very first iteration (a[0] doesn’t exist if length == 0) and eventually a memory error (segmentation fault). can be fixed by setting i <= length–1 to i < length or by adding an explicit check if (length == 0) return 0.0 
+
+Practice Problem 2.26 
+
+You are given the assignment of writing a function that determines whether one string is longer than another. You decide to make use of the string library function strlen having the following declaration:
+
+/* Prototype for library function strlen */
+size_t strlen(const char *s);
+
+Here is your first attempt at the function:
+
+/* Determine whether string s is longer than string t */
+/* WARNING: This function is buggy */
+int strlonger(char *s, char *t) {
+	return strlen(s) - strlen(t) > 0;
+}
+
+When you test this on some sample data, things do not seem to work quite right. You investigate further and determine that, when compiled as a 32-bit program, data type size_t is defined (via typedef) in header file stdio.h to be unsigned.
+
+A. For what cases will this function produce an incorrect result? when character string t is longer than s 
+B. Explain how this incorrect result comes about. leads to wrapping around of the figure produced after subtraction occurs since unsigned data types cannot store -ve numbers
+C. Show how to fix the code so that it will work reliably. return strlen(s) > strlen(t) No subtraction occurs, so no overflow. Returns 1 if s is longer than t, 0 otherwise.
+
+Integer Arithmetic
+
+Unsigned Addition
+
+Consider two nonnegative integers x and y, such that 0 ≤ x, y < 2^w. Each of these values can be represented by a w-bit unsigned number. If we compute their sum, however, we have a possible range 0≤x+y≤2^(w+1)−2. Representing this sum could require w + 1 bits. If we were to maintain the sum as a (w + 1)-bit number and add it to another value, we may require w + 2 bits, and so on. This continued “word size“ inflation” means we cannot place any bound on the word size required to fully represent the results of arithmetic operations. Some programming languages, such as Lisp, actually support arbitrary size arithmetic to allow integers of any size (within the memory limits of the computer, of course.) More commonly, programming languages support fixed-size arithmetic, and hence operations such as “addition” and “multiplication” differ from their counterpart operations over integers.
+
+An arithmetic operation is said to overflow when the full integer result cannot fit within the word size limits of the data type.
+
+When executing C programs, overflows are not signaled as errors. At times, however, we might wish to determine whether or not overflow has occurred.
+
+Practice Problem 2.27
+
+Write a function with the following prototype:
+
+/* Determine whether arguments can be added without overflow */
+int uadd_ok(unsigned x, unsigned y);
+
+This function should return 1 if arguments x and y can be added without causing overflow.
+
+int uadd_ok(unsigned x, unsigned y)
+{
+    unsigned int result = x + y;
+    if(result < x || result < y)
+        return 0;
+    return 1;
+}
+
+Two's-Complement Addition
+
+With two's-complement addition, we must decide what to do when the result is either too large (positive) or too small (negative) to represent. Given integer values x and y in the range -2^(w-1)≤x,y≤2^(w-1)-1, their sum is in the range -2^(w)≤x+y≤2^(w-1)-2, potentially requiring w + 1 bits to represent exactly. As before, we avoid ever-expanding data sizes by truncating the representation to w bits.
+
+The w-bit two's-complement sum of two numbers has the exact same bit-level representation as the unsigned sum. In fact, most computers use the same machine instruction to perform either unsigned or signed addition.
+
+Detecting overflow of two's-complement addition: Let us first do the analysis for positive overflow. If both x > 0 and y > 0 but s ≤ 0, then clearly positive overflow has occurred. Conversely, positive overflow requires (1) that x > 0 and y > 0 (otherwise, x+y<TMaxw), and (2) s ≤ 0. The computation has had negative overflow if and only if x < 0 and y < 0 but s ≥ 0.
+
+Practice Problem 2.30
+
+Write a function with the following prototype:
+
+/* Determine whether arguments can be added without overflow */ 
+int tadd_ok(int x, int y);
+
+This function should return 1 if arguments x and y can be added without causing overflow.
+
+int tadd_ok(int x, int y)
+{
+    int sum = x + y;
+    int pos_over = x > 0 && y > 0 && sum <= 0;
+    int neg_over = x < 0 && y < 0 && sum >= 0;
+    return !(pos_over || neg_over);
+}
+
+Bitwise version
+
+/* Determine whether arguments can be added without overflow (bitwise version) */
+int tadd_ok(int x, int y) {
+    int sum = x + y;
+
+    int sign_x = x >> 31;     // 0 if x >= 0, -1 if x < 0
+    int sign_y = y >> 31;     // 0 if y >= 0, -1 if y < 0
+    int sign_sum = sum >> 31; // 0 if sum >= 0, -1 if sum < 0
+
+    // Overflow occurs if x and y have the same sign, but sum has a different one
+    int overflow = !(sign_x ^ sign_y) & (sign_x ^ sign_sum);
+
+    // Return 1 if OK (no overflow), 0 otherwise
+    return !overflow;
+}
+
+Practice Problem 2.31
+
+Your coworker gets impatient with your analysis of the overflow conditions for two's-complement addition and presents you with the following implementation of tadd_ok:
+
+/* Determine whether arguments can be added without overflow */
+/* WARNING: This code is buggy. */
+int tadd_ok(int x, int y) {
+	int sum = x+y;
+	return (sum-x == y) && (sum-y == x);
+}
+
+You look at the code and laugh. Explain why.
+
+In C, signed integer arithmetic overflows silently — it wraps around modulo 2^32 (for 32-bit ints). That means when an overflow happens, the result is just truncated — but the equations sum - x == y and sum - y == x still hold!
+
+Practice Problem 2.32
+
+You are assigned the task of writing code for a function tsub_ok, with arguments x and y, that will return 1 if computing x-y does not cause overflow. Having just written the code for Problem 2.30, you write the following:
+
+/* Determine whether arguments can be subtracted without overflow */
+
+/* WARNING: This code is buggy. */
+int tsub_ok(int x, int y) {
+    return tadd_ok(x, –y);
+}
+
+For what values of x and y will this function give incorrect results? The problem lies in computing -y. In two’s-complement arithmetic, most numbers can be negated safely — but there’s one exception: INT_MIN. If integers are 32-bit signed: 
+
+INT_MIN = -2,147,483,648 = 0x80000000
+INT_MAX =  2,147,483,647 = 0x7FFFFFFF
+
+Negating INT_MIN gives:
+
+-(-2,147,483,648) = +2,147,483,648
+
+But +2,147,483,648 cannot be represented in 32-bit two’s complement. It wraps around to INT_MIN again! So: -y == y   when y == INT_MIN. If y == INT_MIN, then this code does not actually compute x - y — it computes x + y instead!
+
+Two's-Complement Negation
+
+see equation2-15
+
+Unsigned Multiplication
+
+see equation2-16
+
+Two's-Complement Multiplication
+
+see equation2-17
+
+Practice Problem 2.35
+
+You are given the assignment to develop code for a function tmult_ok that will determine whether two arguments can be multiplied without causing overflow. Here is your solution:
+
+/* Determine whether arguments can be multiplied without overflow */
+int tmult_ok(int x, int y) {
+	int p = x*y;
+	/* Either x is zero, or dividing p by x gives y */
+	return !x || p/x == y;
+}
+
+You test this code for a number of values of x and y, and it seems to work properly. Your coworker challenges you, saying, “If I can't use subtraction to test whether addition has overflowed (see Problem 2.31), then how can you use division to test whether multiplication has overflowed?”
+Devise a mathematical justification of your approach, along the following lines. First, argue that the case x = 0 is handled correctly. Otherwise, consider w-bit numbers x (x ≠ 0), y, p, and q, where p is the result of performing two's-complement multiplication on x and y, and q is the result of dividing p by x.
+
+1. Show that x · y, the integer product of x and y, can be written in the form x⋅y=p+t2^(w), where t ≠ 0 if and only if the computation of p overflows.
+2. Show that p can be written in the form p=x⋅q+r, where |r| < |x|.
+3. Show that q = y if and only if r = t = 0.
+
+Practice Problem 2.36
+
+For the case where data type int has 32 bits, devise a version of tmult_ok (Problem 2.35) that uses the 64-bit precision of data type int64_t, without using division.
+
+
+Practice Problem 2.37
+
+
+You are given the task of patching the vulnerability in the XDR code shown in the aside on page 100 for the case where both data types int and size_t are 32 bits. You decide to eliminate the possibility of the multiplication overflowing by computing the number of bytes to allocate using data type uint64_t. You replace the original call to malloc (line 9) as follows:
+
+uint64_t asize = ele_cnt * (uint64_t) ele_size;
+void *result = malloc(asize);
+
+Recall that the argument to malloc has type size_t.
+
+A. Does your code provide any improvement over the original? no If an attacker passes a negative value, converting it to uint64_t produces a very large unsigned number (two’s complement wrap). malloc(asize) then receives a huge value — not what you intended — which leads to either malloc failure or truncated conversion later.
+
+B. How would you change the code to eliminate the vulnerability? Validate ele_cnt is positive. Validate ele_size > 0 (if zero-size elements are not allowed).
+
+
+Multiplying by Constants
+
+Historically, the integer multiply instruction on many machines was fairly slow, requiring 10 or more clock cycles, whereas other integer operations—such as addition, subtraction, bit-level operations, and shifting—required only 1 clock cycle. Even on the Intel Core i7 Haswell we use as our reference machine, integer multiply requires 3 clock cycles. As a consequence, one important optimization used by compilers is to attempt to replace multiplications by constant factors with combinations of shift and addition operations. 
+
+Unsigned multiplication by a power of 2
+
+For C variables x and k with unsigned values x and k, such that 0 ≤ k < w, the C expression x << k yields the value x*2^(k).
+
+Since the bit-level operation of fixed-size two's-complement arithmetic is equivalent to that for unsigned arithmetic, we can make a similar statement about the relationship between left shifts and multiplication by a power of 2 for two's-complement arithmetic.
+
+Given that integer multiplication is more costly than shifting and adding, many C compilers try to remove many cases where an integer is being multiplied by a constant with combinations of shifting, adding, and subtracting. For example, suppose a program contains the expression x*14. Recognizing that 14 = 2^3 + 2^2 + 2^1, the compiler can rewrite the multiplication as (x<<3) + (x<<2) + (x<<1), replacing one multiplication with three shifts and two additions. The two computations will yield the same result, regardless of whether x is unsigned or two's complement, and even if the multiplication would cause an overflow. Even better, the compiler can also use the property 14 = 2^4 - 2^1 to rewrite the multiplication as (x<<4) - (x<<1), requiring only two shifts and a subtraction.
+
+Practice Problem 2.38
+
+As we will see in Chapter 3, the lea instruction can perform computations of the form (a<<k) + b, where k is either 0, 1, 2, or 3, and b is either 0 or some program value. The compiler often uses this instruction to perform multiplications by constant factors. For example, we can compute 3*a as (a<<1) + a.
+Considering cases where b is either 0 or equal to a, and all possible values of k, what multiples of a can be computed with a single lea instruction? 1a, 2a, 3a, 4a, 5a, 8a, 9a
+
+Generalizing from our example, consider the task of generating code for the expression x * K, for some constant K. The compiler can express the binary representation of K as an alternating sequence of zeros and ones: [(0…0)(1…1)(0…0)⋯(1…1)]. For example, 14 can be written as [(0 ... 0)(111)(0)]. Consider a run of ones from bit position n down to bit position m (n ≥ m). (For the case of 14, we have n = 3 and m = 1.) We can compute the effect of these bits on the product using either of two different forms:
+
+Form A: (x<<n) + (x<< (n – 1)) + ... + (x<<m)
+Form B: (x<<(n + 1)) – (x<<m)
+
+By adding together the results for each run, we are able to compute x * K without any multiplications. Of course, the trade-off between using combinations of shifting, adding, and subtracting versus a single multiplication instruction depends on the relative speeds of these instructions, and these can be highly machine dependent. Most compilers only perform this optimization when a small number of shifts, adds, and subtractions suffice.
+
+Practice Problem 2.39
+
+How could we modify the expression for form B for the case where bit position n is the most significant bit? If 
+n is the most significant bit of the constant, then shifting x left by n + 1 would effectively overflow the width of the register (e.g., 32-bit or 64-bit). That shift doesn’t make sense, because there’s no higher bit beyond the MSB.
+
+Practice Problem 2.40
+
+For each of the following values of K, find ways to express x * K using only the specified number of operations, where we consider both additions and subtractions to have comparable cost. You may need to use some tricks beyond the simple form A and B rules we have considered so far.
+
+K               Shifts              Add/Subs            Expression
+
+6                 2                     1               (x<<3) - (x<<1)
+
+31                1                     1               (x<<5) - x
+
+-6                2                     1               (x << 1) - (x << 3)
+
+55                2                     2               (x << 6) - (x << 3) - x
+
+
+Practice Problem 2.41 
+
+For a run of ones starting at bit position n down to bit position m (n ≥ m), we saw that we can generate two forms of code, A and B. How should the compiler decide which form to use? The compiler’s choice between Form A and Form B depends on efficiency, register width, and instruction cost. Number of operations: Form A requires one addition per 1-bit in the run (length of run = n - 𝑚 + 1). Form B always requires one subtraction, regardless of run length. So if the run is long, Form B is usually cheaper. Shift limitations: Form B shifts by n+1. If n is the most significant bit (MSB) of the register, x≪(n+1) may overflow. In that case, Form A is safer, or the compiler may use a wider register.
+Sign and subtraction handling: If the constant is negative, Form B can naturally handle runs with subtraction, but Form A may require more explicit negations.
+
+Dividing by Powers of 2
+
+Integer division on most machines is even slower than integer multiplication—requiring 30 or more clock cycles. Dividing by a power of 2 can also be performed using shift operations, but we use a right shift rather than a left shift. The two different right shifts—logical and arithmetic—serve this purpose for unsigned and two's-complement numbers, respectively.
