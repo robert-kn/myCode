@@ -569,7 +569,7 @@ Armed with the function inplace_swap from Problem 2.10, you decide to write code
 When you apply your function to an array containing elements 1, 2, 3, and 4, you find the array now has, as expected, elements 4, 3, 2, and 1. When you try it on an array with elements 1, 2, 3, 4, and 5, however, you are surprised to see that the array now has elements 5, 4, 0, 2, and 1. In fact, you discover that the code always works correctly on arrays of even length, but it sets the middle element to 0 whenever the array has odd length.
 
 A. For an array of odd length cnt = 2k + 1, what are the values of variables first and last in the final iteration of function reverse_array? (2k+1)/2
-B. Why does this call to function inplace_swap set the array element to 0? because boolean addition with ^ and the same number results in zero
+B. Why does this call to function inplace_swap set the array element to 0? because the final element is the same for both first and last variables and hence results in zero due to additive inverse property of boolean algebra
 C. What simple modification to the code for reverse_array would eliminate this problem? change first <= last to first < last
 
 One common use of bit-level operations is to implement masking operations, where a mask is a bit pattern that indicates a selected set of bits within a word. As an example, the mask 0xFF (having ones for the least significant 8 bits) indicates the low-order byte of a word. The bit-level operation x & 0xFF yields a value consisting of the least significant byte of x, but with all other bytes set to 0. For example, with x = 0x89ABCDEF, the expression would yield 0x000000EF. The expression ~0 will yield a mask of all ones, regardless of the size of the data representation. The same mask can be written 0xFFFFFFFF when data type int is 32 bits, but it would not be as portable.
@@ -641,8 +641,6 @@ This behavior is not guaranteed for C programs, however, and so shift amounts sh
 
 Integer Representations
 
-we describe two different ways bits can be used to encode integers—one that can only represent nonnegative numbers, and one that can represent negative, zero, and positive numbers. We will see later that they are strongly related both in their mathematical properties and their machine-level implementations. We also investigate the effect of expanding or shrinking an encoded integer to fit a representation with a different length.
-
 Integral Data Types
 
 C supports a variety of integral data types—ones that represent finite ranges of integers. These are shown in Figures 2.9 and 2.10, along with the ranges of values they can have for “typical” 32- and 64-bit programs. 
@@ -653,9 +651,9 @@ One important feature to note in Figures 2.9 and 2.10 is that the ranges are not
 
 The C standards define minimum ranges of values that each data type must be able to represent. As shown in Figure 2.11, their ranges are the same or smaller than the typical implementations shown in Figures 2.9 and 2.10.
 
-Unsigned Encodings
+Unsigned Encodings see equation2-1.png. Function B2Uw is a bijection. The mathematical term bijection refers to a function f that goes two ways: it maps a value x to a value y where y = f(x), but it can also operate in reverse, since for every y, there is a unique value x such that f(x) = y. This is given by the inverse function f^(-1), where, for our example, x = f^(-1)(y).
 
-Two's-Complement Encodings
+Two's-Complement Encodings see equation2-3.png. Function B2Tw is also a bijection.
 
 Figure 2.14 shows the bit patterns and numeric values for several important numbers for different word sizes. The first three give the ranges of representable integers in terms of the values of UMaxw, TMinw, and TMaxw.
 
@@ -688,28 +686,48 @@ For the lines labeled A–I (on the right) in the following listing, convert the
 
 4004dc:     48 03 47 28             add     0x28(%rdi),%rax     C. (40)
 
-4004e0:     48 89 44 24 d0          mov     %rax,–0x30(%rsp)    D. (48)
+4004e0:     48 89 44 24 d0          mov     %rax,–0x30(%rsp)    D. (-48)
 
 4004e5:     48 8b 44 24 78          mov     0x78(%rsp),%rax     E. (120)
 
-4004ea:     48 89 87 88 00 00 00    mov     %rax,0x88(%rdi)     F. (136)
+4004ea:     48 89 87 88 00 00 00    mov     %rax,0x88(%rdi)     F. (-120)
 
 4004fl:     48 8b 84 24 f8 01 00    mov     0x1f8(%rsp),%rax    G. (504)
 
 4004f8:     00
 
-4004f9:     48 03 44 24 08          add     0x8(%rsp),%rax.     (8)
+4004f9:     48 03 44 24 08          add     0x8(%rsp),%rax.     (-8)
 
-4004fe:     48 89 84 24 c0 00 00    mov     %rax, 0xc0 (%rsp)   H.  (192)
+4004fe:     48 89 84 24 c0 00 00    mov     %rax, 0xc0 (%rsp)   H.  (-124)
 
 400505:     00
 
-400506:     48 8b 44 d4 b8          mov     –0x48 (%rsp,$rdx,8),%rax    I. (72)
+400506:     48 8b 44 d4 b8          mov     –0x48 (%rsp,$rdx,8),%rax    I. (-72)
 
 
 Conversions between Signed and Unsigned
 
-For most implementations of C, however, the answer to this question is based on a bit-level perspective, rather than on a numeric one. For most C implementations that handle conversions between signed and unsigned numbers with the same word size—the numeric values might change, but the bit patterns do not. 
+For most implementations of C, the answer to this question is based on a bit-level perspective, rather than on a numeric one. For most C implementations that handle conversions between signed and unsigned numbers with the same word size—the numeric values might change, but the bit patterns do not. For example, consider the following code:
+
+1  short	int	 v = –12345;
+2  unsigned short uv = (unsigned short) v;
+3  printf(“v = %d, uv = %u\n”, v, uv);
+
+When run on a two's-complement machine, it generates the following output:
+
+v = –12345, uv = 53191
+
+What we see here is that the effect of casting is to keep the bit values identical but change how these bits are interpreted. Similarly, consider the following code:
+
+1  unsigned u = 4294967295u;	/* UMax */
+2  int tu = (int) u;
+3  printf(“u = %u, tu = %d\n”, u, tu);
+
+When run on a two's-complement machine, it generates the following output:
+
+u = 4294967295, tu = –1
+
+This is a general rule for how most C implementations handle conversions between signed and unsigned numbers with the same word size—the numeric values might change, but the bit patterns do not. see equation2-5.png and equation2-7
 
 Practice Problem 2.19
 
@@ -721,7 +739,7 @@ x                          T2U4(x)
 
 -3                         1101
 
--2                         1
+-2                         1110
 
 -1                         1111
 
@@ -738,9 +756,9 @@ Signed versus Unsigned in C
 
 C supports both signed and unsigned arithmetic for all of its integer data types. Although the C standard does not specify a particular representation of signed numbers, almost all machines use two's complement. Generally, most numbers are signed by default. For example, when declaring a constant such as 12345 or 0xlA2B, the value is considered signed. Adding character ‘U' or ‘u' as a suffix creates an unsigned constant; for example, 12345U or 0xlA2Bu.
 
-C allows conversion between unsigned and signed. Although the C standard does not specify precisely how this conversion should be made, most systems follow the rule that the underlying bit representation does not change. 
+C allows conversion between unsigned and signed. Although the C standard does not specify precisely how this conversion should be made, most systems follow the rule that the underlying bit representation does not change. Conversions can happen due to explicit casting. Alternatively, they can happen implicitly when an expression of one type is assigned to a variable of another.
 
-When printing numeric values with printf, the directives %d, %u, and %x are used to print a number as a signed decimal, an unsigned decimal, and in hexadecimal format, respectively.
+When printing numeric values with printf, the directives %d, %u, and %x are used to print a number as a signed decimal, an unsigned decimal, and in hexadecimal format, respectively. Note that printf does not make use of any type information, and so it is possible to print a value of type int with directive %u and a value of type unsigned with directive %d.
 
 Some possibly nonintuitive behavior arises due to C's handling of expressions containing combinations of signed and unsigned quantities. When an operation is performed where one operand is signed and the other is unsigned, C implicitly casts the signed argument to unsigned and performs the operations assuming the numbers are non negative. As we will see, this convention makes little difference for standard arithmetic operations, but it leads to nonintuitive results for relational operators such as < and >. Figure 2.19 shows some sample relational expressions and their resulting evaluations, when data type int has a 32-bit, two's-complement representation.
 
@@ -750,7 +768,7 @@ Assuming the expressions are evaluated when executing a 32-bit program on a mach
 
 Expression                              Type                Evaluation
 
--2147483647-1 == 2147483648U            unsigned.              0
+-2147483647-1 == 2147483648U            unsigned.              1
 
 -2147483647-1 < 2147483647              signed                 1
 
@@ -764,7 +782,7 @@ Expression                              Type                Evaluation
 Expanding the Bit Representation of a Number
 
 One common operation is to convert between integers having different word sizes while retaining the same numeric value.
-To convert an unsigned number to a larger data type, we can simply add leading zeros to the representation; this operation is known as zero extension. For converting a two's-complement number to a larger data type, the rule is to perform a sign extension, adding copies of the most significant bit to the representation
+To convert an unsigned number to a larger data type, we can simply add leading zeros to the representation; this operation is known as zero extension see unsigned_expansion.png. For converting a two's-complement number to a larger data type, the rule is to perform a sign extension, adding copies of the most significant bit to the representation see twos_complement.png
 
 use python3 -c 'n=-5; print(format(n & 0xff, "08b"))' to convert negative decimal numbers to the bit representations in two's-complement. n & 0xff masks to 8 bits i.e. keeps only the lower 16 bits whilst format(..., "08b") prints a binary string with leading zeros upto 8 bits. you can adjust the bit width as needed 
 
@@ -810,7 +828,7 @@ using bc <<< "obase=2;ibase=10;53191" you know that the bit representation is
 
 00000000000000001100111111000111
 
-short sx = (short) x;	/* –12345 */”
+short sx = (short) x;	/* -12345 */”
 
 will take the lower 16 bits (thereby discarding the upper 16 bits) and place them into the short data type which is 16 bits wide. Since the data type is declared as signed, i know that the number will be negative since the msb is 1. to find out what number it is in decimal, use the following one liner in python
 
@@ -820,7 +838,12 @@ this statement
 
 int y = sx;     /* –12345 */
 
-places the 16 bits into a wider data type (32 bits) and sign extends the msb to fill the upper (intially empty) 16 bits. the end result is that the y stores the same number as variable sx
+places the 16 bits into a wider data type (32 bits) and sign extends the msb to fill the upper (intially empty) 16 bits. the end result is that the y stores the same number as variable sx.
+
+Advice on Signed versus Unsigned
+
+As we have seen, the implicit casting of signed to unsigned leads to some nonintuitive behavior. Nonintuitive features often lead to program bugs, and ones involving the nuances of implicit casting can be especially difficult to see. Since the casting takes place without any clear indication in the code, programmers often overlook its effects.
+
 
 Practice Problem 2.25
 
@@ -865,7 +888,7 @@ Unsigned Addition
 
 Consider two nonnegative integers x and y, such that 0 ≤ x, y < 2^w. Each of these values can be represented by a w-bit unsigned number. If we compute their sum, however, we have a possible range 0≤x+y≤2^(w+1)−2. Representing this sum could require w + 1 bits. If we were to maintain the sum as a (w + 1)-bit number and add it to another value, we may require w + 2 bits, and so on. This continued “word size“ inflation” means we cannot place any bound on the word size required to fully represent the results of arithmetic operations. Some programming languages, such as Lisp, actually support arbitrary size arithmetic to allow integers of any size (within the memory limits of the computer, of course.) More commonly, programming languages support fixed-size arithmetic, and hence operations such as “addition” and “multiplication” differ from their counterpart operations over integers.
 
-An arithmetic operation is said to overflow when the full integer result cannot fit within the word size limits of the data type.
+An arithmetic operation is said to overflow when the full integer result cannot fit within the word size limits of the data type. see equation2-11 and unsigned-derivation and figure2-22
 
 When executing C programs, overflows are not signaled as errors. At times, however, we might wish to determine whether or not overflow has occurred.
 
@@ -888,7 +911,7 @@ int uadd_ok(unsigned x, unsigned y)
 
 Two's-Complement Addition
 
-With two's-complement addition, we must decide what to do when the result is either too large (positive) or too small (negative) to represent. Given integer values x and y in the range -2^(w-1)≤x,y≤2^(w-1)-1, their sum is in the range -2^(w)≤x+y≤2^(w-1)-2, potentially requiring w + 1 bits to represent exactly. As before, we avoid ever-expanding data sizes by truncating the representation to w bits.
+With two's-complement addition, we must decide what to do when the result is either too large (positive) or too small (negative) to represent. Given integer values x and y in the range -2^(w-1)≤x,y≤2^(w-1)-1, their sum is in the range -2^(w)≤x+y≤2^(w-1)-2, potentially requiring w + 1 bits to represent exactly. As before, we avoid ever-expanding data sizes by truncating the representation to w bits. see equation2-13 and 2s-complement-overflow
 
 The w-bit two's-complement sum of two numbers has the exact same bit-level representation as the unsigned sum. In fact, most computers use the same machine instruction to perform either unsigned or signed addition.
 
@@ -969,6 +992,12 @@ Two's-Complement Negation
 
 see equation2-15
 
+That is, for w-bit, two's-complement addition, TMinw is its own additive in-verse, while any other value x has –x as its additive inverse.
+
+One technique for performing two's-complement negation at the bit level is to complement the bits and then increment the result. In C, we can state that for any integer value x, computing the expressions –x and ~x + 1 will give identical results.
+
+A second way to perform two's-complement negation of a number x is based on splitting the bit vector into two parts. Let k be the position of the rightmost 1, so the bit-level representation of x has the form [xw−1,xw−2,…,xk+1,1,0,…0]. (This is possible as long as x ≠ 0.) The negation is then written in binary form as [∼xw−1,∼xw−2,…∼xk+1,1,0,…,0]. That is, we complement each bit to the left of bit position k.
+
 Unsigned Multiplication
 
 see equation2-16
@@ -976,6 +1005,8 @@ see equation2-16
 Two's-Complement Multiplication
 
 see equation2-17
+
+We claim that the bit-level representation of the product operation is identical for both unsigned and two's-complement multiplication.
 
 Practice Problem 2.35
 
@@ -1019,11 +1050,20 @@ Multiplying by Constants
 
 Historically, the integer multiply instruction on many machines was fairly slow, requiring 10 or more clock cycles, whereas other integer operations—such as addition, subtraction, bit-level operations, and shifting—required only 1 clock cycle. Even on the Intel Core i7 Haswell we use as our reference machine, integer multiply requires 3 clock cycles. As a consequence, one important optimization used by compilers is to attempt to replace multiplications by constant factors with combinations of shift and addition operations. 
 
+When shifting left by k for a fixed word size, the high-order k bits are discarded, yielding
+[xw−k−1,xw−k−2,…,x0,0,…,0]
+
+but this is also the case when performing multiplication on fixed-size words. We can therefore see that shifting a value left is equivalent to performing unsigned multiplication by a power of 2
+
 Unsigned multiplication by a power of 2
 
 For C variables x and k with unsigned values x and k, such that 0 ≤ k < w, the C expression x << k yields the value x*2^(k).
 
 Since the bit-level operation of fixed-size two's-complement arithmetic is equivalent to that for unsigned arithmetic, we can make a similar statement about the relationship between left shifts and multiplication by a power of 2 for two's-complement arithmetic.
+
+For C variables x and k with two's-complement value x and unsigned value k, such that 0 ≤ k < w, the C expression x << k yields the value x*2^k.
+
+Note that multiplying by a power of 2 can cause overflow with either unsigned or two's-complement arithmetic.
 
 Given that integer multiplication is more costly than shifting and adding, many C compilers try to remove many cases where an integer is being multiplied by a constant with combinations of shifting, adding, and subtracting. For example, suppose a program contains the expression x*14. Recognizing that 14 = 2^3 + 2^2 + 2^1, the compiler can rewrite the multiplication as (x<<3) + (x<<2) + (x<<1), replacing one multiplication with three shifts and two additions. The two computations will yield the same result, regardless of whether x is unsigned or two's complement, and even if the multiplication would cause an overflow. Even better, the compiler can also use the property 14 = 2^4 - 2^1 to rewrite the multiplication as (x<<4) - (x<<1), requiring only two shifts and a subtraction.
 
@@ -1067,3 +1107,496 @@ Sign and subtraction handling: If the constant is negative, Form B can naturally
 Dividing by Powers of 2
 
 Integer division on most machines is even slower than integer multiplication—requiring 30 or more clock cycles. Dividing by a power of 2 can also be performed using shift operations, but we use a right shift rather than a left shift. The two different right shifts—logical and arithmetic—serve this purpose for unsigned and two's-complement numbers, respectively.
+
+Integer division always rounds toward zero. To define this precisely, let us introduce some notation. For any real number a, define ⌊a⌋ to be the unique integer a′ such that a′≤a<a′+1. As examples, ⌊3.14⌋=3, ⌊−3.14⌋=−4, and ⌊3⌋=3. Similarly, define ⌈a⌉ to be the unique integer a′ such that a′−1<a≤a′. As examples, ⌈3.14⌉=4,⌈−3.14⌉=−3, and ⌈3⌉ = 3. For x ≥ 0 and y > 0, integer division should yield ⌊x/y⌋, while for x < 0 and y > 0, it should yield ⌈x/y⌉. That is, it should round down a positive result but round up a negative one.
+
+Integer division always rounds toward zero.
+
+see unsigned_numbers_division.png
+
+The case for dividing by a power of 2 with two's-complement arithmetic is slightly more complex. First, the shifting should be performed using an arithmetic right shift, to ensure that negative values remain negative.
+
+see twos_complement_division.png
+
+When rounding is required, shifting causes the result to be rounded downward. For example, the shifting of -12340 right by four has the effect of rounding –771.25 down to –772. We will need to adjust our strategy to handle division for negative values of x.
+
+We can correct for the improper rounding that occurs when a negative number is shifted right by “biasing” the value before shifting.
+
+see biasing_twos_complement_division.png
+
+Practice Problem 2.42
+
+Write a function div16 that returns the value x/16 for integer argument x. Your function should not use division, modulus, multiplication, any conditionals (if or ?:), any comparison operators (e.g., <, >, or ==), or any loops. You may assume that data type int is 32 bits long and uses a two's-complement representation, and that right shifts are performed arithmetically.
+
+Naive approach (incorrect for negatives)
+
+Since 16 = 2^(4) we could just shift right by 4 bits:
+
+this performs arithmetic right shift, which rounds toward negative infinity, not toward zero. That’s a problem for negative numbers.
+
+To fix rounding, we bias x only for negative values, just like in the earlier “rounding correction” example.
+
+Bias for dividing by 2^(n) is: bias=(1<<n)-1
+
+So for division by 16, n = 4, and bias = 15.
+
+We can “conditionally” apply the bias to negative numbers without using if-statements by exploiting the sign bit.
+
+In 32-bit two’s complement:
+
+(x >> 31) = 0x00000000 if x ≥ 0
+
+(x >> 31) = 0xFFFFFFFF if x < 0
+
+Thus, we can compute bias like this:
+
+bias = (x >> 31) & 15;
+
+That means:
+
+If x ≥ 0 → bias = 0
+
+If x < 0 → bias = 15
+
+Add the bias before shifting:
+
+int div16(int x) {
+    int bias = (x >> 31) & 15;   // Add bias only if x is negative
+    return (x + bias) >> 4;
+}
+
+We now see that division by a power of 2 can be implemented using logical or arithmetic right shifts. This is precisely the reason the two types of right shifts are available on most machines. Unfortunately, this approach does not generalize to division by arbitrary constants. Unlike multiplication, we cannot express division by arbitrary constants K in terms of division by powers of 2.
+
+Practice Problem 2.43
+
+In the following code, we have omitted the definitions of constants M and N:
+
+#define M		/* Mystery number 1 */
+#define N		/* Mystery number 2 */
+int arith(int x, int y) {
+	int result = 0;
+	result = x*M + y/N; /* M and N are mystery numbers. */
+	return result;
+}
+
+We compiled this code for particular values of M and N. The compiler optimized the multiplication and division using the methods we have discussed. The following is a translation of the generated machine code back into C:
+
+/* Translation of assembly code for arith */
+int optarith(int x, int y) {
+	int t = x;
+	x <<= 5;
+	x-=t;
+	if (y < 0) y += 7;
+	y >>= 3; /* Arithmetic shift */
+	return x+y;
+}
+
+What are the values of M and N?
+
+Identify what’s happening to x
+
+t = x;
+x <<= 5;   // multiply by 32
+x -= t;    // subtract original x
+
+So:
+
+x=32x−x=31x
+
+Therefore:
+
+M=31
+
+Identify what’s happening to y
+
+We have:
+
+if (y < 0) y += 7;
+y >>= 3;
+
+Let’s analyze.
+
+>> 3 is an arithmetic right shift, which divides by 2^(3)=8
+
+The if (y < 0) y += 7; part is the bias correction we add to round toward zero for negative numbers.
+
+That’s exactly what we do when dividing a signed integer by a power of two — here, the bias is 7, which equals 1(1<<3)-1.
+
+So this code implements:
+
+y=y/8
+
+with proper rounding toward zero.
+
+Therefore:
+
+N=8
+
+Confirming the full expression
+
+The optimized code computes:
+
+result=31x+(y/8)
+
+which matches the original:
+
+result=x*M+y/N
+
+Thus:
+
+#define M 31
+#define N 8
+
+Practice Problem 2.44
+
+Assume data type int is 32 bits long and uses a two's-complement representation for signed values. Right shifts are performed arithmetically for signed values and logically for unsigned values. The variables are declared and initialized as follows:
+
+int x = foo();	 /* Arbitrary value */
+int y = bar();	 /* Arbitrary value */
+
+unsigned ux = x;
+unsigned uy = y;
+
+For each of the following C expressions, either (1) argue that it is true (evaluates to 1) for all values of x and y, or (2) give values of x and y for which it is false (evaluates to 0):
+
+A. (x > 0) | | (x-1 < 0)
+
+Let’s reason:
+
+If x > 0, the left side is true.
+
+If x <= 0, check x - 1 < 0:
+
+For x = 0, x-1 = -1 < 0 → true.
+
+For x < 0, x - 1 < 0 → true.
+
+✅ Therefore, always true.
+
+✅ A is true for all x
+
+B. (x & 7) != 7 | | (x<<29 < 0)
+
+We need to find if there’s an x making it false.
+
+It’s false only when both parts are false, i.e.:
+
+(x & 7) == 7
+
+(x << 29 >= 0)
+
+Let’s try to find such an x.
+
+(x & 7) == 7 means the lowest 3 bits are 111 → x ≡ 7 (mod 8).
+
+(x << 29) shifts left 29 bits, moving bit 2 to bit 31.
+
+So the sign bit after shift will be bit 2 of original x.
+
+So for (x << 29) >= 0, bit 2 of x must be 0.
+
+But (x & 7) == 7 means bits 0–2 are 111 → bit 2 = 1.
+→ That sets the sign bit to 1 after shift → (x << 29) < 0.
+
+Hence, no x makes both false.
+
+✅ B is true for all x.
+
+C. (x * x) >= 0
+
+Normally squaring a number gives nonnegative results, but beware of overflow.
+
+Two’s complement int range = [-2³¹, 2³¹−1].
+
+If x = INT_MIN = -2³¹,
+then x*x = 2⁶², but as 32-bit int → wraps around to 0 (since only low 32 bits kept).
+
+Let’s check exact value:
+(-2³¹) * (-2³¹) = 2⁶², but mod 2³² = 0.
+
+So x*x == 0 ≥ 0.
+
+✅ Even for INT_MIN, result = 0 (nonnegative).
+No overflow produces negative numbers.
+
+✅ C is true for all x.
+
+
+D. x < 0 | | -x <= 0
+
+Let’s check cases:
+
+x	                x < 0	-x	        -x <= 0	         Result
+5	                F	    -5	            T	            T
+-5	                T	     5	            F	            T
+0	                F	     0	            T	            T
+INT_MIN (-2³¹)	    T	-x = -(-2³¹) =   (-2³¹) <= 0 → T    T
+                        overflow → -2³¹		
+
+✅ D is true for all x.
+
+E. x > 0 | | -x > = 0
+
+Let’s test:
+
+x	         x > 0	    -x	    -x >= 0	    Result
+5	            T	    -5	        F	       T
+-5	            F	    5	        T	       T
+0	            F	    0	        T	       T
+INT_MIN	        F	    -x = -2³¹	F	        F
+
+❌ Fails for x = INT_MIN (because negation overflows and remains negative).
+
+⚠️ E is false for x = INT_MIN.
+
+F. x+y == uy+ux
+
+Unsigned addition vs signed addition — both use same bit pattern addition mod 2³².
+
+So the bit-level result is identical, only the interpretation differs.
+
+✅ So the numerical result (in bit pattern) is same; thus, == compares the same bits.
+
+✅ F is true for all x, y.
+
+G. x*~y + uy*ux == -x
+
+Let’s test by trying some values.
+
+Let’s pick x = 1, y = 0:
+
+Left: x * ~y + uy * ux = 1 * ~0 + 0 * 1 = (-1) + 0 = -1.
+Right: -x = -1. ✅ Works.
+
+Try x = 2, y = 1:
+
+~y = ~1 = 0xFFFFFFFE (i.e., -2)
+ux = 2, uy = 1
+Left: x * ~y + uy * ux = 2 * (-2) + 1 * 2 = -4 + 2 = -2.
+Right: -x = -2. ✅ Works.
+
+Try something else: x = 2, y = -1:
+
+~y = ~(-1) = 0
+Left: x*~y + uy*ux = 2*0 + (unsigned)(-1)*2 = 0 + (0xFFFFFFFF)*2 = 0x1FFFFFFFE (mod 2³² = 0xFFFFFFFE = -2)
+→ Right = -x = -2. ✅ Works again.
+
+Seems it might always hold… let’s check algebraically.
+
+Algebra:
+
+uy is y mod 2³², ux is x mod 2³².
+
+In modulo 2³² arithmetic:
+
+uy * ux ≡ x * y (mod 2³²)
+
+x * ~y = x * (¬y) = x * (-y - 1) = -xy - x
+
+Then:
+
+x * ~y + uy * ux ≡ (-xy - x) + xy ≡ -x (mod 2³²)
+
+✅ Always true for all x, y.
+
+Floating Point
+
+A floating-point representation encodes rational numbers of the form V = x × 2^(y). It is useful for performing computations involving very large numbers (|V| ≫ 0), numbers very close to 0 (|V| ≪ 1), and more generally as an approximation to real arithmetic.
+
+Up until the 1980s, every computer manufacturer devised its own conventions for how floating-point numbers were represented and the details of the operations performed on them. In addition, they often did not worry too much about the accuracy of the operations, viewing speed and ease of implementation as being more critical than numerical precision.
+
+All of this changed around 1985 with the advent of IEEE Standard 754, a carefully crafted standard for representing floating-point numbers and the operations performed on them.
+
+Fractional Binary Numbers
+
+A first step in understanding floating-point numbers is to consider binary numbers having fractional values. see figure2-31
+
+consider a notation of the form
+
+bₘbₘ₋₁...b₁b₀.b₋₁b₋₂...b₋ₙ₊₁b₋ₙ
+
+where each binary digit, or bit, bᵢ ranges between 0 and 1, as is illustrated in Figure 2.31
+
+The symbol '.' now becomes a binary point, with bits on the left being weighted by nonnegative powers of 2, and those on the right being weighted by negative powers of 2. For example, 101.11₂ represents the number
+
+1 x 2² + 0 x 2¹ + 1 x 2⁰ + 1 x 2⁻¹ + 1 x 2⁻² = 4 + 0 + 1 + ½ + ¼ = 5¾
+
+shifting the binary point one position to the left has the effect of dividing the number by 2. Similarly, shifting the binary point one position to the right has the effect of multiplying the number by 2.
+
+Note that numbers of the form 0.11...1₂ represent numbers just below 1. For example, 0.111111₂ represents 63/64. We will use the shorthand notation 1.0 — ∊ to represent such values.
+
+Assuming we consider only finite-length encodings, decimal notation cannot represent numbers such as 1/3 and 5/7 exactly. Similarly, fractional binary notation can only represent numbers that can be written x × 2². Other values can only be approximated. For example, the number 1/5 can be represented exactly as the fractional decimal number 0.20. As a fractional binary number, however, we cannot represent it exactly and instead must approximate it with increasing accuracy by lengthening the binary representation.
+
+Practice Problem 2.45
+
+Fill in the missing information in the following table:
+
+Fractional value        Binary representation           Decimal representation
+    ⅛                       0.001                           0.125
+    ¾                       0.01                            0.25
+    5/16                    0.0101                          0.3125
+    43/16                   10.1011                         2.6875
+    9/8                     1.001                           1.125
+    47/8                    101.111                         5.875
+    51/16                   11.0011                         3.1875
+
+
+Practice Problem 2.46
+
+The imprecision of floating-point arithmetic can have disastrous effects. On February 25, 1991, during the first Gulf War, an American Patriot Missile battery in Dharan, Saudi Arabia, failed to intercept an incoming Iraqi Scud missile. The Scud struck an American Army barracks and killed 28 soldiers. The US General Accounting Office (GAO) conducted a detailed analysis of the failure [76] and determined that the underlying cause was an imprecision in a numeric calculation. In this exercise, you will reproduce part of the GAO's analysis.
+
+The Patriot system contains an internal clock, implemented as a counter that is incremented every 0.1 seconds. To determine the time in seconds, the program would multiply the value of this counter by a 24-bit quantity that was a fractional binary approximation to 1/10. In particular, the binary representation of 1/10 is the nonterminating sequence 0.000110011[0011]...2, where the portion in brackets is repeated indefinitely. The program approximated 0.1, as a value x, by considering just the first 23 bits of the sequence to the right of the binary point: x = 0.00011001100110011001100. 
+
+A. What is the binary representation of 0.1 – x?
+
+0.1 - x = 0.000000000000000000000001100110011001100
+
+B. What is the approximate decimal value of 0.1 - x?
+
+0.1 - x = 1/10485760 ≅ 9.5367431640625 x 10⁻⁸ per tick 
+
+C. The clock starts at 0 when the system is first powered up and keeps counting up from there. In this case, the system had been running for around 100 hours. What was the difference between the actual time and the time computed by the software?
+
+(0.1 - x) x 3600000 = (1/10485760) x 3600000 = 5625/16384 ≅ 0.34332275390625 s
+
+D. The system predicts where an incoming missile will appear based on its velocity and the time of the last radar detection. Given that a Scud travels at around 2,000 meters per second, how far off was its prediction?
+
+Δd ≈ vΔt ≈ 2000 m/s x 0.34332275390625 s ≈ 686.6455078125 m
+
+IEEE Floating-Point Representation
+
+The IEEE floating-point standard represents a number in a form V = (-1)^s x M x 2^(E):
+
+The sign s determines whether the number is negative (s = 1) or positive (s = 0), where the interpretation of the sign bit for numeric value 0 is handled as a special case.
+
+The significand M is a fractional binary number that ranges either between 1 and 2 – ∊ or between 0 and 1 – ∊.
+
+The exponent E weights the value by a (possibly negative) power of 2.
+
+The bit representation of a floating-point number is divided into three fields to encode these values:
+
+The single sign bit s directly encodes the sign s.
+The k-bit exponent field encodes the exponent E.
+The n-bit fraction field encodes the significand M, but the value encoded also depends on whether or not the exponent field equals 0.
+
+Figure 2.32 shows the packing of these three fields into words for the two most common formats. In the single-precision floating-point format (a float in C), fields s, exp, and frac are 1, k = 8, and n = 23 bits each, yielding a 32-bit representation. In the double-precision floating-point format (a double in C), fields s, exp, and frac are 1, k = 11, and n = 52 bits each, yielding a 64-bit representation.
+
+The value encoded by a given bit representation can be divided into three different cases (the latter having two variants), depending on the value of exp. These are illustrated in Figure 2.33 for the single-precision format.
+
+Case 1: Normalized Values
+
+This is the most common case. It occurs when the bit pattern of exp is neither all zeros (numeric value 0) nor all ones (numeric value 255 for single precision, 2047 for double). In this case, the exponent field is interpreted as representing a signed integer in biased form. That is, the exponent value is E = e – Bias, where e is the unsigned number and Bias is a bias value equal to 2^(k-1) - 1 (127 for single precision and 1023 for double). This yields exponent ranges from -126 to +127 for single precision and -1022 to +1023 for double precision.
+The fraction field frac is interpreted as representing the fractional value f, where 0 ≤ f < 1 and the binary point to the left of the most significant bit. The significand is defined to be M = 1 + f. This is sometimes called an implied leading 1 representation. This representation is a trick for getting an additional bit of precision for free, since we can always adjust the exponent E so that significand M is in the range 1 ≤ M < 2 (assuming there is no overflow). We therefore do not need to explicitly represent the leading bit, since it always equals 1.
+
+Case 2: Denormalized Values
+
+When the exponent field is all zeros, the represented number is in denormalized form. In this case, the exponent value is E = 1 – Bias, and the significand value is M = f, that is, the value of the fraction field without an implied leading 1.
+
+Denormalized numbers serve two purposes. First, they provide a way to represent numeric value 0, since with a normalized number we must always have M ≥ 1, and hence we cannot represent 0. In fact, the floating-point representation of +0.0 has a bit pattern of all zeros: the sign bit is 0, the exponent field is all zeros (indicating a denormalized value), and the fraction field is all zeros, giving M = f = 0. Curiously, when the sign bit is 1, but the other fields are all zeros, we get the value –0.0. With IEEE floating-point format, the values –0.0 and +0.0 are considered different in some ways and the same in others.
+
+A second function of denormalized numbers is to represent numbers that are very close to 0.0. They provide a property known as gradual underflow in which possible numeric values are spaced evenly near 0.0.
+
+Case 3: Special Values
+
+A final category of values occurs when the exponent field is all ones. When the fraction field is all zeros, the resulting values represent infinity, either +∞ when s = 0 or -∞ when s = 1. Infinity can represent results that overflow, as when we multiply two very large numbers, or when we divide by zero. When the fraction field is nonzero, the resulting value is called a “NaN,” short for “not a number.” Such values are returned as the result of an operation where the result cannot be given as a real number or as infinity, as when computing √−1 or ∞ – ∞. They can also be useful in some applications for representing uninitialized data.
+
+Rounding
+
+Floating-point arithmetic can only approximate real arithmetic, since the representation has limited range and precision. Thus, for a value x, we generally want a systematic method of finding the “closest” matching value x′ that can be represented in the desired floating-point format. This is the task of the rounding operation. One key problem is to define the direction to round a value that is halfway between two possibilities. For example, if I have $1.50 and want to round it to the nearest dollar, should the result be $1 or $2? 
+
+The IEEE floating-point format defines four different rounding modes. The default method finds a closest match, while the other three can be used for computing upper and lower bounds.
+
+Figure 2.37 illustrates the four rounding modes applied to the problem of rounding a monetary amount to the nearest whole dollar. Round-to-even (also called round-to-nearest) is the default mode. It attempts to find a closest match. Thus, it rounds $1.40 to $1 and $1.60 to $2, since these are the closest whole dollar values. The only design decision is to determine the effect of rounding values that are halfway between two possible results. Round-to-even mode adopts the convention that it rounds the number either upward or downward such that the least significant digit of the result is even.
+
+The other three modes produce guaranteed bounds on the actual value. These can be useful in some numerical applications.
+
+Practice Problem 2.50
+
+Show how the following binary fractional values would be rounded to the nearest half (1 bit to the right of the binary point), according to the round-to-even rule. In each case, show the numeric values, both before and after rounding. 
+
+A. 10.0102
+B. 10.0112
+C. 10.1102
+D. 11.0012
+
+Practice Problem 2.51 
+
+We saw in Problem 2.46 that the Patriot missile software approximated 0.1 as x = 0. 000110011001100110011002. Suppose instead that they had used IEEE round-to-even mode to determine an approximation x′ to 0.1 with 23 bits to the right of the binary point.
+
+A. What is the binary representation of x′?
+B. What is the approximate decimal value of x′ – 0.1?
+C. How far off would the computed clock have been after 100 hours of operation?
+D. How far off would the program's prediction of the position of the Scud missile have been?
+
+Practice Problem 2.52
+
+Consider the following two 7-bit floating-point representations based on the IEEE floating-point format. Neither has a sign bit—they can only represent nonnegative numbers.
+
+Format A
+
+There are k = 3 exponent bits. The exponent bias is 3.
+There are n = 4 fraction bits.
+
+Format B
+
+There are k = 4 exponent bits. The exponent bias is 7.
+There are n = 3 fraction bits.
+
+
+Below, you are given some bit patterns in format A, and your task is to convert them to the closest value in format B. If necessary, you should apply the round-to-even rounding rule. In addition, give the values of numbers given by the format A and format B bit patterns. Give these as whole numbers (e.g., 17) or as fractions (e.g., 17/64).
+
+Format A                                                  Format B
+Bits                            Value                     Bits                       Value
+
+011 0000 101 1110               1                         0111 000                   1
+
+010 1001
+
+110 1111
+
+000 0001
+
+Floating-Point Operations
+
+The IEEE standard specifies a simple rule for determining the result of an arithmetic operation such as addition or multiplication. Viewing floating-point values x and y as real numbers, and some operation ⊙ defined over real numbers, the computation should yield Round(x ⊙ y), the result of applying rounding to the exact result of the real operation. In practice, there are clever tricks floating-point unit designers use to avoid performing this exact computation, since the computation need only be sufficiently precise to guarantee a correctly rounded result. When one of the arguments is a special value, such as –0, ∞, or NaN, the standard specifies conventions that attempt to be reasonable. For example, 1/–0 is defined to yield -∞, while 1/+0 is defined to yield +∞.
+
+One strength of the IEEE standard's method of specifying the behavior of floating-point operations is that it is independent of any particular hardware or software realization.
+
+Let us define x + y to be Round(x +(^f) y). This operation is defined for all values of x and y, although it may yield infinity even when both x and y are real numbers due to overflow. The operation is commutative, with x +(^f) y = y +(^f) x for all values of x and y. On the other hand, the operation is not associative. For example, with single-precision floating point the expression (3.14+1e10)-1e10 evaluates to 0.0—the value 3.14 is lost due to rounding. On the other hand, the expression 3.14+(1e10–1e10) evaluates to 3.14. As with an abelian group, most values have inverses under floating-point addition. The exceptions are infinities (since +∞ –∞ = NaN), and NaNs. The lack of associativity in floating-point addition is the most important group property that is lacking.
+
+Floating Point in C
+
+All versions of C provide two different floating-point data types: float and double. On machines that support IEEE floating point, these data types correspond to single- and double-precision floating point. In addition, the machines use the round-to-even rounding mode. Unfortunately, since the C standards do not require the machine to use IEEE floating point, there are no standard methods to change the rounding mode or to get special values such as –0, +∞, –∞, or NaN. Most systems provide a combination of include (. h) files and procedure libraries to provide access to these features, but the details vary from one system to another. For example, the GNU compiler gcc defines program constants INFINITY (for +∞) and NAN (for NaN) when the following sequence occurs in the program file:
+
+#define _GNU_SOURCE 1
+#include <math.h>
+
+Practice Problem 2.53
+
+Fill in the following macro definitions to generate the double-precision values +∞, –∞, and –0:
+
+#define POS_INFINITY
+#define NEG_INFINITY
+#define NEG_ZERO
+
+You cannot use any include files (such as math.h), but you can make use of the fact that the largest finite number that can be represented with double precision is around 1.8 × 10^(308)
+
+When casting values between int, float, and double formats, the program changes the numeric values and the bit representations as follows (assuming data type int is 32 bits):
+
+- From int to float, the number cannot overflow, but it may be rounded.
+- From int or float to double, the exact numeric value can be preserved because double has both greater range (i.e., the range of representable values), as well as greater precision (i.e., the number of significant bits).
+- From double to float, the value can overflow to +∞ or –∞, since the range is smaller. Otherwise, it may be rounded, because the precision is smaller.
+- From float or double to int, the value will be rounded toward zero. For example, 1.999 will be converted to 1, while –1.999 will be converted to –1. Furthermore, the value may overflow. The C standards do not specify a fixed result for this case. Intel-compatible microprocessors designate the bit pattern [10 ... 00] (TMinw for word size w) as an integer indefinite value. Any conversion from floating point to integer that cannot assign a reasonable integer approximation yields this value. Thus, the expression (int) +1e10 yields –21483648, generating a negative value from a positive one.
+
+Practice Problem 2.54 
+
+Assume variables x, f, and d are of type int, float, and double, respectively. Their values are arbitrary, except that neither f nor d equals +∞, –∞, or NaN. For each of the following C expressions, either argue that it will always be true (i.e., evaluate to 1) or give a value for the variables such that it is not true (i.e., evaluates to 0).
+
+A. x == (int)(double) x
+B. x == (int)(float) x
+C. d == (double)(float) d
+D. f == (float)(double) f
+E. f == –(–f)
+F. 1.0/2 == 1/2.0
+G. d*d >= 0.0
+H. (f+d)–f == d

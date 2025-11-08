@@ -5,12 +5,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef unsigned char * byte_pointer;
 
 void show_bytes(byte_pointer start, size_t len)
 {
-    int i;
+    unsigned int i;
     for(i = 0; i < len; i++)
     /**
      * the reference start[i] indicates that we want to read the byte that is i positions beyond the 
@@ -32,6 +33,11 @@ void show_pointer(void * x) {
     show_bytes((byte_pointer) &x, sizeof(void *));
 }
 
+void show_string(char * str)
+{
+    show_bytes((byte_pointer) str, strlen(str)+1);
+}
+
 void test_show_bytes(int val)
 {
     int ival = val;
@@ -44,6 +50,8 @@ void test_show_bytes(int val)
 
 int main(){
     int val = 0x87654321;
+    char * str = "12345";
+    show_string(str);
     byte_pointer valp = (byte_pointer) &val;
     show_bytes(valp, 1); /* A. */ 
     show_bytes(valp, 2); /* B. */ 
