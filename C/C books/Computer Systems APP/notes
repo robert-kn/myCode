@@ -1201,13 +1201,13 @@ x -= t;    // subtract original x
 
 So:
 
-x=32x−x=31x
+x=32x-x=31x
 
 Therefore:
 
 M=31
 
-Identify what’s happening to y
+Identify what's happening to y
 
 We have:
 
@@ -1220,7 +1220,7 @@ Let’s analyze.
 
 The if (y < 0) y += 7; part is the bias correction we add to round toward zero for negative numbers.
 
-That’s exactly what we do when dividing a signed integer by a power of two — here, the bias is 7, which equals 1(1<<3)-1.
+That’s exactly what we do when dividing a signed integer by a power of two — here, the bias is 7, which equals y+(1<<3)-1.
 
 So this code implements:
 
@@ -1259,7 +1259,7 @@ unsigned uy = y;
 
 For each of the following C expressions, either (1) argue that it is true (evaluates to 1) for all values of x and y, or (2) give values of x and y for which it is false (evaluates to 0):
 
-A. (x > 0) | | (x-1 < 0)
+A. (x > 0) || (x-1 < 0)
 
 Let’s reason:
 
@@ -1275,7 +1275,7 @@ For x < 0, x - 1 < 0 → true.
 
 ✅ A is true for all x
 
-B. (x & 7) != 7 | | (x<<29 < 0)
+B. (x & 7) != 7 || (x<<29 < 0)
 
 We need to find if there’s an x making it false.
 
@@ -1322,7 +1322,7 @@ No overflow produces negative numbers.
 ✅ C is true for all x.
 
 
-D. x < 0 | | -x <= 0
+D. x < 0 || -x <= 0
 
 Let’s check cases:
 
@@ -1335,7 +1335,7 @@ INT_MIN (-2³¹)	    T	-x = -(-2³¹) =   (-2³¹) <= 0 → T    T
 
 ✅ D is true for all x.
 
-E. x > 0 | | -x > = 0
+E. x > 0 || -x > = 0
 
 Let’s test:
 
@@ -1361,9 +1361,9 @@ So the bit-level result is identical, only the interpretation differs.
 
 G. x*~y + uy*ux == -x
 
-Let’s test by trying some values.
+Let's test by trying some values.
 
-Let’s pick x = 1, y = 0:
+Let's pick x = 1, y = 0:
 
 Left: x * ~y + uy * ux = 1 * ~0 + 0 * 1 = (-1) + 0 = -1.
 Right: -x = -1. ✅ Works.
@@ -1500,13 +1500,35 @@ Case 3: Special Values
 
 A final category of values occurs when the exponent field is all ones. When the fraction field is all zeros, the resulting values represent infinity, either +∞ when s = 0 or -∞ when s = 1. Infinity can represent results that overflow, as when we multiply two very large numbers, or when we divide by zero. When the fraction field is nonzero, the resulting value is called a “NaN,” short for “not a number.” Such values are returned as the result of an operation where the result cannot be given as a real number or as infinity, as when computing √−1 or ∞ – ∞. They can also be useful in some applications for representing uninitialized data.
 
+some general properties for a floating-point representation with a k-bit exponent and an n-bit fraction:
+- The value +0.0 always has a bit representation of all zeros.
+- The smallest positive denormalized value has a bit representation consisting of a 1 in the least significant bit position and otherwise all zeros. It has a fraction (and significand) value M = f = 2^(-n) and an exponent value E=-2^(k-1)+2. The numeric value is therefore V=2^(-n-2^(k-1)+2).
+- The largest denormalized value has a bit representation consisting of an exponent field of all zeros and a fraction field of all ones. It has a fraction (and significand) value M = f = 1 - 2^(-n) (which we have written 1 — ∊) and an exponent value E = -2(k-1) + 2. The numeric value is therefore V=(1-2^(-n)x2^(-2^(k-1)+2), which is just slightly smaller than the smallest normalized value.
+- The smallest positive normalized value has a bit representation with a 1 in the least significant bit of the exponent field and otherwise all zeros. It has a significand value M = 1 and an exponent value E = -2^(k-1) + 2. The numeric value is therefore V=2^(-2^(k-1)+2).
+- The value 1.0 has a bit representation with all but the most significant bit of the exponent field equal to 1 and all other bits equal to 0. Its significand value is M = 1 and its exponent value is E = 0 (bias = e).
+- The largest normalized value has a bit representation with a sign bit of 0, the least significant bit of the exponent equal to 0, and all other bits equal to 1. It has a fraction value of f = 1 - 2^(-n), giving a significand M = 2-2^(-n) (which we have written 2 - ∊.) It has an exponent value E = 2^(k-1) - 1, giving a numeric value V=(2-2^(-n)) x 2^(2^(k-1)-1) = (1-2^(-n-1) x 2^(2k-1).
+
+12,345 has binary representation [11000000111001]. We create a normalized representation of this by shifting 13 positions to the right of a binary point, giving 12345 = 1.10000001110012 × 2^(13). To encode this in IEEE single-precision format, we construct the fraction field by dropping the leading 1 and adding 10 zeros to the end, giving binary representation [10000001110010000000000]. To construct the exponent field, we add bias 127 to 13, giving 140, which has binary representation [10001100]. We combine this with a sign bit of 0 to get the floating-point representation in binary of [01000110010000001110010000000000]. 
+
+Practice Problem 2.48
+
+As mentioned in Problem 2.6, the integer 3,510,593 has hexadecimal representation 0x00359141, while the single-precision floating-point number 3,510,593.0 has hexadecimal representation 0x4A564504. Derive this floating-point representation and explain the correlation between the bits of the integer and floating-point representations.
+
+Practice Problem 2.49
+
+For a floating-point format with an n-bit fraction, give a formula for the smallest positive integer that cannot be represented exactly (because it would require an (n + 1)-bit fraction to be exact). Assume the exponent field size k is large enough that the range of representable exponents does not provide a limitation for this problem.
+
+the smallest positive integer not exactly representable is 2^(n+1) + 1
+
+What is the numeric value of this integer for single-precision format (n = 23)? 16,777,217
+
 Rounding
 
 Floating-point arithmetic can only approximate real arithmetic, since the representation has limited range and precision. Thus, for a value x, we generally want a systematic method of finding the “closest” matching value x′ that can be represented in the desired floating-point format. This is the task of the rounding operation. One key problem is to define the direction to round a value that is halfway between two possibilities. For example, if I have $1.50 and want to round it to the nearest dollar, should the result be $1 or $2? 
 
 The IEEE floating-point format defines four different rounding modes. The default method finds a closest match, while the other three can be used for computing upper and lower bounds.
 
-Figure 2.37 illustrates the four rounding modes applied to the problem of rounding a monetary amount to the nearest whole dollar. Round-to-even (also called round-to-nearest) is the default mode. It attempts to find a closest match. Thus, it rounds $1.40 to $1 and $1.60 to $2, since these are the closest whole dollar values. The only design decision is to determine the effect of rounding values that are halfway between two possible results. Round-to-even mode adopts the convention that it rounds the number either upward or downward such that the least significant digit of the result is even.
+Figure 2.37 illustrates the four rounding modes applied to the problem of rounding a monetary amount to the nearest whole dollar. Round-to-even (also called round-to-nearest) is the default mode. It attempts to find a closest match. Thus, it rounds $1.40 to $1 and $1.60 to $2, since these are the closest whole dollar values. The only design decision is to determine the effect of rounding values that are halfway between two possible results. Round-to-even mode adopts the convention that it rounds the number either upward or downward such that the least significant digit of the result is even. Thus, it rounds both $1.50 and $2.50 to $2.
 
 The other three modes produce guaranteed bounds on the actual value. These can be useful in some numerical applications.
 
@@ -1514,17 +1536,17 @@ Practice Problem 2.50
 
 Show how the following binary fractional values would be rounded to the nearest half (1 bit to the right of the binary point), according to the round-to-even rule. In each case, show the numeric values, both before and after rounding. 
 
-A. 10.0102
-B. 10.0112
-C. 10.1102
-D. 11.0012
+A. 10.010 -> 10.0
+B. 10.011 -> 10.1
+C. 10.110 -> 11.0
+D. 11.001 -> 11.0
 
 Practice Problem 2.51 
 
-We saw in Problem 2.46 that the Patriot missile software approximated 0.1 as x = 0. 000110011001100110011002. Suppose instead that they had used IEEE round-to-even mode to determine an approximation x′ to 0.1 with 23 bits to the right of the binary point.
+We saw in Problem 2.46 that the Patriot missile software approximated 0.1 as x = 0.000110011001100110011002. Suppose instead that they had used IEEE round-to-even mode to determine an approximation x' to 0.1 with 23 bits to the right of the binary point.
 
-A. What is the binary representation of x′?
-B. What is the approximate decimal value of x′ – 0.1?
+A. What is the binary representation of x'?
+B. What is the approximate decimal value of x' - 0.1?
 C. How far off would the computed clock have been after 100 hours of operation?
 D. How far off would the program's prediction of the position of the Scud missile have been?
 
@@ -1596,7 +1618,81 @@ A. x == (int)(double) x
 B. x == (int)(float) x
 C. d == (double)(float) d
 D. f == (float)(double) f
-E. f == –(–f)
+E. f == -(-f)
 F. 1.0/2 == 1/2.0
 G. d*d >= 0.0
-H. (f+d)–f == d
+H. (f+d)-f == d
+
+Bit-Level Integer Coding rules
+
+In several of the following problems, we will artificially restrict what programming constructs you can use to help you gain a better understanding of the bit-level, logic, and arithmetic operations of C. In answering these problems, your code must follow these rules:
+
+Assumptions
+
+- Integers are represented in two's-complement form.
+- Right shifts of signed data are performed arithmetically.
+- Data type int is w bits long. For some of the problems, you will be given a specific value for w, but otherwise your code should work as long as w is a multiple of 8. You can use the expression sizeof(int)<<3 to compute w.
+
+Forbidden
+
+- Conditionals (if or ?:), loops, switch statements, function calls, and macro invocations.
+- Division, modulus, and multiplication.
+- Relative comparison operators (<, >, <=, and >=).
+
+Allowed operations
+
+- All bit-level and logic operations.
+- Left and right shifts, but only with shift amounts between 0 and w – 1.
+- Addition and subtraction.
+- Equality (==) and inequality (!=) tests. (Some of the problems do not allow these.)
+- Integer constants INT_MIN and INT_MAX.
+- Casting between data types int and unsigned, either explicitly or implicitly.
+
+Even with these rules, you should try to make your code readable by choosing descriptive variable names and using comments to describe the logic behind your solutions. As an example, the following code extracts the most significant byte from integer argument x:
+
+/* Get most significant byte from x */
+int get_msb(int x) {
+    /* Shift by w-8 */
+    int shift_val = (sizeof(int)-1)<<3;
+    /* Arithmetic shift */
+    int xright = x >> shift_val;
+    /* Zero all but LSB */
+    return xright & 0xFF;
+}
+
+2.61
+
+Write C expressions that evaluate to 1 when the following conditions are true and to 0 when they are false. Assume x is of type int.
+
+Any bit of x equals 1. -> !!x
+Any bit of x equals 0. -> !!~x
+Any bit in the least significant byte of x equals 1. !!(x & 0xFF)
+Any bit in the most significant byte of x equals 0. !!~((x >> ((sizeof(int) - 1) << 3)) & 0xFF)
+
+additional restriction that you may not use equality (==) or inequality (!=) tests.
+
+2.62
+
+Write a function int_shifts_are_arithmetic() that yields 1 when run on a machine that uses arithmetic right shifts for data type int and yields 0 otherwise. Your code should work on a machine with any word size. Test your code on several machines.
+
+int int_shifts_are_arithmetic(void)
+{
+    int x = -1;
+    return (x >> 1) == x;
+}
+
+2.63
+
+Fill in code for the following C functions. Function srl performs a logical right shift using an arithmetic right shift (given by value xsra), followed by other operations not including right shifts or division. Function sra performs an arithmetic right shift using a logical right shift (given by value xsrl), followed by other operations not including right shifts or division. You may use the computation 8*sizeof(int) to determine w, the number of bits in data type int. The shift amount k can range from 0 to w – 1.
+
+unsigned srl(unsigned x, int k) {
+    /* Perform shift arithmetically */
+    unsigned xsra = (int) x >> k;
+
+}
+
+int sra(int x, int k) {
+    /* Perform shift logically */
+    int xsrl = (unsigned) x >> k;
+
+}
