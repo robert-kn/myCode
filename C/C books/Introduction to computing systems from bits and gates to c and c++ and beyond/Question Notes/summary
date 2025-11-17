@@ -663,7 +663,7 @@ chapter 4
 
 30. what mechanism does the control unit use to keep track of which instruction is to be executed next? program counter(instruction pointer) contains the next instructions address
 
-31. We  constructed  Figure  4.3  by  starting  with  the  LC-3’s  full  data  path (Figure 3.35) and removing all elements that are not essential to pointing out the ﬁve basic components of the von Neumann model. Note that there are two kinds of arrowheads in Figure 4.3: ﬁlled-in and not-ﬁlled-in. Filled-in arrowheads denote data elements that ﬂow along the corresponding paths. Not-ﬁlled-in arrowheads denote control signals that control the processing of the data elements. For example, the box labeled ALU in the processing unit processes two 16-bit values and produces a 16-bit result. The two sources and the result are all data, and are designated by ﬁlled-in arrowheads. The operation performed on those two 16-bit data elements (it is labeled ALUK) is part of the control—therefore, a not-ﬁlled-in arrowhead.
+31. We constructed Figure 4.3 by starting with the LC-3’s full data path (Figure 3.35) and removing all elements that are not essential to pointing out the ﬁve basic components of the von Neumann model. Note that there are two kinds of arrowheads in Figure 4.3: ﬁlled-in and not-ﬁlled-in. Filled-in arrowheads denote data elements that ﬂow along the corresponding paths. Not-ﬁlled-in arrowheads denote control signals that control the processing of the data elements. For example, the box labeled ALU in the processing unit processes two 16-bit values and produces a 16-bit result. The two sources and the result are all data, and are designated by ﬁlled-in arrowheads. The operation performed on those two 16-bit data elements (it is labeled ALUK) is part of the control—therefore, a not-ﬁlled-in arrowhead.
 
 32. MEMORY consists of the storage elements, along with the Memory Address Register (MAR) for addressing individual locations and the Memory Data Register (MDR) for holding the contents of a memory location on its way to/from the storage.
 Note that the MAR contains 16 bits, reﬂecting the fact that the memory address space of the LC-3 is 2^(16) memory locations. The MDR contains 16 bits, reﬂecting the fact that each memory location contains 16 bits—that is, the LC-3 is 16-bit addressable.
@@ -715,7 +715,7 @@ the LC-3 instruction being processed determines what activities must be carried 
 
 55. what does the 0 stored in bit 5 in the instruction mean? that the second source operand is in the register specified by bits 2:0
 
-56. what does the 1 stored in bit 5 in the instruction mean? the second source operand is formed by sign-extending the integer in bits [4:0] to 16 bits. see example410 and example411
+56. what does the 1 stored in bit 5 in the instruction mean? the second source operand is formed by sign-extending the integer in bits [4:0] to 16 bits and then adding it to the address in the PC. see example410 and example411
 
 57. what is the four bit opcode (from 15:12) for the AND operate in LC-3? 0101 see example42
 
