@@ -302,6 +302,19 @@ reliable method is to write programs using special vector data types supported i
 
 Chapter 2 Representing and Manipulating Information
 
+By studying the actual number representations, we can understand the ranges of values that can be represented and the properties of the different arithmetic operations. This understanding is critical to writing programs that work correctly over the full range of numeric values and that are portable across
+different combinations of machine, operating system, and compiler.
+
+You will start by looking at the basic definitions of the encodings and then derive the range of representable numbers, their bit-level representations, and the properties of the arithmetic operations. This is important because as a programmer you need to be familiar with how computer arithmetic relates to the more familiar integer and real arithmetic.
+
+The C++ programming language is built upon C, using the exact same numeric representations and operations. Everything said in this chapter about C also holds for C++. The Java language definition, on the other hand, created a new set of standards for numeric representations and operations.
+
+Every byte of memory is identified by a unique number, known as its address, and the set of all possible addresses is known as the virtual address space (a conceptual image presented to a machine level program).
+
+Topics to look forward to in the coming chapters: how the virtual address space is implemented; how the compiler and run time system partition the virtual address space into manageable units to store the different program objects (program data, instructions etc).
+
+Every computer has a word size, indicating the nominal size of pointer data. Since a virtual address is encoded by such a word, the most important system parameter determined by the word size is the maximum size of the virtual address space.
+
 Computer representations use a limited number of bits to encode a number, and hence some operations can overflow 
 when the results are too large to be represented.
 

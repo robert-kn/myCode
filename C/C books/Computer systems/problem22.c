@@ -7,7 +7,7 @@ digit 0 represents 4 binary zeros. So, for n written in the form i + 4j , where 
 leading hex digit of 1 (i=0), 2 (i=1), 4 (i=2), or 8 (i = 3), followed by j hexadecimal 0s. As an example, 
 for x = 2,048 = 211, we have n = 11 = 3 + 4 . 2, giving hexadecimal representation 0x800. 
 
-N              2n (decimal)         		    2n (hexadecimal) 
+N              2^n (decimal)         		    2^n (hexadecimal) 
 9				 512							9 = 1 + 4 x 2 	—> 0x200
 19               524288                         19 = 3 + 4 x 4	—> 0x80000
 14               16384                          14 = 2 + 4 x 3	—> 0x4000
