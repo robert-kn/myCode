@@ -313,7 +313,7 @@ Every byte of memory is identified by a unique number, known as its address, and
 
 Topics to look forward to in the coming chapters: how the virtual address space is implemented; how the compiler and run time system partition the virtual address space into manageable units to store the different program objects (program data, instructions etc).
 
-Every computer has a word size, indicating the nominal size of pointer data. Since a virtual address is encoded by such a word, the most important system parameter determined by the word size is the maximum size of the virtual address space.
+Every computer has a word size, indicating the nominal size of pointer data. Since a virtual address is encoded by such a word, the most important system parameter determined by the word size is the maximum size of the virtual address space. That is, for a machine with a w-bit word size, the virtual addresses can range from 0 to 2^(w) — 1, giving the program access to at most 2^w bytes
 
 Computer representations use a limited number of bits to encode a number, and hence some operations can overflow 
 when the results are too large to be represented.
