@@ -300,74 +300,39 @@ parallelism. These SIMD instructions are provided mostly to speed up application
 video data. Although some compilers attempt to automatically extract SIMD parallelism from C programs, a more 
 reliable method is to write programs using special vector data types supported in compilers such as GCC. 
 
+
 Chapter 2 Representing and Manipulating Information
 
-By studying the actual number representations, we can understand the ranges of values that can be represented and the properties of the different arithmetic operations. This understanding is critical to writing programs that work correctly over the full range of numeric values and that are portable across
-different combinations of machine, operating system, and compiler.
+2.1 Information Storage
+
+By studying the actual number representations, we can understand the ranges of values that can be represented and the properties of the different arithmetic operations. This understanding is critical to writing programs that work correctly over the full range of numeric values and that are portable across different combinations of machine, operating system, and compiler.
 
 You will start by looking at the basic definitions of the encodings and then derive the range of representable numbers, their bit-level representations, and the properties of the arithmetic operations. This is important because as a programmer you need to be familiar with how computer arithmetic relates to the more familiar integer and real arithmetic.
 
 The C++ programming language is built upon C, using the exact same numeric representations and operations. Everything said in this chapter about C also holds for C++. The Java language definition, on the other hand, created a new set of standards for numeric representations and operations.
 
-Every byte of memory is identified by a unique number, known as its address, and the set of all possible addresses is known as the virtual address space (a conceptual image presented to a machine level program).
-
-Topics to look forward to in the coming chapters: how the virtual address space is implemented; how the compiler and run time system partition the virtual address space into manageable units to store the different program objects (program data, instructions etc).
-
-Every computer has a word size, indicating the nominal size of pointer data. Since a virtual address is encoded by such a word, the most important system parameter determined by the word size is the maximum size of the virtual address space. That is, for a machine with a w-bit word size, the virtual addresses can range from 0 to 2^(w) — 1, giving the program access to at most 2^w bytes
-
-Computer representations use a limited number of bits to encode a number, and hence some operations can overflow 
-when the results are too large to be represented.
-
-By studying the actual number representations, we can understand the ranges of values that can be represented and 
-the properties of the different arithmetic operations. This understanding is critical to writing programs that work 
-correctly over the full range of numeric values and that are portable across different combinations of machine, 
-operating system, and compiler. 
-
-Computers use several different binary representations to encode numeric values.
-
-The C++ programming language is built upon C, using the exact same numeric representations and operations. 
-Everything said in this chapter about C also holds for C++. The Java language definition, on the other hand, 
-created a new set of standards for numeric representations and operations. Whereas the C standards are designed to 
-allow a wide range of implementations, the Java standard is quite specific on the formats and encodings of data.
-
-2.1 Information Storage
-
 Rather than accessing individual bits in memory, most computers use blocks of 8 bits, or bytes, as the smallest 
 addressable unit of memory. A machine-level program views memory as a very large array of bytes, referred to as 
-virtual memory. Every byte of memory is identified by a unique number, known as its address, and the set of all 
-possible addresses is known as the virtual address space. As indicated by its name, this virtual address space is 
-just a conceptual image presented to the machine-level program. The actual implementation uses a combination of 
-dynamic random access memory (DRAM), flash memory, disk storage, special hardware, and operating system software to 
-provide the program with what appears to be a monolithic byte array.
+virtual memory. Every byte of memory is identified by a unique number, known as its address, and the set of all possible addresses is known as the virtual address space (a conceptual image presented to a machine level program).
+
+Topics to look forward to in the coming chapters: how the virtual address space is implemented (combination of 
+dynamic random access memory (DRAM), flash memory, disk storage, special hardware, and operating system software); how the compiler and run time system partition the virtual address space into manageable units to store the different program objects (program data, instructions etc).
 
 2.1.2 Data Sizes
 
-Every computer has a word size, indicating the nominal size of pointer data. Since a virtual address is encoded by 
-such a word, the most important system parameter determined by the word size is the maximum size of the virtual 
-address space. That is, for a machine with a w-bit word size, the virtual addresses can range from 0 to 
-2^(w) — 1, giving the program access to at most 2^(w) bytes.
+Every computer has a word size, indicating the nominal size of pointer data. Since a virtual address is encoded by such a word, the most important system parameter determined by the word size is the maximum size of the virtual address space. That is, for a machine with a w-bit word size, the virtual addresses can range from 0 to 2^(w) — 1, giving the program access to at most 2^w bytes.
 
-A 32-bit word size limits the virtual address space to 4 gigabytes (written 4 GB). Scaling up to a 64-bit word 
-size leads to a virtual address space of 16 exabytes, or around 1.84 × 10^(19) bytes. Most 64-bit machines can also 
-run programs compiled for use on 32- bit machines, a form of backward compatibility. So, for example, when a 
-program is compiled with the directive gcc –m32 prog.c then this program will run correctly on either a 32-bit or 
-a 64-bit machine. On the other hand, a program compiled with the directive gcc –m64 prog.c will only run on a 
-64-bit machine. We will therefore refer to programs as being either “32-bit programs” or “64-bit programs,” since 
-the distinction lies in how a program is compiled, rather than the type of machine on which it runs.
+Most 64-bit machines can also run programs compiled for use on 32-bit machines, a form of backward compatibility. So, for example, when a program prog.c is compiled with the directive gcc –m32 prog.c then this program will run correctly on either a 32-bit or a 64-bit machine. On the other hand, a program compiled with the directive gcc –m64 prog.c will only run on a 64-bit machine. We will therefore refer to programs as being either “32-bit programs” or “64-bit programs,” since the distinction lies in how a program is compiled, rather than the type of machine on which it runs.
 
-Computers and compilers support multiple data formats using different ways to encode data, such as integers and floating point, as well as different lengths. For example, many machines have instructions for manipulating single bytes, as well as integers represented as 2-, 4-, and 8-byte quantities. They also support floating-point numbers represented as 4- and 8-byte quantities. The C language supports multiple data formats for both integer and floating-point data. Figure 2.3 shows the number of bytes typically allocated for different C data types.The exact numbers of bytes for some data types depends on how the program is compiled. To avoid the vagaries of relying on “typical” sizes and different compiler settings, ISO C99 introduced a class of data types where the data sizes are fixed regardless of compiler and machine settings. Among these are data types int32_t and int64_t, having exactly 4 and 8 bytes, respectively. Using fixed-size integer types is the best way for programmers to have close control over data representations.
+Computers and compilers support multiple data formats using different ways to encode data, such as integers and floating point, as well as different lengths. For example, many machines have instructions for manipulating single bytes, as well as integers represented as 2-, 4-, and 8-byte quantities. The C language supports multiple data formats for both integer and floating-point data. Figure 2.3 shows the number of bytes typically allocated for different C data types. The exact numbers of bytes for some data types depends on how the program is compiled. 
+
+To avoid the vagaries of relying on “typical” sizes and different compiler settings, ISO C99 introduced a class of data types where the data sizes are fixed regardless of compiler and machine settings. Among these are data types int32_t and int64_t, having exactly 4 and 8 bytes, respectively. Using fixed-size integer types is the best way for programmers to have close control over data representations.
 
 Most of the data types encode signed values, unless prefixed by the keyword unsigned or using the specific unsigned 
 declaration for fixed-size data types. The exception to this is data type. Although most compilers and machines 
-treat these as signed data, the C standard does not guarantee this. Instead, as indicated by the square brackets, the programmer should use the declaration signed char to guarantee a 1-byte signed value. 
+treat these as signed data, the C standard does not guarantee this. Instead, as indicated by the square brackets, the programmer should use the declaration signed char to guarantee a 1-byte signed value.
 
-Programmers should strive to make their programs portable across different machines and compilers. One aspect of 
-portability is to make the program insensitive to the exact sizes of the different data types. The C standards set 
-lower bounds on the numeric ranges of the different data types but there are no upper bounds (except with the 
-fixed-size types). With 32-bit machines and 32-bit programs being the dominant combination from around 1980 until 
-around 2010, many programs have been written assuming the allocations for 32-bit programs. 
-
-With the transition to 64-bit machines, many hidden word size dependencies have arisen as bugs in migrating these 
+The C standards set lower bounds on the numeric ranges of the different data types but there are no upper bounds (except with the fixed-size types). With 32-bit machines and 32-bit programs being the dominant combination from around 1980 until around 2010, many programs have been written assuming the allocations for 32-bit programs. With the transition to 64-bit machines, many hidden word size dependencies have arisen as bugs in migrating these 
 programs to new machines. For example, many programmers historically assumed that an object declared as type int 
 could be used to store a pointer. This works fine for most 32-bit programs, but it leads to problems for 64-bit 
 programs.
@@ -377,7 +342,7 @@ Addressing and Byte Ordering
 For program objects that span multiple bytes, we must establish two conventions: what the address of the object 
 will be, and how we will order the bytes in memory. In virtually all machines, a multi-byte object is stored as a 
 contiguous sequence of bytes, with the address of the object given by the smallest address of the bytes used. For 
-example, suppose a variable x of type int has address 0x100; that is, the value of the address expression &x is        0x100. Then (assuming data type int has a 32-bit representation) the 4 bytes of x would be stored in memory 
+example, suppose a variable x of type int has address 0x100; that is, the value of the address expression &x is     0x100. Then (assuming data type int has a 32-bit representation) the 4 bytes of x would be stored in memory 
 locations 0x100, 0x101, 0x102, and 0x103.
 
 For ordering the bytes representing an object, there are two common conventions. Consider a w-bit integer having a 
@@ -403,13 +368,7 @@ networking applications must follow established conventions for byte ordering to
 converts its internal representation to the network standard, while the receiving machine converts the network 
 standard to its internal representation.
 
-figure2.4.c shows C code that uses casting to access and print the byte representations of different program objects. 
-We use typedef to define data type byte_pointer as a pointer to an object of type unsigned char. Such a byte pointer 
-references a sequence of bytes where each byte is considered to be a nonnegative integer. The first routine show_bytes
-is given the address of a sequence of bytes, size_t indicated by a byte pointer, and a byte count. The byte count 
-is specified as having data type size_t, the preferred data type for expressing the sizes of data structures. It prints 
-the individual bytes in hexadecimal. The C formatting directive indicates that an integer should be printed in 
-hexadecimal with at least 2 digits.
+figure2.4.c shows C code that uses casting to access and print the byte representations of different program objects. We use typedef to define data type byte_pointer as a pointer to an object of type unsigned char. Such a byte pointer references a sequence of bytes where each byte is considered to be a nonnegative integer. The first routine show_bytes is given the address of a sequence of bytes, size_t indicated by a byte pointer, and a byte count. The byte count is specified as having data type size_t, the preferred data type for expressing the sizes of data structures. It prints the individual bytes in hexadecimal. The C formatting directive indicates that an integer should be printed in hexadecimal with at least 2 digits.
 
 Procedures show_int, show_float, and show_pointer demonstrate how to use procedure show_bytes to print the byte 
 representations of C program objects of type int, float, and void *, respectively. Observe that they simply pass
@@ -446,47 +405,11 @@ shifting-bits.png
 
 This is not coincidental. 
 
+Pointers and arrays: In C, we can dereference a pointer with array notation, and we can reference array elements with pointer notation. The C “address of” operator & creates a pointer. The type of pointer created depends on the type of data used to create the pointer. Data type void * is a special kind of pointer with no associated type information.
+
 Practice Problem 2.5
 
-Consider the following three calls to show_bytes:
-
-int val = 0x87654321;
-byte_pointer valp = (byte_pointer) &val; 
-show_bytes(valp, 1); /* A. */ 
-show_bytes(valp, 2); /* B. */ 
-show_bytes(valp, 3); /* C. */
-
-Indicate the values that will be printed by each call on a little-endian machine and on a big-endian machine:
-
-A.  Little endian: 21                 Big endian: 87
-B.  Little endian: 2143               Big endian: 8765
-C.  Little endian: 214365             Big endian: 876543
-
-
 Practice Problem 2.6 
-
-Using show_int and show_float, we determine that the integer 3510593 has hexadecimal representation 0x00359141,
-while the floating-point number 3510593.0 has hexadecimal representation 0x4A564504.
-
-A.  Write the binary representations of these two hexadecimal values.
-
-0x00359141 - 0000 0000 0011 0101 1001 0001 0100 0001
-
-0x4A564504 - 0100 1010 0101 0110 0100 0101 0000 0100
-
-B. Shift these two strings relative to one another to maximize the number of matching bits. How many bits match?
-
-0x00359141 - 00000000001101011001000101000001
-0x4A564504 -   01001010010101100100010100000100
-
-21 bits match
-
-C.  What parts of the strings do not match?
-
-0x4A564504 -   010010100
-0x00359141 - 00000000001
-
-you see that all bits of the integer are embedded in the floating-point number, except for the most significant bit having value 1. In addition, the floating-point number has some nonzero high-order bits that do not match those of the integer.
 
 2.1.4 Representing Strings
 
@@ -500,14 +423,6 @@ more platform independent than binary data.
 
 Practice Problem 2.7 
 
-What would be printed as a result of the following call to show_bytes?
-
-const char *s = “abcdef”;
-show_bytes((byte_pointer) s, strlen(s));
-
-Note that letters ‘a' through ‘z' have ASCII codes 0x61 through 0x7A.
-
-displays 616263646566
 
 2.1.5 Representing Code
 
@@ -535,7 +450,13 @@ tables maintained to aid in debugging.
 
 introduction to boolean algebra
 
-Boolean rings have many properties in common with integer arithmetic. For example, one property of integer arithmetic is that every value x has an additive inverse –x, such that x + –x = 0. A similar property holds for Boolean rings, where ^ is the “addition” operation, but in this case each element is its own additive inverse. That is, a ^ a = 0 for any value a, where we use 0 here to represent a bit vector of all zeros. We can see this holds for single bits, since 0 ^ 0 = 1 ^ 1 = 0, and it extends to bit vectors as well. This property holds even when we rearrange terms and combine them in a different order, and so (a ^ b) ^ a = b.
+Since binary values are at the core of how computers encode, store, and manipulate information, a rich body of mathematical knowledge has evolved around the study of the values 0 and 1. The simplest Boolean algebra is defined over the two-element set {0, 1}. Binary values 1 and 0 encode logic values true and false, while operations ~, &, |, and ^ encode logical operations not, and, or, and exclusive-or, respectively.
+
+Claude Shannon (1916–2001), who later founded the field of information theory, first made the connection between Boolean algebra and digital logic. In his 1937 master's thesis, he showed that Boolean algebra could be applied to the design and analysis of networks of electromechanical relays.
+
+We can extend the four Boolean operations to also operate on bit vectors, strings of zeros and ones of some fixed length w. Boolean algebra has many of the same properties as arithmetic over integers. For example, just as multiplication distributes over addition, written a · (b + c) = (a · b) + (a · c), Boolean operation & distributes over |, written a & (b | c) = (a & b) | (a & c). In addition, however. Boolean operation | distributes over &, and so we can write a | (b & c) = (a | b) & (a | c), whereas we cannot say that a + (b · c) = (a + b) · (a + c) holds for all integers.
+
+When we consider operations ^, &, and ~ operating on bit vectors of length w, we get a different mathematical form, known as a Boolean ring. Boolean rings have many properties in common with integer arithmetic. For example, one property of integer arithmetic is that every value x has an additive inverse –x, such that x + –x = 0. A similar property holds for Boolean rings, where ^ is the “addition” operation, but in this case each element is its own additive inverse. That is, a ^ a = 0 for any value a, where we use 0 here to represent a bit vector of all zeros. We can see this holds for single bits, since 0 ^ 0 = 1 ^ 1 = 0, and it extends to bit vectors as well. This property holds even when we rearrange terms and combine them in a different order, and so (a ^ b) ^ a = b.
 
 One useful application of bit vectors is to represent finite sets. We can encode any subset A⊆{0,1,…,w−1} with a bit vector [aw−1,…,a1,a0], where ai = 1 if and only if i ∊ A. For example, recalling that we write aw–1 on the left and a0 on the right, bit vector a = [01101001] encodes the set A = {0, 3, 5, 6}, while bit vector b = [01010101] encodes the set B = {0, 2, 4, 6}. With this way of encoding sets, Boolean operations | and & correspond to set union and intersection, respectively, and ~ corresponds to set complement. Continuing our earlier example, the operation a & b yields bit vector [01000001], while A ∩ B = {0, 6}.”
 
@@ -543,93 +464,43 @@ We will see the encoding of sets by bit vectors in a number of practical applica
 
 Bit-Level Operations in C
 
+One useful feature of C is that it supports bitwise Boolean operations. In fact, the symbols we have used for the Boolean operations are exactly those used by C: | for or, & for and, ~ for not, and ^ for exclusive-or. These can be applied to any “integral” data type including all of those listed in Figure 2.3
+
 Practice Problem 2.10 
-
-As an application of the property that a ^ a = 0 for any bit vector a, consider the following program:
-
-1 void inplace_swap(int *x, int *y) {
-2      *y = *x ^ *y;	/* Step 1 */
-3      *x = *x ^ *y;	/* Step 2 */
-4      *y = *x ^ *y;	/* Step 3 */
-5  }
-
-As the name implies, we claim that the effect of this procedure is to swap the values stored at the locations denoted by pointer variables x and y. Note that unlike the usual technique for swapping two values, we do not need a third location to temporarily store one value while we are moving the other. There is no performance advantage to this way of swapping; it is merely an intellectual amusement.
-
-Starting with values a and b in the locations pointed to by x and y, respectively, fill in the table that follows, giving the values stored at the two locations after each step of the procedure. Use the properties of ^ to show that the desired effect is achieved. Recall that every element is its own additive inverse (that is, a ^ a = 0).
-
-“step           *x              *y
-
-Initially       a               b
-
-
-Step 1           a            a ^ b
-
-
-Step 2.         b             a ^ b
-
-
-Step 3          b              a
 
 
 Practice Problem 2.11 
 
-Armed with the function inplace_swap from Problem 2.10, you decide to write code that will reverse the elements of an array by swapping elements from opposite ends of the array, working toward the middle. You arrive at the following function:
-
-1  void reverse_array(int a[], int cnt) {
-2      int first, last;
-3      for (first = 0, last = cnt-1; first <= last; first++,last--)
-4         inplace_swap(&a[first], &a[last]);         
-5  }
-
-When you apply your function to an array containing elements 1, 2, 3, and 4, you find the array now has, as expected, elements 4, 3, 2, and 1. When you try it on an array with elements 1, 2, 3, 4, and 5, however, you are surprised to see that the array now has elements 5, 4, 0, 2, and 1. In fact, you discover that the code always works correctly on arrays of even length, but it sets the middle element to 0 whenever the array has odd length.
-
-A. For an array of odd length cnt = 2k + 1, what are the values of variables first and last in the final iteration of function reverse_array? Both first and last have value k, so we are attempting to swap the middle element with itself.
-
-B. Why does this call to function inplace_swap set the array element to 0? because the final element is the same for both first and last variables and hence results in zero due to additive inverse property of boolean algebra
-
-C. What simple modification to the code for reverse_array would eliminate this problem? change first <= last to first < last
 
 One common use of bit-level operations is to implement masking operations, where a mask is a bit pattern that indicates a selected set of bits within a word. As an example, the mask 0xFF (having ones for the least significant 8 bits) indicates the low-order byte of a word. The bit-level operation x & 0xFF yields a value consisting of the least significant byte of x, but with all other bytes set to 0. For example, with x = 0x89ABCDEF, the expression would yield 0x000000EF. The expression ~0 will yield a mask of all ones, regardless of the size of the data representation. The same mask can be written 0xFFFFFFFF when data type int is 32 bits, but it would not be as portable.
 
 Practice Problem 2.12 
 
-Write C expressions, in terms of variable x, for the following values. Your code should work for any word size w ≥ 8. For reference, we show the result of evaluating the expressions for x = 0x87654321, with w = 32.
-
-A. The least significant byte of x, with all other bits set to 0. [0x00000021] x & 0xFF
-
-B. All but the least significant byte of x complemented, with the least significant byte left unchanged. [0x789ABC21]
-x ^ ~0xFF
-
-C. The least significant byte set to all ones, and all other bytes of x left unchanged. [0x876543FF] (x | 0xFF)
+Practice problem 2.13
 
 Logical Operations in C
 
 C also provides a set of logical operators ||, &&, and !, which correspond to the or, and, and not operations of logic. These can easily be confused with the bit-level operations, but their behavior is quite different. The logical operations treat any nonzero argument as representing true and argument 0 as representing false. They return either 1 or 0, indicating a result of either true or false, respectively.
 
+Expression                                  Result
+
+!0x41                                       0x00
+
+!0x00                                       0x01
+
+!!0x41                                      0x01
+
+0x69 && 0x55                                0x01
+
+0x69 || 0x55                                0x01
+
 A second important distinction between the logical operators ‘&&’ and ‘||’ versus their bit-level counterparts ‘&’ and ‘|’ is that the logical operators do not evaluate their second argument if the result of the expression can be determined by evaluating the first argument. Thus, for example, the expression a && 5/a will never cause a division by zero, and the expression p && *p++ will never cause the dereferencing of a null pointer.
 
 Practice Problem 2.14
 
-Suppose that x and y have byte values 0x66 and 0x39, respectively. Fill in the following table indicating the byte values of the different C expressions:
-
-Expression              Value               Expression              Value
-
-x & y                   0x20                x && y                  0x01
-
-x | y                   0x7F                x || y                  0x01
-
-~x | ~y                 0xDF                !x || !y                0x00
-
-x & !y                  0x00                x && ~y                 0x01    
 
 Practice Problem 2.15 
 
-Using only bit-level and logical operations, write a C expression that is equivalent to x == y. In other words, it will return 1 when x and y are equal and 0 otherwise.
-
-!(x ^ y)
-
-That is, x^y will be zero if and only if every bit of x matches the corresponding bit of y. We then exploit the ability of ! to determine whether a word contains any nonzero bit.
-There is no real reason to use this expression rather than simply writing x == y, but it demonstrates some of the nuances of bit-level and logical operations.
 
 Shift Operations in C
 
@@ -644,6 +515,8 @@ There is a corresponding right shift operation, written in C as x >> k, but it h
 The C standards do not precisely define which type of right shift should be used with signed numbers—either arithmetic or logical shifts may be used. This unfortunately means that any code assuming one form or the other will potentially encounter portability problems. In practice, however, almost all compiler/machine combinations use arithmetic right shifts for signed data, and many programmers assume this to be the case. For unsigned data, on the other hand, right shifts must be logical.
 
 In contrast to C, Java has a precise definition of how right shifts should be performed. The expression x >> k shifts x arithmetically by k positions, while x >>> k shifts it logically.
+
+Practice problem 2.16
 
 Shifting by k, for large values of k
 

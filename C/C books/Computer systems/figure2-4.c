@@ -35,7 +35,7 @@ void show_pointer(void * x) {
 
 void show_string(char * str)
 {
-    show_bytes((byte_pointer) str, strlen(str)+1);
+    show_bytes((byte_pointer) str, strlen(str));
 }
 
 void test_show_bytes(int val)

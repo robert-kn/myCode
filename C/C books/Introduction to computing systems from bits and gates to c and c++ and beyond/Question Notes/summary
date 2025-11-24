@@ -781,7 +781,7 @@ the LC-3 instruction being processed determines what activities must be carried 
 
 88. Processing starts with State 1. The FETCH phase takes three clock cycles, corresponding to the three steps described earlier. In the ﬁrst clock cycle, the MAR is loaded with the contents of the PC, and the PC is incremented. In order for the contents of the PC to be loaded into the MAR (see Figure 4.3), the ﬁnite state machine must assert GatePC and LD.MAR. GatePC connects the PC to the processor bus. LD.MAR, the write enable signal of the MAR register, loads the contents of the bus into the MAR at the end of the current clock cycle. (Registers are loaded at the end of the clock cycle if the corresponding control signal is asserted.)
 
-89. what happens in each of the 3 clock cycles of the FETCH phase? MAR <- PC and PC <- PC + 1; MDR <- MAR; IR <- MDR
+89. what happens in each of the 3 clock cycles of the FETCH phase? MAR <- PC and PC <- PC + 1; MDR <- M[MAR]; IR <- MDR
 
 90. In order for the PC to be incremented (again, see Figure 4.3), the ﬁnite state machine must assert the PCMUX select lines to choose the output of the box labeled +1 and must also assert the LD.PC signal to load the output of the PCMUX into the PC at the end of the current cycle. The ﬁnite state machine then goes to State 2. Here, the MDR is loaded with the instruction, which is read from memory.
 
