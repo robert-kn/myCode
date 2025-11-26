@@ -592,7 +592,7 @@ Practice problem 2.18
 
 Conversions between Signed and Unsigned
 
-For most implementations of C, the answer to this question is based on a bit-level perspective, rather than on a numeric one. For most C implementations that handle conversions between signed and unsigned numbers with the same word size—the numeric values might change, but the bit patterns do not. For example, consider the following code:
+What should be the effect of casting signed value to unsigned, or vice versa? For most implementations of C, the answer to this question is based on a bit-level perspective, rather than on a numeric one. For example, consider the following code:
 
 1  short	int	 v = –12345;
 2  unsigned short uv = (unsigned short) v;
@@ -602,7 +602,9 @@ When run on a two's-complement machine, it generates the following output:
 
 v = –12345, uv = 53191
 
-What we see here is that the effect of casting is to keep the bit values identical but change how these bits are interpreted. Similarly, consider the following code:
+What we see here is that the effect of casting is to keep the bit values identical but change how these bits are interpreted. We saw in Figure 2.15 that the 16-bit two's-complement representation of –12,345 is identical to the 16-bit unsigned representation of 53,191. Casting from short to unsigned short changed the numeric value, but not the bit representation.
+
+Similarly, consider the following code:
 
 1  unsigned u = 4294967295u;	/* UMax */
 2  int tu = (int) u;
@@ -612,32 +614,15 @@ When run on a two's-complement machine, it generates the following output:
 
 u = 4294967295, tu = –1
 
+We can see from Figure 2.14 that, for a 32-bit word size, the bit patterns representing 4,294,967,295 (UMax32) in unsigned form and –1 in two's-complement form are identical. In casting from unsigned to int, the underlying bit representation stays the same.
+
 This is a general rule for how most C implementations handle conversions between signed and unsigned numbers with the same word size—the numeric values might change, but the bit patterns do not. see equation2-5.png and equation2-7
 
 Practice Problem 2.19
 
-Using the table you filled in when solving Problem 2.17, fill in the following table describing the function T2U4:
-
-x                          T2U4(x)
-
--8                         8
-
--3                         13
-
--2                         14
-
--1                         15
-
-0                          0
-
-5                          5
-
 
 Practice Problem 2.20
 
-Explain how Equation 2.5 applies to the entries in the table you generated when solving Problem 2.19.
-
-For the first four entries, the values of x are negative and T2U4(x) = x + 2^(4). For the remaining two entries, the values of x are nonnegative and T2U4(x) = x
 
 Signed versus Unsigned in C
 
@@ -651,62 +636,43 @@ Some possibly nonintuitive behavior arises due to C's handling of expressions co
 
 Practice Problem 2.21 
 
-Assuming the expressions are evaluated when executing a 32-bit program on a machine that uses two's-complement arithmetic, fill in the following table describing the effect of casting and relational operations, in the style of Figure 2.19:
-
-Expression                              Type                Evaluation
-
--2147483647-1 == 2147483648U            unsigned.              1
-
--2147483647-1 < 2147483647              signed                 1
-
--2147483647-1U < 2147483647             unsigned               0
-
--2147483647-1 < -2147483647             signed                 1
-
--2147483647-1U < -2147483647            unsigned               1?
-
 
 Expanding the Bit Representation of a Number
 
 One common operation is to convert between integers having different word sizes while retaining the same numeric value.
 To convert an unsigned number to a larger data type, we can simply add leading zeros to the representation; this operation is known as zero extension see unsigned_expansion.png. For converting a two's-complement number to a larger data type, the rule is to perform a sign extension, adding copies of the most significant bit to the representation see twos_complement.png
 
+As an example, consider the following code:
+
+1  short sx = –12345;	     /* –12345 */
+2  unsigned short usx = sx;  /* 53191 */
+3  int x = sx;               /* -12345 */
+4  unsigned ux = usx;        /* 53191 */
+5
+6  printf(“sx = %d:\t”, sx);
+7  show_bytes((byte_pointer) "sx, sizeof(short));
+8  printf(“usx = %u:\t”, usx);
+9  show_bytes((byte_pointer) "usx, sizeof(unsigned short));
+10 printf(“x = %d:\t”, x);
+11 show_bytes((byte_pointer) &x, sizeof(int));
+12 printf(“ux = %u:\t”, ux);
+13 show_bytes((byte_pointer) &ux, sizeof(unsigned));
+
+When run as a 32–bit program on a big-endian machine that uses a two's-complement representation, this code prints the output
+
+sx = –12345:	cf c7
+usx = 53191:	cf c7
+x = –12345:	    ff ff cf c7
+ux = 53191:     00 00 cf c7
+
 use python3 -c 'n=-5; print(format(n & 0xff, "08b"))' to convert negative decimal numbers to the bit representations in two's-complement. n & 0xff masks to 8 bits i.e. keeps only the lower 16 bits whilst format(..., "08b") prints a binary string with leading zeros upto 8 bits. you can adjust the bit width as needed 
 
 8 bits → 0xFF, "08b"
 32 bits → 0xFFFFFFFF, "032b"
 
+Practice problem 2.22
+
 Practice Problem 2.23
-
-Consider the following C functions:
-
-int fun1(unsigned word) {
-    return (int) ((word << 24) >> 24);
-}
-
-int fun2(unsigned word) {
-    return ((int) word << 24) >> 24;
-}
-
-Assume these are executed as a 32–bit program on a machine that uses two's-complement arithmetic. Assume also that right shifts of signed values are performed arithmetically, while right shifts of unsigned values are performed logically.
-
-Fill in the following table showing the effect of these functions for several example arguments. You will find it more convenient to work with a hexadecimal representation. Just remember that hex digits 8 through F have their most significant bits equal to 1.
-
-w                       fun1(w)                         fun2(w)
-
-0x00000076              0x00000076                     0x00000076
-
-0x87654321              0x00000021                     0x00000021
-
-0x000000C9              0x000000C9                     0xFFFFFFC9
-
-0xEDCBA987              0x00000087                     0xFFFFFF87
-
-The expressions in these functions are common program “idioms” for extracting values from a word in which multiple bit fields have been packed. They exploit the zero-filling and sign-extending properties of the different shift operations. Note carefully the ordering of the cast and shift operations. In fun1 , the shifts are performed on unsigned variable word and hence are logical. In fun2 , shifts are performed after casting word to int and hence are arithmetic.
-
-B. Describe in words the useful computation each of these functions performs
-
-function fun1 extracts a value from the low-order 8 bits of the argument, giving an integer ranging between 0 and 255. Function fun2 extracts a value from the low-order 8 bits of the argument, but it also performs sign extension. The result will be a number between –128 and 127
 
 Truncating Numbers
 
@@ -731,6 +697,8 @@ this statement
 int y = sx;     /* –12345 */
 
 places the 16 bits into a wider data type (32 bits) and sign extends the msb to fill the upper (intially empty) 16 bits. the end result is that the y stores the same number as variable sx.
+
+When truncating a w-bit number x→=[xw−1,xw−2,…,x0] to a k-bit number, we drop the high-order w – k bits, giving a bit vector x→′=[xk−1,xk−2,…,x0]. Truncating a number can alter its value—a form of overflow. “For an unsigned number, we can readily characterize the numeric value that will result. see unsigned_truncation.png. A similar property holds for truncating a two's-complement number, except that it then converts the most significant bit into a sign bit: see twos_complement_truncation.png.
 
 Advice on Signed versus Unsigned
 

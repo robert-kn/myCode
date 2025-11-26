@@ -809,10 +809,7 @@ the LC-3 instruction being processed determines what activities must be carried 
 
 100. Why is the name instruction pointer more insightful? The value stored in the program counter is the address of the next instruction to be processed. Hence the name ’Instruction Pointer’is more appropriate for it.
 
-101. If a HALT instruction can clear the RUN latch, thereby stopping the instruction cycle, what instruction is needed to set the RUN 
-latch, thereby reinitiating the instruction cycle? Once the RUN latch is cleared, the clock stops, so no instructions can be processed. 
-Thus, no instruction can be used to set the RUN latch. In order to re-initiate the instruction cycle, an external input must be applied. 
-This can be in the form of an interrupt signal or a front panel switch, for example.
+101. If a HALT instruction can clear the RUN latch, thereby stopping the instruction cycle, what instruction is needed to set the RUN latch, thereby reinitiating the instruction cycle? Once the RUN latch is cleared, the clock stops, so no instructions can be processed. Thus, no instruction can be used to set the RUN latch. In order to re-initiate the instruction cycle, an external input must be applied. This can be in the form of an interrupt signal or a front panel switch, for example.
 
 102. we now have enough to write our first program since we have two operate instructions (AND and ADD), one control instruction (BR), and a system call to halt the execution of a user program (TRAP instruction). Suppose the computer does not know how to multiply two positive integers. Suppose we wanted to multiply 5 times 4. Even if we do not know how to multiply, if we know that 5 times 4 is 5+5+5+5, and the computer has an ADD instruction, we can write a program that can multiply. All we have to do is add 5 to itself four times. Figure 4.6 illustrates the process.
 

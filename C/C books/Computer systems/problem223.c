@@ -23,6 +23,8 @@
 //     0x000000c9               0x000000c9              0xffffffc9
 //     0xEDCBA987               0x00000087              0xffffff87
 
+// The expressions in these functions are common program “idioms” for extracting values from a word in which multiple bit fields have been packed. They exploit the zero-filling and sign-extending properties of the different shift operations. Note carefully the ordering of the cast and shift operations. In fun1 , the shifts are performed on unsigned variable word and hence are logical. In fun2 , shifts are performed after casting word to int and hence are arithmetic.
+
 // B. Describe in words the useful computation each of these functions performs. Function fun1 extracts a value from the 
 // low-order 8 bits of the argument, giving an integer ranging between 0 and 255. Function fun2 extracts a value from the 
 // low-order 8 bits of the argument, but it also performs sign extension. The result will be a number between −128 and 127.
