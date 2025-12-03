@@ -1,7 +1,7 @@
 // Practice problem 2.31
 
-// Your coworker gets impatient with your analysis of the overflow conditions for two’s-complement addition and presents 
-// you with the following implementation of tadd_ok: 
+// Your coworker gets impatient with your analysis of the overflow conditions for two’s-complement addition and presents you with the following implementation of tadd_ok: 
+
 // /* Determine whether arguments can be added without overflow */
 // /* WARNING: This code is buggy. */
 
@@ -13,6 +13,4 @@
 
 // You look at the code and laugh. Explain why. 
 
-// Your coworker could have learned, by studying Section 2.3.2, that two’s-complement addition forms an abelian group, and
-// so the expression (x+y)-x will evaluate to y regardless of whether or not the addition overflows, and that (x+y)-y will
-// always evaluate to x. 
+// In C, signed integer arithmetic overflows silently — it wraps around modulo 2^32 (for 32-bit ints). Your coworker could have learned, by studying Section 2.3.2, that two’s-complement addition forms an abelian group, and so the expression (x+y)-x will evaluate to y regardless of whether or not the addition overflows, and that (x+y)-y will always evaluate to x. 

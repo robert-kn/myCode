@@ -1,19 +1,8 @@
 // Practice problem 2.46
 
-// The imprecision of floating-point arithmetic can have disastrous effects. On February 25, 1991, during the first Gulf 
-// War, an American Patriot Missile battery in Dharan, Saudi Arabia, failed to intercept an incoming Iraqi Scud missile. 
-// The Scud struck an American Army barracks and killed 28 soldiers. The U.S. General Accounting Office (GAO) conducted a 
-// detailed analysis of the failure and determined that the underlying cause was an imprecision in a numeric calculation. 
+// The imprecision of floating-point arithmetic can have disastrous effects. On February 25, 1991, during the first Gulf War, an American Patriot Missile battery in Dharan, Saudi Arabia, failed to intercept an incoming Iraqi Scud missile. The Scud struck an American Army barracks and killed 28 soldiers. The U.S. General Accounting Office (GAO) conducted a detailed analysis of the failure and determined that the underlying cause was an imprecision in a numeric calculation. In this exercise, you will reproduce part of the GAO’s analysis. 
 
-// In this exercise, you will reproduce part of the GAO’s analysis. 
-
-// The Patriot system contains an internal clock, implemented as a counter that is incremented every 0.1 seconds. To 
-// determine the time in seconds, the program would multiply the value of this counter by a 24-bit quantity that was a 
-// fractional binary approximation to 1/10. In particular, the binary representation of 1/10 is the nonterminating 
-// sequence 0.000110011[0011] . . .2, where the portion in brackets is repeated indefinitely. The program approximated 
-// 0.1, as a value x, by considering just the first 23 bits of the sequence to the right of the binary point: 
-// x = 0.00011001100110011001100. (See Problem 2.51 for a discussion of how they could have approximated 0.1 more 
-// precisely.) 
+// The Patriot system contains an internal clock, implemented as a counter that is incremented every 0.1 seconds. To determine the time in seconds, the program would multiply the value of this counter by a 24-bit quantity that was a fractional binary approximation to 1/10. In particular, the binary representation of 1/10 is the nonterminating sequence 0.000110011[0011] . . .2, where the portion in brackets is repeated indefinitely. The program approximated 0.1, as a value x, by considering just the first 23 bits of the sequence to the right of the binary point: x = 0.00011001100110011001100. (See Problem 2.51 for a discussion of how they could have approximated 0.1 more precisely.) 
 
 // 	A.	What is the binary representation of 0.1 − x? 0.000000000000000000000001100[1100] . . .2 
 // 	B.	what is the approximate decimal value 0.1 - x? 9.54 x 10^(-8)

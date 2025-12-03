@@ -5,8 +5,7 @@
 // /* Determine whether arguments can be added without overflow */
 // int tadd_ok(int x, int y);
 
-// This function is a direct implementation of the rules given to determine whether or not a two’s-complement addition 
-// overflows. 
+// This function should return 1 if arguments x and y can be added without causing overflow. 
 
 // Int tadd_ok(int x, int y){
 
@@ -17,4 +16,22 @@
 
 // }
 
-// This function should return 1 if arguments x and y can be added without causing overflow. 
+// This function is a direct implementation of the rules given to determine whether or not a two’s-complement addition overflows. 
+
+// Bitwise version
+
+/* Determine whether arguments can be added without overflow (bitwise version) */
+// int tadd_ok(int x, int y) {
+//     int sum = x + y;
+
+//     int sign_x = x >> 31;     // 0 if x >= 0, -1 if x < 0
+//     int sign_y = y >> 31;     // 0 if y >= 0, -1 if y < 0
+//     int sign_sum = sum >> 31; // 0 if sum >= 0, -1 if sum < 0
+
+//     // Overflow occurs if x and y have the same sign, but sum has a different one
+//     int overflow = !(sign_x ^ sign_y) & (sign_x ^ sign_sum);
+
+//     // Return 1 if OK (no overflow), 0 otherwise
+//     return !overflow;
+// }
+

@@ -10,8 +10,8 @@ int arith(int x, int y) {
     return result;
 } 
 
-// We compiled this code for particular values of M and N. The compiler optimized the multiplication and division using 
-// the methods we have discussed. The following is a translation of the generated machine code back into C: 
+// We compiled this code for particular values of M and N. The compiler optimized the multiplication and division using the methods we have discussed. The following is a translation of the generated machine code back into C: 
+
 /* Translation of assembly code for arith */
 int optarith(int x, int y) {
     int t = x;
@@ -23,6 +23,4 @@ int optarith(int x, int y) {
 }
 // What are the values of M and N? 
 
-// We have found that people have difficulty with this exercise when working directly with assembly code. It becomes 
-// more clear when put in the form shown in optarith. We can see that M is 31; x*M is computed as (x<<5)-x.  
-// We can see that N is 8; a bias value of 7 is added when y is negative, and the right shift is by 3. 
+// We have found that people have difficulty with this exercise when working directly with assembly code. It becomes more clear when put in the form shown in optarith. We can see that M is 31; x*M is computed as (x<<5)-x. We can see that N is 8; a bias value of 7 is added when y is negative, and the right shift is by 3. 

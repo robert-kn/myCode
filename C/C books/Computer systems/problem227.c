@@ -12,3 +12,5 @@ int uadd_ok(unsigned x, unsigned y){
 	return sum >= x;
 
 }
+
+// This function is a direct implementation of the rules given to determine whether or not an unsigned addition overflows.
