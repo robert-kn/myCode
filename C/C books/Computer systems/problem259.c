@@ -7,13 +7,15 @@
 */
 
 #include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
 
 int main(){
 
-    int x = 0x89ABCDEF;
-    int y = 0x76543210; 
-    //int lsb_byte = x & 0xff; // grab the lowest significant byte of  the word  i.e. 0xef
-    //int three_bytes = y & 0xffffff00; //  grab all bytes except the lowest significant byte i.e. 0x765432
+    u_int32_t x = 0x89ABCDEF;
+    u_int32_t y = 0x76543210; 
+    
     int combine_bytes = (x & 0xff) | (y & 0xffffff00);
-    printf("%.2x\n", combine_bytes);
+    printf("%.2X\n", combine_bytes);
+    exit(EXIT_SUCCESS);
 }

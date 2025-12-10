@@ -5,8 +5,7 @@
  * For example 0xFF00 -> 0x8000, and 0x6600 --> 0x4000.
  * If x = 0, then return 0.
  * 
- * Your function should follow the bit-level integer coding rules (page 120), except that you may assume that data 
- * type int has w = 32 bits.
+ * Your function should follow the bit-level integer coding rules (page 120), except that you may assume that data type int has w = 32 bits.
  * 
  * Your code should contain a total of at most 15 arithmetic, bit-wise, and logical operations.
  * 
@@ -18,22 +17,16 @@
 
 int leftmost_one(unsigned x){
     
-    x |= (x >> 1);
-    
-    x |= (x >> 2);
-    
-    x |= (x >> 4);
-    
-    x |= (x >> 8);
-    
-    x |= (x >> 16);
-    
-    x -= (x >> 1);
-
-    return x;
+    unsigned int spread = x;
+    spread |= spread >> 1;
+    spread |= spread >> 2;
+    spread |= spread >> 4;
+    spread |= spread >> 8;
+    spread |= spread >> 16;
+    return spread & ~(spread >> 1);
 }
 
 int main(){
-    int x = 0xff00;
+    int x = 0x6600;
     printf("0x%.2x\n", leftmost_one(x));
 }

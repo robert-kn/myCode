@@ -7,14 +7,6 @@
 
 typedef unsigned char * byte_pointer;
 
-void show_bytes(byte_pointer start, size_t len)
-{
-    unsigned i;
-    for(i = 0; i < len; i++)
-        printf("%.2x", start[i]);
-    printf("\n");
-}
-
 int is_little_endian(void)
 {
     uint16_t x = 0x0001;
@@ -23,8 +15,6 @@ int is_little_endian(void)
 
 int main(void)
 {
-    // const uint16_t x = 0x0001;
-    // show_bytes((byte_pointer) &x, sizeof(x));
     printf("%d\n", is_little_endian());
     return 0;
 }

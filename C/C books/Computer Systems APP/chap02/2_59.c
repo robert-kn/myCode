@@ -22,7 +22,7 @@ int main(void)
 
     u_int32_t masked_x = x & 0xFF;
     u_int32_t masked_y = y & 0xffffff00;
-    u_int32_t answer = masked_x | masked_y;
-    show_bytes((byte_pointer) &answer, sizeof(answer));
-    return 0;
+    u_int32_t combine_bytes = masked_x | masked_y;
+    printf("%.2x\n", combine_bytes);
+    return exit(EXIT_SUCCESS);
 }

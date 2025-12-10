@@ -415,8 +415,7 @@ Practice Problem 2.6
 
 A string in C is encoded by an array of characters terminated by the null (having value 0) character. Each 
 character is represented by some standard encoding, with the most common being the ASCII character code. Thus, if 
-we run our routine show_bytes with arguments “12345” and 6 (to include the terminating character), we get the 
-result 31 32 33 34 35 00. Observe that the ASCII code for decimal digit x happens to be 0x3x, and that the 
+we run our routine show_bytes with arguments “12345” and 6 (to include the terminating character), we get the result 31 32 33 34 35 00. Observe that the ASCII code for decimal digit x happens to be 0x3x, and that the 
 terminating byte has the hex representation 0x00. This same result would be obtained on any system using ASCII as 
 its character code, independent of the byte ordering and word size conventions. As a consequence, text data are 
 more platform independent than binary data.
@@ -928,36 +927,15 @@ Figure 2.36 shows the representations and numeric values of some important singl
 
 - The largest normalized value has a bit representation with a sign bit of 0, the least significant bit of the exponent equal to 0, and all other bits equal to 1. It has a fraction value of f = 1 - 2^(-n), giving a significand M = 2-2^(-n) (which we have written 2 - ∊.) It has an exponent value E = 2^(k-1) - 1, giving a numeric value V=(2-2^(-n)) x 2^(2^(k-1)-1) = (1-2^(-n-1) x 2^(2k-1).
 
-12,345 has binary representation [11000000111001]. We create a normalized representation of this by shifting 13 positions to the right of a binary point, giving 12345 = 1.10000001110012 × 2^(13). To encode this in IEEE single-precision format, we construct the fraction field by dropping the leading 1 and adding 10 zeros to the end, giving binary representation [10000001110010000000000]. To construct the exponent field, we add bias 127 to 13, giving 140, which has binary representation [10001100]. We combine this with a sign bit of 0 to get the floating-point representation in binary of [01000110010000001110010000000000]. 
+One useful exercise for understanding floating-point representations is to convert sample integer values into floating-point form. For example, we saw in Figure 2.15 that 12,345 has binary representation [11000000111001]. We create a normalized representation of this by shifting 13 positions to the right of a binary point, giving 12345 = 1.10000001110012 × 2^(13). To encode this in IEEE single-precision format, we construct the fraction field by dropping the leading 1 and adding 10 zeros to the end, giving binary representation [10000001110010000000000]. To construct the exponent field, we add bias 127 to 13, giving 140, which has binary representation [10001100]. We combine this with a sign bit of 0 to get the floating-point representation in binary of [01000110010000001110010000000000]. Recall that we earlier  observed the correlation in the bit-level representations of the integer value 12345 (0x3039) and the single-precision floating-point value 12345.0 (0x4640E400) see image-1.png
+
+We can now see that the region of correlation corresponds to the low-order bits of the integer, stopping just before the most significant bit equal to 1 (this bit forms the implied leading 1), matching the high-order bits in the fraction part of the floating-point representation.
+
 
 Practice Problem 2.48
 
-As mentioned in Problem 2.6, the integer 3,510,593 has hexadecimal representation 0x00359141, while the single-precision floating-point number 3,510,593.0 has hexadecimal representation 0x4A564504. Derive this floating-point representation and explain the correlation between the bits of the integer and floating-point representations.
-
-Hexadecimal 0x359141 is equivalent to binary [1101011001000101000001]. Shifting this right 21 places gives 1.101011001000101000001 × 2^(21) . We form the fraction field by dropping the leading 1 and adding two zeros, giving
-
-[10101100100010100000100]
-
-The exponent is formed by adding bias 127 to 21, giving 148 (binary [10010100]). We combine this with a sign field of 0 to give a binary representation
-
-[01001010010101100100010100000100]
-
-We see that the matching bits in the two representations correspond to the low-order bits of the integer, up to the most significant bit equal to 1 matching the high-order 21 bits of the fraction:
-   0   0   3   5   9   1   4   1 
-00000000001101011001000101000001
-           ********************* 
-     4   A   5   6   4   5   0   4
-  01001010010101100100010100000100
-
-
 
 Practice Problem 2.49
-
-A. For a floating-point format with an n-bit fraction, give a formula for the smallest positive integer that cannot be represented exactly (because it would require an (n + 1)-bit fraction to be exact). Assume the exponent field size k is large enough that the range of representable exponents does not provide a limitation for this problem.
-
-the smallest positive integer not exactly representable is 2^(n+1) + 1
-
-B. What is the numeric value of this integer for single-precision format (n = 23)? 16,777,217
 
 
 Rounding
@@ -970,68 +948,13 @@ Figure 2.37 illustrates the four rounding modes applied to the problem of roundi
 
 The other three modes produce guaranteed bounds on the actual value. These can be useful in some numerical applications.
 
+Round-to-even at first seems like it has a rather arbitrary goal—why is there any reason to prefer even numbers? Why not consistently round values halfway between two representable values upward? The problem with such a convention is that one can easily imagine scenarios in which rounding a set of data values would then introduce a statistical bias into the computation of an average of the values. The average of a set of numbers that we rounded by this means would be slightly higher than the average of the numbers themselves. Conversely, if we always rounded numbers halfway between downward, the average of a set of rounded numbers would be slightly lower than the average of the numbers themselves. Rounding toward even numbers avoids this statistical bias in most real-life situations. It will round upward about 50% of the time and round downward about 50% of the time.
 
 Practice Problem 2.50
 
-Show how the following binary fractional values would be rounded to the nearest half (1 bit to the right of the binary point), according to the round-to-even rule. In each case, show the numeric values, both before and after rounding. 
-
-A. 10.010 -> 10.0
-B. 10.011 -> 10.1
-C. 10.110 -> 11.0
-D. 11.001 -> 11.0
-
-
-
 Practice Problem 2.51 
 
-We saw in Problem 2.46 that the Patriot missile software approximated 0.1 as x = 0.000110011001100110011002. Suppose instead that they had used IEEE round-to-even mode to determine an approximation x' to 0.1 with 23 bits to the right of the binary point.
-
-A. What is the binary representation of x'?
-
-looking at the nonterminating sequence for 1/10, we see that the 2 bits to the right of the rounding position are 1, so a better approximation to 1/10 would be obtained by incrementing x to get x′ = 0.00011001100110011001101, which is larger than 0.1.
-
-B. What is the approximate decimal value of x' - 0.1? We can see that x′ – 0.1 has binary representation 0.0000000000000000000000000[1100]
-Comparing this to the binary representation of 1/10, we can see that it is 2^(-22) × 2^(-22) x 1/10, which is around 2.38 × 10^(-8)
-
-C. How far off would the computed clock have been after 100 hours of operation?
-
-2.38 × 10^(−8) × 100 × 60 × 60 × 10 ≈ 0.086 seconds, a factor of 4 less than the error in the Patriot system.
-
-
-D. How far off would the program's prediction of the position of the Scud missile have been?
-
-0.086 × 2,000 ≈ 171 meters.
-
-
 Practice Problem 2.52
-
-Consider the following two 7-bit floating-point representations based on the IEEE floating-point format. Neither has a sign bit—they can only represent nonnegative numbers.
-
-Format A
-
-There are k = 3 exponent bits. The exponent bias is 3.
-There are n = 4 fraction bits.
-
-Format B
-
-There are k = 4 exponent bits. The exponent bias is 7.
-There are n = 3 fraction bits.
-
-
-Below, you are given some bit patterns in format A, and your task is to convert them to the closest value in format B. If necessary, you should apply the round-to-even rounding rule. In addition, give the values of numbers given by the format A and format B bit patterns. Give these as whole numbers (e.g., 17) or as fractions (e.g., 17/64).
-
-Format A                                                  Format B
-Bits                            Value                     Bits                       Value
-
-011 0000                           1                      0111 000                   1
-
-101 1110                          15/2                    1001 111                   15/2
-
-010 1001                          25/32                   0110 100                   3/4            round down
-
-110 1111                          31/2                    1011 000                   16             round up
-
-000 0001                          1/64                    0001 000                   1/64           denorm -> norm
 
 Floating-Point Operations
 
@@ -1039,33 +962,26 @@ The IEEE standard specifies a simple rule for determining the result of an arith
 
 One strength of the IEEE standard's method of specifying the behavior of floating-point operations is that it is independent of any particular hardware or software realization.
 
-Let us define x + y to be Round(x +(^f) y). This operation is defined for all values of x and y, although it may yield infinity even when both x and y are real numbers due to overflow. The operation is commutative, with x +(^f) y = y +(^f) x for all values of x and y. On the other hand, the operation is not associative. For example, with single-precision floating point the expression (3.14+1e10)-1e10 evaluates to 0.0—the value 3.14 is lost due to rounding. On the other hand, the expression 3.14+(1e10–1e10) evaluates to 3.14. As with an abelian group, most values have inverses under floating-point addition. The exceptions are infinities (since +∞ –∞ = NaN), and NaNs. The lack of associativity in floating-point addition is the most important group property that is lacking.
+Let us define x + y to be Round(x +(^f) y). This operation is defined for all values of x and y, although it may yield infinity even when both x and y are real numbers due to overflow. The operation is commutative, with x +(^f) y = y +(^f) x for all values of x and y. On the other hand, the operation is not associative. For example, with single-precision floating point the expression (3.14+1e10)-1e10 evaluates to 0.0—the value 3.14 is lost due to rounding. On the other hand, the expression 3.14+(1e10–1e10) evaluates to 3.14. As with an abelian group, most values have inverses under floating-point addition. The exceptions are infinities (since +∞ –∞ = NaN), and NaNs. The lack of associativity in floating-point addition is the most important group property that is lacking. It has important implications for scientific programmers and compiler writers.
+
+On the other hand, floating-point addition satisfies the following monotonicity property: if a ≥ b, then x+fa≥x+fb for any values of a, b, and x other than NaN. This property of real (and integer) addition is not obeyed by unsigned or two's-complement addition.
+
+Floating-point multiplication also obeys many of the properties one normally associates with multiplication. Let us define x *f y to be Round(x × y). This operation is closed under multiplication (although possibly yielding infinity or NaN), it is commutative, and it has 1.0 as a multiplicative identity. On the other hand, it is not associative, due to the possibility of overflow or the loss of precision due to rounding. For example, with single-precision floating point, the expression (1e20*1e20)*1e–20 evaluates to +∞, while 1e20*(1e20*1e–20) evaluates to 1e20. In addition, floating-point multiplication does not distribute over addition. For example, with single-precision floating point, the expression 1e20*(1e20–1e20) evaluates to 0.0, while 1e20*1e20–1e20*1e20 evaluates to NaN.
+
+On the other hand, floating-point multiplication satisfies the following monotonicity properties for any values a, b, and c other than NaN:
+
+a ≥ b and c ≥ 0 ⇒ a ∗^(f) c ≥ b ∗^(f) c 
+
+a ≥ b and c ≤ 0 ⇒ a ∗^(f) c ≤ b ∗^(f) c
 
 Floating Point in C
 
-All versions of C provide two different floating-point data types: float and double. On machines that support IEEE floating point, these data types correspond to single- and double-precision floating point. In addition, the machines use the round-to-even rounding mode. Unfortunately, since the C standards do not require the machine to use IEEE floating point, there are no standard methods to change the rounding mode or to get special values such as –0, +∞, –∞, or NaN. Most systems provide a combination of include (. h) files and procedure libraries to provide access to these features, but the details vary from one system to another. For example, the GNU compiler gcc defines program constants INFINITY (for +∞) and NAN (for NaN) when the following sequence occurs in the program file:
+All versions of C provide two different floating-point data types: float and double. On machines that support IEEE floating point, these data types correspond to single- and double-precision floating point. In addition, the machines use the round-to-even rounding mode. Unfortunately, since the C standards do not require the machine to use IEEE floating point, there are no standard methods to change the rounding mode or to get special values such as –0, +∞, –∞, or NaN. Most systems provide a combination of include (.h) files and procedure libraries to provide access to these features, but the details vary from one system to another. For example, the GNU compiler gcc defines program constants INFINITY (for +∞) and NAN (for NaN) when the following sequence occurs in the program file:
 
 #define _GNU_SOURCE 1
 #include <math.h>
 
 Practice Problem 2.53
-
-Fill in the following macro definitions to generate the double-precision values +∞, –∞, and –0:
-
-#define POS_INFINITY
-#define NEG_INFINITY
-#define NEG_ZERO
-
-You cannot use any include files (such as math.h), but you can make use of the fact that the largest finite number that can be represented with double precision is around 1.8 × 10^(308)
-
-In general, it is better to use a library macro rather than inventing your own code. This code seems to work on a variety of machines, however.
-We assume that the value 1e400 overflows to infinity.
-
-#define POS_INFINITY 1e400
-#define NEG_INFINITY (–POS_INFINITY)
-#define NEG_ZERO (–1.0/POS_INFINITY)
-
-
 
 When casting values between int, float, and double formats, the program changes the numeric values and the bit representations as follows (assuming data type int is 32 bits):
 
@@ -1076,43 +992,13 @@ When casting values between int, float, and double formats, the program changes 
 
 Practice Problem 2.54 
 
-Assume variables x, f, and d are of type int, float, and double, respectively. Their values are arbitrary, except that neither f nor d equals +∞, –∞, or NaN. For each of the following C expressions, either argue that it will always be true (i.e., evaluate to 1) or give a value for the variables such that it is not true (i.e., evaluates to 0).
+problem 2.57
 
-Exercises such as this one help you develop your ability to reason about floating-point operations from a programmer's perspective. Make sure you understand each of the answers.
+problem 2.58
 
-A. x == (int)(double) x
+problem 2.59
 
-Yes, since double has greater precision and range than int.
-
-B. x == (int)(float) x
-
-No. For example, when x is TMax.
-
-C. d == (double)(float) d
-
-No. For example, when d is 1e40, we will get + ∞ on the right.
-
-D. f == (float)(double) f
-
-Yes, since double has greater precision and range than float.
-
-E. f == -(-f)
-
-Yes, since a floating-point number is negated by simply inverting its sign bit.
-
-F. 1.0/2 == 1/2.0
-
-Yes, the numerators and denominators will both be converted to floating-point representations before the division is performed.
-
-G. d*d >= 0.0
-
-Yes, although it may overflow to + ∞.
-
-H. (f+d)-f == d
-
-No. For example, when f is 1.0e20 and d is 1.0, the expression f+d will be rounded to 1.0e20, and so the expression on the left-hand side will evaluate to 0.0, while the right-hand side will be 1.0.
-
-
+problem 2.60
 
 Bit-Level Integer Coding rules
 
@@ -1153,266 +1039,21 @@ int get_msb(int x) {
 
 2.61
 
-Write C expressions that evaluate to 1 when the following conditions are true and to 0 when they are false. Assume x is of type int.
-
-Any bit of x equals 1. -> !!x
-Any bit of x equals 0. -> !!~x
-Any bit in the least significant byte of x equals 1. !!(x & 0xFF)
-Any bit in the most significant byte of x equals 0. !!~((x >> ((sizeof(int) - 1) << 3)) & 0xFF)
-
-additional restriction that you may not use equality (==) or inequality (!=) tests.
-
 2.62
-
-Write a function int_shifts_are_arithmetic() that yields 1 when run on a machine that uses arithmetic right shifts for data type int and yields 0 otherwise. Your code should work on a machine with any word size. Test your code on several machines.
-
-int int_shifts_are_arithmetic(void)
-{
-    int x = -1;
-    return (x >> 1) == x;
-}
 
 2.63
 
-Fill in code for the following C functions. Function srl performs a logical right shift using an arithmetic right shift (given by value xsra), followed by other operations not including right shifts or division. Function sra performs an arithmetic right shift using a logical right shift (given by value xsrl), followed by other operations not including right shifts or division. You may use the computation 8*sizeof(int) to determine w, the number of bits in data type int. The shift amount k can range from 0 to w – 1.
-
-unsigned srl(unsigned x, int k) {
-    /* Perform shift arithmetically */
-    unsigned xsra = (int) x >> k;             // arithmetic right shift (fills with sign bit)
-    int w = 8 * sizeof(int);                  // number of bits in an int
-    unsigned mask = (1U << (w - k)) - 1;     // lower (w - k) bits = 1
-    return xsra & mask;                     // clear sign bits
-}
-
-int sra(int x, int k) {
-    /* Perform shift logically */
-    int xsrl = (unsigned) x >> k;       // logical shift (fills with 0s)
-    int w = 8 * sizeof(int);            // number of bits in an int
-    int sign = x >> (w - 1);               // all 1s if x < 0, all 0s if +ve
-    int mask = ~((1 << (w - k)) - 1);      // top k bits = 1
-    mask &= sign;                          // keep only if negative
-    return xsrl | mask;
-
-}
-
 2.64
-
-Write code to implement the following function:
-
-/* Return 1 when any odd bit of x equals 1; 0 otherwise.
-   Assume w=32 */
-int any_odd_one(unsigned x);
-
-Your function should follow the bit-level integer coding rules, except that you may assume that data type int has w = 32 bits.
-
-Understanding “odd bits”
-
-Bit positions (starting from 0):
-
-31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0
-
-Odd bits are 1, 3, 5, 7, …, 31.
-
-Step 1: Build a mask with 1s in all odd positions
-
-The binary pattern that repeats for odd bits is:
-
-10101010₂ = 0xAA
-
-This has 1s in bits 1,3,5,7.
-
-Repeat it across all 4 bytes of a 32-bit word:
-
-mask = 0xAAAAAAAA;
-(binary: 10101010 10101010 10101010 10101010)
-
-⚙️ Step 2: Keep only odd bits of x
-
-x & mask
-
-This zeroes out all even bits.
-
-If any odd bit is 1, the result will be nonzero.
-
-⚙️ Step 3: Return 1 or 0 without conditionals
-Use !! to convert to 0 or 1:
-
-!!(x & mask)
-
-
-int any_odd_one(unsigned x) {
-    unsigned mask = 0xAAAAAAAA;  // 10101010... pattern for odd bits
-    return !!(x & mask);
-}
-
 
 2.65
 
-Write code to implement the following function:
-
-/* Return 1 when x contains an odd number of 1s; 0 otherwise. Assume w=32 */
-int odd_ones(unsigned x);
-
-Your function should follow the bit-level integer coding rules, except that you may assume that data type int has w = 32 bits. Your code should contain a total of at most 12 arithmetic, bitwise, and logical operations.
-
-int odd_ones(unsigned x)
-{
-    x ^= x >> 16; /* parity info for the whole 32 bits */
-    x ^= x >> 8;  /* parity info for the whole 16 bits */
-    x ^= x >> 4;  /* parity info for the whole 8 bits */
-    x ^= x >> 2;  /* parity info for the whole 4 bits */
-    x ^= x >> 1;  /* parity info for the whole 2 bits */
-    return x & 1;
-}
-
-explanation: XOR is 1 only when an odd number of bits are 1. it acts like an add without a carry. if we XOR all bits of x together, the final result is 1 if there is an odd number of bits. this is the definition of parity. Each XOR “fold” mixes together pairs of bits so that eventually every bit in the number has been XORed into the lowest bit. At the end, that one bit (the rightmost one) tells us the overall parity (odd/even number of 1s). e.g. x = 1011 then 1 ^ 0 ^ 1 ^ 1 = 1 (because there’s an odd number of 1s). We can't loop (loops aren't allowed by the assignment), so instead we fold the number onto itself using right shifts.
-
 2.66
-
-Write code to implement the following function:
-
-/*
- * Generate mask indicating leftmost 1 in x. Assume w=32.
- * For example, 0xFF00 -> 0x8000, and 0x6600 -> 0x4000.
- * If x = 0, then return 0.
- */
-int leftmost_one(unsigned x);
-
-Your function should follow the bit-level integer coding rules, except that you may assume that data type int has w = 32 bits. Your code should contain a total of at most 15 arithmetic, bitwise, and logical operations.
-Hint: First transform x into a bit vector of the form [0 ... 011 ... 1].
-
-int leftmost_one(unsigned x)
-{
-    unsigned int spread = x;
-    spread |= spread >> 1;
-    spread |= spread >> 2;
-    spread |= spread >> 4;
-    spread |= spread >> 8;
-    spread |= spread >> 16;
-    return spread & ~(spread >> 1)
-}
 
 2.67
 
-You are given the task of writing a procedure int_size_is_32() that yields 1 when run on a machine for which an int is 32 bits, and yields 0 otherwise. You are not allowed to use the sizeof operator. Here is a first attempt:
-
-1 “/* The following code does not run properly on some machines */
-2   int bad_int_size_is_32() {
-3       /* Set most significant bit (msb) of 32-bit machine */
-4       int set_msb = 1 << 31;
-5       /* Shift past msb of 32-bit word */
-6       int beyond_msb = 1 << 32;
-7
-8
-9       /* set_msb is nonzero when word size >= 32 beyond_msb is zero when word size <= 32 */
-10      return set_msb && !beyond_msb;
-11	}
-
-When compiled and run on a 32-bit SUN SPARC, however, this procedure returns 0. The following compiler message gives us an indication of the problem:
-
-warning: left shift count >= width of Type
-
-A. In what way does our code fail to comply with the C standard? 
-
-1 << 32 is undefined when int is 32 bits. In C, the shift amount must be strictly less than the width in bits of the type being shifted. If int is 32 bits, then 1 << 32 has a shift count equal to the width → undefined behavior. That's exactly what the compiler warning is telling you. Technically, 1 << 31 is also undefined for signed int. For signed types, left-shifting into or past the sign bit, when the result cannot be represented as a signed int, is also undefined. So strictly speaking, 1 << 31 is also not guaranteed to be valid for int.
-
-B. Modify the code to run properly on any machine for which data type int is at least 32 bits.
-
-int int_size_is_32(void)
-{
-    unsigned set_msb = 1U << 31; /* bit 31 is set; legal if int has >= 32 bits */
-    unsigned beyond_msb = set_msb << 1; // bit 32 set
-    return set_msb && !beyond_msb;
-
-}
-
-This runs correctly on any machine where int is at least 32 bits and detects exactly 32-bit ints.
-
-C. Modify the code to run properly on any machine for which data type int is at least 16 bits.
-
-int int_size_is_32(void)
-{
-    unsigned set_msb = 1U << 15;  // safe if int has at least 16 bits
-    set_msb <<= 15;               // now at bit 30 (total shift 30)
-    set_msb <<= 1;                // now at bit 31
-
-    unsigned beyond_msb = set_msb << 1; // bit 32 (or zero if 32 bit int)
-    return set_msb && !beyond_msb;
-}
-
 2.68
 
-Write code for a function with the following prototype:
-
-/*
- * Mask with least signficant n bits set to 1
- * Examples: n = 6 -> 0x3F, n = 17 -> 0x1FFFF
- * Assume 1 <= n <= w
- */
-int lower_one_mask(int n);
-
-Your function should follow the bit-level integer coding rules. Be careful of the case n = w.
-
-Key Trick
-
-A mask of the lowest n bits = ((1 << n) – 1) 
-
-BUT shifting by 32 is illegal (undefined behavior), so we must avoid:
-
-1 << 32 // not allowed
-
-So instead we compute:
-
-((unsigned) -1) >> (w - n)
-
-Why?
-
-(unsigned) -1) or ~0 = all 1s
-
-Shifting right clears the upper bits
-
-Leaves exactly n lower bits as 1
-
-For example, with w = 32:
-
-n = 6:
-~0 >> (32 - 6) = 0xFFFFFFFF >> 26 = 0x0000003F
-
-n = 17:
-~0 >> 15 = 0x0001FFFF
-
-n = 32:
-~0 >> 0 = 0xFFFFFFFF
-
-Perfect — and no illegal shifts.
-
-int lower_one_mask(int n)
-{
-    int w = 32;
-    return ~0 >> (w - n);
-}
-
 2.69
-
-Write code for a function with the following prototype:
-
-/*
- * Do rotating left shift. Assume 0 <= n < w
- * Examples when x = 0x12345678 and w = 32:
- * n=4 -> 0x23456781, n=20 -> 0x67812345
- */
-unsigned rotate_left(unsigned x, int n);
-
-Your function should follow the bit-level integer coding rules. Be careful of the case n = 0.
-
-unsigned rotate_left(unsigned x, int n)
-{
-    int w = 32;
-    int rshift = (w - n) & 31;  /* prevent illegal shift by 32 */
-    return (x << n) | (x >> rshift);
-}
-
-rotate_left(x,n) = (x << n) | (x >> (32 - n)) OR-ing the pieces puts them together. we can’t we do x >> (32 - n) because if n is 0 then (32 - n) = 32 and you already know that x >> 32 is illegal. we we avoid shifting by 32 by use of the term (32 - n) & 31 
 
 2.70
 
