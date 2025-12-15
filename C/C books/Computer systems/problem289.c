@@ -1,0 +1,19 @@
+We are running programs on a machine where values of type int have a 32-bit two's-complement representation. Values of type float use the 32-bit IEEE format, and values of type double use the 64-bit IEEE format.
+We generate arbitrary integer values x, y, and z, and convert them to values of type double as follows:
+
+/* Create some arbitrary values */
+int x = random();
+int y = random();
+int z = random();
+/* Convert to double */
+double dx = (double) x;
+double dy = (double) y;
+double dz = (double) z;
+
+For each of the following C expressions, you are to indicate whether or not the expression always yields 1. If it always yields 1, describe the underlying mathematical principles. Otherwise, give an example of arguments that make it yield 0. Note that you cannot use an IA32 machine running gcc to test your answers, since it would use the 80-bit extended-precision representation for both float and double.
+
+A. (float) x == (float) dx
+B. dx — dy == (double) (x-y)
+C. (dx + dy) + dz == dx + (dy + dz)
+D. (dx * dy) * dz == dx * (dy * dz)
+E. dx / dx == dz / dz

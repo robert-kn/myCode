@@ -12,8 +12,4 @@
 
 // Explain how Equations 2.9 and 2.10 apply to these cases. 
 
-// As Equation 2.9 states, the effect of this truncation on unsigned values is to simply find their residue, modulo 8. 
-// The effect of the truncation on signed values is a bit more complex. According to Equation 2.10, we first compute 
-// the modulo 8 residue of the argument. This will give values 0 through 7 for arguments 0 through 7, and also for 
-// arguments −8 through −1. Then we apply function U2T3 to these residues, giving two repetitions of the sequences 0 
-// through 3 and −4 through −1.
+// As Equation 2.9 states, the effect of this truncation on unsigned values is to simply find their residue, modulo 8. The effect of the truncation on signed values is a bit more complex. According to Equation 2.10, we first compute the modulo 8 residue of the argument. This will give values 0 through 7 for arguments 0 through 7, and also for arguments −8 through −1. Then we apply function U2T3 to these residues, giving two repetitions of the sequences 0 through 3 and −4 through −1.

@@ -21,7 +21,7 @@
         return NULL;
     void *next = result;
     int i;
-    for (i =0;i<ele_cnt;i++){
+    for (i=0;i<ele_cnt;i++){
          /* Copy object i to destination */
          memcpy(next, ele_src[i], ele_size);
          /* Move pointer to next memory region */
@@ -30,7 +30,7 @@
      return result;
  }
 
-// The function copy_elements is designed to copy ele_cnt data structures, each consisting of ele_size bytes into a buffer allocated by the function on line 9. The number of bytes required is computed as ele_cnt * ele_size.
+// The function copy_elements is designed to copy ele_cnt data structures, each consisting of ele_size bytes into a buffer allocated by the function. The number of bytes required is computed as ele_cnt * ele_size.
 // Imagine, however, that a malicious programmer calls this function with ele_cnt being 1,048,577 (220 + 1) and ele_size being 4,096 (212) with the program compiled for 32 bits. Then the multiplication on line 9 will overflow, causing only 4096 bytes to be allocated, rather than the 4,294,971,392 bytes required to hold that much data. The loop starting at line 15 will attempt to copy all of those bytes, overrunning the end of the allocated buffer, and therefore corrupting other data structures. This could cause the program to crash or otherwise misbehave.
 // The Sun code was used by almost every operating system, and in such widely used programs as Internet Explorer and the Kerberos authentication system. The Computer Emergency Response Team (CERT), an organization run by the Carnegie Mellon Software Engineering Institute to track security vulnerabilities and breaches, issued advisory “CA-2002-25,” and many companies rushed to patch their code. Fortunately, there were no reported security breaches caused by this vulnerability.
 // A similar vulnerability existed in many implementations of the library function calloc. These have since been patched. Unfortunately, many programmers call allocation functions, such as malloc, using arithmetic expressions as arguments, without checking these expressions for overflow.

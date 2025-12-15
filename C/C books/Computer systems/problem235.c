@@ -9,7 +9,7 @@ int tmult_ok(int x, int y) {
     return !x || p/x == y;
 }
 
-// You test this code for a number of values of x and y, and it seems to work properly. Your coworker challenges you, saying, “If I can’t use subtraction to test whether addition has overflowed (see Problem 2.31), then how can you use division to test whether multiplication has overflowed?” 
+// You test this code for a number of values of x and y, and it seems to work properly. Your coworker challenges you, saying, “If I can’t use subtraction to test whether addition has overflowed (see Problem 2.31), then how can you use division to test whether multiplication has overflowed?"
 
 // Devise a mathematical justification of your approach, along the following lines. First, argue that the case x = 0 is handled correctly. Otherwise, consider w-bit numbers x (x != 0), y, p, and q, where p is the result of performing two’s-complement multiplication on x and y, and q is the result of dividing p by x.
 
@@ -19,8 +19,10 @@ int tmult_ok(int x, int y) {
 
 // 1. Show that x . y, the integer product of x and y, can be written in the form x . y = p + t2^w, where t != 0 if and only if the computation of p overflows. 
 
-// We know that x · y can be written as a 2w-bit two's-complement number. Let u denote the unsigned number represented by the lower w bits, and v denote the two's-complement number represented by the upper w bits. Then, based on Equation 2.3, we can see that x · y = v2^w + u.
+// We know that x · y can be written as a 2w-bit two's-complement number. Let u denote the unsigned number represented by the lower w bits, and v denote the two's-complement number represented by the upper w bits. Then, based on Equation 2.3, we can see that x · y = v2^(w) + u.
+
 // We also know that u = T2Uw(p), since they are unsigned and two's-complement numbers arising from the same bit pattern, and so by Equation 2.6, we can write u = p + p(w–1)2^(w), where p(w–1) is the most significant bit of p. Letting t = v + p(w–1), we have x · y = p + t2^w.
+
 // When t = 0, we have x . y = p; the multiplication does not overflow. When t != 0, we have x⋅y=p+t2^(w); the multiplication does overflow.
 
 // 2. Show that p can be written in the form p = x.q + r, where |r| < |x|.

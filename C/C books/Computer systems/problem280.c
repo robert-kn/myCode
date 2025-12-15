@@ -1,0 +1,2 @@
+Write code for a function threefourths that, for integer argument x, computes the value of 
+3/4x, rounded toward zero. It should not overflow. Your function should follow the bit-level integer coding rules
