@@ -18,4 +18,4 @@
 // 	51/16							11.0011									3.1875
 
 
-// One simple way to think about fractional binary representations is to represent a number as a fraction of the form x/2^k. We can write this in binary using the  binary representation of x, with the binary point inserted k positions from the right. As an example, for 25/16, we have 2510 = 110012. We then put the binary point four positions from the right to get 1.10012. 
+// One simple way to think about fractional binary representations is to represent a number as a fraction of the form x/2^(k). We can write this in binary using the  binary representation of x, with the binary point inserted k positions from the right. As an example, for 25/16, we have 25 in base 10 = 110012. We then put the binary point four positions from the right to get 1.10012. 

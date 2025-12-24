@@ -38,7 +38,7 @@ int main(){
 unsigned srl(unsigned x, int k) {
     /* Perform shift arithmetically */
     unsigned xsra = (int) x >> k;             // arithmetic right shift (fills with sign bit)
-    int w = 8 * sizeof(int);                  // number of bits in an int
+    int w = sizeof(int) << 3;                  // number of bits in an int
     unsigned mask = (1U << (w - k)) - 1;     // lower (w - k) bits = 1
     return xsra & mask;                     // clear sign bits
 }
@@ -47,7 +47,7 @@ int sra(int x, int k) {
     /* Perform shift logically */
     int xsrl = (unsigned) x >> k;       // logical shift (fills with 0s)
     printf("%x\n", xsrl);
-    int w = 8 * sizeof(int);            // number of bits in an int
+    int w = sizeof(int) << 3;            // number of bits in an int
     int sign = x >> (w - 1);               // all 1s if x < 0, all 0s if +ve
     int mask = ~((1 << (w - k)) - 1);      // top k bits = 1
     mask &= sign;                          // keep only if negative

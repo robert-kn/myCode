@@ -15,7 +15,7 @@ int main(){
     u_int32_t x = 0x89ABCDEF;
     u_int32_t y = 0x76543210; 
     
-    int combine_bytes = (x & 0xff) | (y & 0xffffff00);
-    printf("%.2X\n", combine_bytes);
+    int combine_bytes = (x & 0xff) | (y & ~0xff);
+    printf("0X%.2X\n", combine_bytes);
     exit(EXIT_SUCCESS);
 }

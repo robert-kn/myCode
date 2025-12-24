@@ -1,7 +1,7 @@
 /**
  * Write code to implement the following function.
  * 
- * Your function should follow the bit-level integer coding rules (page 120), except that you may assume that data
+ * Your function should follow the bit-level integer coding rules, except that you may assume that data
  * type int has w = 32 bits.
 */
 
