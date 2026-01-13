@@ -6,9 +6,11 @@
 
 typedef unsigned char * byte_pointer;
 
+int show_bytes(byte_pointer, unsigned int);
+
 
 int main(){
-     u_int32_t x = 0x87654321;
+    u_int32_t x = 0x87654321;
     
     byte_pointer start = (byte_pointer) &x;
 

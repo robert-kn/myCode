@@ -12,5 +12,5 @@
 #define NEG_ZERO (-1.0/POS_INFINITY)
 
 int main(){
-    printf("pos infinity = %lf\n neg infinity = %lf\n neg zero = %lf\n", POS_INFINITY, NEG_INFINITY, NEG_ZERO);
+    printf(" pos infinity = %lf\n neg infinity = %lf\n neg zero = %lf\n", POS_INFINITY, NEG_INFINITY, NEG_ZERO);
 }

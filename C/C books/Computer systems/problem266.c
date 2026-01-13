@@ -5,7 +5,7 @@
  * For example 0xFF00 -> 0x8000, and 0x6600 --> 0x4000.
  * If x = 0, then return 0.
  * 
- * Your function should follow the bit-level integer coding rules (page 120), except that you may assume that data type int has w = 32 bits.
+ * Your function should follow the bit-level integer coding rules, except that you may assume that data type int has w = 32 bits.
  * 
  * Your code should contain a total of at most 15 arithmetic, bit-wise, and logical operations.
  * 
