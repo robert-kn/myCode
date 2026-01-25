@@ -1339,7 +1339,7 @@ Data Movement Instructions
 
 Among the most heavily used instructions are those that copy data from one location to another. The generality of the operand notation allows a simple data movement instruction to express a range of possibilities that in many machines would require a number of different instructions. We present a number of different data movement instructions, differing in their source and destination types, what conversions they perform, and other side effects they may have. In our presentation, we group the many different instructions into instruction classes, where the instructions in a class perform the same operation but with different operand sizes.
 
-Figure 3.4 lists the simplest form of data movement instructions—mov class. These instructions copy data from a source location to a destination location, without any transformation. The class consists of four instructions: movb, movw, movl, and movq. All four of these instructions have similar effects; they differ primarily in that they operate on data of different sizes: 1, 2, 4, and 8 bytes, respectively.
+Figure 3.4 lists the simplest form of data movement instructions — mov class. These instructions copy data from a source location to a destination location, without any transformation. The class consists of four instructions: movb, movw, movl, and movq. All four of these instructions have similar effects; they differ primarily in that they operate on data of different sizes: 1, 2, 4, and 8 bytes, respectively.
 
 The source operand designates a value that is immediate, stored in a register, or stored in memory. The destination operand designates a location that is either a register or a memory address. x86-64 imposes the restriction that a move instruction cannot have both operands refer to memory locations. Copying a value from one memory location to another requires two instructions—the first to load the source value into a register, and the second to write this register value to the destination.
 
@@ -1350,7 +1350,7 @@ The following mov instruction examples show the five possible combinations of so
 1	movl $0x4050,%eax	    Immediate--Register, 4 bytes
 2	movw %bp,%sp		    Register--Register, 2 bytes
 3	movb (%rdi,%rcx),%al	Memory--Register, 1 byte
-4	movb $-17,( %esp)	    Immediate--Memory, 1 byte
+4	movb $-17,(%esp)	    Immediate--Memory, 1 byte
 5	movq %rax,–12(%rbp)	    Register--Memory, 8 bytes
 
 A final instruction documented in Figure 3.4 is for dealing with 64-bit immediate data. The regular movq instruction can only have immediate source operands that can be represented as 32-bit two's-complement numbers. This value is then sign extended to produce the 64-bit value for the destination. The movabsq instruction can have an arbitrary 64-bit immediate value as its source operand and can only have a register as a destination.
@@ -1394,7 +1394,7 @@ When the procedure begins execution, procedure parameters xp and y are stored in
 
 Two features about this assembly code are worth noting. First, we see that what we call "pointers" in C are simply addresses. Dereferencing a pointer involves copying that pointer into a register, and then using this register in a memory reference. Second, local variables such as x are often kept in registers rather than stored in memory locations. Register access is much faster than memory access.
 
-Practice Problem 3.4
+Practice Problem 3.4 (no idea)
 
 Assume variables sp and dp are declared with Types
 
@@ -1413,14 +1413,420 @@ src_t                       dest_t                      Instruction
 
 long                        long                        movq (%rdi), %rax movq %rax, (%rsi)
 
-char                        int                         movb (%dil), %al  mov %al, (%sil)
+char                        int                         movsbl (%rdi), %eax  movl %eax, (%rsi)
 
-char                        unsigned                    movb (%dil), %al
+char                        unsigned                    movsbl (%rdi), %eax  movl %eax, (%rsi)
 
-unsigned char               long
+unsigned char               long                        movzbq (%rdi), %rax  movb %rax, (%rsi)
 
-int                         char
+int                         char                        movl (%rdi), %eax movb %al, (%rsi)
 
-unsigned                    unsigned char
+unsigned                    unsigned char               movl (%rdi), %eax movb %al, (%rsi)
 
-char                        short
+char                        short                       movsbw (%rdi), %ax  movw %ax, (%rsi)
+
+
+Practice Problem 3.5
+
+You are given the following information. A function with prototype
+
+void decode1(long *xp, long *yp, long *zp);
+
+is compiled into assembly code, yielding the following:
+
+void decode1(long *xp, long *yp, long *zp)
+  xp in %rdi, yp in %rsi, zp in %rdx
+decode1:
+  movq	(%rdi), %r8
+  movq	(%rsi), %rcx
+  movq	(%rdx), %rax
+  movq	%r8, (%rsi)
+  movq	%rcx, (%rdx)
+  movq	%rax, (%rdi)
+  ret
+
+Parameters xp, yp, and zp are stored in registers %rdi, %rsi, and %rdx, respectively. Write C code for decode1 that will have an effect equivalent to the assembly code shown.
+
+long x = *xp;
+long y = *yp;
+long z = *zp;
+*yp = x;
+*zp = y;
+*xp = z;
+
+Pushing and Popping Stack data
+
+The final two data movement operations are used to push data onto and pop data from the program stack, as documented in Figure 3.8. As we will see, the stack plays a vital role in the handling of procedure calls. By way of background, a stack is a data structure where values can be added or deleted, but only according to a "last-in, first-out" discipline. We add data to a stack via a push operation and remove it via a pop operation, with the property that the value popped will always be the value that was most recently pushed and is still on the stack. A stack can be implemented as an array, where we always insert and remove elements from one end of the array. This end is called the top of the stack. With x86-64, the program stack is stored in some region of memory. As illustrated in Figure 3.9, the stack grows downward such that the top element of the stack has the lowest address of all stack elements. (By convention, we draw stacks upside down, with the stack "top" shown at the bottom of the figure.) The stack pointer %rsp holds the address of the top stack element.
+
+The pushq instruction provides the ability to push data onto the stack, while the popq instruction pops it. Each of these instructions takes a single operand—the data source for pushing and the data destination for popping.
+
+Pushing a quad word value onto the stack involves first decrementing the stack pointer by 8 and then writing the value at the new top-of-stack address. Therefore, the behavior of the instruction pushq %rbp is equivalent to that of the pair of instructions
+
+subq $8,%rsp		  Decrement stack pointer
+movq %rbp,(%rsp)	Store %rbp on stack
+
+except that the pushq instruction is encoded in the machine code as a single byte, whereas the pair of instructions shown above requires a total of 8 bytes. The first two columns in Figure 3.9 illustrate the effect of executing the instruction pushq %rax when %rsp is 0x108 and %rax is 0x123. First %rsp is decremented by 8, giving 0x100, and then 0x123 is stored at memory address 0x100.
+
+Popping a quad word involves reading from the top-of-stack location and then incrementing the stack pointer by 8. Therefore, the instruction popq %rax is equivalent to the following pair of instructions:
+
+movq (%rsp),%rax	Read %rax from stack
+addq $8,%rsp		Increment stack pointer
+
+The third column of Figure 3.9 illustrates the effect of executing the instruction popq %edx immediately after executing the pushq. Value 0x123 is read from memory and written to register %rdx. Register %rsp is incremented back to 0x108. As shown in the figure, the value 0x123 remains at memory location 0x104 until it is overwritten (e.g., by another push operation). However, the stack top is always considered to be the address indicated by %rsp.
+
+Since the stack is contained in the same memory as the program code and other forms of program data, programs can access arbitrary positions within the stack using the standard memory addressing methods. For example, assuming the topmost element of the stack is a quad word, the instruction movq 8(%rsp), %rdx will copy the second quad word from the stack to register %rdx.
+
+Arithmetic and Logical operations
+
+Figure 3.10 lists some of the x86-64 integer and logic operations. Most of the operations are given as instruction classes, as they can have different variants with different operand sizes. (Only leaq has no other size variants.) For example, the instruction class add consists of four addition instructions: addb, addw, addl, and addq, adding bytes, words, double words, and quad words, respectively. Indeed, each of the instruction classes shown has instructions for operating on these four different sizes of data. The operations are divided into four groups: load effective address, unary, binary, and shifts. Binary operations have two operands, while unary operations have one operand. 
+
+The load effective address (leaq) instruction is commonly used to perform simple arithmetic. The remaining ones are more standard unary or binary operations. We use the notation >>A and >>L to denote arithmetic and logical right shift, respectively. Note the nonintuitive ordering of the operands with ATT-format assembly code.
+
+Load Effective Address
+
+The load effective address instruction leaq is actually a variant of the movq instruction. It has the form of an instruction that reads from memory to a register, but it does not reference memory at all. Its first operand appears to be a memory reference, but instead of reading from the designated location, the instruction copies the effective address to the destination. We indicate this computation in Figure 3.10 using the C address operator &S. This instruction can be used to generate pointers for later memory references. In addition, it can be used to compactly describe common arithmetic operations. For example, if register %rdx contains value x, then the instruction leaq 7(%rdx,%rdx,4), %rax will set register %rax to 5x + 7. Compilers often find clever uses of leaq that have nothing to do with effective address computations. The destination operand must be a register.
+
+Practice Problem 3.6
+
+Suppose register %rax holds value x and %rcx holds value y. Fill in the table below with formulas indicating the value that will be stored in register %rdx for each of the given assembly-code instructions:
+
+Instruction                            Result
+
+leaq 6(%rax), %rdx                     6 + x 
+
+leaq (%rax,%rcx), %rdx                 x + y
+
+leaq (%rax,%rcx,4), %rdx.              x + 4y
+
+leaq 7(%rax,%rax,8), %rdx              7 + 9x
+
+leaq 0xA(,%rcx,4), %rdx                0xA + 4y
+
+leaq 9(%rax,%rcx,2), %rdx             9 + x + 2y
+
+As an illustration of the use of leaq in compiled code, consider the following C program:
+
+long scale(long x, long y, long z) {
+    long t = x + 4 * y + 12 * z;
+    return t;
+}
+
+When compiled, the arithmetic operations of the function are implemented by a sequence of three leaq functions, as is documented by the comments on the right-hand side:
+
+long scale(long x, long y, long z)
+  x in %rdi, y in %rsi, z in %rdx
+scale:
+  leaq	(%rdi,%rsi,4), %rax		x + 4*y
+  leaq	(%rdx,%rdx,2), %rdx		z + 2*z = 3*z
+  leaq	(%rax,%rdx,4), %rax		(x+4*y) + 4*(3*z) = x + 4*y + 12*z
+  ret
+
+The ability of the leaq instruction to perform addition and limited forms of multiplication proves useful when compiling simple arithmetic expressions such as this example.
+
+Practice Problem 3.7 
+
+long scale2(long x, long y, long z) {
+  longt= 5x + 2y + 8z;
+  return t;
+}
+
+Compiling the actual function with gcc yields the following assembly code:
+
+long scale2(long x, long y, long z)
+  x in %rdi, y in %rsi, z in %rdx
+scale2:
+  leaq	(%rdi,%rdi,4), %rax
+  leaq	(%rax,%rsi,2), %rax
+  leaq (%rax,%rdx,8), %rax
+  ret
+
+Fill in the missing expression in the C code.
+
+Unary and Binary operations
+
+Operations in the second group are unary operations, with the single operand serving as both source and destination. This operand can be either a register or a memory location. For example, the instruction incq (%rsp) causes the 8-byte element on the top of the stack to be incremented. This syntax is reminiscent of the C increment (++) and decrement (−−) operators.
+
+The third group consists of binary operations, where the second operand is used as both a source and a destination. This syntax is reminiscent of the C assignment operators, such as x -= y. Observe, however, that the source operand is given first and the destination second. This looks peculiar for noncommutative operations. For example, the instruction subq %rax,%rdx decrements register %rdx by the value in %rax. (It helps to read the instruction as "Subtract %rax from %rdx.") The first operand can be either an immediate value, a register, or a memory location. The second can be either a register or a memory location. As with the mov instructions, the two operands cannot both be memory locations. Note that when the second operand is a memory location, the processor must read the value from memory, perform the operation, and then write the result back to memory.
+
+Practice Problem 3.8
+
+Assume the following values are stored at the indicated memory addresses and registers:
+
+Address             Value               Register                Value
+
+0x100               0xFF                %rax                    0x100
+
+0x108               0xAB                %rcx                    0x1
+
+0x110               0x13                %rdx                    0x3
+
+0x118               0x11
+
+
+Fill in the following table showing the effects of the following instructions, in terms of both the register or memory location that will be updated and the resulting value:
+
+Instruction                         Destination                         Value
+
+addq %rcx,(%rax)                      (%rax)                            0x101
+
+subq %rdx,8(%rax)                     0x108                             0xa8
+
+imulq $16,( %rax,%rdx,8)              0x118                             0x110
+
+incq 16(%rax)                         0x110                             0x14
+
+decq %rcx                             %rcx                              0x0
+
+subq %rdx,%rax                        %rax                              0xfd
+
+
+Shift Operations
+
+The final group consists of shift operations, where the shift amount is given first and the value to shift is given second. Both arithmetic and logical right shifts are possible. The different shift instructions can specify the shift amount either as an immediate value or with the single-byte register %cl. (These instructions are unusual in only allowing this specific register as the operand.) 
+
+In principle, having a 1-byte shift amount would make it possible to encode shift amounts ranging up to 2^(8) − 1 = 255. With x86-64, a shift instruction operating on data values that are w bits long determines the shift amount from the low-order m bits of register %cl, where 2^(m) = w. The higher-order bits are ignored. So, for example, when register %cl hexadecimal value 0xFF, then instruction salb would shift by 7, while salw would shift by 15, sall would shift by 31, and salq would shift by 63.
+
+As Figure 3.10 indicates, there are two names for the left shift instruction: sal and shl. Both have the same effect, filling from the right with zeros. The right shift instructions differ in that sar performs an arithmetic shift (fill with copies of the sign bit), whereas shr performs a logical shift (fill with zeros). The destination operand of a shift operation can be either a register or a memory location. We denote the two different right shift operations in Figure 3.10 as >>A (arithmetic) and >>L (logical).
+
+Practice Problem 3.9
+
+Suppose we want to generate assembly code for the following C function:
+
+long shift_left4_rightn(long x, long n)
+{
+  x ≪= 4;
+  x ≫= n;
+  return x;
+}
+
+The code that follows is a portion of the assembly code that performs the actual shifts and leaves the final value in register %rax. Two key instructions have been omitted. Parameters x and n are stored in registers %rdi and %rsi, respectively.
+
+long shift_left4_rightn(long x, long n)
+  x in %rdi, n in %rsi
+shift_left4_rightn:
+  movq    %rdi, %rax	Get x
+  sal       $4, %rax  x ≪= 4
+  movl    %esi, %ecx  Get n (4 bytes)
+  sar        n, %rax  x ≫= n
+
+Fill in the missing instructions, following the annotations on the right. The right shift should be performed arithmetically.
+
+C code
+
+long arith(long x, long y, long z)
+{
+    long t1 = x ^ y;
+    long t2 = z * 48;
+    long t3 = t1 & 0x0F0F0F0F;
+    long t4 = t2 - t3;
+    return t4;
+}
+
+Assembly code
+
+long arith(long x, long y, long z)
+  x in %rdi, y in %rsi, z in %rdx
+1	arith:
+2	  xorq %rsi, %rdi		          t1 = x ^ y
+3	  leaq (%rdx,%rdx,2), %rax	  3*z
+4	  salq $4, %rax			          t2 = 16 * (3*z) = 48*z
+5	  andl $252645135, %edi		    t3 = t1 & 0x0F0F0F0F
+6	  subq %rdi, %rax		          Return t2 - t3
+7	  ret
+
+Figure 3.11 C and assembly code for arithmetic function.
+
+Discussion
+
+We see that most of the instructions shown in Figure 3.10 can be used for either unsigned or two's-complement arithmetic. Only right shifting requires instructions that differentiate between signed versus unsigned data. This is one of the features that makes two's-complement arithmetic the preferred way to implement signed integer arithmetic.
+
+Figure 3.11 shows an example of a function that performs arithmetic operations and its translation into assembly code. Arguments x, y, and z are initially stored in registers %rdi, %rsi, and %rdx, respectively. The assembly-code instructions correspond closely with the lines of C source code. Line 2 computes the value of x^y. Lines 3 and 4 compute the expression z*48 by a combination of leaq and shift instructions. Line 5 computes the and of t1 and 0x0F0F0F0F. The final subtraction is computed by line 6. Since the destination of the subtraction is register %rax, this will be the value returned by the function.
+
+In the assembly code of Figure 3.11, the sequence of values in register %rax corresponds to program values 3*z, z*48, and t4 (as the return value). In general, compilers generate code that uses individual registers for multiple program values and moves program values among the registers.
+
+Practice Problem 3.10
+
+In the following variant of the function of Figure 3.11(a), the expressions have been replaced by blanks:
+
+long arith2(long x, long y, long z)
+{
+  longt1= x | y;
+  longt2= t1 >> 3;
+  longt3= ~t2;
+  longt4= z - t3;
+  return t4;
+}
+
+The portion of the generated assembly code implementing these expressions is as follows:
+
+long arith2(long x, long y, long z)
+  x in %rdi, y in %rsi, z in %rdx
+arith2:
+  orq	  %rsi, %rdi
+  sarq	$3, %rdi
+  notq	%rdi
+  movq	%rdx, %rax
+  subq	%rdi, %rax
+  ret
+
+Based on this assembly code, fill in the missing portions of the C code.
+
+Practice Problem 3.11
+
+It is common to find assembly-code lines of the Form
+
+xorq %rdx,%rdx
+
+in code that was generated from C where no exclusive-or operations were present.
+
+A. Explain the effect of this particular exclusive-or instruction and what useful operation it implements.
+checks to see whether the number in rdx is equal to zero
+
+B. What would be the more straightforward way to express this operation in assembly code?
+movq $0, %rdx
+
+
+
+Special Arithmetic Operations
+
+As we saw in Section 2.3, multiplying two 64-bit signed or unsigned integers can yield a product that requires 128 bits to represent. The x86-64 instruction set provides limited support for operations involving 128-bit (16-byte) numbers. Continuing with the naming convention of word (2 bytes), double word (4 bytes), and quad word (8 bytes), Intel refers to a 16-byte quantity as an oct word. Figure 3.12 describes instructions that support generating the full 128-bit product of two 64-bit numbers, as well as integer division.
+
+The imulq instruction has two different forms One form, shown in Figure 3.10, is as a member of the imul instruction class. In this form, it serves as a "two-operand" multiply instruction, generating a 64-bit product from two 64-bit operands. It implements the operations *64u and *64t described in Sections 2.3.4 and 2.3.5. (Recall that when truncating the product to 64 bits, both unsigned multiply and two's-complement multiply have the same bit-level behavior.)
+
+Additionally, the x86-64 instruction set includes two different "one-operand" multiply instructions to compute the full 128-bit product of two 64-bit values—one for unsigned (mulq) and one for two's-complement (imulq) multiplication. For both of these instructions, one argument must be in register %rax, and the other is given as the instruction source operand. The product is then stored in registers %rdx (high-order 64 bits) and %rax (low-order 64 bits). Although the name imulq is used for two distinct multiplication operations, the assembler can tell which one is intended by counting the number of operands.
+
+As an example, the following C code demonstrates the generation of a 128-bit product of two unsigned 64-bit numbers x and y:
+
+#include <inttypes.h>
+
+typedef unsigned __int128 uint128_t;
+
+void store_uprod(uint128_t *dest, uint64_t x, uint64_t y) {
+   *dest = x * (uint128_t) y;
+}
+
+In this program, we explicitly declare x and y to be 64-bit numbers, using definitions declared in the file inttypes.h, as part of an extension of the C standard. Unfortunately, this standard does not make provisions for 128-bit values. Instead, we rely on support provided by gcc for 128-bit integers, declared using the name __int128. Our code uses a typedef declaration to define data type uint128_t, following the naming pattern for other data types found in inttypes.h. The code specifies that the resulting product should be stored at the 16 bytes designated by pointer dest.
+
+The assembly code generated by gcc for this function is as follows:
+
+void store_uprod(uint128_t *dest, uint64_t x, uint64_t y)
+  dest in %rdi, x in %rsi, y in %rdx
+1	store_uprod:
+2	  movq	%rsi, %rax	  Copy x to multiplicand
+3	  mulq	%rdx		      Multiply by y
+4	  movq	%rax, (%rdi)	Store lower 8 bytes at dest
+5	  movq	%rdx, 8(%rdi)	Store upper 8 bytes at dest+8
+6	  ret
+
+Observe that storing the product requires two movq instructions: one for the low-order 8 bytes (line 4), and one for the high-order 8 bytes (line 5). Since the code is generated for a little-endian machine, the high-order bytes are stored at higher addresses, as indicated by the address specification 8(%rdi).
+
+Our earlier table of arithmetic operations (Figure 3.10) does not list any division or modulus operations. These operations are provided by the single-operand divide instructions similar to the single-operand multiply instructions. The signed division instruction idivl takes as its dividend the 128-bit quantity in registers %rdx (high-order 64 bits) and %rax (low-order 64 bits). The divisor is given as the instruction operand. The instruction stores the quotient in register %rax and the remainder in register %rdx.
+
+For most applications of 64-bit addition, the dividend is given as a 64-bit value. This value should be stored in register %rax. The bits of %rdx should then be set to either all zeros (unsigned arithmetic) or the sign bit of %rax (signed arithmetic). The latter operation can be performed using the instruction cqto. This instruction takes no operands—it implicitly reads the sign bit from %rax and copies it across all of %rdx.
+
+As an illustration of the implementation of division with x86-64, the following C function computes the quotient and remainder of two 64-bit, signed numbers:
+
+void remdiv(long x, long y, long *qp, long *rp) {
+  	long q = x/y;
+  	long r = x%y;
+  	*qp = q;
+  	*rp = r;
+}
+
+This compiles to the following assembly code:
+
+void remdiv(long x, long y, long *qp, long *rp)
+  x in %rdi, y in %rsi, qp in %rdx, rp in %rcx
+1	remdiv:
+2	 movq %rdx, %r8		  Copy qp
+3	 movq %rdi, %rax	  Move x to lower 8 bytes of dividend
+4	 cqto			          Sign-extend to upper 8 bytes of dividend
+5	 idivq %rsi		      Divide by y
+6	 movq %rax, (%r8)	  Store quotient at qp
+7	 movq %rdx, (%rcx)	Store remainder at rp
+8	 ret
+
+In this code, argument rp must first be saved in a different register (line 2), since argument register %rdx is required for the division operation. Lines 3-4 then prepare the dividend by copying and sign-extending x. Following the division, the quotient in register %rax gets stored at qp (line 6), while the remainder in register %rdx gets stored at rp (line 7).
+
+Unsigned division makes use of the divq instruction. Typically, register %rdx is set to zero beforehand.
+
+Practice Problem 3.12 
+
+Consider the following function for computing the quotient and remainder of two unsigned 64-bit numbers:
+
+void uremdiv(unsigned long x, unsigned long y, unsigned long *qp, unsigned long *rp) {
+  	unsigned long q = x/y;
+  	unsigned long r = x%y;
+  	*qp = q;
+  	*rp = r;
+}
+
+Modify the assembly code shown for signed division to implement this function.
+
+void uremdiv(unsigned long x, unsigned long y, unsigned long *qp, unsigned long *rp)
+  x in %rdi, y in %rsi, qp in %rdx, rp in %rcx
+1	remdiv:
+2	 movq %rdx, %r8		  Copy qp
+3	 movq %rdi, %rax	  Move x to lower 8 bytes of dividend
+4	 cqto			          Sign-extend to upper 8 bytes of dividend
+5	 divq %rsi		      Divide by y
+6	 movq %rax, (%r8)	  Store quotient at qp
+7	 movq %rdx, (%rcx)	Store remainder at rp
+8	 ret
+
+Control
+
+So far, we have only considered the behavior of straight-line code, where instructions follow one another in sequence. Some constructs in C, such as conditionals, loops, and switches, require conditional execution, where the sequence of operations that get performed depends on the outcomes of tests applied to the data. Machine code provides two basic low-level mechanisms for implementing conditional behavior: it tests data values and then alters either the control flow or the data flow based on the results of these tests.
+
+Data-dependent control flow is the more general and more common approach for implementing conditional behavior, and so we will examine this first. Normally, both statements in C and instructions in machine code are executed sequentially, in the order they appear in the program. The execution order of a set of machine-code instructions can be altered with a jump instruction, indicating that control should pass to some other part of the program, possibly contingent on the result of some test. The compiler must generate instruction sequences that build upon this low-level mechanism to implement the control constructs of C.
+
+In our presentation, we first cover the two ways of implementing conditional operations. We then describe methods for presenting loops and switch statements.
+
+Condition Codes
+
+In addition to the integer registers, the CPU maintains a set of single-bit condition code registers describing attributes of the most recent arithmetic or logical operation. These registers can then be tested to perform conditional branches. These condition codes are the most useful:
+
+cf: Carry flag. The most recent operation generated a carry out of the most significant bit. Used to detect overflow for unsigned operations.
+
+zf: Zero flag. The most recent operation yielded zero.
+
+sf: Sign flag. The most recent operation yielded a negative value.
+
+of: Overflow flag. The most recent operation caused a two's-complement overflow—either negative or positive.
+
+For example, suppose we used one of the add instructions to perform the equivalent of the C assignment t = a+b, where variables a, b, and t are integers. Then the condition codes would be set according to the following C expressions:
+
+CF	(unsigned) t < (unsigned) a		        Unsigned overflow
+ZF	(t == 0)				                      Zero
+SF	(t < 0)					                      Negative
+OF	(a < 0 == b < 0) && (t < 0 != a < 0)	Signed overflow
+
+The leaq instruction does not alter any condition codes, since it is intended to be used in address computations. Otherwise, all of the instructions listed in Figure 3.10 cause the condition codes to be set. For the logical operations, such as xor, the carry and overflow flags are set to zero. For the shift operations, the carry flag is set to the last bit shifted out, while the overflow flag is set to zero. For reasons that we will not delve into, the inc and dec instructions set the overflow and zero flags, but they leave the carry flag unchanged.
+
+In addition to the setting of condition codes by the instructions of Figure 3.10, there are two instruction classes (having 8-, 16-, 32-, and 64-bit forms) that set condition codes without altering any other registers; these are listed in Figure 3.13. The cmp instructions set the condition codes according to the differences of their two operands. They behave in the same way as the sub instructions, except that they set the condition codes without updating their destinations. With ATT format, the operands are listed in reverse order, making the code difficult to read. These instructions set the zero flag if the two operands are equal. The other flags can be used to determine ordering relations between the two operands. The test instructions behave in the same manner as the and instructions, except that they set the condition codes without altering their destinations. Typically, the same operand is repeated (e.g., testq %rax,%rax to see whether %rax is negative, zero, or positive), or one of the operands is a mask indicating which bits should be tested.
+
+Accessing the Condition codes
+
+Rather than reading the condition codes directly, there are three common ways of using the condition codes: (1) we can set a single byte to 0 or 1 depending on some combination of the condition codes, (2) we can conditionally jump to some other part of the program, or (3) we can conditionally transfer data. For the first case, the instructions described in Figure 3.14 set a single byte to 0 or to 1 depending on some combination of the condition codes. We refer to this entire class of instructions as the set instructions; they differ from one another based on which combinations of condition codes they consider, as indicated by the different suffixes for the instruction names. It is important to recognize that the suffixes for these instructions denote different conditions and not different operand sizes. For example, instructions setl and setb denote "set less" and "set below," not "set long word" or "set byte.
+
+A set instruction has either one of the low-order single-byte register elements (Figure 3.2) or a single-byte memory location as its destination, setting this byte to either 0 or 1. To generate a 32-bit or 64-bit result, we must also clear the high-order bits. A typical instruction sequence to compute the C expression a < b, where a and b are both of type long, proceeds as follows:
+
+int comp(data_t a, data_t b)
+  a in %rdi, b in %rsi
+1	comp:
+2	 cmpq	%rsi, %rdi	Compare a:b
+3	 setl	%al		Set low-order byte of %eax to 0 or 1
+4	 movzbl	%al, %eax	Clear rest of %eax (and rest of %rax)
+5	 ret
+
+Note the comparison order of the cmpq instruction (line 2). Although the arguments are listed in the order %rsi (b), then %rdi (a), the comparison is really between a and b. Recall also, as discussed in Section 3.4.2, that the movzbl instruction (line 4) clears not just the high-order 3 bytes of %eax, but the upper 4 bytes of the entire register, %rax, as well.
+
+For some of the underlying machine instructions, there are multiple possible names, which we list as "synonyms." For example, both setg (for "set greater") and setnle (for "set not less or equal") refer to the same machine instruction. Compilers and disassemblers make arbitrary choices of which names to use.
+
+Although all arithmetic and logical operations set the condition codes, the descriptions of the different set instructions apply to the case where a comparison instruction has been executed, setting the condition codes according to the computation t = a-b. More specifically, let a, b, and t be the integers represented in two's-complement form by variables a, b, and t, respectively, and so t=a−wtb, where w depends on the sizes associated with a and b.
+
+Consider the sete, or "set when equal," instruction. When a = b, we will have t = 0, and hence the zero flag indicates equality. Similarly, consider testing for signed comparison with the setl, or "set when less," instruction. When no overflow occurs (indicated by having OF set to 0), we will have a ≥ b when a−wtb<0, indicated by having SF set to 1, and a ≥ b when a−wtb≥0, indicated by having SF set to 0. On the other hand, when overflow occurs, we will have a < b when a−wtb>0 (negative overflow) and a > b when a−wtb<0 (positive overflow). We cannot have overflow when a = b. Thus, when OF is set to 1, we will have a < b if and only if SF is set to 0. Combining these cases, the exclusive-or of the overflow and sign bits provides a test for whether a < b. The other signed comparison tests are based on other combinations of SF ^ OF and ZF.
+
+For the testing of unsigned comparisons, we now let a and b be the integers represented in unsigned form by variables a and b. In performing the computation t = a-b, the carry flag will be set by the cmp instruction when a − b < 0, and so the unsigned comparisons use combinations of the carry and zero flags.
+
+It is important to note how machine code does or does not distinguish between signed and unsigned values. Unlike in C, it does not associate a data type with each program value. Instead, it mostly uses the same instructions for the two cases, because many arithmetic operations have the same bit-level behavior for unsigned and two's-complement arithmetic. Some circumstances require different instructions to handle signed and unsigned operations, such as using different versions of right shifts, division and multiplication instructions, and different combinations of condition codes.
