@@ -1825,8 +1825,125 @@ For some of the underlying machine instructions, there are multiple possible nam
 
 Although all arithmetic and logical operations set the condition codes, the descriptions of the different set instructions apply to the case where a comparison instruction has been executed, setting the condition codes according to the computation t = a-b. More specifically, let a, b, and t be the integers represented in two's-complement form by variables a, b, and t, respectively, and so t=a−wtb, where w depends on the sizes associated with a and b.
 
-Consider the sete, or "set when equal," instruction. When a = b, we will have t = 0, and hence the zero flag indicates equality. Similarly, consider testing for signed comparison with the setl, or "set when less," instruction. When no overflow occurs (indicated by having OF set to 0), we will have a ≥ b when a−wtb<0, indicated by having SF set to 1, and a ≥ b when a−wtb≥0, indicated by having SF set to 0. On the other hand, when overflow occurs, we will have a < b when a−wtb>0 (negative overflow) and a > b when a−wtb<0 (positive overflow). We cannot have overflow when a = b. Thus, when OF is set to 1, we will have a < b if and only if SF is set to 0. Combining these cases, the exclusive-or of the overflow and sign bits provides a test for whether a < b. The other signed comparison tests are based on other combinations of SF ^ OF and ZF.
+Consider the sete, or "set when equal," instruction. When a = b, we will have t = 0, and hence the zero flag indicates equality. Similarly, consider testing for signed comparison with the setl, or "set when less," instruction. When no overflow occurs (indicated by having OF set to 0), we will have a < b when a −wt b < 0, indicated by having SF set to 1, and a ≥ b when a −wt b ≥ 0, indicated by having SF set to 0. On the other hand, when overflow occurs, we will have a < b when a −wt b > 0 (negative overflow) and a > b when a −wt b < 0 (positive overflow). We cannot have overflow when a = b. Thus, when OF is set to 1, we will have a < b if and only if SF is set to 0. Combining these cases, the exclusive-or of the overflow and sign bits provides a test for whether a < b. The other signed comparison tests are based on other combinations of SF ^ OF and ZF.
 
 For the testing of unsigned comparisons, we now let a and b be the integers represented in unsigned form by variables a and b. In performing the computation t = a-b, the carry flag will be set by the cmp instruction when a − b < 0, and so the unsigned comparisons use combinations of the carry and zero flags.
 
 It is important to note how machine code does or does not distinguish between signed and unsigned values. Unlike in C, it does not associate a data type with each program value. Instead, it mostly uses the same instructions for the two cases, because many arithmetic operations have the same bit-level behavior for unsigned and two's-complement arithmetic. Some circumstances require different instructions to handle signed and unsigned operations, such as using different versions of right shifts, division and multiplication instructions, and different combinations of condition codes.
+
+Practice Problem 3.13 
+
+The C code
+
+int comp(data_t a, data_t b) {
+  return a COMP b;
+}
+
+shows a general comparison between arguments a and b, where data_t, the data type of the arguments, is defined (via typedef) to be one of the integer data types listed in Figure 3.1 and either signed or unsigned. The comparison COMP is defined via #define.
+Suppose a is in some portion of %rdx while b is in some portion of %rsi. For each of the following instruction sequences, determine which data types data_t and which comparisons COMP could cause the compiler to generate this code. (There can be multiple correct answers; you should list them all.)
+
+A. cmpl	%esi, %edi
+   setl	%al
+
+B. cmpw	%si, %di
+   setge	%al
+
+C. cmpb	%sil, %dil
+   setbe	%al
+
+D. cmpq	%rsi, %rdi
+   setne	%a
+
+Practice Problem 3.14
+
+The C code
+
+int test(data_t a) {
+  return a TEST 0;
+}
+
+shows a general comparison between argument a and 0, where we can set the data type of the argument by declaring data_t with a typedef, and the nature of the comparison by declaring TEST with a #define declaration. The following instruction sequences implement the comparison, where a is held in some portion of register %rdi. For each sequence, determine which data types data_t and which comparisons TEST could cause the compiler to generate this code. (There can be multiple correct answers; list all correct ones.)
+
+A. testq	%rdi, %rdi
+   setge	%al”
+
+B. testw	%di, %di
+   sete	%al”
+
+C. testb	%dil, %dil
+   seta	%al
+
+D. testl	%edi, %edi
+   setle	%al
+
+Jump Instructions
+
+Under normal execution, instructions follow each other in the order they are listed. A jump instruction can cause the execution to switch to a completely new position in the program. These jump destinations are generally indicated in assembly code by a label. Consider the following (very contrived) assembly-code sequence:
+
+movq $0,%rax		Set %rax to 0
+jmp  .L1		    Goto .L1
+movq (%rax), %rdx	Null pointer dereference (skipped)
+.L1:
+  popq %rdx		Jump target
+
+These instructions jump to a labeled destination when the jump condition holds. Some instructions have "synonyms," alternate names for the same machine instruction.
+
+The instruction jmp .L1 will cause the program to skip over the movq instruction and instead resume execution with the popq instruction. In generating the object-code file, the assembler determines the addresses of all labeled instructions and encodes the jump targets (the addresses of the destination instructions) as part of the jump instructions.
+
+Figure 3.15 shows the different jump instructions. The jmp instruction jumps unconditionally. It can be either a direct jump, where the jump target is encoded as part of the instruction, or an indirect jump, where the jump target is read from a register or a memory location. Direct jumps are written in assembly code by giving a label as the jump target, for example, the label .L1 in the code shown. Indirect jumps are written using `*' followed by an operand specifier using one of the memory operand formats described in Figure 3.3. As examples, the instruction
+
+jmp *%rax
+
+uses the value in register %rax as the jump target, and the instruction
+
+jmp *(%rax)
+
+reads the jump target from memory, using the value in %rax as the read address.
+
+The remaining jump instructions in the table are conditional—they either jump or continue executing at the next instruction in the code sequence, depending on some combination of the condition codes. The names of these instructions and the conditions under which they jump match those of the set instructions (see Figure 3.14). As with the set instructions, some of the underlying machine instructions have multiple names. Conditional jumps can only be direct.
+
+Jump Instruction Encodings
+
+For the most part, we will not concern ourselves with the detailed format of machine code. On the other hand, understanding how the targets of jump instructions are encoded will become important when we study linking in Chapter 7. In addition, it helps when interpreting the output of a disassembler. In assembly code, jump targets are written using symbolic labels. The assembler, and later the linker, generate the proper encodings of the jump targets. There are several different encodings for jumps, but some of the most commonly used ones are PC relative. That is, they encode the difference between the address of the target instruction and the address of the instruction immediately following the jump. These offsets can be encoded using 1, 2, or 4 bytes. A second encoding method is to give an "absolute" address, using 4 bytes to directly specify the target. The assembler and linker select the appropriate encodings of the jump destinations.
+
+As an example of PC-relative addressing, the following assembly code for a function was generated by compiling a file branch. c. It contains two jumps: the jmp instruction on line 2 jumps forward to a higher address, while the jg instruction on line 7 jumps back to a lower one.
+
+1	  movq	%rdi, %rax
+2	  jmp	.L2
+3	 .L3:
+4	  sarq	%rax
+5	 .L2:
+6	  testq	%rax, %rax
+7	  jg	.L3
+8	  rep; ret
+
+The disassembled version of the .o format generated by the assembler is as follows:
+
+1	0:	48 89 f8	mov	%rdi,%rax
+2	3:	eb 03		  jmp	8 <loop+0x8>
+3	5:	48 d1 f8	sar	%rax
+4	8:	48 85 c0	test	%rax,%rax
+5	b:	7f f8		  jg	5 <loop+0x5>
+6	d:	f3 c3		  repz retq
+
+In the annotations on the right generated by the disassembler, the jump targets are indicated as 0x8 for the jump instruction on line 2 and 0x5 for the jump instruction on line 5 (the disassembler lists all numbers in hexadecimal). Looking at the byte encodings of the instructions, however, we see that the target of the first jump instruction is encoded (in the second byte) as 0x03. Adding this to 0x5, the address of the following instruction, we get jump target address 0x8, the address of the instruction on line 4.
+
+Aside What do the instructions rep and repz do?
+
+Line 8 of the assembly code shown on page 207 contains the instruction combination rep; ret. These are rendered in the disassembled code (line 6) as repz retq. One can infer that repz is a synonym for rep, just as retq is a synonym for ret. Looking at the Intel and AMD documentation for the rep instruction, we find that it is normally used to implement a repeating string operation [3, 51]. It seems completely inappropriate here. The answer to this puzzle can be seen in AMD's guidelines to compiler writers [1]. They recommend using the combination of rep followed by ret to avoid making the ret instruction the destination of a conditional jump instruction. Without the rep instruction, the jg instruction (line 7 of the assembly code) would proceed to the ret instruction when the branch is not taken. According toAMD, their processors cannot properly predict the destination of a ret instruction when it is reached from a jump instruction. The rep instruction serves as a form of no-operation here, and so inserting it as the jump destination does not change behavior of the code, except to make it faster on AMD processors. We can safely ignore any rep or repz instruction we see in the rest of the code presented in this book.
+
+Similarly, the target of the second jump instruction is encoded as 0xf8 (decimal −8) using a single-byte two's-complement representation. Adding this to 0xd (decimal 13), the address of the instruction on line 6, we get 0x5, the address of the instruction on line 3.
+
+As these examples illustrate, the value of the program counter when performing PC-relative addressing is the address of the instruction following the jump, not that of the jump itself. This convention dates back to early implementations, when the processor would update the program counter as its first step in executing an instruction.
+
+The following shows the disassembled version of the program after linking:
+
+1	4004d0: 48 89 f8	mov %rdi,%rax
+2	4004d3: eb 03		  jmp 4004d8 <loop+0x8>
+3	4004d5: 48 d1 f8	sar %rax
+4	4004d8: 48 85 c0	test %rax,%rax
+5	4004db: 7f f8		  jg 4004d5 <loop+0x5>
+6	4004dd: f3 c3		  repz retq
+
+The instructions have been relocated to different addresses, but the encodings of the jump targets in lines 2 and 5 remain unchanged. By using a PC-relative encoding of the jump targets, the instructions can be compactly encoded (requiring just 2 bytes), and the object code can be shifted to different positions in memory without alteration.
+
