@@ -10,7 +10,7 @@ All computer systems have similar hardware and software components that perform 
 
 machine representations of numbers are finite approximations that can behave in unexpected ways.
 
-On a Unix system, the translation from source file to execucatble object file (stored as a binary disk file) is performed by a compiler driver. see helloc and figure1.3
+On a Unix system, the translation from source file to executable object file (stored as a binary disk file) is performed by a compiler driver. see helloc and figure1.3
 
 The translation is performed in the sequence of four phases shown in Figure 1.3    
 
