@@ -3569,3 +3569,827 @@ Arrays in C are one means of aggregating scalar data into larger data types. C u
 Optimizing compilers are particularly good at simplifying the address computations used by array indexing. This can make the correspondence between the C code and its translation into machine code somewhat difficult to decipher.
 
 Basic Principles
+
+For data type T and integer constant N, consider a declaration of the Form
+
+T A[N]
+
+Let us denote the starting location as xA. The declaration has two effects. First, it allocates a contiguous region of L · N bytes in memory, where L is the size (in bytes) of data type T. Second, it introduces an identifier A that can be used as a pointer to the beginning of the array. The value of this pointer will be xA. The array elements can be accessed using an integer index ranging between 0 and N–1. Array element i will be stored at address xA + L · i.
+
+As examples, consider the following declarations:
+
+char	A[12];
+char	*B[8];
+int		C[6];
+double	*D[5];
+
+These declarations will generate arrays with the following parameters: see array.png 
+
+The memory referencing instructions of x86-64 are designed to simplify array access. For example, suppose E is an array of values of type int and we wish to evaluate E[i], where the address of E is stored in register %rdx and i is stored in register %rcx. Then the instruction will perform the address computation xE + 4i, read that memory location, and copy the result to register %eax. The allowed scaling factors of 1, 2, 4, and 8 cover the sizes of the common primitive data types.
+
+movl (%rdx,%rcx,4),%eax
+
+Practice Problem 3.36 
+
+Consider the following declarations:
+
+short	S[7];
+short	*T[3];
+short	**U[6];
+int		V[8];
+double	*W[4];
+
+Fill in the following table describing the element size, the total size, and the address of element i for each of these arrays.
+
+Array			Element size			Total size			Start address			Element i
+
+S 																xS
+
+T																xT
+
+U																xU
+
+V																xV
+
+W																xW
+
+
+Pointer Arithmetic
+
+C allows arithmetic on pointers, where the computed value is scaled according to the size of the data type referenced by the pointer. That is, if p is a pointer to data of type T, and the value of p is xp, then the expression p+i has value xp + L · i, where L is the size of data type T.
+
+The unary operators `&' and `*' allow the generation and dereferencing of pointers. That is, for an expression Expr denoting some object, &Expr is a pointer giving the address of the object. For an expression AExpr denoting an address, *AExpr gives the value at that address. The expressions Expr and *&Expr are therefore equivalent. The array subscripting operation can be applied to both arrays and pointers. The array reference A[i] is identical to the expression *(A+i). It computes the address of the ith array element and then accesses this memory location.
+
+Expanding on our earlier example, suppose the starting address of integer array E and integer index i are stored in registers %rdx and %rcx, respectively. The following are some expressions involving E. We also show an assembly-code implementation of each expression, with the result being stored in either register %eax (for data) or register %rax (for pointers). see pointer-arithmetic.png
+
+Practice Problem 3.37 
+
+Suppose xS, the address of short integer array S, and long integer index i are stored in registers %rdx and %rcx, respectively. For each of the following expressions, give its type, a formula for its value, and an assembly-code implementation. The result should be stored in register %rax if it is a pointer and register element %ax if it has data type short.
+
+Expression 			Type			Value			Assembly code
+
+S+1
+
+S[3]
+
+&S[i]
+
+S[4*i+1]
+
+S+i-5
+
+
+Nested Arrays
+
+The general principles of array allocation and referencing hold even when we create arrays of arrays. For example, the declaration
+
+int A[5][3];
+
+is equivalent to the declaration
+
+typedef int row3_t[3];
+row3_t A[5];
+
+Data type row3_t is defined to be an array of three integers. Array A contains five such elements, each requiring 12 bytes to store the three integers. The total array size is then 4 · 5 · 3 = 60 bytes.
+
+Array A can also be viewed as a two-dimensional array with five rows and three columns, referenced as A[0][0] through A[4][2]. The array elements are ordered in memory in row-major order, meaning all elements of row 0, which can be written A[0], followed by all elements of row 1 (A[1]), and so on. This is illustrated in Figure 3.36.
+
+This ordering is a consequence of our nested declaration. Viewing A as an array of five elements, each of which is an array of three int's, we first have A[0], followed by A[1], and so on.
+
+Toaccess elements of multidimensional arrays, the compiler generates code to compute the off set of the desired element and then uses one of the mov instructions with the start of the array as the base address and the (possibly scaled) offset as an index. In general, for an array declared as
+
+T D[R][C];
+
+array element D[i][j] is at memory address
+
+&D[i][j] = xD + L(C⋅i + j) 		(3.1)
+
+where L is the size of data type T in bytes. As an example, consider the 5×3 integer array A defined earlier. Suppose xA, i, and j are in registers %rdi, %rsi, and %rdx, respectively. Then array element A[i][j] can be copied to register %eax by the following code:
+
+As can be seen, this code computes the element's address as xA + 12i + 4j = xA + 4(3i + j) using the scaling and addition capabilities of x86-64 address arithmetic.
+
+Practice Problem 3.38
+
+Consider the following source code, where M and N are constants declared with #define:
+
+long P[M][N];
+long Q[N][M];
+long sum_element(long i, long j) {
+	return P[i][j] + Q[j][i];
+}
+
+In compiling this program, gcc generates the following assembly code:
+
+    long sum_element(long i, long j)
+	i in %rdi, j in %rsi
+1	sum_element:
+2	leaq	0(,%rdi,8), %rdx
+3	subq	%rdi, %rdx
+4	addq	%rsi, %rdx
+5	leaq	(%rsi,%rsi,4), %rax
+6	addq	%rax, %rdi
+7	movq	Q(,%rdi,8), %rax
+8	addq	P(,%rdx,8), %rax
+9	ret
+
+Use your reverse engineering skills to determine the values of M and N based on this assembly code.
+
+Fixed-Size Arrays
+
+The C compiler is able to make many optimizations for code operating on multidimensional arrays of fixed size. Here we demonstrate some of the optimizations made by gcc when the optimization level is set with the flag -01. Suppose we declare data type fix_matrix to be 16 × 16 arrays of integers as follows:
+
+#define N 16
+typedef int fix_matrix[N][N];
+
+(This example illustrates a good coding practice. Whenever a program uses some constant as an array dimension or buffer size, it is best to associate a name with it via a #define declaration, and then use this name consistently, rather than the numeric value. That way, if an occasion ever arises to change the value, it can be done by simply modifying the #define declaration.) The code in Figure 3.37(a) computes element i, k of the product of arrays A and B—that is, the inner product of row i from A and column k from B. This product is given by the formula ∑0≤j<Nai,j⋅bj,k. Gcc generates code that we then recoded into C, shown as function fix_prod_ele_opt in Figure 3.37(b). This code contains a number of clever optimizations. It removes the integer index j and converts all array references to pointer dereferences. This involves (1) generating a pointer, which we have named Aptr, that points to successive elements in row i of A, (2) generating a pointer, which we have named Bptr, that points to successive elements in column k of B, and (3) generating a pointer, which we have named Bend, that equals the value Bptr will have when it is time to terminate the loop. The initial value for Aptr is the address of the first element of row i of A, given by the C expression &A[i][0]. The initial value for Bptr is the address of the first element of column k of B, given by the C expression &B[0][k]. The value for Bend is the index of what would be the (n + 1)st element in column j of B, given by the C expression &B[N][k].
+
+(a) Original C Code
+
+/* Compute i,k of fixed matrix product */
+int fix_prod_ele (fix_matrix A, fix_matrix B, long i, long k) {
+	long j;
+	int result = 0;
+
+	for (j = 0; j < N; j++)
+	  result += A[i][j] * B[j][k];
+	return result;
+}
+
+(b) Optimized C Code
+
+“1	/* Compute i,k of fixed matrix product */
+2	int fix_prod_ele_opt(fix_matrix A, fix_matrix B, long i, long k) {
+3		int *Aptr = &A[i][0];	/* Points to elements in row i of A		*/
+4		int *Bptr = &B[0][k];	/* Points to elements in column k of B	*/
+5		int *Bend = &B[N][k];	/* Marks stopping point for Bptr		*/
+6		int result = 0;
+7		do {					/* No need for initial test */
+8			result += *Aptr * *Bptr;	/* Add next product to sum */
+9			Aptr ++;			/* Move Aptr to next column */
+10			Bptr += N;			/* Move Bptr to next row */
+11		} while (Bptr != Bend);			/* Test for stopping point */
+12		return result;
+13	}
+
+Figure 3.37 Original and optimized code to compute element i, k of matrix product for fixed-length arrays.The compiler performs these optimizations automatically.
+
+The following is the actual assembly code generated by gcc for function fix_prod_ele. We see that four registers are used as follows: %eax holds result, %rdi holds Aptr, %rcx holds Bptr, and %rsi holds Bend.
+
+    int fix_prod_ele_opt(fix_matrix A, fix_matrix B, long i, long k)
+	A in %rdi, B in %rsi, i in %rdx, k in %rcx
+1	fix_prod_ele:
+2	  salq	 $6, %rdx		Compute 64 * i
+3	  addq	 %rdx, %rdi		Compute Aptr = xA + 64i = &A[i][0]
+4	  leaq	(%rsi,%rcx,4), %rcx	Compute Bptr = xB + 4k = &B[0][k]
+5	  leaq	 1024(%rcx), %rsi	Compute Bend = xB + 4k + 1024 = &B[N][k]
+6	  movl	 $0, %eax		Set result = 0
+7	.L7:		loop:
+8	  movl	(%rdi), %edx		Read *Aptr
+9	  imull	(%rcx), %edx		Multiply by *Bptr
+10	  addl	%edx, %eax		Add to result
+11	  addq	$4, %rdi		Increment Aptr ++
+12	  addq	$64, %rcx		Increment Bptr += N
+13	  cmpq	%rsi, %rcx		Compare Bptr:Bend
+14	  jne		.L7		If !=, goto loop
+15	  rep; ret			Return 
+
+Practice Problem 3.39
+
+Use Equation 3.1 to explain how the computations of the initial values for Aptr, Bptr, and Bend in the C code of Figure 3.37(b) (lines 3–5) correctly describe their computations in the assembly code generated for fix_prod_ele (lines 3–5).
+
+Practice Problem 3.40 
+
+/* Set all diagonal elements to val */
+void fix_set_diag(fix_matrix A, int val) {
+	long i;
+	for (i = 0; i < N; i++)
+	  A[i][i] = val;
+}
+
+When compiled with optimization level -01, gcc generates the following assembly code:
+
+1	fix_set_diag:
+	void fix_set_diag(fix_matrix A, int val)
+	A in %rdi, val in %rsi
+2		movl	$0, %eax
+3	.L13:
+4		movl	%esi, (%rdi,%rax)
+5		addq	$68, %rax
+6		cmpq	$1088, %rax
+7		jne	.L13
+8		rep; ret 
+
+Create a C code program fix_set_diag_opt that uses optimizations similar to those in the assembly code, in the same style as the code in Figure 3.37(b). Use expressions involving the parameter N rather than integer constants, so that your code will work correctly if N is redefined.
+
+Variable-Size Arrays
+
+Historically, C only supported multidimensional arrays where the sizes (with the possible exception of the first dimension) could be determined at compile time. Programmers requiring variable-size arrays had to allocate storage for these arrays using functions such as malloc or calloc, and they had to explicitly encode the mapping of multidimensional arrays into single-dimension ones via row-major indexing, as expressed in Equation 3.1. ISO C99 introduced the capability of having array dimension expressions that are computed as the array is being allocated.
+
+In the C version of variable-size arrays, we can declare an Array
+
+int A[expr1] [expr2]
+
+either as a local variable or as an argument to a function, and then the dimensions of the array are determined by evaluating the expressions expr1 and expr2 at the time the declaration is encountered. So, for example, we can write a function to access element i, j of an n × n array as follows:
+
+int var_ele(long n, int A[n][n], long i, long j) {
+	return A[i][j];
+}
+
+The parameter n must precede the parameter A[n][n], so that the function can compute the array dimensions as the parameter is encountered.
+Gcc generates code for this referencing function as
+
+int var_ele(long n, int A[n][n], long i, long j)
+	n in %rdi, A in %rsi, i in %rdx, j in %rcx
+1	var_ele:
+2		imulq	%rdx, %rdi			Compute n · i
+3		leaq	(%rsi,%rdi,4), %rax		Compute xA + 4(n · i
+4		movl	(%rax,%rcx,4), %eax		Read from M[xA + 4(n · i) + 4j]
+5		ret 
+
+As the annotations show, this code computes the address of element i, j as xA + 4(n · i) + 4j = xA + 4(n · i + j). The address computation is similar to that of the fixed-size array (Section 3.8.3), except that (1) the register usage changes due to added parameter n, and (2) a multiply instruction is used (line 2) to compute n · i, rather than an leaq instruction to compute 3i. We see therefore that referencing variable-size arrays requires only a slight generalization over fixed-size ones. The dynamic version must use a multiplication instruction to scale i by n, rather than a series of “shifts and adds. In some processors, this multiplication can incur a significant performance penalty, but it is unavoidable in this case.
+
+When variable-size arrays are referenced within a loop, the compiler can often optimize the index computations by exploiting the regularity of the access patterns. For example, Figure 3.38(a) shows C code to compute element i, k of the product of two n × n arrays A and B. Gcc generates assembly code, which we have recast into C (Figure 3.38(b)). This code follows a different style from the optimized code for the fixed-size array (Figure 3.37), but that is more an artifact of the choices made by the compiler, rather than a fundamental requirement for the two different functions. The code of Figure 3.38(b) retains loop variable j, both to detect when the loop has terminated and to index into an array consisting of the elements of row i of A.
+
+(a) Original C code 
+
+1	/* Compute i,k of variable matrix product */
+2	int var_prod_ele(long n, int A[n][n], int B[n][n], long i, long k) {
+3		long j;
+4		int result = 0;
+5
+6		for (j = 0; j < n; j++)
+7			result += A[i][j] * B[j][k];
+8
+9		return result;
+10	}
+
+(b) Optimized C Code
+
+/* Compute i,k of variable matrix product */
+int var_prod_ele_opt(long n, int A[n][n], int B[n][n], long i, long k) {
+	int *Arow = A[i];
+	int *Bptr = &B[0][k];
+	int result = 0;
+	long j;
+	for (j = 0; j < n; j++) {
+	  result += Arow[j] * *Bptr;
+	  Bptr += n;
+	}
+	return result;
+}
+
+Figure 3.38 Original and optimized code to compute element i, k of matrix product for variable-size arrays.The compiler performs these optimizations automatically.
+
+The following is the assembly code for the loop of var_prod_ele:
+
+Registers: n in %rdi, Arow in %rsi, Bptr in %rcx
+	4n in %r9, result in %eax, j in %edx
+1	.L24:				loop:
+2	movl	(%rsi,%rdx,4), %r8d	Read Arow[j]
+3	imull	(%rcx), %r8d		Multiply by *Bptr
+4	addl	%r8d, %eax		Add to result
+5	addq	$1, %rdx		j++
+6	addq	%r9, %rcx		Bptr += n
+7	cmpq	%rdi, %rdx		Compare j:n
+8	jne	.L24			If !=, goto loop
+
+We see that the program makes use of both a scaled value 4n (register %r9) for incrementing Bptr as well as the value of n (register %rdi) to check the loop bounds. The need for two values does not show upin the C code, due to the scaling of pointer arithmetic.
+
+We have seen that, with optimizations enabled, gcc is able to recognize patterns that arise when a program steps through the elements of a multidimensional array. It can then generate code that avoids the multiplication that would result from a direct application of Equation 3.1. Whether it generates the pointer-based code of Figure 3.37(b) or the array-based code of Figure 3.38(b), these optimizations will significantly improve program performance.
+
+Heterogeneous Data Structures
+
+C provides two mechanisms for creating data types by combining objects of different types: structures, declared using the keyword struct, aggregate multiple objects into a single unit; unions, declared using the keyword union, allow an object to be referenced using several different types.
+
+Structures
+
+The C struct declaration creates a data type that groups objects of possibly different types into a single object. The different components of a structure are referenced by names. The implementation of structures is similar to that of arrays in that all of the components of a structure are stored in a contiguous region of memory and a pointer to a structure is the address of its first byte. The compiler maintains information about each structure type indicating the byte offset of each field. It generates references to structure elements using these offsets as displacements in memory referencing instructions.
+
+As an example, consider the following structure declaration:
+
+struct rec {
+	int i;
+	int j;
+	int a[2];
+	int *p;
+};
+
+This structure contains four fields: two 4-byte values of type int, a two-element array of type int, and an 8-byte integer pointer, giving a total of 24 bytes: see struct.png
+
+Observe that array a is embedded within the structure. The numbers along the top of the diagram give the byte offsets of the fields from the beginning of the structure.
+
+To access the fields of a structure, the compiler generates code that adds the appropriate offset to the address of the structure. For example, suppose variable r of type struct rec * is in register %rdi. Then the following code copies element r->i to element r->j: 
+
+Registers: r in %rdi
+1	movl	(%rdi), %eax		Get r->i
+2	movl	%eax, 4(%rdi)		Store in r->j
+
+Since the offset of field i is 0, the address of this field is simply the value of r. To store into field j, the code adds offset 4 to the address of r.
+
+To generate a pointer to an object within a structure, we can simply add the field's offset to the structure address. For example, we can generate the pointer &(r->a[1]) by adding offset 8 + 4 · 1 = 12. For pointer r in register %rdi and long integer variable i in register %rsi, we can generate the pointer value &(r->a[i]) with the single instruction 
+
+	Registers: r in %rdi, i %rsi
+1	leaq	 8(%rdi,%rsi,4), %rax	Set %rax to &r->a[i]
+
+As a final example, the following code implements the statement
+
+r->p = &r->a[r->i + r->j];
+
+starting with r in register %rdi:
+
+ 	Registers: r in %rdi
+1	movl	 4(%rdi), %eax		Get r->j
+2	addl	 (%rdi), %eax		Add r->i
+3	cltq				Extend to 8 bytes
+4	leaq	 8(%rdi,%rax,4), %rax	Compute &r->a[r->i + r->j]
+5	movq	%rax, 16(%rdi)		Store in r->p
+
+As these examples show, the selection of the different fields of a structure is handled completely at compile time. The machine code contains no information about the field declarations or the names of the fields.
+
+New to C? Representing an object as a struct
+
+The struct data type constructor is the closest thing C provides to the objects of C++ and Java. It allows the programmer to keep information about some entity in a single data structure and to reference that information with names.
+
+For example, a graphics program might represent a rectangle as a structure: 
+
+struct rect {
+	long llx;		/* X coordinate of lower-left corner */
+	long lly;		/* Y coordinate of lower-left corner */
+	unsigned long width;	 /* Width (in pixels)			*/
+	unsigned long height;	/* Height (in pixels)			*/
+	unsigned color;		/* Coding of color			*/
+};
+
+We can declare a variable r of type struct rect and set its field values as follows:
+
+struct rect r;
+r.llx = r.lly = 0;
+r.color = 0xFF00FF;
+r.width = 10;
+r.height = 20;
+
+where the expression r.llx selects field llx of structure r.
+Alternatively, we can both declare the variable and initialize its fields with a single statement:
+
+struct rect r = { 0, 0, 0xFF00FF, 10, 20 };
+
+It is common to pass pointers to structures from one place to another rather than copying them. For example, the following function computes the area of a rectangle, where a pointer to the rectangle struct is passed to the function:
+
+long area(struct rect *rp) {
+	return (*rp).width * (*rp).height;
+}
+
+The expression (*rp).width dereferences the pointer and selects the width field of the resulting structure. Parentheses are required, because the compiler would interpret the expression *rp.width as *(rp.width), which is not valid. This combination of dereferencing and field selection is so common that C provides an alternative notation using ->. That is, rp->width is equivalent to the expression (*rp).width. For example, we can write a function that rotates a rectangle counterclockwise by 90 degrees as
+
+void rotate_left(struct rect *rp) {
+	/* Exchange width and height */
+	long t = rp->height;
+	rp->height = rp->width;
+	rp->width = t;
+	/* Shift to new lower-left corner */
+	rp->llx -= t;
+}
+
+The objects of C++ and Java are more elaborate than structures in C, in that they also associate a set of methods with an object that can be invoked to perform computation. In C, we would simply write these as ordinary functions, such as the functions area and rotate_left shown previously.
+
+Practice Problem 3.41 
+
+Consider the following structure declaration:
+
+struct prob {
+	int *p;
+	struct {
+	  int x;
+	  int y;
+	} s;
+	struct prob *next;
+};
+
+This declaration illustrates that one structure can be embedded within another, just as arrays can be embedded within structures and arrays can be embedded within arrays.
+
+The following procedure (with some expressions omitted) operates on this structure:
+
+void sp_init(struct prob *sp) {
+	sp->s.x =	__________;
+	sp->p =		__________;
+	sp->next=	__________;
+}
+
+A. What are the offsets (in bytes) of the following fields?
+
+p:	__________
+s.x:	 __________
+s.y:	__________
+next:	__________
+
+B. How many total bytes does the structure require?
+
+C. The compiler generates the following assembly code for sp_init:
+
+void sp_init(struct prob *sp)
+	sp in %rdi
+1	sp_init:
+2	movl	12(%rdi), %eax
+3	movl	%eax, 8(%rdi)
+4	leaq	8(%rdi), %rax
+5	movq	%rax, (%rdi)
+6	movq	%rdi, 16(%rdi)
+7	ret 
+
+On the basis of this information, fill in the missing expressions in the code for sp_init.
+
+Practice Problem 3.42
+
+The following code shows the declaration of a structure of type ELE and the prototype for a function fun:
+
+struct ELE {
+	long v;
+	struct ELE *p;
+};
+
+long fun(struct ELE *ptr);
+
+When the code for fun is compiled, gcc generates the following assembly code:
+
+    long fun(struct ELE *ptr)
+	ptr in %rdi
+1	fun:
+2	movl	$0, %eax
+3	jmp	.L2
+4	L3:
+5	addq	(%rdi), %rax
+6	movq	8(%rdi), %rdi
+7	.L2:
+8	testq	%rdi, %rdi
+9	jne	.L3
+10	rep; ret
+
+A. Use your reverse engineering skills to write C code for fun.
+B. Describe the data structure that this structure implements and the operation performed by fun.
+
+Unions
+
+Unions provide a way to circumvent the type system of C, allowing a single object to be referenced according to multiple types. The syntax of a union declaration is identical to that for structures, but its semantics are very different. Rather than having the different fields reference different blocks of memory, they all reference the same block.
+
+Consider the following declarations:
+
+struct S3 {
+	char c;
+	int i[2];
+	double v;
+};
+union U3 {
+	char c;
+	int i[2];
+	double v;
+};
+
+When compiled on an x86-64 Linux machine, the offsets of the fields, as well as the total size of data types S3 and U3, are as shown in the following table:
+
+Type 		c 			i			v 			Size
+
+S3 			0			4			16			24
+
+U3			0			0			0			8
+
+(We will see shortly why i has offset 4 in S3 rather than 1, and why v has offset 16, rather than 9 or 12.) For pointer p of type union U3 *, references p->c, p->i[0], and p->v would all reference the beginning of the data structure. Observe also that the overall size of a union equals the maximum size of any of its fields.
+
+Unions can be useful in several contexts. However, they can also lead to nasty bugs, since they bypass the safety provided by the C type system. One application is when we know in advance that the use of two different fields in a data structure will be mutually exclusive. Then, declaring these two fields as part of a union rather than a structure will reduce the total space allocated.
+
+For example, suppose we want to implement a binary tree data structure where each leaf node has two double data values and each internal node has pointers to two children but no data. If we declare this as then every node requires 32 bytes, with half the bytes wasted for each type of node. On the other hand, if we declare a node as then every node will require just 16 bytes. If n is a pointer to a node of type union node_u *, we would reference the data of a leaf node as n->data[0] and n->data[1], and the children of an internal node as n->internal.left and n->internal.right.
+
+struct node_s {
+	struct node_s *left;
+	struct node_s *right;
+	double data[2];
+};
+
+union node_u {
+	struct {
+	  union node_u *left;
+	  union node_u *right;
+	} internal;
+	double data[2];
+};
+
+With this encoding, however, there is no way to determine whether a given node is a leaf or an internal node. A common method is to introduce an enumerated type defining the different possible choices for the union, and then create a structure containing a tag field and the union:
+
+typedef enum { N_LEAF, N_INTERNAL } nodetype_t;
+
+struct node_t {
+	nodetype_t type;
+	union {
+	  struct {
+	  	struct node_t *left;
+	  	struct node_t *right;
+	  } internal;
+	  double data[2];
+	} info;
+};
+
+This structure requires a total of 24 bytes: 4 for type, and either 8 each for info.internal.left and info.internal.right or 16 for info.data. As we will discuss shortly, an additional 4 bytes of padding is required between the field for type and the union elements, bringing the total structure size to 4 + 4 + 16 = 24. In this case, the savings gain of using a union is small relative to the awkwardness of the resulting code. For data structures with more fields, the savings can be more compelling.
+
+Unions can also be used to access the bit patterns of different data types. For example, suppose we use a simple cast to convert a value d of type double to a value u of type unsigned long: 
+
+unsigned long u = (unsigned long) d;
+
+Value u will be an integer representation of d. Except for the case where d is 0.0, the bit representation of u will be very different from that of d. Now consider the following code to generate a value of type unsigned long from a double:
+
+unsigned long double2bits(double d) {
+	union {
+	  double d;
+	  unsigned long u;
+	} temp;
+	temp.d = d;
+	return temp.u;
+};
+
+In this code, we store the argument in the union using one data type and access it using another. The result will be that u will have the same bit representation as d, including fields for the sign bit, the exponent, and the significand, as described in Section 3.11. The numeric value of u will bear no relation to that of d, except for the case when d is 0.0.
+
+When using unions to combine data types of different sizes, byte-ordering issues can become important. For example, suppose we write a procedure that will create an 8-byte double using the bit patterns given by two 4-byte unsigned values:
+
+double uu2double(unsigned word0, unsigned word1)
+{
+	union {
+	  double d;
+	  unsigned u[2];
+	} temp;
+	temp.u[0] = word0;
+	temp.u[1] = word1;
+	return temp.d;
+}
+
+On a little-endian machine, such as an x86-64 processor, argument word0 will become the low-order 4 bytes of d, while word1 will become the high-order 4 bytes. On a big-endian machine, the role of the two arguments will be reversed.
+
+Practice Problem 3.43
+
+Suppose you are given the job of checking that a C compiler generates the proper code for structure and union access. You write the following structure declaration:
+
+typedef union {
+	struct {
+	  long u;
+	  short v;
+	  char w;
+	} t1;
+	struct {
+	  int a[2];
+	  char *p;
+	} t2;
+} u_type;
+
+You write a series of functions of the Form
+
+void get(u_type *up, type *dest) {
+	*dest = expr;
+}
+
+with different access expressions expr and with destination data type type set according to type associated with expr. You then examine the code generated when compiling the functions to see if they match your expectations.
+Suppose in these functions that up and dest are loaded into registers %rdi and %rsi, respectively. Fill in the following table with data type type and sequences of one to three instructions to compute the expression and store the result at dest.
+
+expr 					type						Code
+
+up->t1.u				long						movq (%rdi), %raxmovq %rax, (%rsi)
+
+up->t1.v
+
+up->t1.w
+
+up->t2.a
+
+up->t2.a[up->t1.u]
+
+*up->t2.p 
+
+
+Data Alignment
+
+Many computer systems place restrictions on the allowable addresses for the primitive data types, requiring that the address for some objects must be a multiple of some value K (typically 2, 4, or 8). Such alignment restrictions simplify the design of the hardware forming the interface between the processor and the memory system. For example, suppose a processor always fetches 8 bytes from memory with an address that must be a multiple of 8. If we can guarantee that any double will be aligned to have its address be a multiple of 8, then the value can be read or written with a single memory operation. Otherwise, we may need to perform two memory accesses, since the object might be split across two 8-byte memory blocks.
+
+The x86-64 hardware will work correctly regardless of the alignment of data. However, Intel recommends that data be aligned to improve memory system performance. Their alignment rule is based on the principle that any primitive object of K bytes must have an address that is a multiple of K. We can see that this rule leads to the following alignments:
+
+K						Types
+
+1						char
+
+2						short
+
+4						int, float
+
+8						long, double, char *
+
+Alignment is enforced by making sure that every data type is organized and allocated in such a way that every object within the type satisfies its alignment restrictions. The compiler places directives in the assembly code indicating the desired alignment for global data. For example, the assembly-code declaration of the jump table on page 235 contains the following directive on line 2:
+
+.align 8
+
+This ensures that the data following it (in this case the start of the jump table) will start with an address that is a multiple of 8. Since each table entry is 8 bytes long, the successive elements will obey the 8-byte alignment restriction.
+
+For code involving structures, the compiler may need to insert gaps in the field allocation to ensure that each structure element satisfies its alignment requirement. The structure will then have some required alignment for its starting address.
+
+For example, consider the structure declaration
+
+struct S1 {
+	int i;
+	char c;
+	int j;
+};
+
+Suppose the compiler used the minimal 9-byte allocation, diagrammed as follows: see 9-byte allocation.png 
+
+Then it would be impossible to satisfy the 4-byte alignment requirement for both fields i (offset 0) and j (offset 5). Instead, the compiler inserts a 3-byte gap (shown here as shaded in blue) between fields c and j: see 9-byte allocation-1.png
+
+As a result, j has offset 8, and the overall structure size is 12 bytes. Furthermore, the compiler must ensure that any pointer p of type struct S1* satisfies a 4-byte alignment. Using our earlier notation, let pointer p have value xp. Then xp must be a multiple of 4. This guarantees that both p->i (address xp) and p->j (address xp + 8) will satisfy their 4-byte alignment requirements.
+
+In addition, the compiler may need to add padding to the end of the structure so that each element in an array of structures will satisfy its alignment requirement. For example, consider the following structure declaration:
+
+struct S2 {
+	int i;
+	int j;
+	char c;
+};
+
+If we pack this structure into 9 bytes, we can still satisfy the alignment requirements for fields i and j by making sure that the starting address of the structure satisfies a 4-byte alignment requirement. Consider, however, the following declaration:
+
+struct S2 d[4];
+With the 9-byte allocation, it is not possible to satisfy the alignment requirement for each element of d, because these elements will have addresses xd, xd + 9, xd + 18, and xd + 27. Instead, the compiler allocates 12 bytes for structure S2, with the final 3 bytes being wasted space:
+
+That way, the elements of d will have addresses xd, xd + 12, xd + 24, and xd + 36. As long as xd is a multiple of 4, all of the alignment restrictions will be satisfied.
+
+Practice Problem 3.44
+
+For each of the following structure declarations, determine the offset of each field, the total size of the structure, and its alignment requirement for x86-64:
+
+A. struct P1 { int i; char c; int j; char d; };
+B. struct P2 { int i; char c; char d; long j; };
+C. struct P3 { short w[3]; char c[3] };
+D. struct P4 { short w[5]; char *c[3] };
+E. struct P5 { struct P3 a[2]; struct P2 t };
+
+Practice Problem 3.45 
+
+Answer the following for the structure declaration
+
+struct {
+	char	*a;
+	short	b;
+	double	c;
+	char	d;
+	float	e;
+	char	f;
+	long	g;
+	int		h;
+} rec;
+
+A. What are the byte offsets of all the fields in the structure?
+B. What is the total size of the structure?
+C. Rearrange the fields of the structure to minimize wasted space, and then show the byte offsets and total size for the rearranged structure.
+
+Aside A case of mandatory alignment
+
+For most x86-64 instructions, keeping data aligned improves efficiency, but it does not affect program behavior. On the other hand, some models of Intel and AMD processors will not work correctly with unaligned data for some of the SSE instructions implementing multimedia operations. These instructions operate on 16-byte blocks of data, and the instructions that transfer data between the SSE unit and memory require the memory addresses to be multiples of 16. Any attempt to access memory with an address that does not satisfy this alignment will lead to an exception (see Section 8.1), with the default behavior for the program to terminate.
+
+As a result, any compiler and run-time system for an x86-64 processor must ensure that any memory allocated to hold a data structure that may be read from or stored into an SSE register must satisfy a 16-byte alignment. This requirement has the following two consequences:
+
+The starting address for any block generated by a memory allocation function (alloca, malloc, calloc, or realloc) must be a multiple of 16.
+
+The stack frame for most functions must be aligned on a 16-byte boundary. (This requirement has a number of exceptions.)
+
+More recent versions of x86-64 processors implement the AVX multimedia instructions. In addition to providing a superset of the SSE instructions, processors supporting AVX also do not have a mandatory alignment requirement.
+
+Combining Control and Data in Machine-Level programs
+
+So far, we have looked separately at how machine-level code implements the control aspects of a program and how it implements different data structures. In this section, we look at ways in which data and control interact with each other. We start by taking a deep look into pointers, one of the most important concepts in the C programming language, but one for which many programmers only have a shallow understanding. We review the use of the symbolic debugger gdb for examining the detailed operation of machine-level programs. Next, we see how understanding machine-level programs enables us to study buffer overflow, an important security vulnerability in many real-world systems. Finally, we examine how machine-level programs implement cases where the amount of stack storage required by a function can vary from one execution to another.
+
+Understanding Pointers
+
+Pointers are a central feature of the C programming language. They serve as a uniform way to generate references to elements within different data structures. Pointers are a source of confusion for novice programmers, but the underlying concepts are fairly simple. Here we highlight some key principles of pointers and their mapping into machine code.
+
+Every pointer has an associated type. This type indicates what kind of object the pointer points to. Using the following pointer declarations as illustrations variable ip is a pointer to an object of type int, while cpp is a pointer to an object that itself is a pointer to an object of type char. In general, if the object has type T, then the pointer has type *T. The special void * type represents a generic pointer. For example, the malloc function returns a generic pointer, which is converted to a typed pointer via either an explicit cast or by the implicit casting of the assignment operation. Pointer types are not part of machine code; they are an abstraction provided by C to help programmers avoid addressing errors.
+
+int *ip; char **cpp;
+
+Every pointer has a value. This value is an address of some object of the designated type. The special NULL (0) value indicates that the pointer does not point anywhere.
+
+Pointers are created with the `&' operator. This operator can be applied to any C expression that is categorized as an lvalue, meaning an expression that can appear on the left side of an assignment. Examples include variables and the elements of structures, unions, and arrays. We have seen that the machine-code realization of the `&' operator often uses the leaq instruction to compute the expression value, since this instruction is designed to compute the address of a memory reference.
+
+Pointers are dereferenced with the `*' operator. The result is a value having the type associated with the pointer. Dereferencing is implemented by a memory reference, either storing to or retrieving from the specified address.
+
+Arrays and pointers are closely related. The name of an array canbe referenced (but not updated) as if it were a pointer variable. Array referencing (e.g., a[3]) has the exact same effect as pointer arithmetic and dereferencing (e.g., *(a+3)). Both array referencing and pointer arithmetic require scaling the offsets by the object size. When we write an expression p+i for pointer p with value p, the resulting address is computed as p + L · i, where L is the size of the data type associated with p.
+
+Casting from one type of pointer to another changes its type but not its value. One effect of casting is to change any scaling of pointer arithmetic. So, for example, if p is a pointer of type char * having value p, then the expression (int *) p+7 computes p + 28, while (int *) (p+7) computes p + 7. (Recall that casting has higher precedence than addition.)
+
+Pointers can also point to functions. This provides a powerful capability for storing and passing references to code, which can be invoked in some other part of the program. For example, if we have a function defined by the prototype
+
+int fun(int x, int *p);
+
+then we can declare and assign a pointer fp to this function by the following code sequence:
+
+int (*fp)(int, int *); fp = fun;
+
+We can then invoke the function using this pointer:
+
+int y = 1;
+int result = fp(3, &y);
+
+The value of a function pointer is the address of the first instruction in the machine-code representation of the function.
+
+New to C? Function Pointers
+
+The syntax for declaring function pointers is especially difficult for novice programmers to understand. For a declaration such As
+
+int (*f)(int*);
+
+it helps to read it starting from the inside (starting with `f') and working outward. Thus, we see that f is a pointer, as indicated by (*f). It is a pointer to a function that has a single int * as an argument, as indicated by (*f)(int*). Finally, we see that it is a pointer to a function that takes an int * as an argument and returns int.
+
+The parentheses around *f are required, because otherwise the declaration
+
+int *f(int*);
+
+would be read As
+
+(int *) f(int*);
+
+That is, it would be interpreted as a function prototype, declaring a function f that has an int * as its argument and returns an int *.
+
+Life in the Real World: Using the gdb debugger
+
+The GNU debugger gdb provides a number of useful features to support the run-time evaluation and analysis of machine-level programs. With the examples and exercises in this book, we attempt to infer the behavior of a program by just looking at the code. Using gdb, it becomes possible to study the behavior by watching the program in action while having considerable control over its execution.
+
+Figure 3.39 shows examples of some gdb commands that help when working with machine-level x86-64 programs. It is very helpful to first run objdump to get a disassembled version of the program. Our examples are based on running gdb on the file prog, described and disassembled on page 175. We start gdb with the following command line:
+
+linux> gdb prog
+
+The general scheme is to set breakpoints near points of interest in the program. These can be set to just after the entry of a function or at a program address. When one of the breakpoints is hit during program execution, the program will halt and return control to the user. From a breakpoint, we can examine different Registers and memory locations in various formats. We can also single-step the program, running just a few instructions at a time, or we can proceed to the next breakpoint.
+
+As our examples suggest, gdb has an obscure command syntax, but the online help information (invoked within gdb with the help command) overcomes this shortcoming. Rather than using the command-line interface to gdb, many programmers prefer using ddd, an extension to gdb that provides a graphical user interface.
+
+Out-of-Bounds Memory References and Buffer overflow
+
+We have seen that C does not perform any bounds checking for array references, and that local variables are stored on the stack along with state information such as saved register values and return addresses. This combination can lead to serious program errors, where the state stored on the stack gets corrupted by a write to an out-of-bounds array element. When the program then tries to reload the register or execute a ret instruction with this corrupted state, things can go seriously wrong.
+
+A particularly common source of state corruption is known as buffer overflow. Typically, some character array is allocated on the stack to hold a string, but the size of the string exceeds the space allocated for the array. This is demonstrated by the following program example:
+
+/* Implementation of library function gets() */
+char *gets(char *s)
+{
+	int c;
+	char *dest = s;
+	while ((c = getchar()) != `n' && c != EOF)
+		*dest++ = c;
+	if (c == EOF && dest == s)
+		/* No characters read */
+		return NULL;
+	*dest++ = `0'; /* Terminate string */
+	return s;
+}
+
+/* Read input line and write it back */
+void echo()
+{
+	char buf[8]; /* Way too small! */
+	gets(buf);
+	puts(buf);
+}
+
+The preceding code shows an implementation of the library function gets to demonstrate a serious problem with this function. It reads a line from the standard input, stopping when either a terminating newline character or some error condition is encountered. It copies this string to the location designated by argument s and terminates the string with a null character. We show the use of gets in the function echo, which simply reads a line from standard input and echos it back to standard output.
+
+The problem with gets is that it has no way to determine whether sufficient space has been allocated to hold the entire string. In our echo example, we have purposely made the buffer very small—just eight characters long. Any string longer than seven characters will cause an out-of-bounds write.
+
+By examining the assembly code generated by gcc for echo, we can infer how the stack is organized:
+
+    void echo()
+1	echo:
+2	subq	$24, %rsp	Allocate 24 bytes on stack
+3	movq	%rsp, %rdi	Compute buf as %rsp
+4	call	gets		Call gets
+5	movq	%rsp, %rdi	Compute buf as %rsp
+6	call	puts		Call puts
+7	addq	$24, %rsp	Deallocate stack space
+8	ret			return
+
+Figure 3.40 illustrates the stack organization during the execution of echo. The program allocates 24 bytes on the stack by subtracting 24 from the stack pointer (line 2). Character buf is positioned at the top of the stack, as can be seen by the fact that %rsp is copied to %rdi to be used as the argument to the calls to both gets and puts. The 16 bytes between buf and the stored return pointer are not used. As long as the user types at most seven characters, the string returned by gets (including the terminating null) will fit within the space allocated for buf. A longer string, however, will cause gets to overwrite some of the information stored on the stack. As the string gets longer, the following information will get corrupted:
+
+“Characters typed
+Additional corrupted state
+
+
+
+
+0–7
+None
+
+
+9–23
+Unused stack space
+
+
+24–31
+Return address
+
+
+32+
+Saved state in caller”
+
+Excerpt From
+Computer Systems: A Programmer's Perspective
+Randal E. Bryant
+This material may be protected by copyright.
