@@ -4933,3 +4933,169 @@ Show how the numbers declared at label .LC3 encode the number 32.0.
 Using Bitwise Operations in Floating-Point code
 
 At times, we find gcc generating code that performs bitwise operations on XMM registers to implement useful floating-point results. Figure 3.50 shows some relevant instructions, similar to their counterparts for operating on general-purpose registers. These operations all act on packed data, meaning that they update the entire destination XMM register, applying the bitwise operation to all the data in the two source registers. Once again, our only interest for scalar data is the effect these instructions have on the low-order 4 or 8 bytes of the destination. These operations are often simple and convenient ways to manipulate floating-point values, as is explored in the following problem.
+
+Practice Problem 3.56
+
+Consider the following C function, where EXPR is a macro defined with #define:
+
+double simplefun(double x)
+{
+	return EXPR(x);
+}
+
+Below, we show the AVX2 code generated for different definitions of EXPR, where value x is held in %xmm0. All of them correspond to some useful operation on floating-point values. Identify what the operations are. Your answers will require you to understand the bit patterns of the constant words being retrieved from memory.
+
+A. 
+
+1	  vmovsd	.LC1(%rip), %xmm1
+2	  vandpd	%xmm1, %xmm0, %xmm0
+3	.LC1:
+4	  .long		4294967295
+5	  .long		2147483647
+6	  .long		0
+7	  .long		0
+
+B. 
+
+1	vxorpd	%xmm0, %xmm0, %xmm0
+
+C. 
+
+1	  vmovsd	.LC2(%rip), %xmm1
+2	  vxorpd	%xmm1, %xmm0, %xmm0
+3	.LC2:	
+4	  .long		0
+5	  .long		-2147483648
+6	  .long		0
+7	  .long		0
+
+Floating-Point Comparison Operations 
+
+AVX2 provides two instructions for comparing floating-point values:
+
+Instruction 					Based on			Description
+
+ucomiss S1, S2 					S2-S1				Compare single precision
+
+ucomisd S1, S2					S2-S1				Compare double precision
+
+These instructions are similar to the cmp instructions (see Section 3.6), in that they compare operands S1 and S2 (but in the opposite order one might expect) and set the condition codes to indicate their relative values. As with cmpq, they follow the ATT-format convention of listing the operands in reverse order. Argument S2 must be in an XMM register, while S1 can be either in an XMM register or in memory.
+
+The floating-point comparison instructions set three condition codes: the zero flag ZF, the carry flag CF, and the parity flag PF. We did not document the parity flag in Section 3.6.1, because it is not commonly found in gcc-generated x86 code. For integer operations, this flag is set when the most recent arithmetic or logical operation yielded a value where the least significant byte has even parity (i.e., an even number of ones in the byte). For floating-point comparisons, however, the flag is set when either operand is NaN. By convention, any comparison in C is considered to fail when one of the arguments is NaN, and this flag is used to detect such a condition. For example, even the comparison x == x yields 0 when x is NaN.
+
+The condition codes are set as follows:
+
+Ordering S2:S1			CF					ZF					PF
+
+Unordered				1					1					1
+
+S2 < S1					1					0					0
+
+S2 = S1					0					1					0
+
+S2 > S1					0 					0					0
+
+
+The unordered case occurs when either operand is NaN. This can be detected with the parity flag. Commonly, the jp (for "jump on parity") instruction is used to conditionally jump when a floating-point comparison yields an unordered result. Except for this case, the values of the carry and zero flags are the same as those for an unsigned comparison: ZF is set when the two operands are equal, and CF is set when S2 < S1. Instructions such as ja and jb are used to conditionally jump on various combinations of these flags.
+
+(a) C code
+
+typedef enum {NEG, ZERO, POS, OTHER} range_t;
+
+range_t find_range(float x)
+{
+	int result;
+	if (x < 0)
+	  result = NEG;
+	else if (x == 0)
+	  result = ZERO;
+	else if (x > 0)
+	  result = POS;
+	else
+	result = OTHER;
+return result;
+}
+
+(b) Generated assembly code
+
+ 	range_t find_range(float x) x in %xmm0
+1	find_range:
+2	  vxorps	%xmm1, %xmm1, %xmm1		Set %xmm1 = 0
+3	  vucomiss	%xmm0, %xmm1			Compare 0:x
+4	  ja	.L5					If >, goto neg
+5	  vucomiss	%xmm1, %xmm0			Compare x:0
+6	  jp	.L8					If NaN, goto posornan
+7	  movl	$1, %eax				result = ZERO
+8	  je	.L3					If =, goto done
+9	.L8:					  posornan:
+10	  vucomiss	.LC0(%rip), %xmm0		Compare x:0
+11	  setbe	%al					Set result = NaN ? 1 : 0
+12	  movzbl	%al, %eax			Zero-extend
+13	  addl	$2, %eax				result += 2 (POS for > 0, OTHER for NaN)
+14	  ret						Return
+15	.L5:					  neg:
+16	  movl	$0, %eax				result = NEG
+17	.L3:					  done:
+18	  rep; ret					Return 
+
+Figure 3.51 Illustration of conditional branching in floating-point code.
+
+As an example of floating-point comparisons, the C function of Figure 3.51(a) classifies argument x according to its relation to 0.0, returning an enumerated type as the result. Enumerated types in C are encoded as integers, and so the possible function values are: 0 (NEG), 1 (ZERO), 2 (POS), and 3 (OTHER). This final outcome occurs when the value of x is NaN.
+
+Gcc generates the code shown in Figure 3.51(b) for find_range. The code is not very efficient—it compares x to 0.0 three times, even though the required information could be obtained with a single comparison. It also generates floating point constant 0.0 twice—once using vxorps, and once by reading the value from memory. Let us trace the flow of the function for the four possible comparison results:
+
+x < 0.0 The ja branch on line 4 will be taken, jumping to the end with a return value of 0.
+
+x = 0.0 The ja (line 4) and jp (line 6) branches will not be taken, but the je branch (line 8) will, returning with %eax equal to 1.
+
+x > 0.0 None of the three branches will be taken. The set be (line 11) will yield 0, and this will be incremented by the addl instruction (line 13) to give a return value of 2.
+
+x = NaN The jp branch (line 6) will be taken. The third vucomiss instruction (line 10) will set both the carry and the zero flag, and so the set be instruction (line 11) and the following instruction will set %eax to 1. This gets incremented by the addl instruction (line 13) to give a return value of 3.
+
+In Homework Problems 3.73 and 3.74, you are challenged to hand-generate more efficient implementations of find_range.
+
+Practice Problem 3.57
+
+Function funct3 has the following prototype:
+
+double funct3(int *ap, double b, long c, float *dp);
+
+For this function, gcc generates the following code:
+
+	double funct3(int *ap, double b, long c, float *dp)
+	ap in %rdi, b in %xmm0, c in %rsi, dp in %rdx
+1	funct3:
+2	  vmovss	(%rdx), %xmm1
+3	  vcvtsi2sd	(%rdi), %xmm2, %xmm2
+4	  vucomisd	%xmm2, %xmm0
+5	  jbe	.L8
+6	  vcvtsi2ssq	%rsi, %xmm0, %xmm0
+7	  vmulss	%xmm1, %xmm0, %xmm1
+8	  vunpcklps	%xmm1, %xmm1, %xmm1
+9	  vcvtps2pd	%xmm1, %xmm0
+10	  ret
+11	.L8:
+12	  vaddss	%xmm1, %xmm1, %xmm1
+13	  vcvtsi2ssq	%rsi, %xmm0, %xmm0
+14	  vaddss	%xmm1, %xmm0, %xmm0
+15	  vunpcklps	%xmm0, %xmm0, %xmm0
+16	  vcvtps2pd	%xmm0, %xmm0
+17	  ret 
+
+Write a C version of funct3.
+
+Observations about Floating-Point Code 
+
+We see that the general style of machine code generated for operating on floating-point data with AVX2 is similar to what we have seen for operating on integer data. Both use a collection of registers to hold and operate on values, and they use these registers for passing function arguments.
+
+Of course, there are many complexities in dealing with the different data types and the rules for evaluating expressions containing a mixture of data types, and AVX2 code involves many more different instructions and formats than is usually seen with functions that perform only integer arithmetic.
+
+AVX2 also has the potential to make computations run faster by performing parallel operations on packed data. Compiler developers are working on automating the conversion of scalar code to parallel code, but currently the most reliable way to achieve higher performance through parallelism is to use the extensions to the C language supported by gcc for manipulating vectors of data. See Web Aside opt:simd on page 546 to see how this can be done.
+
+Summary
+
+In this chapter, we have peered beneath the layer of abstraction provided by the C language to get a view of machine-level programming. By having the compiler generate an assembly-code representation of the machine-level program, we gain insights into both the compiler and its optimization capabilities, along with the machine, its data types, and its instruction set. In Chapter 5, we will see that knowing the characteristics of a compiler can help when trying to write programs that have efficient mappings onto the machine. We have also gotten amore complete picture of how the program stores data in different memory regions. In Chapter 12, we will see many examples where application programmers need to know whether a program variable is on the run-time stack, in some dynamically allocated data structure, or part of the global program data. Understanding how programs map onto machines makes it easier to understand the differences between these kinds of storage.
+
+Machine-level programs, and their representation by assembly code, differ in many ways from C programs. There is minimal distinction between different data types. The program is expressed as a sequence of instructions, each of which performs a single operation. Parts of the program state, such as registers and the run-time stack, are directly visible to the programmer. Only low-level operations are provided to support data manipulation and program control. The compiler must use multiple instructions to generate and operate on different data structures and to implement control constructs such as conditionals, loops, and procedures. We have covered many different aspects of C and how it gets compiled. We have seen that the lack of bounds checking in C makes many programs prone to buffer overflows. This has made many systems vulnerable to attacks by malicious intruders, although recent safeguards provided by the run-time system and the compiler help make programs more secure.
+
+We have only examined the mapping of C onto x86-64, but much of what we have covered is handled in a similar way for other combinations of language and machine. For example, compiling C++ is very similar to compiling C. In fact, early implementations of C++ first performed a source-to-source conversion from C++ to C and generated object code by running a C compiler on the result. C++ objects are represented by structures, similar to a C struct. Methods are represented by pointers to the code implementing the methods. By contrast, Java is implemented in an entirely different fashion. The object code of Java is a special binary representation known as Java byte code. This code can be viewed as a machine-level program for a virtual machine. As its name suggests, this machine is not implemented directly in hardware. Instead, software interpreters process the byte code, simulating the behavior of the virtual machine. Alternatively, an approach known as just-in-time compilation dynamically translates byte code sequences into machine instructions. This approach provides faster execution when code is executed multiple times, such as in loops. The advantage of using byte code as the low-level representation of a program is that the same code can be "executed" on many different machines, whereas the machine code we have considered runs only on x86-64 machines. 
