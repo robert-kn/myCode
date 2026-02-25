@@ -61,7 +61,7 @@ bytes (64 bits).
 
 2. I/O Devices: are the system's connection to the external world. Our example system has four I/O devices: a 
 keyboard and mouse for user input, a display for user output, and a disk drive (or simply disk) for long-term 
-storage of data and programs. Each I/O device is connected to the I/O bus by either a controller or an adapter. 
+storage of data and programs. Each I/O device is connected to the I/O bus by either a controller or an adapter. Controllers are chip sets in the device itself or on the system's main printed circuit board (often called the motherboard). An adapter is a card that plugs into a slot on the motherboard.
 
 3. Main Memory: is a temporary storage device that holds both a program and the data it manipulates while the 
 processor is executing the program. Physically, main memory consists of a collection of dynamic random access 
@@ -86,7 +86,7 @@ There are only a few of these simple operations, and they revolve around main me
 
 Running the hello Program: 
 
-As we type the characters ./hello at the keyboard, the shell program reads each one  into a register and then stores it in memory, as shown in Figure 1.5. When we hit the enter key on the keyboard, the shell knows that we have finished typing the command. The shell then loads the executable hello file by executing a sequence of instructions that copies the code and data in the hello object file from disk to main memory. The data includes the string of characters hello, world\n that will eventually be printed out. Using a technique known as direct memory access (DMA, discussed in Chapter 6), the data travel directly from disk to main memory, without passing through the processor. This is shown in figure1.6
+As we type the characters ./hello at the keyboard, the shell program reads each one into a register and then stores it in memory, as shown in Figure 1.5. When we hit the enter key on the keyboard, the shell knows that we have finished typing the command. The shell then loads the executable hello file by executing a sequence of instructions that copies the code and data in the hello object file from disk to main memory. The data includes the string of characters hello, world\n that will eventually be printed out. Using a technique known as direct memory access (DMA, discussed in Chapter 6), the data travel directly from disk to main memory, without passing through the processor. This is shown in figure1.6
 
 Once the code and data in the object file are loaded into memory, the processor begins executing the machine-language instructions in the hello program's main routine. These instructions copy the bytes in the hello, world\n string from memory to the register file, and from there to the display device, where they are displayed on the screen. This step is shown in Figure 1.7.
 
